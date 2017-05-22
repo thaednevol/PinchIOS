@@ -1,0 +1,208 @@
+package com.ach.soi.empresarial.liquidacion.server;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.Collection;
+
+import org.apache.log4j.Logger;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import co.swatit.pilautil.dto.out.ValidacionArchivoDataSourceDTO;
+
+import com.ach.arc.biz.r1747.util.ValidacionArchivoDataSource;
+import com.ach.arc.biz.transfer.ArchivoEnProcesoDTO;
+import com.ach.soi.empresarial.converters.core.Converter1747to2388;
+import com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadTp02;
+import com.ach.soi.empresarial.liquidacion.core.LiquidadorActivos;
+import com.ach.soi.empresarial.liquidacion.core.TotalizadorActivos;
+import com.ach.soi.empresarial.liquidacion.model.ErrorLiquidacionTO;
+import com.ach.soi.empresarial.liquidacion.model.RequestGeneracionSoportesTO;
+import com.ach.soi.empresarial.liquidacion.model.ResultadoValidacionCotizanteDTO;
+import com.ach.soi.empresarial.liquidacion.model.TotalesTO;
+import com.ach.soi.empresarial.liquidacion.util.Converter;
+import com.ach.sop.biz.transfer.PlanillaSoporteCotizanteDTO;
+import com.ach.sop.utility.biz.GeneracionSoportesOffline;
+import com.ach.sop.utility.biz.util.ServiciosUtilitarios;
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
+
+@Controller
+@EnableAutoConfiguration
+public class LiquidacionRestController {
+	
+	private static ValidacionArchivoDataSource validacionPlanillaDd;
+	private static ArchivoEnProcesoDTO archivoEnProceso;
+	
+	private static final Logger LOGGER = Logger.getLogger(LiquidacionRestController.class.getName());
+	
+	@RequestMapping("/incializarliquidacion")
+	@ResponseBody
+    public ErrorLiquidacionTO[] incializarLiquidacion( String archivoProcesoJson, String archivoDatasourceJson , String pathArchivo2388 ) {
+		LOGGER.info("incializarLiquidacion!!!!");
+		BufferedReader lineReader =null;
+		ErrorLiquidacionTO[] erroresLiq = new ErrorLiquidacionTO[0];
+        try {        	
+            JsonReader readerArchivoEnProceso = new JsonReader(new FileReader(new File(archivoProcesoJson)));
+            JsonReader readerArchivoDs = new JsonReader(new FileReader(new File(archivoDatasourceJson)));
+            Gson gson = new Gson();
+            co.swatit.pilautil.dto.out.ArchivoEnProcesoDTO archivoEnProcesoTO = gson.fromJson(readerArchivoEnProceso, co.swatit.pilautil.dto.out.ArchivoEnProcesoDTO.class);
+            ValidacionArchivoDataSourceDTO archivoDs = gson.fromJson(readerArchivoDs, ValidacionArchivoDataSourceDTO.class);
+            
+            validacionPlanillaDd = Converter.convertValidacionArchivoDataSource(archivoDs, archivoDs.getPlanillaApteDto());
+            
+            TotalizadorActivos.getInstance(validacionPlanillaDd).resetInstance(validacionPlanillaDd);
+            
+            archivoEnProceso = Converter.convertArchivoEnProceso(archivoEnProcesoTO);
+            
+            LiquidadorActivos liquidacion = new LiquidadorActivos();
+            		
+			String regT01 = null;
+			
+			lineReader = new BufferedReader(new FileReader(pathArchivo2388));
+			if ( (regT01=lineReader.readLine())!=null ){		
+				lineReader.close();
+			}
+            			
+			erroresLiq = liquidacion.completarPlanillaAportanteDTO(validacionPlanillaDd.getPlanillaApteDto(), regT01);
+			if ( erroresLiq!=null && erroresLiq.length>0 ){
+				LOGGER.error("Fin: Error en el registro tipo 1.");
+				return erroresLiq;
+			}
+			
+            erroresLiq = liquidacion.validarRegsTp02Archivo2388(archivoEnProceso, validacionPlanillaDd, pathArchivo2388);
+            
+            LOGGER.info("Fin: "+validacionPlanillaDd.getAdministradorasPension().size());
+                    
+        } catch (Exception ioe){
+        	erroresLiq = new ErrorLiquidacionTO[0];
+        	
+        	LOGGER.error("Error", ioe);
+        	ioe.printStackTrace();
+        	return null;
+        }
+        
+        LOGGER.info("Resultado Ok!!!!");        
+        return erroresLiq;
+    }
+	
+	@RequestMapping("/convertircotizante")
+	@ResponseBody
+    public String[] convertirCotizante( String registroTp02 ) {
+		LOGGER.info("Convertir cotizante!!!!"+registroTp02);
+		Converter1747to2388 converter = new Converter1747to2388();
+		String[] regArray = null;
+		try{
+			regArray = converter.convertirRegTp02Individual(registroTp02);
+		}catch ( Exception e ){
+			e.printStackTrace();
+		}	
+        return regArray;
+    }
+	
+	
+	@RequestMapping("/validarcotizante")
+	@ResponseBody
+    public ResultadoValidacionCotizanteDTO validarCotizante( String regTp02[], int nroLinea ) {
+		LOGGER.info("Validar Cotizante!!!!");
+		LOGGER.info("Registro: "+regTp02); 
+		LiquidadorActivos liquidador = new LiquidadorActivos();
+		ResultadoValidacionCotizanteDTO resultado = new ResultadoValidacionCotizanteDTO();	
+		try{
+			Reg2388ReadTp02 regT02Bean = Reg2388ReadTp02.buildRecordFromStringArray(regTp02);
+			Converter1747to2388 converter = new Converter1747to2388();
+			String regT02Str = converter.getRegT02FromBean(regT02Bean);
+			
+			resultado.setErroresRegistros(liquidador.validarRegistroTp02(regT02Str, archivoEnProceso, validacionPlanillaDd, nroLinea));
+			resultado.setEstadoSolicitud("OK");
+		}catch ( Exception e ){
+			LOGGER.error("Error no controlado",e);
+			resultado.setEstadoSolicitud("ERROR");
+			resultado.setErrorSolicitud(e.getMessage());			
+		}
+		return resultado;
+    }
+	
+	
+	@RequestMapping("/gettotales")
+	@ResponseBody
+    public TotalesTO getTotales(  ) {
+		LOGGER.info("Obtener Totales!!!!");			
+		try{
+			TotalizadorActivos totalizador = TotalizadorActivos.getInstance(validacionPlanillaDd);
+			TotalesTO totales = totalizador.getTotales();
+			LOGGER.info("Fin Obtener Totales!!!!");
+			return totales;
+		}catch ( Exception e ){
+			LOGGER.error("Error no controlado",e);					
+		}
+		LOGGER.info("Fin Obtener Totales!!!!");
+		return null;
+    }
+	
+	@RequestMapping("/agregarcotizante")
+	@ResponseBody
+    public ResultadoValidacionCotizanteDTO agregarCotizante( String regTp02[], int nroLinea  ) {
+		LOGGER.info("Inicio Validacion Cotizante nuevo!!!!");			
+		try{
+			return validarCotizante(regTp02, nroLinea);
+		}catch ( Exception e ){
+			LOGGER.error("Error no controlado",e);					
+		}
+		LOGGER.info("Fin Validacion Cotizante nuevo!!!!");
+		return null;
+    }
+	
+	@RequestMapping("/eliminarcotizante")
+	@ResponseBody
+    public void eliminarCotizante( String regTp02[], int nroLinea  ) {
+		LOGGER.info("Inicio Validacion Cotizante eliminado!!!!");			
+		try{
+			validarCotizante(regTp02, nroLinea);
+		}catch ( Exception e ){
+			LOGGER.error("Error no controlado",e);					
+		}
+		LOGGER.info("Fin Validacion Cotizante eliminado!!!!");
+    }
+	
+	@RequestMapping(value="/generarsoportes",method={RequestMethod.POST})
+	@ResponseBody	
+    public String generarSoportes( @RequestBody RequestGeneracionSoportesTO requestSoportes ) {
+		LOGGER.info("inicio generacion soportes!!!!");
+		LOGGER.info("datosEncabezado: "+requestSoportes.getDatosEncabezadoJson());
+		LOGGER.info("datosDetalleCotizante: "+requestSoportes.getDatosDetalleCotizanteJson());
+		LOGGER.info("datosEnvioCorreo: "+requestSoportes.getDatosEnvioCorreoJson());
+		String resultado = null;
+        
+		
+		
+		try{
+			
+			Collection<PlanillaSoporteCotizanteDTO> cotizantes = ServiciosUtilitarios.convertirDatosCotizantes(requestSoportes.getDatosDetalleCotizanteJson());
+			Collection<PlanillaSoporteCotizanteDTO> cotizantesSop = new ArrayList<PlanillaSoporteCotizanteDTO>(); 
+			GeneracionSoportesOffline soportesOffline = new GeneracionSoportesOffline();
+			for ( PlanillaSoporteCotizanteDTO czte:cotizantes ){
+				cotizantesSop.add(czte);
+				resultado = soportesOffline.generarSoporteCotizante(requestSoportes.getDatosEncabezadoJson(), cotizantesSop, requestSoportes.getDatosEnvioCorreoJson(),requestSoportes.getRutaRecursos(), requestSoportes.getRutaGeneracion());
+				cotizantesSop.clear();
+			}
+		}catch ( Exception e ){
+			LOGGER.error("Resultado Error: ",e);
+			resultado = "ERROR: "+e.getMessage();
+		}
+		
+        LOGGER.info("Resultado: "+resultado);        
+        return resultado;
+    }
+	
+	
+	
+	
+	
+}

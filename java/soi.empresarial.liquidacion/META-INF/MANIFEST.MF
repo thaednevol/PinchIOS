@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.9.2
+Created-By: 1.6.0_65-b14-468-11M4833 (Apple Inc.)
+built-by: jgutierrez
+Bundle-Name: LiquidacionListener
+Bundle-Description: Liquidacion Server Listener
+Bundle-Vendor: Lucasian Labs SAS/ACH Colombia
+Bundle-Version: 1.0.0
+Bundle-Activator: com.ach.soi.empresarial.liquidacion.server.Liquidaci
+ onListener
+Import-Package: org.osgi.framework
+

@@ -1,0 +1,1 @@
+En esta carpeta se incluyen todas las clases que son reutilizadas por los componentes de AngularJS, las clases cuentan con funciones que ejecutan elementos propios del sistema operativo como manipulación de archivos o ventanas, ejecución de comandos avanzados de consola.

@@ -1,0 +1,20 @@
+{
+  "name": "liquidacion-plantillas-pila-electron",
+  "author": "Luis Felipe Zapata <lzapata@swat-it.co>",
+  "version": "1.0.0",
+  "description": "Contenedor de dependencias de JS, proyecto encargado de gestionar planillas de pago PILA para ACH",
+  "dependencies": {
+    "angular": "1.6.2",
+    "angular-resource": "1.6.2",
+    "angular-translate": "2.13.1",
+    "angular-translate-loader-static-files": "2.13.1",
+    "angular-ui-router": "1.0.0-rc.1",
+    "ngLocale": "*"
+  },
+  "resolutions": {
+    "angular": "1.6.2"
+  },
+  "devDependencies": {
+    "ngstorage": "^0.3.11"
+  }
+}

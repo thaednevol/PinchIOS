@@ -1,0 +1,47 @@
+.support.sett.support--no-file
+  .sy__title-content
+    span(ng-bind="'SUPPORT.TITLE' | translate")
+
+  .sett__content
+    support-config-emails(show-loading="$ctrl.showLoading" show-config-email="$ctrl.showConfigEmail")
+    loading(show-loading="$ctrl.showLoading")
+
+    .sett__left
+      .sett__left-menu
+        span(ng-if="$ctrl.showPanel") OCULTAR PANEL
+        i.mdi.mdi-format-indent-decrease(ng-click="$ctrl.showPanel = false" ng-if="$ctrl.showPanel")
+        i.mdi.mdi-format-indent-increase(ng-click="$ctrl.showPanel = true" ng-if="!$ctrl.showPanel")
+      //- Datos de la plantilla
+      support-panel(number-settlement="$ctrl.numberSettlement" info-panel="$ctrl.infoSupport" ng-if="$ctrl.showPanel")
+
+
+    .sett__right
+
+      .sett__right-content(ng-if="$ctrl.showTable" ng-class="{'sett__rigth-content--without-panel': !$ctrl.showPanel}")
+        support-table(labels-table="$ctrl.labelsTable" list-contributors="$ctrl.listContributors" list-emails-contributors="$ctrl.listEmailsContributors" show-loading="$ctrl.showLoading")
+        //- panel para enviar emails.
+        .support__form
+          .support__form-container
+            
+            //- Select para indicar el tipo de cuenta
+            .support__form-inputs.support__form-min
+              div
+                span(ng-bind="'SUPPORT.ACCOUNT.ACCOUNT' | translate")
+              div
+                select(ng-model="$ctrl.currentEmailConfig" ng-options="item as item.name for item in $ctrl.listConfigEmails" ng-init="$ctrl.currentEmailConfig = $ctrl.listConfigEmails[0]")
+            
+            //- Boton para desplegar la configuración de la cuenta
+            .support__form-inputs.support__form-buttons
+              //- Se deja el div vacio para poder que conserve las propiedades de alineación de los items anteriores
+              div &nbsp;
+              div
+                .sy__button--green(ng-class="{'sy__button--disabled': $ctrl.form.path === ''}" ng-click="$ctrl.showConfigEmail = true" ng-bind="'SUPPORT.ACCOUNT.CONFIG_ACCOUNT' | translate")
+
+            //- Botón para enviar los correos a los contribuidores.
+            .support__form-inputs.support__form-buttons.support__form-buttons-send
+              //- Se deja el div vacio para poder que conserve las propiedades de alineación de los items anteriores
+              div &nbsp;
+              div
+                .support__send.sy__button--blue(ng-click="$ctrl.actionSendEmails()" ng-bind="'SUPPORT.ACCOUNT.SEND_SUPPORTS' | translate" ng-class="{'sy__button--disabled': !$ctrl.currentEmailConfig}")
+
+        support-load(progress="$ctrl.progress" ng-show="$ctrl.isSendEmail")

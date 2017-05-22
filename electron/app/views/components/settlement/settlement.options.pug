@@ -1,0 +1,27 @@
+.sett-options
+
+  .sett-options__container-file
+    .sett-options__title(ng-bind="'SETTLEMENT.LOAD.TITLE' | translate")
+    .sett-options__border-dashed(ng-bind="$ctrl.file.name | translate" ng-click="$ctrl.actionDialogOpen()")
+
+    //- Opciones del menu
+    .sett-options__options
+      //- Carga un archivo nuevo desde una planilla 2388
+      a(ng-click="$ctrl.actionDialogOpen()")
+        i.mdi.mdi-file-outline
+        span(ng-bind="'SETTLEMENT.LOAD.ACTIONS.NEW' | translate")
+
+      //- Abre un archivo
+      a(ng-click="")
+        i.mdi.mdi-folder-upload
+        span(ng-bind="'SETTLEMENT.LOAD.ACTIONS.OPEN' | translate")
+
+      //- Guarda un archivo
+      a(ng-click="$ctrl.actionSaveTemplate()")
+        i.mdi.mdi-content-save
+        span(ng-bind="'SETTLEMENT.LOAD.ACTIONS.SAVE' | translate")
+
+      //- Genera la planilla con el formato 2388
+      a(ng-click="$ctrl.actionDialogSave()")
+        i.mdi.mdi-content-duplicate
+        span(ng-bind="'SETTLEMENT.LOAD.ACTIONS.GENERATE' | translate")

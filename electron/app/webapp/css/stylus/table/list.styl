@@ -1,0 +1,25 @@
+.list-tables
+  display: flex;
+  flex-direction: column;
+
+  &__container
+    padding: 10px;
+    height: 100%;
+    overflow: hidden;
+    padding-right: 10px;
+
+  &__scroll
+    // Por agregar un scroll en toda la aplicación se elimina esta opcion
+    // overflow-y: scroll;
+    height: calc(100% - 66px);
+    padding-right: 15px;
+    margin-right: -5px;
+
+  &__actions
+    background: #fff;
+    border: 1px solid #b5bdd2;
+    border-radius: 4px;
+    box-shadow: 0 0 8px 0 rgba(0,0,0,0.16);
+    margin-top: 10px
+    padding: 8px 12px;
+    box-sizing: border-box;

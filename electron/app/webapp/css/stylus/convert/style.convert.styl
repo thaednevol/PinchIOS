@@ -1,0 +1,101 @@
+.convert
+  display: flex;
+  flex-direction: column;
+
+  &__result
+    font-weight: 700;
+    padding: 12px 14px;
+    color: #333;
+    border-bottom: 1px solid #b5bdd2;
+    margin-bottom: 10px;
+    &-title
+      color: #1a54a2;
+      font-size: 22px;
+      font-weight: 300;
+      margin-bottom: 14px;
+      padding: 0;
+      border-bottom: 1px solid #1a54a2;
+      width: 23px;
+    &--error
+      margin-left: 5px;
+      color: red !important;
+
+
+
+  &__container
+    display: flex;
+    border: 1px solid #b5bdd2;
+    border-radius: 4px;
+    box-shadow: 0 0 8px 0 rgba(0,0,0,0.16);
+    background: white;
+    margin: 20px;
+    flex-direction: column;
+    height: 100%;
+    justify-content: flex-start;
+    & error-convert
+      height: inherit;
+
+  &__form
+    width: 100%;
+    border-bottom: 1px solid #b5bdd2;
+    &-title
+      font-weight: 800 !important;
+    &-container
+      display: flex;
+      border-top: 1px solid #b5bdd2;
+    &-inputs
+      display: flex;
+      flex-direction: column;
+      margin: 10px;
+      min-width: 200px;
+      width: 25%;
+      &:first-child
+        width: 50% !important;
+      & select
+        border: 1px solid #B0AFAF;
+        background: white;
+        color: #555;
+        padding: 8px 12px;
+        font-size: 12px;
+        display: flex;
+        border-radius: 2px;
+        width: 100%;
+        height: 35px;
+      & > div
+        min-height: 19px;
+        display: flex;
+        align-items: center;
+        & > span
+          color: #666;
+          font-size: 12px;
+          margin-bottom: 5px;
+          font-weight: bold;
+    &-name-file
+      border: 1px solid #B0AFAF;
+      align-items: center;
+      background: white;
+      color: #555;
+      padding: 8px 12px;
+      font-size: 12px;
+      display: flex;
+      border-radius: 2px;
+      min-height: 17px;
+      width: 100%;
+      i
+        margin-right: 3px;
+    &-button
+      border: 1px solid #B0AFAF;
+      background: #eee;
+      padding: 8px 12px;
+      font-size: 12px;
+      color: #555;
+      margin-left: -2px;
+      cursor: pointer;
+    &-buttons
+      align-items: flex-end;
+      & > div:last-child
+        display: flex;
+        justify-content: flex-end;
+        text-transform: uppercase !important;
+        & > div
+          width: 120px;

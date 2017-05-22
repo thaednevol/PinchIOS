@@ -1,0 +1,17 @@
+.footer(ng-class="{'footer__app': !userLogin}")
+  p
+    span © Copyrights ACH Colombia S.A
+  //- Cuando se esta en el login se debe mostrar una linea aparte el texto.
+  p(ng-if="userLogin")
+    span Línea de atención al cliente:
+  p
+    //- Si esta dentro de la app todo el texto se muestra en una sola linea.
+    span(ng-if="!userLogin") Líneas de atención al cliente:
+    |  Planilla electrónica /
+    span  Bogotá
+    |  380 8880 -
+    span  Medellín
+    |  204 0180 -
+    span  Resto del País
+    |  01 8000 11 0764
+  .footer__version(ng-bind="'v' + version")

@@ -1,0 +1,31 @@
+//- Parte encargada de realizar la carga o busqueda de las planillas
+.convert__form
+  .convert__form-container
+    //- Zona de Drag para los archivos, tambien muestra el archivo actual
+    .convert__form-inputs
+        div
+          span(ng-bind="'LOAD.FORM.TITLE.LOAD_FILE' | translate")
+        div
+          //- Zona donde se visualiza el nombre del archivo cargado
+          .convert__form-name-file(ng-click="$ctrl.actionOpenDialogFile()")
+            i.mdi.mdi-file(ng-show="$ctrl.form.name !== ''")
+            span(ng-bind="$ctrl.form.name || ' '")
+          //- Botones para carga de archivos
+          .convert__form-button(ng-show="$ctrl.form.path === ''" ng-bind="'LOAD.FORM.SEARCH' | translate" ng-click="$ctrl.actionOpenDialogFile()")
+          .convert__form-button(ng-show="$ctrl.form.path !== ''" ng-bind="'LOAD.FORM.REPLACE' | translate" ng-click="$ctrl.actionOpenDialogFile()")
+
+    //- Select para indicar que tipo de planilla es la que se esta subiendo
+    .convert__form-inputs
+        div
+          span(ng-bind="'LOAD.FORM.TITLE.TYPE_FILE' | translate")
+        div
+          select(ng-model="$ctrl.form.type")
+            option(value="1747" ng-bind="'LOAD.FORM.SELECT.ACTIVES' | translate")
+            option(value="2145" ng-bind="'LOAD.FORM.SELECT.PENSIONERS' | translate")
+
+    //- Botones de acción del formulario
+    .convert__form-inputs.convert__form-buttons
+      //- Se deja el div vacio para poder que conserve las propiedades de alineación de los items anteriores
+      div
+      div
+        .sy__button--green(ng-class="{'sy__button--disabled': $ctrl.form.path === ''}" ng-click="$ctrl.actionValidateFile()" ng-bind="'LOAD.FORM.CONVERT' | translate")

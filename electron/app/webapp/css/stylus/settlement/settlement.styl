@@ -1,0 +1,48 @@
+.sett
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  margin-bottom: 0px !important;
+  min-height: 650px !important;
+  &--no-file
+    height: calc(100% - 130px);
+    @media (min-height: 740px)
+      height: calc(100% - 153px) !important;
+
+  &__content
+    display: flex;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+
+  &__left
+    padding: 10px;
+    background: white;
+    border-right: 1px solid #b5bdd2;
+    box-shadow: 0 1px 10px 0 rgba(0,0,0,0.16);
+    &-menu
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 10px;
+      i
+        font-size: 24px;
+        color: #75818c;
+        cursor: pointer;
+      span
+        font-size: 9px;
+        color: #75818c;
+
+  &__right
+    padding: 10px;
+    width: 100%;
+    &-content
+      width: calc(100% - 191px);
+      height: calc(100% - 18px);
+      &--without-panel
+        width: calc(100% - 65px) !important;
+    &-list-table
+      height: calc(100% - -46px);
+    &-table-total
+      & tbody tr:last-child
+        font-weight: bold !important;

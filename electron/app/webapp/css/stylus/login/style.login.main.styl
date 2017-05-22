@@ -1,0 +1,100 @@
+.login
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100% - 85px) !important;
+
+  select
+    font-family: 'OpenSans', sans-serif;
+
+  &__container
+    display: flex;
+    flex-direction: column;
+    background: white;
+    width: 269px;
+    height: initial;
+    padding: 16px;
+    border-radius: 4px;
+
+  &__background
+    background: #1150a0 !important;
+    color: #666;
+
+  &__head
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+    &-text
+      margin: 0px -16px 15px -16px;
+      padding: 4px 8px;
+      width: initial;
+      text-align: center;
+      font-size: 11px;
+      box-sizing: border-box;
+      background: #eff3fd;
+      color: #235ba5;
+      box-shadow: inset 0 -1px 3px 0 rgba(161,186,220,0.41);
+
+  &__form-error
+    margin-top: 5px;
+    border-radius: 2px;
+    color: #FF1A1A;
+    background: #f2dede;
+    padding: 3px 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 11px;
+    i
+      margin-right: 5px;
+      font-size: 16px;
+
+  &__form-checkbox
+    display: flex;
+    align-items: center;
+
+  &__form-actions
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    flex-direction: column;
+
+  &__form-inputs
+    display: flex;
+    flex-direction: column;
+    margin: 10px 0;
+    span
+      color: #1a54a2;
+      font-weight: 700;
+      font-size: 12px;
+      background: white;
+      width: 60px;
+      top: -10px;
+      padding: 0px 8px 0px 0;
+      position: relative;
+    &-head
+      border-top: 1px solid #dbdbdb;
+      display: inline-block;
+      margin-bottom: 0 !important;
+    & > div
+      margin-bottom: 7px;
+      width: 100%;
+      position: relative;
+      input
+      select
+        height: 33px;
+        font-size: 12px;
+        color: #555;
+        padding: 8px 12px;
+        background-color: white;
+        border-radius: 2px;
+        border: 1px solid #B0AFAF;
+        width: 100%;
+        box-sizing: border-box;
+        &:focus
+          border-color: #66afe9 !important;
+          box-shadow: inset 0 1px 1px rgba(0,0,0,0.075), 0 0 8px rgba(102,175,233,0.6);
+
+    // Si se agregan campos vacios o de un formato que no es adecuado
+    &--error
+      border-color: red !important;

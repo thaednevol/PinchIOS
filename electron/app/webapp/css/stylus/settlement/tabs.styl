@@ -1,0 +1,25 @@
+.sett__tabs
+  border-bottom: 1px solid #b5bdd2;
+  margin-top: 10px;
+  display: flex;
+  height: 29px;
+
+  &-button
+    span
+      background: #fff;
+      border: 1px solid #b5bdd2;
+      border-radius: 2px 2px 0 0;
+      color: #75818c;
+      margin-right: 2px;
+      padding: 10px 15px;
+      cursor: pointer;
+      text-transform: uppercase;
+    ^[1]--active
+      bottom: -2px;
+      position: relative;
+      span
+        background-color: transparent !important;
+        border-bottom: 1px solid #edeeef !important;
+        border-top: 3px solid #0079c0 !important;
+        color: #0079c0 !important;
+        font-weight: 800;

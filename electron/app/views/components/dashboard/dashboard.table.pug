@@ -1,0 +1,17 @@
+.dashboard-table(ng-if="$ctrl.labelsTable")
+  .sy-table__container
+    .sy__title-table
+      span(ng-bind="'DASHBOARD.TABLE.TITLES.SETTLEMENT' | translate" ng-if="$ctrl.typeTable === 'SETTLEMENT'")
+      span(ng-bind="'DASHBOARD.TABLE.TITLES.LOCAL' | translate" ng-if="$ctrl.typeTable === 'LOCAL'")
+    .dashboard-table__search
+      span
+        i.mdi.mdi-magnify
+      input(type="text" ng-model="$ctrl.search" placeholder="{{'DASHBOARD.TABLE.LABELS.SEARCH' | translate}}")
+    .dashboard-table__container
+      table
+        thead
+          tr
+            th(ng-repeat="label in $ctrl.labelsTable track by $index" ng-bind="label")
+        tbody
+          tr(ng-repeat="register in $ctrl.listTable | filter:$ctrl.search | limitTo:10 track by $index" ng-click="$ctrl.actionOpenFile($index)")
+            td(ng-repeat="(key, label) in $ctrl.labelsTable track by $index" ng-bind="key === 'valorPagado' ? '$ ' + (register[key] | number) : register[key]") 

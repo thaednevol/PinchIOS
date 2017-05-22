@@ -1,0 +1,115 @@
+@import "style.support.panel"
+@import "style.support.table"
+@import "style.support.load"
+@import "style.support.config.emails"
+
+.support
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  margin-bottom: 0px !important;
+  height: calc(100% - 50px);
+  min-height: calc(100% - 130px);
+  @media (min-height: 740px)
+    min-height: calc(100% - 153px) !important;
+
+  .sett__right-content
+    width: calc(100% - 10px) !important;
+    position: relative;
+
+  &--no-file
+    height: calc(100% - 130px);
+    @media (min-height: 740px)
+      height: calc(100% - 153px) !important;
+
+  &__content
+    display: flex;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+
+  &__left
+    padding: 10px;
+    background: white;
+    border-right: 1px solid #b5bdd2;
+    box-shadow: 0 1px 10px 0 rgba(0,0,0,0.16);
+    &-menu
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 10px;
+      i
+        font-size: 24px;
+        color: #75818c;
+        cursor: pointer;
+      span
+        font-size: 9px;
+        color: #75818c;
+
+  &__right
+    padding: 10px;
+    width: 100%;
+    &-content
+      width: calc(100%);
+      height: calc(100% - 18px);
+      &--without-panel
+        width: calc(100% - 65px) !important;
+    &-list-table
+      height: calc(100% - -46px);
+    &-table-total
+      & tbody tr:last-child
+        font-weight: bold !important;
+
+  &__form
+    width: 100%;
+    margin-top: 50px;
+    &-container
+      display: flex;
+    &-min
+      min-width: 200px;
+      width: 25%;
+    &-inputs
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 6px;
+      margin-right: 10px;
+      & select
+        border: 1px solid #B0AFAF;
+        background: white;
+        color: #555;
+        padding: 8px 12px;
+        font-size: 13.5px;
+        display: flex;
+        border-radius: 2px;
+        width: 100%;
+        height: 35px;
+      & > div
+        min-height: 22px;
+        display: flex;
+        align-items: center;
+        & > span
+          color: #666;
+          font-size: 12px;
+          margin-bottom: 5px;
+          font-weight: bold;
+    &-button
+      border: 1px solid #B0AFAF;
+      background: #eee;
+      padding: 8px 12px;
+      font-size: 12px;
+      color: #555;
+      margin-left: -2px;
+      cursor: pointer;
+    &-buttons
+      &-send
+        width: 100%;
+        margin-right: 0px;
+      & > div:last-child
+        display: flex;
+        justify-content: flex-end;
+        text-transform: uppercase !important;
+        & > div
+          width: 160px;
+
+  &__send
+    width: 135px !important;

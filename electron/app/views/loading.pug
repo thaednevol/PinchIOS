@@ -1,0 +1,52 @@
+//- Por ser una precarga no se pueden integrar diseño ni css ya que se muestra
+//- para permitir que se cargen los recursos por debajo.
+.load
+  img(src="../img/system/logoSoi.png")
+  .load-container
+    img(src="../img/loader/load.gif")
+    span Cargando
+    span#load-points &nbsp;
+
+//- Estilo CSS para la precarga
+
+| <style>
+| .load {
+|   display: flex;
+|   justify-content: center;
+|   align-items: center;
+|   flex-direction: column;
+|   width: 100%;
+|   height: 100%;
+| }
+| .load-container {
+|   display: flex;
+|   align-items: center;
+|   flex-direction: column;
+|   margin-top: 70px;
+| }
+| .load span {
+|   margin-top: 20px;
+|   font-weight: bold;
+|   color: #9c9c9c;
+|   font-family: sans-serif;
+| }
+| #load-points {
+|   margin-top: 0 !important;
+| }
+| </style>
+
+//- Codigo Script para mostrar los puntos con un timer
+
+| <script>
+| var count = 0;
+| var time = setInterval(function (){
+|   var content = document.getElementById("load-points");
+|    if(count < 5){
+|      content.innerHTML += ".";
+|    } else {
+|      count = 0;
+|      content.innerHTML = "&nbsp;";
+|    }
+|    count += 1;
+| }, 500);
+| </script>

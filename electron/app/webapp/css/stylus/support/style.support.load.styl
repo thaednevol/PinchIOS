@@ -1,0 +1,48 @@
+.support-load
+
+  height: 205px;
+  position: absolute;
+  width: 100%;
+  top: calc(50% - 187px);
+
+  &__container
+    background: #fff;
+    border: 1px solid #b5bdd2;
+    border-radius: 4px;
+    box-shadow: 0 0 8px 0 rgba(0,0,0,0.16);
+    margin-top: 15px;
+    position: absolute;
+    z-index: 9991;
+    width: 100%;
+
+  &__row
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 20px;
+    &--progress
+      flex-direction: column !important;
+    &--actions
+      justify-content: flex-end;
+      & > div:first-child
+        width: auto;
+
+  &__progress
+    border-radius: 3px;
+    height: 25px;
+    width: 100%;
+    border: 1px solid #ccc;
+    &-bar
+      background: #1abc67;
+      height: 25px;
+      transition: all 0.5s ease-out;
+      border-radius: 2px;
+
+  &__title
+    flex-direction: column;
+    display: flex;
+    text-align: left;
+    font-size: 14px;
+    & > span:first-child
+      font-weight: bold;
+      margin-bottom: 2px;

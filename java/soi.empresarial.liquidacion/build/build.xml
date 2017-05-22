@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="build" name="soi.empresarial.liquidacion">
+    <property environment="env"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.6"/>
+    <property name="source" value="1.6"/>
+
+    <property name="home.dir"     value="../"/>
+    <property name="src.dir"       value="${home.dir}/src/"/>
+    <property name="lib.dir"       value="../../lib"/>
+    <property name="classes.dir"   value="${home.dir}/classes/"/>
+    <property name="jar.dir"       value="../${home.dir}/deploy/"/>
+    <property name="jar.file"      value="${jar.dir}/soi.empresarial.liquidacion.jar"/>
+    <property name="manifest.file" value="${home.dir}/META-INF/MANIFEST.MF"/>
+
+
+    <path id="external.jars">
+        <fileset dir="${lib.dir}" includes="**/*.jar"/>
+    </path>
+
+    <path id="project.classpath">
+        <pathelement location="${src.dir}"/>
+        <path refid="external.jars" />
+    </path>
+
+    <target name="init">
+        <mkdir dir="${build.dir}"/>
+        <mkdir dir="${classes.dir}"/>
+        <mkdir dir="${jar.dir}"/>
+        <copy includeemptydirs="false" todir="${build.dir}">
+            <fileset dir="${src.dir}">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+    </target>
+
+    <target name="cleanall" depends="clean"/>
+
+    <target name="build" depends="init">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="${classes.dir}" source="${source}" target="${target}" classpathref="project.classpath">
+            <src path="${src.dir}"/>
+        </javac>
+    </target>
+
+    <target name="build-jar" depends="build">
+        <delete file="${jar.file}" />
+        <delete file="${manifest.file}" />
+
+        <manifest file="${manifest.file}" >
+            <attribute name="built-by" value="${user.name}" />
+        	<attribute name="Bundle-Name" value="LiquidacionListener" />
+        	<attribute name="Bundle-Description" value="Liquidacion Server Listener" />
+        	<attribute name="Bundle-Vendor" value="Lucasian Labs SAS/ACH Colombia" />
+        	<attribute name="Bundle-Version" value="1.0.0" />
+        	<attribute name="Bundle-Activator" value="com.ach.soi.empresarial.liquidacion.server.LiquidacionListener" />
+        	<attribute name="Import-Package" value="org.osgi.framework" />
+        </manifest>
+
+        <jar destfile="${jar.file}" 
+            basedir="${build.dir}" 
+            manifest="${manifest.file}">
+            <fileset dir="${classes.dir}" includes="**/*.class" />
+            <fileset dir="${lib.dir}" includes="**/*.jar" />
+        </jar>
+    </target>
+</project>

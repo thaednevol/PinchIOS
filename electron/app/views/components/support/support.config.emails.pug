@@ -1,0 +1,57 @@
+.support-email(ng-if="$ctrl.showConfigEmail")
+  .support-email__modal
+  .support-email__card
+    .support-email__close(ng-click="$ctrl.actionCloseEmailConfig()")
+      i.mdi-close-circle.mdi
+
+    .support-email__title
+      span(ng-bind="'SUPPORT.ADMIN_COUNT.TITLE' | translate")
+    .support-email__content
+      .support-email__link
+        .support-email__count(ng-repeat="acount in $ctrl.listConfigEmails track by $index")
+          .support-email__count-item(ng-click="$ctrl.actionSelectEmail($index)" ng-class="{'support-email__count-item--select': $ctrl.positionEmail === $index}")
+            span(ng-bind="acount.name")
+
+      .support-email__form
+        .support-email__form-item-two
+          span(ng-bind="'SUPPORT.ADMIN_COUNT.NAME_COUNT' | translate")
+          input(ng-model="$ctrl.form.name" ng-class="{'support-email__form--error': $ctrl.errorForm['name']}" tabindex="1")
+        .support-email__form-item-two
+          span(ng-bind="'SUPPORT.ADMIN_COUNT.ADRESS_EMAIL' | translate")
+          input(ng-model="$ctrl.form.email" ng-class="{'support-email__form--error': $ctrl.errorForm['email']}" tabindex="2")
+        .support-email__form-item-one
+          span(ng-bind="'SUPPORT.ADMIN_COUNT.INFO_SERVER' | translate")
+        .support-email__form-item-two
+          span(ng-bind="'SUPPORT.ADMIN_COUNT.PORT' | translate")
+          input(ng-model="$ctrl.form.port" ng-class="{'support-email__form--error': $ctrl.errorForm['port']}" tabindex="3")
+        .support-email__form-item-two
+          span(ng-bind="'SUPPORT.ADMIN_COUNT.SERVER' | translate")
+          input(ng-model="$ctrl.form.server" ng-class="{'support-email__form--error': $ctrl.errorForm['server']}" tabindex="4")
+        .support-email__form-item-two.support-email__form-check
+          span(ng-bind="'SUPPORT.ADMIN_COUNT.TLS' | translate")
+          input(ng-model="$ctrl.form.tls" type="checkbox" tabindex="5")
+        .support-email__form-item-two.support-email__form-check
+          span(ng-bind="'SUPPORT.ADMIN_COUNT.SSL' | translate")
+          input(ng-model="$ctrl.form.ssl" type="checkbox" tabindex="6")
+        .support-email__form-item-one
+          span(ng-bind="'SUPPORT.ADMIN_COUNT.INFO_START_SESSION' | translate")
+        .support-email__form-item-two
+          span(ng-bind="'SUPPORT.ADMIN_COUNT.USER' | translate")
+          input(ng-model="$ctrl.form.user" ng-class="{'support-email__form--error': $ctrl.errorForm['user']}" tabindex="7")
+        .support-email__form-item-two
+          span(ng-bind="'SUPPORT.ADMIN_COUNT.PASSWORD' | translate")
+          input(ng-model="$ctrl.form.password" type="password" ng-class="{'support-email__form--error': $ctrl.errorForm['password']}" tabindex="8")
+        .support-email__form-item-two
+          span.support-email__span-button(ng-bind="'SUPPORT.ADMIN_COUNT.CONFIG_COUNT' | translate")
+          .support-email__button.sy__button--blue(ng-click="$ctrl.actionTestConfigEmail()" ng-bind="'SUPPORT.ADMIN_COUNT.TEST_CONFIG' | translate" tabindex="9")
+
+    .support-email__bottons
+      .support-email__action.sy__button--blue.sy__button--capitalize(ng-click="$ctrl.actionAddEmail()" tabindex="10")
+        i.mdi.mdi-file-outline
+        span(ng-bind="'SUPPORT.ADMIN_COUNT.NEW' | translate")
+      .support-email__action.sy__button--blue.sy__button--capitalize(ng-click="$ctrl.actionSaveEmail()" tabindex="11")
+        i.mdi.mdi-content-save
+        span(ng-bind="'SUPPORT.ADMIN_COUNT.SAVE' | translate")
+      .support-email__action.sy__button--blue.sy__button--capitalize(ng-click="$ctrl.actionDeleteEmail()" tabindex="12")
+        i.mdi.mdi-delete
+        span(ng-bind="'SUPPORT.ADMIN_COUNT.DELETE' | translate")

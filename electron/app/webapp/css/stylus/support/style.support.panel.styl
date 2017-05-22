@@ -1,0 +1,59 @@
+.support-panel
+  width: 150px;
+  margin-top: -15px;
+  font-size: 13px !important;
+
+  // Titulo del modulo
+  &__title-modul
+    color: #1d5ba6;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 7px;
+    padding-bottom: 2px;
+    border-bottom: 1px solid #1d5ba6;
+    width: 20px;
+    overflow: visible;
+    white-space: nowrap;
+
+  &__input
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+  &__search
+    display: flex;
+    flex-direction: column;
+    margin: 10px 0;
+
+  &__action
+    display: flex;
+    flex-direction: column;
+    margin-left: 5px;
+    a
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      font-size: 13px;
+      color: #75818c;
+      &:hover
+        color: #0079c0;
+    i
+      margin-right: 6px;
+      font-size: 20px;
+
+  &__divider
+    border-top: 1px solid #e2e2e2;
+    margin-top: 10px;
+
+  &__title
+    font-weight: bold;
+    color: #1d5ba6;
+
+  &__content
+    margin-top: 10px;
+
+  &__text
+    font-weight: bold;
+    &--error
+      color: #fb5353;
+      font-size: 14px;

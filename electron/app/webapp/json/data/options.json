@@ -1,0 +1,104 @@
+{
+  "VERSION": "2.0.6",
+  "APP_ID": "ach.soi.electron.co.swat-it",
+
+  "NOTIFICATIONS": {
+    "LOGO": "img/system/logoApp.png",
+    "TIME_ACTIVE": 5000
+  },
+
+  "CSV": {
+    "NO_HEADER": true,
+    "TRIM": true,
+    "DELIMITER": ";"
+  },
+
+  "JAR": {
+    "TIMEOUT_EXEC": 93000,
+    "BUFFER_EXEC": 92160000000000000000000,
+    "COMMAND": "java -Dfile.encoding=UTF-8 -jar",
+    "FILES": {
+      "CONVERT": {
+        "NAME": "soi-empresarial-converters-1.0",
+        "METHOD": {
+          "CONVERT_TO_2388": "convertirArchivoA2388",
+          "VALIDATE_FILE": "validarArchivoPila"
+        }
+      },
+      "SETTLEMENT": {
+        "NAME": "soi.empresarial.liquidacion-1.0.1",
+        "METHOD": {
+
+        }
+      },
+      "SWAT": {
+        "NAME": "pila-business",
+        "METHOD": {
+          "LOGIN": "login",
+          "CONTRIBUTORS_INFORMATION": "getContributorsInformation",
+          "FILES_SETTLEMENT": "getFilteredPayrolls",
+          "GET_NOTIFICATIONS": "getNotifications",
+          "VALIDATE_TOKEN": "validateToken",
+          "INFO_HEAD_SETTLEMENT": "getPayrollHeader",
+          "LIST_CONTRIBUTORS": "getPayrollContributors"
+        }
+      }
+    }
+  },
+
+  "FILES": {
+    "LOGS": "logs.log",
+    "NOTIFICATIONS": "notifications.json",
+    "FORMAT_HISTORY": "formatHistory.json",
+    "EMAILS_CONTRIBUTORS": "emailsContributors.json",
+    "EMAILS_SYSTEM": "emailsSystem.json",
+    "PROGRESS_EMAILS":"progressEmails.json",
+    "CONFIG_SOI": {
+      "VALIDATION_DATA_SOURCE": "validacionArchivoDataSourceDTO.json"
+    },
+    "TEMPLATES": {
+      "SERVER": "templatesServer.json"
+    }
+  },
+
+  "FOLDERS": {
+    "ROOT": ".ACH-app",
+    "OPTIONS": "options",
+    "TEMPLATES": {
+      "MAIN": "files",
+      "CONVERT": "convert",
+      "SETTLEMENT": "settlement",
+      "TEMP": "temp"
+    },
+    "JAR": "jar",
+    "SUPPORTS": "soportes_generados",
+    "RESOURCES": "resources",
+    "LOGS": "logs"
+  },
+
+  "TABLES": {
+    "ROW_LIMIT_BY_PAGE": 200,
+    "ROW_LOAD_BY_PAGE": 50,
+    "TIMER": {
+      "HIDE_SUB_MENU": 0.5,
+      "WAIT": 100
+    }
+  },
+
+  "SERVER_SPRING": {
+    "PORT": "8080",
+    "SERVER": "http://localhost",
+    "SERVICES": {
+      "SUPPORTS": "generarsoportes"
+    }
+  },
+
+  "LOGS": {
+    "SIZE": 1000000,
+    "NAME": "electron.log"
+  },
+
+  "EMAILS": {
+    "NUMBER_BLOCK": 5
+  }
+}

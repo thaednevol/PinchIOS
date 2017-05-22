@@ -1,0 +1,35 @@
+.dashboard-notification
+  padding: 15px;
+
+  &__head
+    border-bottom: 1px solid #b5bdd2;
+    justify-content: flex-start !important;
+    i
+     font-size: 24px;
+     margin-right: 10px;
+
+  &__content
+   padding: 10px
+
+  // Enlace para abir la url web de la notificación
+  &__link
+    margin-left: 10px;
+    color: #2159a4;
+    cursor: pointer;
+    text-decoration: underline;
+
+  &__item
+    color: #555;
+    display: flex;
+    align-items: center;
+    background: #fff6f6;
+    padding: 3px 5px;
+    margin-bottom: 5px;
+    min-height: 30px; 
+    i
+      font-size: 18px;
+      margin-right: 5px;
+    &--error
+      color: #f45b5e !important;
+    &--warn
+      color: #c09853 !important;

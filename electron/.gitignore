@@ -1,0 +1,15 @@
+node_modules
+*.DS_Store
+dist/
+app/webapp/js/lib
+app/webapp/js/main.js
+public/js
+public/json
+public/css
+public/js
+public/views
+test/
+
+npm-debug\.log
+
+*.log

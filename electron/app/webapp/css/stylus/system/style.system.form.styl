@@ -1,0 +1,41 @@
+.sy-form
+
+  &__error
+    margin-top: 5px;
+    border-radius: 2px;
+    color: #FF1A1A;
+    background: #f2dede;
+    padding: 3px 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 11px;
+    i
+      margin-right: 5px;
+      font-size: 16px;
+
+  &__checkbox
+    display: flex;
+    align-items: center;
+
+  &__inputs
+    select
+      font-family: 'OpenSans', sans-serif;
+    input
+    select
+      height: 33px;
+      font-size: 12px;
+      color: #555;
+      padding: 8px 12px;
+      background-color: white;
+      border-radius: 2px;
+      border: 1px solid #B0AFAF;
+      width: 100%;
+      box-sizing: border-box;
+      &:focus
+        border-color: #66afe9 !important;
+        box-shadow: inset 0 1px 1px rgba(0,0,0,0.075), 0 0 8px rgba(102,175,233,0.6);
+
+    // Si se agregan campos vacios o de un formato que no es adecuado
+    &--error
+      border-color: red !important;

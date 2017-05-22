@@ -1,0 +1,16 @@
+//- La vista realiza el llamado al formulario de carga y la vista de errrores
+.convert
+  .sy__title-content
+    span(ng-bind="'LOAD.TITLE' | translate")
+
+  .convert__container
+    loading(show-loading="$ctrl.showLoading")
+      
+    include convert.load.pug
+    .convert__result(ng-show="$ctrl.showValidate")
+      .convert__result-title
+        span RESULTADO
+      div
+        span Errores:
+        span.convert__result--error(ng-bind="$ctrl.dataValidate.length")
+    error-convert(ng-show="$ctrl.showValidate" data="$ctrl.dataValidate" file="$ctrl.file")

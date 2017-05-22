@@ -1,0 +1,59 @@
+.list-tables
+
+  .sy__title-content
+    span(ng-bind="'LOAD.TITLE' | translate")
+
+  .list-tables__container
+    //- Lista de tablas del archivo
+    .list-tables__scroll
+        //- Registro tipo 1
+        .sy-table__container.sy-table__container--padding(ng-if="$ctrl.data.regTp01.length > 0")
+          table-edit(data="[$ctrl.data.regTp01]" labels="$ctrl.data.labelsTp01" id-table="'regTp01'")
+        //- Registro tipo 2
+        .sy-table__container.sy-table__container--padding
+          table-edit(data="$ctrl.data.regsTp02" labels="$ctrl.data.labelsTp02" id-table="'regsTp02'" active-filter="true")
+        //- Registro tipo 3
+        .sy-table__container.sy-table__container--padding(ng-if="$ctrl.data.regsTp03.length > 0")
+          table-edit(data="$ctrl.data.regsTp03" labels="$ctrl.data.labelsTp03" id-table="'regsTp03'")
+        //- Registro tipo 4
+        .sy-table__container.sy-table__container--padding(ng-if="$ctrl.data.regsTp04.length > 0")
+          table-edit(data="$ctrl.data.regsTp04" labels="$ctrl.data.labelsTp04" id-table="'regsTp04'" )
+        //- Registro tipo 5
+        .sy-table__container.sy-table__container--padding(ng-if="$ctrl.data.regsTp05.length > 0")
+          table-edit(data="$ctrl.data.regsTp05" labels="$ctrl.data.labelsTp05" id-table="'regsTp05'" )
+        //- Registro tipo 6
+        .sy-table__container.sy-table__container--padding(ng-if="$ctrl.data.regsTp06.length > 0")
+          table-edit(data="$ctrl.data.regsTp06" labels="$ctrl.data.labelsTp06" id-table="'regsTp06'" )
+        //- Registro tipo 7
+        .sy-table__container.sy-table__container--padding(ng-if="$ctrl.data.regsTp07.length > 0")
+          table-edit(data="$ctrl.data.regsTp07" labels="$ctrl.data.labelsTp07" id-table="'regsTp07'" )
+        //- Registro tipo 8
+        .sy-table__container.sy-table__container--padding(ng-if="$ctrl.data.regTp08.length > 0")
+          table-edit(data="[$ctrl.data.regTp08]" labels="$ctrl.data.labelsTp08" id-table="'regTp08'" )
+        //- Registro tipo 9
+        .sy-table__container.sy-table__container--padding(ng-if="$ctrl.data.regTp09.length > 0")
+          table-edit(data="[$ctrl.data.regTp09]" labels="$ctrl.data.labelsTp09" id-table="'regTp09'" )
+        //- Registro tipo 10
+        .sy-table__container.sy-table__container--padding(ng-if="$ctrl.data.regTp10.length > 0")
+          table-edit(data="[$ctrl.data.regTp10]" labels="$ctrl.data.labelsTp10" id-table="'regTp10'" )
+        //- Registro tipo 11
+        .sy-table__container.sy-table__container--padding(ng-if="$ctrl.data.regTp11.length > 0")
+          table-edit(data="[$ctrl.data.regTp11]" labels="$ctrl.data.labelsTp11" id-table="'regTp11'" )
+        //- Registro tipo 12
+        .sy-table__container.sy-table__container--padding(ng-if="$ctrl.data.regTp12.length > 0")
+          table-edit(data="[$ctrl.data.regTp12]" labels="$ctrl.data.labelsTp12" id-table="'regTp12'" )
+
+    //- Acciones de la lista
+    .list-tables__actions.sy__button-container
+
+      //- El boton guarda el archivo en Formato JSON para su edición
+      div
+        .sy__button--blue(ng-click="$ctrl.actionSaveFile()")
+          i.mdi.mdi-content-save
+          span(ng-bind="'TABLE.ACTIONS.SAVE' | translate")
+
+      //- El boton genera el archivo en TXT con el nuevo formato
+      div
+        .sy__button--blue.sy__button--capitalize(ng-click="$ctrl.actionGenerate()")
+          i.mdi.mdi-content-duplicate
+          span(ng-bind="'TABLE.ACTIONS.GENERATE' | translate")

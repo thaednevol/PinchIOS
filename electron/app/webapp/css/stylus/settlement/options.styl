@@ -1,0 +1,59 @@
+.sett-options
+  width: 150px;
+  margin-top: -15px;
+
+  // Titulo del modulo
+  &__title
+    color: #1d5ba6;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 7px;
+    padding-bottom: 2px;
+    border-bottom: 1px solid #1d5ba6;
+    width: 20px;
+    overflow: visible;
+    white-space: nowrap;
+
+  // Contenedor donde se ve el elemento cargado
+  &__container-file
+    display: flex;
+    flex-direction: column;
+    margin: 10px 0;
+
+  // Recuadro donde se ve el archivo cargado
+  &__border-dashed
+    background: #f0f2f6;
+    display: block;
+    font-size: 11px;
+    margin: 0 0 8px;
+    padding: 3px 4px;
+    border-radius: 3px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    border: 1px solid #B0AFAF;
+    align-items: center;
+    display: flex;
+    min-height: 17px;
+    width: 100%;
+    box-sizing: border-box;
+    cursor: pointer;
+    justify-content: center;
+    i
+      margin-right: 10px;
+
+  // Menu de las opciones
+  &__options
+    display: flex;
+    flex-direction: column;
+    a
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      font-size: 13px;
+      color: #75818c;
+      &:hover
+        color: #0079c0;
+    i
+      margin-right: 6px;
+      font-size: 20px;

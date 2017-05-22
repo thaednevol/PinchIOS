@@ -1,0 +1,20 @@
+.error__table
+  .error__table-head
+    span Total errores del cotizante:
+    span(ng-bind="($ctrl.data.data | filter:$ctrl.objectFilter:true).length || 0")
+  .error__table-container
+    table
+      thead
+        tr
+          th(ng-bind="'Línea'")
+          th(ng-bind="'Error'")
+          th(ng-bind="'Esperado'")
+          th(ng-bind="'Encontrado'")
+      tbody
+        tr(ng-repeat="register in $ctrl.data.data | filter:$ctrl.objectFilter:true track by $index")
+          td(ng-bind="register.linea")
+          td.error__table--error
+            i.mdi.mdi-alert
+            span(ng-bind="register.error")
+          td(ng-bind="register.sugerencias ? register.sugerencias.join(';') : '-'")
+          td(ng-bind="$ctrl.data.registers[register.linea - 2]['regs' + (register.campo - 1)]")

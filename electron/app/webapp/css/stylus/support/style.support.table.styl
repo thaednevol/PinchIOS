@@ -1,0 +1,59 @@
+// Diseño para el modulo de contributors
+.support
+
+  .table__scroll-error
+  .table__fixed-limit
+    display: none;
+
+  .table__right
+    width: 100% !important;
+    .table__scroll
+      margin-right: 0px !important;
+
+  &-contributor
+    max-height: 70%;
+    &__table-edit
+      .table__container
+        margin-bottom: -15px;
+      .table__scroll
+        max-height: 250px !important;
+      td
+        i
+          color: red !important;
+          margin-right: 4px;
+    &__container
+      margin-right: -10px;
+      padding-right: 10px;
+      height: 100%;
+    &__error
+      position: relative;
+      box-sizing: border-box;
+      padding-bottom: 10px;
+      min-height: 250px;
+    &__menu
+      font-size: 24px;
+      color: #75818c;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      &-item
+        padding: 0px 5px;
+        border-left: 1px solid #b5bdd2;
+        span
+          font-size: 11px !important;
+          font-style: normal;
+          text-transform: none;
+          position: absolute;
+          background: white;
+          border: 1px solid #b5bdd2;
+          padding: 5px 18px;
+          border-radius: 4px;
+          top: -43px;
+          left: -47px;
+          text-align: center;
+          display: none;
+        i
+          cursor: pointer;
+          margin-right: 2px;
+          position: relative;

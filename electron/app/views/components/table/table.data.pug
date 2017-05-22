@@ -1,0 +1,19 @@
+.table__scroll(id="scroll-{{$ctrl.idTable}}")
+  .table__fixed-container
+    //- Tabla con cabeceras fijas
+    table.table__fixed(border="1" id="fix-{{$ctrl.idTable}}")
+      //- Cabecera de la tabla
+      thead
+        tr
+          th(ng-repeat="textHead in $ctrl.labels track by $index" ng-bind="::textHead")
+
+  //- Tabla con datos
+  table.table__data(border="1" id="{{$ctrl.idTable}}")
+    //- Cabecera de la tabla
+    thead
+      tr
+        th(ng-repeat="textHead in $ctrl.labels track by $index" ng-bind="::textHead") )")
+    //- Contenido de la tabla
+    tbody
+      tr(ng-repeat="register in  $ctrl.data track by $index")
+        td(ng-repeat="textRegister in register track by $index" ng-bind="textRegister || ' '" ng-click="$ctrl.actionSelectCell(this, $event)" ng-class="{'table__data--block-cell':$ctrl.cellNoEdit.indexOf($index) !== -1 && $ctrl.cellNoEdit.length > 0}")

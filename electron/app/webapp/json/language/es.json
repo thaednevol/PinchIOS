@@ -1,0 +1,254 @@
+{
+  "LOGIN": {
+    "TEXT": {
+      "HEAD": "Todos Los campos son obligatorios para poder ingresar"
+    },
+    "FORM": {
+      "COMPANY": "Empresa",
+      "USER": "Usuario",
+      "PASSWORD": "Contraseña",
+      "DO_NOT_SING_OUT": "No cerrar sesión",
+      "LOGIN": "INGRESAR",
+      "SELECTS": {
+        "TYPE_DOC": "Tipo Documento",
+        "CC": "Cédula de Ciudadanía",
+        "CD": "Carné Diplomático",
+        "CE": "Cédula de Extranjería",
+        "PASSPORT": "Pasaporte",
+        "RC": "Registro Civil",
+        "TI": "Tarjeta de Identidad",
+        "NIT": "Nit"
+      }
+    }
+  },
+
+
+  "MENU": {
+    "USER": {
+      "TEXT": {
+        "HELLO": "Hola,"
+      },
+      "SUB_MENU": {
+        "HELP": "Ayuda",
+        "CONFIG": "Configuración",
+        "LOGOUT": "Cerrar sesión"
+      }
+    },
+    "BUTTON": {
+      "HOME": "Inicio",
+      "DASHBOARD": "Dashboard",
+      "CONFIGUTATION": "Configuración",
+      "UPDATE": "Actualización",
+      "CONVERT": "Convertir Planilla",
+      "SUPPORTS": "Soporte de Pago",
+      "SETTLEMENT": "Liquidar Planilla"
+    }
+  },
+
+  "DASHBOARD": {
+    "TITLE": "Dashboard",
+    "ACCOUNT": {
+      "LABEL": {
+        "CONTRIBUTOR": "Aportante:",
+        "TYPE_COMPANY": "Tipo Empresa:",
+        "CLASS_COMPANY": "Clase Empresa:"
+      }
+    },
+    "NOTIFICATION": {
+      "TITLE": "Notificaciones",
+      "NO_NOTIFICATIONS": "No hay notificaciones.",
+      "ACTIONS": {
+        "OPEN_LINK": "Ver más"
+      }
+    },
+    "TABLE": {
+      "TITLES": {
+        "SETTLEMENT": "Últimas Planillas Pagadas",
+        "LOCAL": "Planillas en Elaboración"
+      },
+      "LABELS": {
+        "SEARCH": "Buscar",
+        "DATE": "Fecha",
+        "FILE": "Archivo",
+        "DATE_PAYMENT": "Fecha de Pago",
+        "TYPE": "Tipo Planilla",
+        "NUMBER": "No Planilla",
+        "PERIOD_PAYMENT": "Periodo de Pago",
+        "AMOUNT_PAID": "Valor Pagado"
+      }
+    }
+  },
+
+
+  "LOAD": {
+    "TITLE": "Convertir planilla",
+    "FORM": {
+      "TITLE": {
+        "MAIN": "Convertidor de Archivos",
+        "LOAD_FILE": "Cargar Archivo",
+        "TYPE_FILE": "Tipo de Archivo"
+      },
+      "SEARCH": "Explorar",
+      "REPLACE": "Cambiar",
+      "CONVERT": "Cargar",
+      "SELECT": {
+        "PENSIONERS": "Pensionados",
+        "ACTIVES": "Activos"
+      }
+    },
+    "HISTORY": {
+      "TITLE": "Historial de archivos",
+      "TABLE": {
+        "NAME": "Archivo",
+        "EDIT": "Edición"
+      }
+    }
+  },
+
+
+  "SETTLEMENT": {
+    "TITLE": "Liquidar planilla",
+    "TABS": {
+      "CONTRIBUTORS": "Planilla",
+      "TOTALS": "Totales",
+      "ERRORS": "Errores"
+    },
+    "LOAD": {
+      "TITLE": "Archivo Plano",
+      "MESSAGES": {
+        "FORMAT_INVALID": "Formato invalido",
+        "NO_FILE": "No hay archivo"
+      },
+      "ACTIONS": {
+        "NEW": "Nuevo",
+        "OPEN": "Abrir",
+        "SAVE": "Guardar",
+        "GENERATE": "Generar planilla"
+      }
+    },
+    "TABLES": {
+      "REGTP01": "Encabezado de la planilla",
+      "REGSTP02": "Listado de cotizantes",
+      "PENSION": "Aportes del período para Pensiones",
+      "FSP": "Aportes del período al Fondo de Solidaridad Pensional",
+      "SALUD": "Aportes del período para Salud",
+      "RIESGO": "Aportes del período para Riesgos Laborales",
+      "PARAFISCAL": "Aportes del período para Parafiscales",
+      "GRAN_TOTAL": "Total a pagar durante el período",
+      "ERRORS": "Errores del Cotizante"
+    },
+    "INFO": {
+      "PERIOD_PENSION": "Periodo otros subsistemas:",
+      "PERIOD_HEALTH": "Periodo Liquidación Salud:",
+      "TOTAL_CONTRIBUTOR": "Total Cotizantes:",
+      "TOTAL_PAY": "Total a Pagar:",
+      "TOTAL_ERROR": "Total Errores:",
+      "UNDEFINED": "No definido",
+      "TOTAL_ERROR_CONTRIBUTOR": "Cotizantes con errores:"
+    }
+  },
+
+
+  "VALIDATE": {
+    "ACTIONS": {
+      "EDIT": "Ir a edición"
+    }
+  },
+
+
+  "TABLE": {
+    "ACTIONS": {
+      "SAVE": "Guardar",
+      "GENERATE": "Generar archivo 2388/5858"
+    }
+  },
+
+
+  "MESSAGES": {
+    "LOADING": "Cargando",
+    "ERROR_JAR": "Ha ocurrido un error inesperado, póngase en contacto con el administrador del sistema.",
+    "NO_INTERNET": "No se detecto una conexión a Internet estable",
+    "VALIDATE_ERROR": {
+      "TITLE": "Archivo de entrada con errores",
+      "MESSAGE": "Se ha detectado errores de formato en su archivo de entrada, sin embargo, el sistema puede intentar convertir a formato 2388/5858 para que realice las correcciones en este formato.\n\nSi desea continuar con la conversión y corregirlos en el formato de destino, presione el botón Ir a edición."
+    },
+    "ERROR_NOTIFICATION_SERVER": "No es posible obtener las notificaciones del servidor.",
+    "FORMAT_INVALID": "El archivo no tiene un formato adecuado.",
+    "FORMAT_INVALID_CSV": "El archivo no tiene un formato adecuado, la extensión debe ser .CSV.",
+    "SAVED_FILE": "Archivo guardado",
+    "SAVED_COUNT_MAIL": "Cuenta guardada",
+    "EDIT_COUNT_MAIL": "Cuenta editada",
+    "DELETE_COUNT_MAIL": "Cuenta eliminada",
+    "DELETE_COUNT_MAIL_LACK_ID": "Seleccione una cuenta a eliminar",
+    "TITLES": {
+      "ERROR": "Error",
+      "INFO": "Información"
+    },
+    "EMAIL_USER_PASSWORD_BAD": "El nombre de usuario y contraseña no son aceptados.",
+    "EMAIL_SERVER_BAD": "El nombre y puertos asignados al servidor no son correctos.",
+    "EMAIL_SERVER_NO_CONNECT": "No se puede establecer conexión con el servidor de email.",
+    "EMAIL_GOOD": "La configuración del correo electrónico es correcta.",
+    "EMAIL_NOT_VALIDATE": "Debé probar la configuración antes de guardar, solo se almacena sí la configuración es correcta.",
+    "EMAIL_NO_CONTRIBUTORS": "No existen correos electronicos vinculados a los empleados para el envio de email, agregue los correos para iniciar el proceso.",
+    "EMAIL_CONFIG_BAD": "Ocurrió un error en la configuración para el envío de email, intente seleccionando otra cuenta de email, si el problema continua contacte al administrador.",
+    "DIALOGS": {
+      "ACTION_MESSAGE_BOX": {
+        "YES": "Confirmar",
+        "NO": "Cancelar"
+      }
+    }
+  },
+
+  "SUPPORT": {
+    "TITLE": "Soporte de pago",
+    "CONTINUE_EMAIL_SENT":"Existe un punto de guardado, desea continuar el envio desde este punto.",
+    "PANEL": {
+      "TEMPLATE_NUMBER": "Número de Planilla",
+      "PAYMENT_DATE": "Fecha de Pago:",
+      "TEMPLATE_TYPE": "Tipo de Planilla:",
+      "EMPLOYEES": "Empleados:",
+      "BRANCH_OFFICE": "Sucursal:",
+      "PERIOD_CLEARANCE_PENSIONS": "Periodo Liquidación Pensiones:",
+      "PERIOD_CLEARANCE_HEALTH": "Periodo Liquidación Salud:",
+      "UNDEFINED": "No definido"
+    },
+    "TABLE": {
+      "DATA_EMPLOYED": "Datos Empleados",
+      "IDENTIFICATION_TYPE": "Tipo de Identificación",
+      "IDENTIFICATION_NUMBER": "Número de Identificación",
+      "FULL_NAME_EMPLOYEE": "Nombre Completo Empleado",
+      "MAIL": "Correo Electrónico",
+      "MAIL_NULL": "Ingrese correo electrónico"
+    },
+    "ACCOUNT": {
+      "ACCOUNT": "Cuenta Origen:",
+      "CONFIG_ACCOUNT": "Configurar Email",
+      "SEND_SUPPORTS": "Enviar Soportes"
+    },
+    "LOAD": {
+      "START_DATE": "Fecha Inicio:",
+      "SENDED_SUPPORTS": "Soportes Enviados:",
+      "TIME_ELAPSED": "Tiempo Transcurrido:",
+      "COMPLETED": "Completado",
+      "CANCEL_SHIPPING": "Cancelar Envío"
+    },
+    "ADMIN_COUNT": {
+      "TITLE": "Administración Cuenta Origen:",
+      "NAME_COUNT": "Nombre Cuenta:",
+      "ADRESS_EMAIL": "Dirección de correo electrónico:",
+      "INFO_SERVER": "Información del servidor:",
+      "SERVER": "Servidor de correo:",
+      "PORT": "Puerto:",
+      "TLS": "TLS:",
+      "SSL": "SSL:",
+      "INFO_START_SESSION": "Información de inicio de sesión:",
+      "USER": "Nombre de usuario:",
+      "PASSWORD": "Contraseña:",
+      "CONFIG_COUNT": "Configuración de la cuenta:",
+      "TEST_CONFIG": "Probar Configuración",
+      "NEW": "Nuevo",
+      "SAVE": "Guardar",
+      "DELETE": "Eliminar"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+.support-load
+  
+  .support-load__container
+    //- Información del enevio de email, tiempo y cantidad de emails que lleva enviados
+    .support-load__row
+      .support-load__title
+        span(ng-bind="'SUPPORT.LOAD.START_DATE' | translate")
+        span(ng-bind="$ctrl.startDate")
+      .support-load__title
+        span(ng-bind="'SUPPORT.LOAD.SENDED_SUPPORTS' | translate")
+        div
+          span(ng-bind="$ctrl.progress.countEmailsSend")
+          span(ng-bind="' de '")
+          span(ng-bind="$ctrl.progress.totalEmails")
+      .support-load__title
+        span(ng-bind="'SUPPORT.LOAD.TIME_ELAPSED' | translate")
+        span(ng-bind="$ctrl.timeElapsed")
+          
+    //- Barra que indica el progreso del envio de emails en porcentaje
+    .support-load__row.support-load__row--progress
+      .support-load__title
+        span(ng-bind="$ctrl.progress.percentage + ' ' + ('SUPPORT.LOAD.COMPLETED' | translate)")
+      .support-load__progress
+        .support-load__progress-bar(style="width: {{$ctrl.progress.percentage}};")
+
+    //- Boton de acción para cancelar el proceso de envio de emails
+    .support-load__row.support-load__row--actions
+      .sy__button--blue(ng-click="$ctrl.actionCancel()" ng-bind="'SUPPORT.LOAD.CANCEL_SHIPPING' | translate")

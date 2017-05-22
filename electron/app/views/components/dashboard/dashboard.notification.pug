@@ -1,0 +1,19 @@
+.dashboard-notification
+
+  //- Cabecera de las notificaciones
+  .sy-table__container
+    .sy__title-table.dashboard-notification__head
+      i.mdi.mdi-bell-outline
+      span(ng-bind="'DASHBOARD.NOTIFICATION.TITLE' | translate")
+
+    //- Contenedor de las notificaciones
+    .dashboard-notification__content
+      //- Si no existen notificaciones se indican con un mensaje.
+      .dashboard-notification__item(ng-if="$ctrl.listNotifications.length === 0")
+        span(ng-bind="'DASHBOARD.NOTIFICATION.NO_NOTIFICATIONS' | translate ")
+      //- Los items son los elementos de las notificaciones, estos cuentan con dos
+      //- tipos de CSS, un modificador --error y --warn
+      .dashboard-notification__item(ng-repeat="notification in $ctrl.listNotifications | limitTo:10 track by $index" ng-class="{'dashboard-notification__item--warn': notification.severity === 'WARNING', 'dashboard-notification__item--error': notification.severity === 'ERROR'}")
+        i.mdi(ng-class="{'mdi-alert': notification.severity === 'WARNING', 'mdi-information-variant': notification.severity === 'INFO', 'mdi-alert-circle': notification.severity === 'ERROR'}")
+        span(ng-bind="notification.notificationMessage")
+        .dashboard-notification__link(ng-bind="'DASHBOARD.NOTIFICATION.ACTIONS.OPEN_LINK' | translate" ng-if="notification.url !== ''" ng-click="$ctrl.actionOpenLink(notification.url)")

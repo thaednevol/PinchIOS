@@ -1,0 +1,20 @@
+.validate
+  .validate__table
+    .validate__table-scroll
+      table
+        //- Cabecera de la tabla
+        thead
+          tr
+            th Línea
+            th Error
+            th Registro
+        //- Contenido de la tabla
+        tbody
+          tr(ng-repeat="register in $ctrl.data track by $index")
+            td(ng-bind="register.linea")
+            td(ng-bind="register.error")
+            td(ng-bind="register.campo")
+
+    .validate__actions
+      div
+        .sy__button--blue(ng-bind="'VALIDATE.ACTIONS.EDIT' | translate" ng-click="$ctrl.actionConvertFile()")

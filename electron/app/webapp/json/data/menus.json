@@ -1,0 +1,22 @@
+{
+  "dashboard": {
+    "title": "MENU.BUTTON.DASHBOARD",
+    "uiSref": "dashboard",
+    "logo":"mdi-dots-horizontal"
+  },
+  "Convertidor Archivos": {
+    "title": "MENU.BUTTON.CONVERT",
+    "uiSref": "convert",
+    "logo":"mdi-file-export"
+  },
+  "Liquidacion": {
+    "title": "MENU.BUTTON.SETTLEMENT",
+    "uiSref": "settlement({pathFile:null})",
+    "logo":"mdi-table-large"
+  },
+  "Soportes de Pago": {
+    "title": "MENU.BUTTON.SUPPORTS",
+    "uiSref": "support",
+    "logo":"mdi-file-pdf-box"
+  }
+}

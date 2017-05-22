@@ -1,0 +1,39 @@
+.sett-contributor
+
+  //- Lista de tablas del archivo
+  .sett-contributor__container
+
+    //- Registro tipo 1
+    .sy-table__container
+      .sy__title-table(ng-bind="'SETTLEMENT.TABLES.REGTP01' | translate")
+      table-edit(data="[$ctrl.file.data.regTp01]" labels="$ctrl.file.data.labelsTp01" id-table="'regTp01'" cell-no-edit="$ctrl.cellNoEditType1")
+
+    //- Registro tipo 2
+    .sy-table__container.sett-contributor__table-edit
+      .sy__title-table
+        span(ng-bind="'SETTLEMENT.TABLES.REGSTP02' | translate")
+        //- Cinta de opciones de la tabla de registro tipo 2
+        .sett-contributor__menu
+          .sett-contributor__menu-item
+            i.mdi.mdi-file-document
+          .sett-contributor__menu-item
+            i.mdi.mdi-menu-left
+            i.mdi.mdi-menu-right
+          .sett-contributor__menu-item
+            i.mdi.mdi-menu-up
+            i.mdi.mdi-menu-down
+          .sett-contributor__menu-item
+            i.mdi.mdi-table-row-remove(ng-click="$ctrl.actionDeleteRegister()" ng-mouseover="$ctrl.actionShowTooltip($event)" ng-mouseleave="$ctrl.actionHideTooltip($event)")
+              span Eliminar cotizante
+            i.mdi.mdi-table-row-plus-after(ng-click="$ctrl.actionAddRegister()" ng-mouseover="$ctrl.actionShowTooltip($event)" ng-mouseleave="$ctrl.actionHideTooltip($event)")
+              span Agregar cotizante
+          .sett-contributor__menu-item
+            i.mdi.mdi-format-list-bulleted
+
+      //- Tabla de datos del registro tipo 2
+      table-edit(data="$ctrl.file.data.regsTp02" labels="$ctrl.file.data.labelsTp02" id-table="'regsTp02'" active-filter="true" fixed-columns="true" selected-item="$ctrl.selectedItem" cell-no-edit="$ctrl.cellNoEditType2" active-sub-menu="true")
+
+    //- Tabla para mostrar errores de registros
+    .sy-table__container.sett-contributor__error
+      .sy__title-table(ng-bind="'SETTLEMENT.TABLES.ERRORS' | translate")
+      error-contributors(data="$ctrl.listErrorsContributors" object-filter="$ctrl.filterError")

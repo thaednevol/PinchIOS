@@ -1,0 +1,35 @@
+.menu
+  .menu__container.menu__container--top
+    //- Cinta de opciones tipo icono
+    .menu__user(ng-mouseover="$ctrl.showSubMenu = true" ng-mouseleave="$ctrl.showSubMenu = false")
+      //- identificación del usuario
+      .menu__user-container
+        span(ng-bind="'MENU.USER.TEXT.HELLO' | translate")
+        span(ng-bind="$ctrl.user")
+        i.mdi.mdi-account-circle
+        i.mdi.mdi-chevron-down
+      //- Menu emergente para el usuario
+      .menu__user-sub(ng-if="$ctrl.showSubMenu")
+        a
+          span(ng-bind="'MENU.USER.SUB_MENU.HELP' | translate")
+          i.mdi.mdi-help-circle-outline
+        a(ng-if="$ctrl.showConfiguration")
+          span(ng-bind="'MENU.USER.SUB_MENU.CONFIG' | translate")
+          i.mdi.mdi-settings
+        a(ng-click="$ctrl.actionLogout()")
+          span(ng-bind="'MENU.USER.SUB_MENU.LOGOUT' | translate")
+          i.mdi.mdi-power-settings
+
+  .menu__container.menu__container--bottom
+    //- Logo de la aplicación
+    .menu__left
+      .menu__logo
+        img(src="../img/system/logoSoi.png")
+
+    .menu__right
+      //- Cinta de opciones en texto
+      .menu__buttons
+        a(ui-sref="{{item.uiSref}}" ng-repeat="item in $ctrl.menu track by $index" ng-class="{'menu__buttons--active': false}" ui-sref-active="menu__buttons--active" ng-if="item.uiSref")
+          i.mdi(ng-class="item.logo")
+          span(ng-bind="item.title | translate")
+          span(ng-bind="$ctrl.state")

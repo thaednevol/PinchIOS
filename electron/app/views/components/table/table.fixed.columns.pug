@@ -1,0 +1,22 @@
+table.table__fixed-columns--head(border="1" id="fix-column-{{$ctrl.idTable}}")
+  //- Cabecera de la tabla
+  thead
+    tr
+      th(ng-bind="$ctrl.data.registers[0].regs1 ? 'Línea': 'No.'")
+      th Selección
+
+//- Columnas fijas de la tabla
+table.table__fixed-columns--data(border="1" id="fix-column-{{$ctrl.idTable}}")
+  //- Cabecera de la tabla
+  thead
+    tr
+      th(ng-bind="$ctrl.data.registers[0].regs1 ? 'Línea': 'No.'")
+      th Selección
+  //- Contenido de la tabla
+  tbody
+    tr(ng-repeat="register in $ctrl.data.registers | filter:$ctrl.objectFilter | limitTo:$ctrl.limitRegister:$ctrl.startLimit track by $index")
+      td
+        i.fa.fa-times-circle-o(ng-if="$ctrl.data.errors.hasOwnProperty(register.regs1)")
+        span(ng-bind="$ctrl.actionSetLine(register)")
+      td()
+        input(type="checkbox" ng-model="$ctrl.selectedItem[register.regs1 || $ctrl.startLimit + $index]")

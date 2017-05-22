@@ -1,0 +1,15 @@
+/home/lmunoz/personal/repo/source/pila-webservices/src/co/swatit/pilawebservices/factory/NotificationFactory.java
+/home/lmunoz/personal/repo/source/pila-webservices/src/co/swatit/pilawebservices/startup/Initializer.java
+/home/lmunoz/personal/repo/source/pila-webservices/src/co/swatit/pilawebservices/test/GetNotifications.java
+/home/lmunoz/personal/repo/source/pila-webservices/src/co/swatit/pilawebservices/business/PilaBO.java
+/home/lmunoz/personal/repo/source/pila-webservices/src/co/swatit/pilawebservices/test/CheckAuthorizationFromSOI.java
+/home/lmunoz/personal/repo/source/pila-webservices/src/co/swatit/pilawebservices/test/GetContributorsInformation.java
+/home/lmunoz/personal/repo/source/pila-webservices/src/co/swatit/pilawebservices/test/GetPermissionsByIdTest.java
+/home/lmunoz/personal/repo/source/pila-webservices/src/co/swatit/pilawebservices/factory/implementation/JsonFileNotificationLoader.java
+/home/lmunoz/personal/repo/source/pila-webservices/src/co/swatit/pilawebservices/test/GetPayrollHeader.java
+/home/lmunoz/personal/repo/source/pila-webservices/src/co/swatit/pilawebservices/test/GetValidationFileConfig.java
+/home/lmunoz/personal/repo/source/pila-webservices/src/co/swatit/pilawebservices/interfaces/INotificationLoader.java
+/home/lmunoz/personal/repo/source/pila-webservices/src/co/swatit/pilawebservices/services/PilaWS.java
+/home/lmunoz/personal/repo/source/pila-webservices/src/co/swatit/pilawebservices/test/GetFilteredPayrolls.java
+/home/lmunoz/personal/repo/source/pila-webservices/src/co/swatit/pilawebservices/soi/ApplicationConfiguration.java
+/home/lmunoz/personal/repo/source/pila-webservices/src/co/swatit/pilawebservices/test/GetPayrollContributors.java

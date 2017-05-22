@@ -1,0 +1,32 @@
+
+//- Titulo de la pagina HTML
+-var title = "SOI Empresarial"
+-var production = false
+
+//- Bloque para sobreescribir variables de las plantillas declaradas arriba.
+block var
+
+//- Contenido principal de la plantilla
+doctype html
+html(lang='es' ng-app="PILA")
+  head
+    //- Codigo de la cabecera HTML
+    include layouts.head.pug
+    //- Carga de hojas de estilo
+    include layouts.style.pug
+  //- El body debe tener un color de fondo segun la posición, cuando esta en
+  //- login es azul se hace el switch con una variable del rootScope.
+  body(ng-class="{'login__background': userLogin, 'app__background': !userLogin}")
+
+    #app.scroll-all
+      //- Contenedor del menu superior
+      div(ui-view="menus")
+
+      //- Contenedor principal de la aplicación
+      ui-view.main
+
+      //- Pie de pagina de la aplicación información de derechos de autor
+      include layouts.footer.pug
+
+    //- Carga de archivos JS
+    include layouts.script.pug

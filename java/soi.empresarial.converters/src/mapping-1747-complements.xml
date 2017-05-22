@@ -1,0 +1,21 @@
+<beanio xmlns="http://www.beanio.org/2012/03" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.beanio.org/2012/03 http://www.beanio.org/2012/03/mapping.xsd">
+	<stream name="PILA-1747-Complemento" format="csv">
+		<parser>  
+    		<property name="delimiter" value=";" />
+  		</parser>		
+		<record name="Datos" class="com.ach.soi.empresarial.converters.model.beans1747.DatosComplementarios1747">
+      		<field name="tipoDocumento"/>
+      		<field name="nroDocumento"/>
+      		<field name="novedad"/>
+      		<field name="codigoArl"/>
+      		<field name="claseRiesgo"/>
+      		<field name="indTarifaEspecialPens"/>
+      		<field name="fechaDesde"/>
+      		<field name="fechaHasta"/>
+      		<field name="horasLaboradas"/>
+      		<field name="ibcNovedad"/>      		
+    	</record>  
+
+	</stream>
+</beanio>

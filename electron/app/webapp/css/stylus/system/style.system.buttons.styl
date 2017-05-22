@@ -1,0 +1,57 @@
+// Estilo para botones de la aplicación
+
+// mixins Para botones.
+button()
+  text-align: center;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.5);
+  font-weight: 700;
+  padding: 8px 12px;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 2px;
+  box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  i
+    margin-right: 5px;
+    font-size: 18px;
+
+.sy
+
+  &__button-container
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    & > div
+      margin: 0px 10px;
+      
+  &__button
+    button()
+
+    // Texto para los botones.
+    &--capitalize
+      text-transform: capitalize;
+
+    // Colores para los botones, incluyendo el desactivado.
+    &--green
+      button()
+      background-color: #1ABC67;
+      border: 1px solid #16a158;
+      color: white;
+    &--blue
+      button()
+      background-color: #0079C0;
+      border: 1px solid #0066a1;
+      color: white;
+    &--disabled
+      cursor: not-allowed !important;
+      background: #e0e0e0 !important;
+      color: #bdbdbd !important;
+      border: 1px solid #B0AFAF;
+      text-shadow: none !important;
+      box-shadow: none !important;

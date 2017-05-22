@@ -1,0 +1,7 @@
+.sett__tabs(ng-if="$ctrl.file.data")
+  .sett__tabs-button(ng-class="{'sett__tabs-button--active': $ctrl.currentTab === 'contributors'}")
+    span(ng-bind="'SETTLEMENT.TABS.CONTRIBUTORS' | translate" ng-click="$ctrl.actionChangeTab('contributors')")
+  .sett__tabs-button(ng-if="$ctrl.file.totals" ng-class="{'sett__tabs-button--active': $ctrl.currentTab === 'totals'}")
+    span(ng-bind="'SETTLEMENT.TABS.TOTALS' | translate" ng-click="$ctrl.actionChangeTab('totals')")
+  .sett__tabs-button(ng-if="$ctrl.listErrorsContributors" ng-class="{'sett__tabs-button--active': $ctrl.currentTab === 'errors'}")
+    span(ng-bind="'SETTLEMENT.TABS.ERRORS' | translate" ng-click="$ctrl.actionChangeTab('errors')")

@@ -1,0 +1,63 @@
+{
+  "compilerOptions": {
+    "removeComments": true,
+    "outFile": "public/js/main.js",
+    "target": "es5"
+  },
+  "filesGlob": [
+    "**/*.ts",
+    "!node_modules/**"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "app/webapp/ts/dt"
+  ],
+  "compileOnSave": false,
+  "buildOnSave": false,
+  "atom": {
+    "rewriteTsconfig": true
+  },
+  "files": [
+    "app/webapp/ts/app.ts",
+    "app/webapp/ts/app/convert/convert.component.ts",
+    "app/webapp/ts/app/dashboard/dashboard.component.ts",
+    "app/webapp/ts/app/dashboard/dashboard.notification.component.ts",
+    "app/webapp/ts/app/dashboard/dashboard.tables.component.ts",
+    "app/webapp/ts/app/native/native.debug.service.ts",
+    "app/webapp/ts/app/error/error.contributors.component.ts",
+    "app/webapp/ts/app/error/error.convert.component.ts",
+    "app/webapp/ts/app/history/history.service.ts",
+    "app/webapp/ts/app/loading/loading.component.ts",
+    "app/webapp/ts/app/login/login.component.ts",
+    "app/webapp/ts/app/login/login.service.ts",
+    "app/webapp/ts/app/login/login.token.service.ts",
+    "app/webapp/ts/app/menu/menu.component.ts",
+    "app/webapp/ts/app/menu/menu.service.ts",
+    "app/webapp/ts/app/native/native.dialog.service.ts",
+    "app/webapp/ts/app/native/native.file.services.ts",
+    "app/webapp/ts/app/native/native.jar.services.ts",
+    "app/webapp/ts/app/native/native.email.service.ts",
+    "app/webapp/ts/app/native/native.notifications.service.ts",
+    "app/webapp/ts/app/settlement/contributors.component.ts",
+    "app/webapp/ts/app/settlement/errors.component.ts",
+    "app/webapp/ts/app/settlement/info.component.ts",
+    "app/webapp/ts/app/settlement/options.component.ts",
+    "app/webapp/ts/app/settlement/settlement.component.ts",
+    "app/webapp/ts/app/settlement/settlement.service.ts",
+    "app/webapp/ts/app/settlement/totals.component.ts",
+    "app/webapp/ts/app/jar/jar.soi.service.ts",
+    "app/webapp/ts/app/jar/jar.swat.service.ts",
+    "app/webapp/ts/app/support/service/support.main.service.ts",
+    "app/webapp/ts/app/support/support.main.component.ts",
+    "app/webapp/ts/app/support/support.panel.component.ts",
+    "app/webapp/ts/app/support/support.table.component.ts",
+    "app/webapp/ts/app/support/support.load.component.ts",
+    "app/webapp/ts/app/support/support.config.emails.component.ts",
+    "app/webapp/ts/app/table/listTable.component.ts",
+    "app/webapp/ts/app/table/tableEdit.component.ts",
+    "app/webapp/ts/configs/configs.angular.ts",
+    "app/webapp/ts/configs/configs.router.ts",
+    "app/webapp/ts/configs/configs.run.ts"
+  ]
+}

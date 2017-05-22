@@ -1,0 +1,157 @@
+<beanio xmlns="http://www.beanio.org/2012/03" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.beanio.org/2012/03 http://www.beanio.org/2012/03/mapping.xsd">
+	<stream name="PILA-2145" format="fixedlength" resourceBundle="validacion_2145_messages">
+	
+		<record name="Tipo1" minLength="284" maxLength="284" minOccurs="1" maxOccurs="1" class="com.ach.soi.empresarial.converters.model.beans2145.Reg2145Tp01">
+			<field length="2" rid="true" literal="1"  name="tipoRegistro" type="int" position="0" justify="right" padding="0" setter="setTipoRegistro" getter="getTipoRegistro"/>
+			<field length="5" name="secuencia" type="int" position="2" justify="right" padding="0" setter="setSecuencia" getter="getSecuencia"/>
+			<field length="150" name="razonSocialPagador" type="string" position="7" justify="left" padding=" " setter="setRazonSocialPagador" getter="getRazonSocialPagador"/>
+			<field length="2" name="tipoDocumentoPagador" type="string" position="157" justify="left" padding=" " setter="setTipoDocumentoPagador" getter="getTipoDocumentoPagador"/>
+			<field length="16" name="numeroIdentificacionPagador" type="string" position="159" justify="left" padding=" " setter="setNumeroIdentificacionPagador" getter="getNumeroIdentificacionPagador"/>
+			<field length="1" name="digitoVerificacionPagador" type="long" position="175" justify="right" padding="0" setter="setDigitoVerificacionPagador" getter="getDigitoVerificacionPagador"/>
+			<field length="1" name="formaPresentacion" type="string" position="176" justify="left" padding=" " setter="setFormaPresentacion" getter="getFormaPresentacion"/>
+			<field length="10" name="codigoSucursalODependencia" type="string" position="177" justify="left" padding=" " setter="setCodigoSucursalODependencia" getter="getCodigoSucursalODependencia"/>
+			<field length="40" name="nombreSucursalODependencia" type="string" position="187" justify="left" padding=" " setter="setNombreSucursalODependencia" getter="getNombreSucursalODependencia"/>
+			<field length="7" name="fechaPagoSistemasNoSalud" type="date" format="yyyy-MM" position="227" justify="right" padding=" " setter="setFechaPagoSistemasNoSalud" getter="getFechaPagoSistemasNoSalud"/>
+			<field length="7" name="fechaPagoSistemaSalud" type="date" format="yyyy-MM" position="234" justify="right" padding=" " setter="setFechaPagoSistemaSalud" getter="getFechaPagoSistemaSalud"/>
+			<field length="10" name="numeroRadicacion" type="long" position="241" justify="right" padding="0" setter="setNumeroRadicacion" getter="getNumeroRadicacion"/>
+			<field length="10" name="fechaPago" type="date" format="yyyy-MM-dd" position="251" justify="right" padding=" " setter="setFechaPago" getter="getFechaPago"/>
+			<field length="7" name="numeroTotalPensionados" type="int" position="261" justify="right" padding="0" setter="setNumeroTotalPensionados" getter="getNumeroTotalPensionados"/>
+			<field length="12" name="valorTotalNomina" type="long" position="268" justify="right" padding="0" setter="setValorTotalNomina" getter="getValorTotalNomina"/>
+			<field length="1" name="tipoPagadorPensiones" type="int" position="280" justify="right" padding="0" setter="setTipoPagadorPensiones" getter="getTipoPagadorPensiones"/>
+			<field length="2" name="codigoOperadorInformacion" type="int" position="281" justify="right" padding="0" setter="setCodigoOperadorInformacion" getter="getCodigoOperadorInformacion"/>
+			<field length="1" name="tipoPlanillaPensionado" type="string" position="283" justify="left" padding=" " setter="setTipoPlanillaPensionado" getter="getTipoPlanillaPensionado"/>
+		</record>
+		
+		<record name="Tipo2" minLength="434" maxLength="434" minOccurs="1" class="com.ach.soi.empresarial.converters.model.beans2145.Reg2145Tp02">
+			<field length="2" rid="true" literal="2" name="tipoRegistro" type="int" position="0" justify="right" padding="0" setter="setTipoRegistro" getter="getTipoRegistro"/>
+			<field length="7" name="secuencia" type="int" position="2" justify="right" padding="0" setter="setSecuencia" getter="getSecuencia"/>
+			<field length="20" name="primerApellidoPensionado" type="string" position="9" justify="left" padding=" " setter="setPrimerApellidoPensionado" getter="getPrimerApellidoPensionado"/>
+			<field length="30" name="segundoApellidoPensionado" type="string" position="29" justify="left" padding=" " setter="setSegundoApellidoPensionado" getter="getSegundoApellidoPensionado"/>
+			<field length="20" name="primerNombrePensionado" type="string" position="59" justify="left" padding=" " setter="setPrimerNombrePensionado" getter="getPrimerNombrePensionado"/>
+			<field length="30" name="segundoNombrePensionado" type="string" position="79" justify="left" padding=" " setter="setSegundoNombrePensionado" getter="getSegundoNombrePensionado"/>
+			<field length="2" name="tipoDocumentoPensionado" type="string" position="109" justify="left" padding=" " setter="setTipoDocumentoPensionado" getter="getTipoDocumentoPensionado"/>
+			<field length="16" name="numeroIdentificacionPensionado" type="string" position="111" justify="left" padding=" " setter="setNumeroIdentificacionPensionado" getter="getNumeroIdentificacionPensionado"/>
+			<field length="2" name="tipoPension" type="int" position="127" justify="right" padding="0" setter="setTipoPension" getter="getTipoPension"/>
+			<field length="1" name="pensionCompartida" type="string" position="129" justify="left" padding=" " setter="setPensionCompartida" getter="getPensionCompartida"/>
+			<field length="20" name="primeroApellidoCausante" type="string" position="130" justify="left" padding=" " setter="setPrimeroApellidoCausante" getter="getPrimeroApellidoCausante"/>
+			<field length="30" name="segundoApellidoCausante" type="string" position="150" justify="left" padding=" " setter="setSegundoApellidoCausante" getter="getSegundoApellidoCausante"/>
+			<field length="20" name="primerNombreCausante" type="string" position="180" justify="left" padding=" " setter="setPrimerNombreCausante" getter="getPrimerNombreCausante"/>
+			<field length="30" name="segundoNombreCausante" type="string" position="200" justify="left" padding=" " setter="setSegundoNombreCausante" getter="getSegundoNombreCausante"/>
+			<field length="2" name="tipoIdCausantePension" type="string" position="230" justify="left" padding=" " setter="setTipoIdCausantePension" getter="getTipoIdCausantePension"/>
+			<field length="16" name="numeroIdCausantePension" type="string" position="232" justify="left" padding=" " setter="setNumeroIdCausantePension" getter="getNumeroIdCausantePension"/>
+			<field length="1" name="tipoPensionado" type="int" position="248" justify="right" padding="0" setter="setTipoPensionado" getter="getTipoPensionado"/>
+			<field length="1" name="pensionadoEnExterior" type="string" position="249" justify="left" padding=" " setter="setPensionadoEnExterior" getter="getPensionadoEnExterior"/>
+			<field length="2" name="codigoDeptoResidencia" type="string" position="250" justify="left" padding=" " setter="setCodigoDeptoResidencia" getter="getCodigoDeptoResidencia"/>
+			<field length="3" name="codigoMunicipioResidencia" type="string" position="252" justify="left" padding=" " setter="setCodigoMunicipioResidencia" getter="getCodigoMunicipioResidencia"/>
+			<field length="1" name="pensionadoPagoEnExterior" type="string" position="255" justify="left" padding=" " setter="setPensionadoPagoEnExterior" getter="getPensionadoPagoEnExterior"/>
+			<field length="1" name="ING" type="string" position="256" justify="left" padding=" " setter="setING" getter="getING"/>
+			<field length="1" name="RET" type="string" position="257" justify="left" padding=" " setter="setRET" getter="getRET"/>
+			<field length="1" name="TDE" type="string" position="258" justify="left" padding=" " setter="setTDE" getter="getTDE"/>
+			<field length="1" name="TAE" type="string" position="259" justify="left" padding=" " setter="setTAE" getter="getTAE"/>
+			<field length="1" name="TDP" type="string" position="260" justify="left" padding=" " setter="setTDP" getter="getTDP"/>
+			<field length="1" name="TAP" type="string" position="261" justify="left" padding=" " setter="setTAP" getter="getTAP"/>
+			<field length="1" name="VSP" type="string" position="262" justify="left" padding=" " setter="setVSP" getter="getVSP"/>
+			<field length="1" name="SUS" type="string" position="263" justify="left" padding=" " setter="setSUS" getter="getSUS"/>
+			<field length="6" name="codigoAdminPensionesPertPensionado" type="string" position="264" justify="left" padding=" " setter="setCodigoAdminPensionesPertPensionado" getter="getCodigoAdminPensionesPertPensionado"/>
+			<field length="6" name="codigoAdminPensionesTrasPensionado" type="string" position="270" justify="left" padding=" " setter="setCodigoAdminPensionesTrasPensionado" getter="getCodigoAdminPensionesTrasPensionado"/>
+			<field length="6" name="codigoEpsOEocPertAfiliado" type="string" position="276" justify="left" padding=" " setter="setCodigoEpsOEocPertAfiliado" getter="getCodigoEpsOEocPertAfiliado"/>
+			<field length="6" name="codigoEpsOEocTrasAfiliado" type="string" position="282" justify="left" padding=" " setter="setCodigoEpsOEocTrasAfiliado" getter="getCodigoEpsOEocTrasAfiliado"/>
+			<field length="6" name="codigoCCFPertAfiliado" type="string" position="288" justify="left" padding=" " setter="setCodigoCCFPertAfiliado" getter="getCodigoCCFPertAfiliado"/>
+			<field length="2" name="numeroDiasCotPension" type="int" position="294" justify="right" padding="0" setter="setNumeroDiasCotPension" getter="getNumeroDiasCotPension"/>
+			<field length="2" name="numeroDiasCotFondoSolPen" type="int" position="296" justify="right" padding="0" setter="setNumeroDiasCotFondoSolPen" getter="getNumeroDiasCotFondoSolPen"/>
+			<field length="2" name="numeroDiasCotASalud" type="int" position="298" justify="right" padding="0" setter="setNumeroDiasCotASalud" getter="getNumeroDiasCotASalud"/>
+			<field length="2" name="numeroDiasCotCajasComp" type="int" position="300" justify="right" padding="0" setter="setNumeroDiasCotCajasComp" getter="getNumeroDiasCotCajasComp"/>
+			<field length="9" name="ingresoBaseCotizacion" type="long" position="302" justify="right" padding="0" setter="setIngresoBaseCotizacion" getter="getIngresoBaseCotizacion"/>
+			<field length="7" name="tarifaAportesAPension" type="decimal" position="311" justify="right" padding="0" setter="setTarifaAportesAPension" getter="getTarifaAportesAPension"/>
+			<field length="9" name="aporteCotizacionObligatoria" type="long" position="318" justify="right" padding="0" setter="setAporteCotizacionObligatoria" getter="getAporteCotizacionObligatoria"/>
+			<field length="9" name="aporteVoluntarioFondoPenObl" type="long" position="327" justify="right" padding="0" setter="setAporteVoluntarioFondoPenObl" getter="getAporteVoluntarioFondoPenObl"/>
+			<field length="9" name="totalCotizacion" type="long" position="336" justify="right" padding="0" setter="setTotalCotizacion" getter="getTotalCotizacion"/>
+			<field length="9" name="valorNoRetenidoApVoluntarios" type="int" position="345" justify="right" padding="0" setter="setValorNoRetenidoApVoluntarios" getter="getValorNoRetenidoApVoluntarios"/>
+			<field length="7" name="aportesFSolPensionalSubctaSol" type="int" position="354" justify="right" padding="0" setter="setAportesFSolPensionalSubctaSol" getter="getAportesFSolPensionalSubctaSol"/>
+			<field length="7" name="aportesFSolPensionalSubctaSubsistencia" type="int" position="361" justify="right" padding="0" setter="setAportesFSolPensionalSubctaSubsistencia" getter="getAportesFSolPensionalSubctaSubsistencia"/>
+			<field length="7" name="tarifaAportesAFondoSol" type="decimal" position="368" justify="right" padding="0" setter="setTarifaAportesAFondoSol" getter="getTarifaAportesAFondoSol"/>
+			<field length="7" name="tarifaAportes" type="decimal" position="375" justify="right" padding="0" setter="setTarifaAportes" getter="getTarifaAportes"/>
+			<field length="9" name="cotizacionObligatoria" type="long" position="382" justify="right" padding="0" setter="setCotizacionObligatoria" getter="getCotizacionObligatoria"/>
+			<field length="9" name="valorUPCAdicional" type="long" position="391" justify="right" padding="0" setter="setValorUPCAdicional" getter="getValorUPCAdicional"/>
+			<field length="7" name="tarifaAportesCCF" type="decimal" position="400" justify="right" padding="0" setter="setTarifaAportesCCF" getter="getTarifaAportesCCF"/>
+			<field length="9" name="valorAporteCCF" type="long" position="407" justify="right" padding="0" setter="setValorAporteCCF" getter="getValorAporteCCF"/>
+			<field length="2" name="tipoDocumentoCotizantePpal" type="string" position="416" justify="left" padding=" " setter="setTipoDocumentoCotizantePpal" getter="getTipoDocumentoCotizantePpal"/>
+			<field length="16" name="nroIdentificacionCotizantePpal" type="string" position="418" justify="left" padding=" " setter="setNroIdentificacionCotizantePpal" getter="getNroIdentificacionCotizantePpal"/>
+		</record>
+
+		<record name="Tipo3" minLength="133" maxLength="133" class="com.ach.soi.empresarial.converters.model.beans2145.Reg2145Tp03">
+			<field length="2" rid="true" literal="3" name="tipoRegistro" type="int" position="0" justify="right" padding="0" setter="setTipoRegistro" getter="getTipoRegistro"/>
+			<field length="7" name="secuencia" type="int" position="2" justify="right" padding="0" setter="setSecuencia" getter="getSecuencia"/>
+			<field length="6" name="codigoAdminFondoPensiones" type="string" position="9" justify="left" padding=" " setter="setCodigoAdminFondoPensiones" getter="getCodigoAdminFondoPensiones"/>
+			<field length="16" name="nitAdminFondoPensiones" type="string" position="15" justify="left" padding=" " setter="setNitAdminFondoPensiones" getter="getNitAdminFondoPensiones"/>
+			<field length="1" name="digitoVerAdminFondoPensiones" type="int" position="31" justify="right" padding="0" setter="setDigitoVerAdminFondoPensiones" getter="getDigitoVerAdminFondoPensiones"/>
+			<field length="12" name="valorTotalCotOblReportadas" type="long" position="32" justify="right" padding="0" setter="setValorTotalCotOblReportadas" getter="getValorTotalCotOblReportadas"/>
+			<field length="12" name="valorTotalCotVolAfiliados" type="long" position="44" justify="right" padding="0" setter="setValorTotalCotVolAfiliados" getter="getValorTotalCotVolAfiliados"/>
+			<field length="4" name="valorTotalAportesSubctaSolidaridad" type="int" position="56" justify="right" padding="0" setter="setValorTotalAportesSubctaSolidaridad" getter="getValorTotalAportesSubctaSolidaridad"/>
+			<field length="10" name="valorTotalAportesSubctaSubsistencia" type="long" position="60" justify="right" padding="0" setter="setValorTotalAportesSubctaSubsistencia" getter="getValorTotalAportesSubctaSubsistencia"/>
+			<field length="10" name="nroDiasMoraLiquidados" type="long" position="70" justify="right" padding="0" setter="setNroDiasMoraLiquidados" getter="getNroDiasMoraLiquidados"/>
+			<field length="12" name="valorIntMoraCotPeriodoLiquidado" type="long" position="80" justify="right" padding="0" setter="setValorIntMoraCotPeriodoLiquidado" getter="getValorIntMoraCotPeriodoLiquidado"/>
+			<field length="12" name="valorIntMoraSubctaSolidaridad" type="long" position="92" justify="right" padding="0" setter="setValorIntMoraSubctaSolidaridad" getter="getValorIntMoraSubctaSolidaridad"/>
+			<field length="12" name="valorIntMoraSubctaSubsistencia" type="long" position="104" justify="right" padding="0" setter="setValorIntMoraSubctaSubsistencia" getter="getValorIntMoraSubctaSubsistencia"/>
+			<field length="10" name="totalAPagarAdministradora" type="long" position="116" justify="right" padding="0" setter="setTotalAPagarAdministradora" getter="getTotalAPagarAdministradora"/>
+			<field length="7" name="totalAfiliadosAdministradora" type="int" position="126" justify="right" padding="0" setter="setTotalAfiliadosAdministradora" getter="getTotalAfiliadosAdministradora"/>
+		</record>
+		
+		<record name="Tipo4" minLength="77" maxLength="77" class="com.ach.soi.empresarial.converters.model.beans2145.Reg2145Tp04">
+			<field length="2"  rid="true" literal="4" name="tipoRegistro" type="int" position="0" justify="right" padding="0" setter="setTipoRegistro" getter="getTipoRegistro"/>
+			<field length="7" name="secuencia" type="int" position="2" justify="right" padding="0" setter="setSecuencia" getter="getSecuencia"/>
+			<field length="6" name="codigoFondoSolidaridad" type="string" position="9" justify="left" padding=" " setter="setCodigoFondoSolidaridad" getter="getCodigoFondoSolidaridad"/>
+			<field length="16" name="nitFondoSolidaridadPensional" type="string" position="15" justify="left" padding=" " setter="setNitFondoSolidaridadPensional" getter="getNitFondoSolidaridadPensional"/>
+			<field length="1" name="digitoVerFondoSolPensional" type="string" position="31" justify="left" padding=" " setter="setDigitoVerFondoSolPensional" getter="getDigitoVerFondoSolPensional"/>
+			<field length="12" name="valorTotalAportesSubctaSubsistencia" type="long" position="32" justify="right" padding="0" setter="setValorTotalAportesSubctaSubsistencia" getter="getValorTotalAportesSubctaSubsistencia"/>
+			<field length="4" name="nroDiasMoraLiquidados" type="int" position="44" justify="right" padding="0" setter="setNroDiasMoraLiquidados" getter="getNroDiasMoraLiquidados"/>
+			<field length="10" name="valorIntSubctaSubsistencia" type="long" position="48" justify="right" padding="0" setter="setValorIntSubctaSubsistencia" getter="getValorIntSubctaSubsistencia"/>
+			<field length="12" name="totalPagarSubctaSusbsistencia" type="long" position="58" justify="right" padding="0" setter="setTotalPagarSubctaSusbsistencia" getter="getTotalPagarSubctaSusbsistencia"/>
+			<field length="7" name="totalAportantesSubctaSubsistencia" type="int" position="70" justify="right" padding="0" setter="setTotalAportantesSubctaSubsistencia" getter="getTotalAportantesSubctaSubsistencia"/>
+		</record>
+				
+		<record name="Tipo5" minLength="133" maxLength="133" minOccurs="1" class="com.ach.soi.empresarial.converters.model.beans2145.Reg2145Tp05">
+			<field length="2"  rid="true" literal="5" name="tipoRegistro" type="int" position="0" justify="right" padding="0" setter="setTipoRegistro" getter="getTipoRegistro"/>
+			<field length="5" name="secuencia" type="int" position="2" justify="right" padding="0" setter="setSecuencia" getter="getSecuencia"/>
+			<field length="6" name="codigoAdministradoraSalud" type="string" position="7" justify="left" padding=" " setter="setCodigoAdministradoraSalud" getter="getCodigoAdministradoraSalud"/>
+			<field length="16" name="nitEPSoEOC" type="string" position="13" justify="left" padding=" " setter="setNitEPSoEOC" getter="getNitEPSoEOC"/>
+			<field length="1" name="digitoVerificacionEPSoEOC" type="int" position="29" justify="right" padding="0" setter="setDigitoVerificacionEPSoEOC" getter="getDigitoVerificacionEPSoEOC"/>
+			<field length="12" name="valorTotalCotOblAdmin" type="long" position="30" justify="right" padding="0" setter="setValorTotalCotOblAdmin" getter="getValorTotalCotOblAdmin"/>
+			<field length="12" name="valorTotalUPCAdmin" type="long" position="42" justify="right" padding="0" setter="setValorTotalUPCAdmin" getter="getValorTotalUPCAdmin"/>
+			<field length="4" name="nroDiasMoraLiquidados" type="int" position="54" justify="right" padding="0" setter="setNroDiasMoraLiquidados" getter="getNroDiasMoraLiquidados"/>
+			<field length="10" name="valorIntMoraCotObligatorias" type="long" position="58" justify="right" padding="0" setter="setValorIntMoraCotObligatorias" getter="getValorIntMoraCotObligatorias"/>
+			<field length="12" name="valorIntMoraUPCAdicionales" type="long" position="68" justify="right" padding="0" setter="setValorIntMoraUPCAdicionales" getter="getValorIntMoraUPCAdicionales"/>
+			<field length="12" name="subTotalAportesCot" type="long" position="80" justify="right" padding="0" setter="setSubTotalAportesCot" getter="getSubTotalAportesCot"/>
+			<field length="12" name="subTotalAportesUPC" type="long" position="92" justify="right" padding="0" setter="setSubTotalAportesUPC" getter="getSubTotalAportesUPC"/>
+			<field length="12" name="totalPagarAdministradora" type="long" position="104" justify="right" padding="0" setter="setTotalPagarAdministradora" getter="getTotalPagarAdministradora"/>
+			<field length="10" name="valorFosyga" type="long" position="116" justify="right" padding="0" setter="setValorFosyga" getter="getValorFosyga"/>
+			<field length="7" name="totalAfiliadosAdministradora" type="int" position="126" justify="right" padding="0" setter="setTotalAfiliadosAdministradora" getter="getTotalAfiliadosAdministradora"/>
+		</record>	
+		
+		<record name="Tipo6" minLength="75" maxLength="75" class="com.ach.soi.empresarial.converters.model.beans2145.Reg2145Tp06">
+			<field length="2" rid="true" literal="6" name="tipoRegistro" type="int" position="0" justify="right" padding="0" setter="setTipoRegistro" getter="getTipoRegistro"/>
+			<field length="5" name="secuencia" type="int" position="2" justify="right" padding="0" setter="setSecuencia" getter="getSecuencia"/>
+			<field length="6" name="codigoCCF" type="string" position="7" justify="left" padding=" " setter="setCodigoCCF" getter="getCodigoCCF"/>
+			<field length="16" name="nitCCF" type="string" position="13" justify="left" padding=" " setter="setNitCCF" getter="getNitCCF"/>
+			<field length="1" name="digitoVerificacionCCF" type="int" position="29" justify="right" padding="0" setter="setDigitoVerificacionCCF" getter="getDigitoVerificacionCCF"/>
+			<field length="12" name="valorAportes" type="long" position="30" justify="right" padding="0" setter="setValorAportes" getter="getValorAportes"/>
+			<field length="4" name="nroDiasMoraLiquidados" type="int" position="42" justify="right" padding="0" setter="setNroDiasMoraLiquidados" getter="getNroDiasMoraLiquidados"/>
+			<field length="10" name="valorIntMoraAporte" type="long" position="46" justify="right" padding="0" setter="setValorIntMoraAporte" getter="getValorIntMoraAporte"/>
+			<field length="12" name="totalAPagarCCF" type="long" position="56" justify="right" padding="0" setter="setTotalAPagarCCF" getter="getTotalAPagarCCF"/>
+			<field length="7" name="totalAfiliadosCCF" type="int" position="68" justify="right" padding="0" setter="setTotalAfiliadosCCF" getter="getTotalAfiliadosCCF"/>
+		</record>
+			
+		<record name="Tipo7" minLength="71" maxLength="71" minOccurs="1" maxOccurs="1" class="com.ach.soi.empresarial.converters.model.beans2145.Reg2145Tp07">
+			<field length="2" rid="true" literal="7" name="tipoRegistro" type="int" position="0" justify="right" padding="0" setter="setTipoRegistro" getter="getTipoRegistro"/>
+			<field length="12" name="totalAPagar" type="long" position="2" justify="right" padding="0" setter="setTotalAPagar" getter="getTotalAPagar"/>
+			<field length="12" name="totalAPagarFondoSolPensional" type="long" position="14" justify="right" padding="0" setter="setTotalAPagarFondoSolPensional" getter="getTotalAPagarFondoSolPensional"/>
+			<field length="12" name="totalAPagarSalud" type="long" position="26" justify="right" padding="0" setter="setTotalAPagarSalud" getter="getTotalAPagarSalud"/>
+			<field length="12" name="totalAPagarCCF" type="long" position="38" justify="right" padding="0" setter="setTotalAPagarCCF" getter="getTotalAPagarCCF"/>
+			<field length="12" name="granTotalAPagar" type="long" position="50" justify="right" padding="0" setter="setGranTotalAPagar" getter="getGranTotalAPagar"/>
+			<field length="3" name="nroAdminPensionesReportadas" type="int" position="62" justify="right" padding="0" setter="setNroAdminPensionesReportadas" getter="getNroAdminPensionesReportadas"/>
+			<field length="3" name="nroEPSoEOCReportadas" type="int" position="65" justify="right" padding="0" setter="setNroEPSoEOCReportadas" getter="getNroEPSoEOCReportadas"/>
+			<field length="3" name="nroCCFReportadas" type="int" position="68" justify="right" padding="0" setter="setNroCCFReportadas" getter="getNroCCFReportadas"/>
+		</record>	
+	</stream>
+</beanio>

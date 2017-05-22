@@ -1,0 +1,143 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>pila-business</groupId>
+	<artifactId>pila-util</artifactId>
+	<version>2.0.0</version>
+
+	<dependencies>
+
+		<!-- External dependencies -->
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib-nodep</artifactId>
+			<version>2.1_3</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-dbcp</groupId>
+			<artifactId>commons-dbcp</artifactId>
+			<version>1.2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-pool</groupId>
+			<artifactId>commons-pool</artifactId>
+			<version>1.3</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring</artifactId>
+			<version>2.5.6</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-core</artifactId>
+			<version>1.9</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-client</artifactId>
+			<version>1.9</version>
+		</dependency>
+
+		<!-- Libreria de Jackson parseador de JSON -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.2.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-core-asl</artifactId>
+			<version>1.9.5</version>
+		</dependency>
+		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<version>6.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- Lucasian Dependencies -->
+		<dependency>
+			<groupId>co.com.swatit.pila</groupId>
+			<artifactId>apt.api.biz</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>co.com.swatit.pila</groupId>
+			<artifactId>cfg.api.biz</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>co.com.swatit.pila</groupId>
+			<artifactId>common.api.biz</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>co.com.swatit.pila</groupId>
+			<artifactId>leaf-evol-common-exceptions</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>co.com.swatit.pila</groupId>
+			<artifactId>leaf-evol-common-base</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>co.com.swatit.pila</groupId>
+			<artifactId>leaf-evol-common-jee</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>co.com.swatit.pila</groupId>
+			<artifactId>seg.api.biz</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>co.com.swatit.pila</groupId>
+			<artifactId>wlfullclient</artifactId>
+			<version>1.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>co.com.swatit.pila</groupId>
+			<artifactId>pla.api.biz</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>co.com.swatit.pila</groupId>
+			<artifactId>arc.api.biz</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<!-- End Lucasian Dependencies -->
+
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>20.0</version>
+		</dependency>
+		<!-- necesaria para el uso de hash SHA-3 -->
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcprov-jdk15on</artifactId>
+			<version>1.54</version>
+		</dependency>
+
+	</dependencies>
+	<build>
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<resources>
+			<resource>
+				<directory>src/main</directory>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+			</resource>
+		</resources>
+	</build>
+</project>

@@ -1,0 +1,51 @@
+{
+  "SELECTS_LOGIN": {
+    "TYPE_USER": [{
+      "value": 0,
+      "text": "LOGIN.FORM.SELECTS.TYPE_DOC"
+    }, {
+      "value": 1,
+      "text": "LOGIN.FORM.SELECTS.CC"
+    }, {
+      "value": 8,
+      "text": "LOGIN.FORM.SELECTS.CD"
+    }, {
+      "value": 6,
+      "text": "LOGIN.FORM.SELECTS.CE"
+    }, {
+      "value": 5,
+      "text": "LOGIN.FORM.SELECTS.PASSPORT"
+    }, {
+      "value": 4,
+      "text": "LOGIN.FORM.SELECTS.RC"
+    }, {
+      "value": 3,
+      "text": "LOGIN.FORM.SELECTS.TI"
+    }],
+    "TYPE_COMPANY": [{
+      "value": 0,
+      "text": "LOGIN.FORM.SELECTS.TYPE_DOC"
+    }, {
+      "value": 1,
+      "text": "LOGIN.FORM.SELECTS.CC"
+    }, {
+      "value": 8,
+      "text": "LOGIN.FORM.SELECTS.CD"
+    }, {
+      "value": 6,
+      "text": "LOGIN.FORM.SELECTS.CE"
+    }, {
+      "value": 2,
+      "text": "LOGIN.FORM.SELECTS.NIT"
+    }, {
+      "value": 5,
+      "text": "LOGIN.FORM.SELECTS.PASSPORT"
+    }, {
+      "value": 4,
+      "text": "LOGIN.FORM.SELECTS.RC"
+    }, {
+      "value": 3,
+      "text": "LOGIN.FORM.SELECTS.TI"
+    }]
+  }
+}

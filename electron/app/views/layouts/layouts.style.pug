@@ -1,0 +1,9 @@
+//- Para los entornos de producción los archivo CSS seran minificados
+if production
+  link(href="../css/lib/font-awesome.min.css" rel="styleSheet")
+  link(href="../css/lib/materialdesignicons.min.css" rel="styleSheet")
+  link(href="../css/main.min.css" rel="styleSheet")
+else
+  link(href="../css/lib/font-awesome.min.css" rel="styleSheet")
+  link(href="../css/lib/materialdesignicons.min.css" rel="styleSheet")
+  link(href="../css/main.css" rel="styleSheet")

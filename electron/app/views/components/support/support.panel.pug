@@ -1,0 +1,34 @@
+.support-panel
+
+  .support-panel__search
+    .support-panel__title-modul(ng-bind="'SUPPORT.PANEL.TEMPLATE_NUMBER' | translate")
+    .support-panel__input.sy-form__inputs
+      input(type="text" ng-model="$ctrl.numberSettlement" ng-keypress="$ctrl.actionKeyPress($event)")
+      .support-panel__action
+        a(ng-click="$ctrl.actionSearch()")
+          i.mdi.mdi-magnify
+
+  .support-panel__content
+    .support-panel__title(ng-bind="'SUPPORT.PANEL.TEMPLATE_NUMBER' | translate")
+    .support-panel__text(ng-bind="$ctrl.infoPanel.numberTemplate || 'SUPPORT.PANEL.UNDEFINED' | translate")
+  .support-panel__content
+    .support-panel__title(ng-bind="'SUPPORT.PANEL.PAYMENT_DATE' | translate")
+    .support-panel__text(ng-bind="$ctrl.infoPanel.paymentDate || 'SUPPORT.PANEL.UNDEFINED' | translate")
+  .support-panel__content
+    .support-panel__title(ng-bind="'SUPPORT.PANEL.TEMPLATE_TYPE' | translate")
+    .support-panel__text(ng-bind="$ctrl.infoPanel.typeTemplate || 'SUPPORT.PANEL.UNDEFINED' | translate")
+
+  .support-panel__divider
+
+  .support-panel__content
+    .support-panel__title(ng-bind="'SUPPORT.PANEL.EMPLOYEES' | translate")
+    .support-panel__text(ng-bind="$ctrl.infoPanel.totalContributor || '0'")
+  .support-panel__content
+    .support-panel__title(ng-bind="'SUPPORT.PANEL.BRANCH_OFFICE' | translate")
+    .support-panel__text(ng-bind="$ctrl.infoPanel.branchOffice || 'SUPPORT.PANEL.UNDEFINED' | translate")
+  .support-panel__content
+    .support-panel__title(ng-bind="'SUPPORT.PANEL.PERIOD_CLEARANCE_PENSIONS' | translate")
+    .support-panel__text(ng-bind="$ctrl.infoPanel.periodPension || 'SUPPORT.PANEL.UNDEFINED' | translate")
+  .support-panel__content
+    .support-panel__title(ng-bind="'SUPPORT.PANEL.PERIOD_CLEARANCE_HEALTH' | translate")
+    .support-panel__text(ng-bind="$ctrl.infoPanel.periodHealth || 'SUPPORT.PANEL.UNDEFINED' | translate")

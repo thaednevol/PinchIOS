@@ -1,0 +1,170 @@
+<beanio xmlns="http://www.beanio.org/2012/03" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.beanio.org/2012/03 http://www.beanio.org/2012/03/mapping.xsd">
+	<stream  name="PILA-2145-to-2388" format="fixedlength">
+		
+		<parser class="com.ach.soi.empresarial.converters.parsers.Read1747Parser">
+      		<property  name="recordTp01Length" value="283" />
+      		<property  name="recordTp02Length" value="434" />
+      		<property  name="recordTp03Length" value="133" />
+      		<property  name="recordTp04Length" value="77" />
+      		<property  name="recordTp05Length" value="134" />
+      		<property  name="recordTp06Length" value="75" />
+      		<property  name="recordTp07Length" value="71" />      		
+    	</parser>
+		
+		<record  name="PILA-2388-Tipo1" minOccurs="1" maxOccurs="1" class="com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadPensTp01" minLength="2">
+			<field length="2" name="tipoRegistro" literal="1" rid="true" type="int" position="0" justify="right" padding="0" setter="setTipoRegistro" getter="setTipoRegistro" minOccurs="0"  nillable="true"/>
+			<field length="5" name="secuencia" type="int" position="2" justify="right" padding="0" setter="setSecuencia" getter="setSecuencia" minOccurs="0"  nillable="true"/>
+			<field length="150" name="razonSocialPagadorPens" type="string" position="7" justify="right" padding=" " setter="setRazonSocialPagadorPens" getter="setRazonSocialPagadorPens" minOccurs="0"  nillable="true"/>
+			<field length="2" name="tipoDocumentoPagadorPens" type="string" position="157" justify="right" padding=" " setter="setTipoDocumentoPagadorPens" getter="setTipoDocumentoPagadorPens" minOccurs="0"  nillable="true"/>
+			<field length="16" name="numeroIdentificacionPagadorPens" type="string" position="159" justify="right" padding=" " setter="setNumeroIdentificacionPagadorPens" getter="setNumeroIdentificacionPagadorPens" minOccurs="0"  nillable="true"/>
+			<field length="1" name="digitoVerificacionPagadorPens" type="string" position="175" justify="right" padding=" " setter="setDigitoVerificacionPagadorPens" getter="setDigitoVerificacionPagadorPens" minOccurs="0"  nillable="true"/>
+			<field length="1" name="formaPresentacion" type="string" position="176" justify="right" padding=" " setter="setFormaPresentacion" getter="setFormaPresentacion" minOccurs="0"  nillable="true"/>
+			<field length="10" name="codigoSucursal" type="string" position="177" justify="right" padding=" " setter="setCodigoSucursal" getter="setCodigoSucursal" minOccurs="0"  nillable="true"/>
+			<field length="40" name="nombreSucursal" type="string" position="187" justify="right" padding=" " setter="setNombreSucursal" getter="setNombreSucursal" minOccurs="0"  nillable="true"/>
+			<field length="7" name="periodoPagoNoSalud" type="string" position="227" justify="right" padding=" " setter="setPeriodoPagoNoSalud" getter="setPeriodoPagoNoSalud" minOccurs="0"  nillable="true"/>
+			<field length="7" name="periodoPagoSalud" type="string" position="234" justify="right" padding=" " setter="setPeriodoPagoSalud" getter="setPeriodoPagoSalud" minOccurs="0"  nillable="true"/>
+			<field length="10" name="numeroPlanilla" type="string" position="241" justify="right" padding=" " setter="setNumeroPlanilla" getter="setNumeroPlanilla" minOccurs="0"  nillable="true"/>
+			<field length="10" name="fechaPago" type="string" position="251" justify="right" padding=" " setter="setFechaPago" getter="setFechaPago" minOccurs="0"  nillable="true"/>
+			<field length="7" name="numeroTotalPensionados" type="string" position="261" justify="right" padding=" " setter="setNumeroTotalPensionados" getter="setNumeroTotalPensionados" minOccurs="0"  nillable="true"/>
+			<field length="7" name="valorTotalNomina" type="string" position="261" justify="right" padding=" " setter="setValorTotalNomina" getter="setValorTotalNomina" minOccurs="0"  nillable="true"/>
+			<field length="1" name="tipoPagadorPensiones" type="string" position="280" justify="right" padding=" " setter="setTipoPagadorPensiones" getter="setTipoPagadorPensiones" minOccurs="0"  nillable="true"/>
+			<field length="2" name="codigoOperador" type="string" position="281" justify="right" padding=" " setter="setCodigoOperador" getter="setCodigoOperador" minOccurs="0"  nillable="true"/>
+		</record>
+
+
+		<record  name="PILA-2388-Tipo2" class="com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadPensTp02">
+			<field length="2" rid="true" literal="2" name="tipoRegistro" type="int" position="0" justify="right" padding="0" setter="setTipoRegistro" getter="setTipoRegistro" minOccurs="0"  nillable="true"/>
+			<field length="7" name="secuencia" type="int" position="2" justify="right" padding="0" setter="setSecuencia" getter="setSecuencia" minOccurs="0"  nillable="true"/>
+			<field length="20" name="primerApellidoPensionado" type="string" position="9" justify="right" padding=" " setter="setPrimerApellidoPensionado" getter="setPrimerApellidoPensionado" minOccurs="0"  nillable="true"/>
+			<field length="30" name="segundoApellidoPensionado" type="string" position="29" justify="right" padding=" " setter="setSegundoApellidoPensionado" getter="setSegundoApellidoPensionado" minOccurs="0"  nillable="true"/>
+			<field length="20" name="primerNombrePensionado" type="string" position="59" justify="right" padding=" " setter="setPrimerNombrePensionado" getter="setPrimerNombrePensionado" minOccurs="0"  nillable="true"/>
+			<field length="30" name="segundoNombrePensionado" type="string" position="79" justify="right" padding=" " setter="setSegundoNombrePensionado" getter="setSegundoNombrePensionado" minOccurs="0"  nillable="true"/>
+			<field length="2" name="tipoDocumentoPensionado" type="string" position="109" justify="right" padding=" " setter="setTipoDocumentoPensionado" getter="setTipoDocumentoPensionado" minOccurs="0"  nillable="true"/>
+			<field length="16" name="numeroIdentificacionPensionado" type="string" position="111" justify="right" padding=" " setter="setNumeroIdentificacionPensionado" getter="setNumeroIdentificacionPensionado" minOccurs="0"  nillable="true"/>
+			<field length="2" name="tipoPension" type="string" position="127" justify="right" padding="0" setter="setTipoPension" getter="setTipoPension" minOccurs="0"  nillable="true"/>
+			<field length="1" name="pensionCompartida" type="string" position="129" justify="right" padding=" " setter="setPensionCompartida" getter="setPensionCompartida" minOccurs="0"  nillable="true"/>
+			<field length="20" name="primeroApellidoCausante" type="string" position="130" justify="right" padding=" " setter="setPrimeroApellidoCausante" getter="setPrimeroApellidoCausante" minOccurs="0"  nillable="true"/>
+			<field length="30" name="segundoApellidoCausante" type="string" position="150" justify="right" padding=" " setter="setSegundoApellidoCausante" getter="setSegundoApellidoCausante" minOccurs="0"  nillable="true"/>
+			<field length="20" name="primerNombreCausante" type="string" position="180" justify="right" padding=" " setter="setPrimerNombreCausante" getter="setPrimerNombreCausante" minOccurs="0"  nillable="true"/>
+			<field length="30" name="segundoNombreCausante" type="string" position="200" justify="right" padding=" " setter="setSegundoNombreCausante" getter="setSegundoNombreCausante" minOccurs="0"  nillable="true"/>
+			<field length="2" name="tipoIdCausantePension" type="string" position="230" justify="right" padding=" " setter="setTipoIdCausantePension" getter="setTipoIdCausantePension" minOccurs="0"  nillable="true"/>
+			<field length="16" name="numeroIdCausantePension" type="string" position="232" justify="right" padding=" " setter="setNumeroIdCausantePension" getter="setNumeroIdCausantePension" minOccurs="0"  nillable="true"/>
+			<field length="1" name="tipoPensionado" type="string" position="248" justify="right" padding="0" setter="setTipoPensionado" getter="setTipoPensionado" minOccurs="0"  nillable="true"/>
+			<field length="1" name="pensionadoEnExterior" type="string" position="249" justify="right" padding=" " setter="setPensionadoEnExterior" getter="setPensionadoEnExterior" minOccurs="0"  nillable="true"/>
+			<field length="2" name="codigoDeptoResidencia" type="string" position="250" justify="right" padding=" " setter="setCodigoDeptoResidencia" getter="setCodigoDeptoResidencia" minOccurs="0"  nillable="true"/>
+			<field length="3" name="codigoMunicipioResidencia" type="string" position="252" justify="right" padding=" " setter="setCodigoMunicipioResidencia" getter="setCodigoMunicipioResidencia" minOccurs="0"  nillable="true"/>
+			<field length="1" name="pensionadoPagoEnExterior" type="string" position="255" justify="right" padding=" " setter="setPensionadoPagoEnExterior" getter="setPensionadoPagoEnExterior" minOccurs="0"  nillable="true"/>
+			<field length="1" name="ING" type="string" position="256" justify="right" padding=" " setter="setING" getter="setING" minOccurs="0"  nillable="true"/>
+			<field length="1" name="RET" type="string" position="257" justify="right" padding=" " setter="setRET" getter="setRET" minOccurs="0"  nillable="true"/>
+			<field length="1" name="TDE" type="string" position="258" justify="right" padding=" " setter="setTDE" getter="setTDE" minOccurs="0"  nillable="true"/>
+			<field length="1" name="TAE" type="string" position="259" justify="right" padding=" " setter="setTAE" getter="setTAE" minOccurs="0"  nillable="true"/>
+			<field length="1" name="TDP" type="string" position="260" justify="right" padding=" " setter="setTDP" getter="setTDP" minOccurs="0"  nillable="true"/>
+			<field length="1" name="TAP" type="string" position="261" justify="right" padding=" " setter="setTAP" getter="setTAP" minOccurs="0"  nillable="true"/>
+			<field length="1" name="VSP" type="string" position="262" justify="right" padding=" " setter="setVSP" getter="setVSP" minOccurs="0"  nillable="true"/>
+			<field length="1" name="SUS" type="string" position="263" justify="right" padding=" " setter="setSUS" getter="setSUS" minOccurs="0"  nillable="true"/>
+			<field length="6" name="codigoAdminPensionesPertPensionado" type="string" position="264" justify="right" padding=" " setter="setCodigoAdminPensionesPertPensionado" getter="setCodigoAdminPensionesPertPensionado" minOccurs="0"  nillable="true"/>
+			<field length="6" name="codigoAdminPensionesTrasPensionado" type="string" position="270" justify="right" padding=" " setter="setCodigoAdminPensionesTrasPensionado" getter="setCodigoAdminPensionesTrasPensionado" minOccurs="0"  nillable="true"/>
+			<field length="6" name="codigoEpsOEocPertAfiliado" type="string" position="276" justify="right" padding=" " setter="setCodigoEpsOEocPertAfiliado" getter="setCodigoEpsOEocPertAfiliado" minOccurs="0"  nillable="true"/>
+			<field length="6" name="codigoEpsOEocTrasAfiliado" type="string" position="282" justify="right" padding=" " setter="setCodigoEpsOEocTrasAfiliado" getter="setCodigoEpsOEocTrasAfiliado" minOccurs="0"  nillable="true"/>
+			<field length="6" name="codigoCCFPertAfiliado" type="string" position="288" justify="right" padding=" " setter="setCodigoCCFPertAfiliado" getter="setCodigoCCFPertAfiliado" minOccurs="0"  nillable="true"/>
+			<field length="2" name="numeroDiasCotPension" type="string" position="294" justify="right" padding="0" setter="setNumeroDiasCotPension" getter="setNumeroDiasCotPension" minOccurs="0"  nillable="true"/>
+			<field length="2" name="numeroDiasCotFondoSolPen" type="string" position="296" justify="right" padding="0" setter="setNumeroDiasCotFondoSolPen" getter="setNumeroDiasCotFondoSolPen" minOccurs="0"  nillable="true"/>
+			<field length="2" name="numeroDiasCotASalud" type="string" position="298" justify="right" padding="0" setter="setNumeroDiasCotASalud" getter="setNumeroDiasCotASalud" minOccurs="0"  nillable="true"/>
+			<field length="2" name="numeroDiasCotCajasComp" type="string" position="300" justify="right" padding="0" setter="setNumeroDiasCotCajasComp" getter="setNumeroDiasCotCajasComp" minOccurs="0"  nillable="true"/>
+			<field length="9" name="ingresoBaseCotizacion" type="string" position="302" justify="right" padding="0" setter="setIngresoBaseCotizacion" getter="setIngresoBaseCotizacion" minOccurs="0"  nillable="true"/>
+			<field length="7" name="tarifaAportesAPension" type="string" position="311" justify="right" padding="0" setter="setTarifaAportesAPension" getter="setTarifaAportesAPension" minOccurs="0"  nillable="true"/>
+			<field length="9" name="aporteCotizacionObligatoria" type="string" position="318" justify="right" padding="0" setter="setAporteCotizacionObligatoria" getter="setAporteCotizacionObligatoria" minOccurs="0"  nillable="true"/>
+			<field length="9" name="aporteVoluntarioFondoPenObl" type="string" position="327" justify="right" padding="0" setter="setAporteVoluntarioFondoPenObl" getter="setAporteVoluntarioFondoPenObl" minOccurs="0"  nillable="true"/>
+			<field length="9" name="totalCotizacion" type="string" position="336" justify="right" padding="0" setter="setTotalCotizacion" getter="setTotalCotizacion" minOccurs="0"  nillable="true"/>
+			<field length="9" name="valorNoRetenidoApVoluntarios" type="string" position="345" justify="right" padding="0" setter="setValorNoRetenidoApVoluntarios" getter="setValorNoRetenidoApVoluntarios" minOccurs="0"  nillable="true"/>
+			<field length="7" name="aportesFSolPensionalSubctaSol" type="string" position="354" justify="right" padding="0" setter="setAportesFSolPensionalSubctaSol" getter="setAportesFSolPensionalSubctaSol" minOccurs="0"  nillable="true"/>
+			<field length="7" name="aportesFSolPensionalSubctaSubsistencia" type="string" position="361" justify="right" padding="0" setter="setAportesFSolPensionalSubctaSubsistencia" getter="setAportesFSolPensionalSubctaSubsistencia" minOccurs="0"  nillable="true"/>
+			<field length="7" name="tarifaAportesAFondoSol" type="string" position="368" justify="right" padding="0" setter="setTarifaAportesAFondoSol" getter="setTarifaAportesAFondoSol" minOccurs="0"  nillable="true"/>
+			<field length="7" name="tarifaAportes" type="string" position="375" justify="right" padding="0" setter="setTarifaAportes" getter="setTarifaAportes" minOccurs="0"  nillable="true"/>
+			<field length="9" name="cotizacionObligatoria" type="string" position="382" justify="right" padding="0" setter="setCotizacionObligatoria" getter="setCotizacionObligatoria" minOccurs="0"  nillable="true"/>
+			<field length="9" name="valorUPCAdicional" type="string" position="391" justify="right" padding="0" setter="setValorUPCAdicional" getter="setValorUPCAdicional" minOccurs="0"  nillable="true"/>
+			<field length="7" name="tarifaAportesCCF" type="string" position="400" justify="right" padding="0" setter="setTarifaAportesCCF" getter="setTarifaAportesCCF" minOccurs="0"  nillable="true"/>
+			<field length="9" name="valorAporteCCF" type="string" position="407" justify="right" padding="0" setter="setValorAporteCCF" getter="setValorAporteCCF" minOccurs="0"  nillable="true"/>
+			<field length="2" name="tipoDocumentoCotizantePpal" type="string" position="416" justify="right" padding=" " setter="setTipoDocumentoCotizantePpal" getter="setTipoDocumentoCotizantePpal" minOccurs="0"  nillable="true"/>
+			<field length="16" name="nroIdentificacionCotizantePpal" type="string" position="418" justify="right" padding=" " setter="setNroIdentificacionCotizantePpal" getter="setNroIdentificacionCotizantePpal" minOccurs="0"  nillable="true"/>								
+		</record>
+
+
+		<record  name="PILA-2388-Tipo3" class="com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadPensTp03">
+			<field length="2" rid="true" literal="3" name="tipoRegistro" type="int" position="0" justify="right" padding="0" setter="setTipoRegistro" getter="setTipoRegistro" minOccurs="0"  nillable="true"/>
+			<field length="7" name="secuencia" type="int" position="2" justify="right" padding="0" setter="setSecuencia" getter="setSecuencia" minOccurs="0"  nillable="true"/>
+			<field length="6" name="codigoAdmPensiones" type="string" position="9" justify="right" padding=" " setter="setCodigoAdmPensiones" getter="setCodigoAdmPensiones" minOccurs="0"  nillable="true"/>
+			<field length="16" name="nitAdministradoraPensiones" type="string" position="15" justify="right" padding=" " setter="setNitAdministradoraPensiones" getter="setNitAdministradoraPensiones" minOccurs="0"  nillable="true"/>
+			<field length="1" name="digitoVerificacionAdmPensiones" type="string" position="31" justify="right" padding="0" setter="setDigitoVerificacionAdmPensiones" getter="setDigitoVerificacionAdmPensiones" minOccurs="0"  nillable="true"/>
+			<field length="12" name="totalCotizacionesObligatorias" type="string" position="32" justify="right" padding="0" setter="setTotalCotizacionesObligatorias" getter="setTotalCotizacionesObligatorias" minOccurs="0"  nillable="true"/>
+			<field length="12" name="totalCotizacionesVolAfiliados" type="string" position="44" justify="right" padding="0" setter="setTotalCotizacionesVolAfiliados" getter="setTotalCotizacionesVolAfiliados" minOccurs="0"  nillable="true"/>
+			<field length="4" name="totalAportesFSPSolidaridad" type="string" position="56" justify="right" padding="0" setter="setTotalAportesFSPSolidaridad" getter="setTotalAportesFSPSolidaridad" minOccurs="0"  nillable="true"/>
+			<field length="10" name="totalAportesFSPSubsistencia" type="string" position="60" justify="right" padding="0" setter="setTotalAportesFSPSubsistencia" getter="setTotalAportesFSPSubsistencia" minOccurs="0"  nillable="true"/>
+			<field length="10" name="diasMora" type="string" position="70" justify="right" padding="0" setter="setDiasMora" getter="setDiasMora" minOccurs="0"  nillable="true"/>
+			<field length="12" name="moraCotizacionesOblg" type="string" position="80" justify="right" padding="0" setter="setMoraCotizacionesOblg" getter="setMoraCotizacionesOblg" minOccurs="0"  nillable="true"/>
+			<field length="12" name="moraCotizacionFSPSolidaridad" type="string" position="92" justify="right" padding="0" setter="setMoraCotizacionFSPSolidaridad" getter="setMoraCotizacionFSPSolidaridad" minOccurs="0"  nillable="true"/>
+			<field length="12" name="moraCotizacionFSPSubsistencia" type="string" position="104" justify="right" padding="0" setter="setMoraCotizacionFSPSubsistencia" getter="setMoraCotizacionFSPSubsistencia" minOccurs="0"  nillable="true"/>
+			<field length="10" name="totalPagarAdministradora" type="string" position="116" justify="right" padding="0" setter="setTotalPagarAdministradora" getter="setTotalPagarAdministradora" minOccurs="0"  nillable="true"/>
+			<field length="7" name="totalAfiliadosAdministradora" type="string" position="126" justify="right" padding="0" setter="setTotalAfiliadosAdministradora" getter="setTotalAfiliadosAdministradora" minOccurs="0"  nillable="true"/>
+		</record>
+		
+		<record  name="PILA-2388-Tipo4" class="com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadPensTp04">
+			<field length="2" rid="true" literal="4" name="tipoRegistro" type="int" position="0" justify="right" padding="0" setter="setTipoRegistro" getter="setTipoRegistro" minOccurs="0"  nillable="true"/>
+			<field length="7" name="secuencia" type="int" position="2" justify="right" padding="0" setter="setSecuencia" getter="setSecuencia" minOccurs="0"  nillable="true"/>
+			<field length="6" name="codigoFsp" type="string" position="9" justify="right" padding=" " setter="setCodigoFsp" getter="setCodigoFsp" minOccurs="0"  nillable="true"/>
+			<field length="16" name="nitFsp" type="string" position="15" justify="right" padding=" " setter="setNitFsp" getter="setNitFsp" minOccurs="0"  nillable="true"/>
+			<field length="1" name="digitoVerificacionFsp" type="string" position="31" justify="right" padding="0" setter="setDigitoVerificacionFsp" getter="setDigitoVerificacionFsp" minOccurs="0"  nillable="true"/>
+			<field length="12" name="valorTotalAportesFsp" type="string" position="32" justify="right" padding="0" setter="setValorTotalAportesFsp" getter="setValorTotalAportesFsp" minOccurs="0"  nillable="true"/>
+			<field length="4" name="nroDiasMoraLiquidados" type="string" position="44" justify="right" padding="0" setter="setNroDiasMoraLiquidados" getter="setNroDiasMoraLiquidados" minOccurs="0"  nillable="true"/>
+			<field length="10" name="valorIntSubctaSubsistencia" type="string" position="48" justify="right" padding="0" setter="setValorIntSubctaSubsistencia" getter="setValorIntSubctaSubsistencia" minOccurs="0"  nillable="true"/>
+			<field length="12" name="totalPagarSubctaSusbsistencia" type="string" position="58" justify="right" padding="0" setter="setTotalPagarSubctaSusbsistencia" getter="setTotalPagarSubctaSusbsistencia" minOccurs="0"  nillable="true"/>
+			<field length="7" name="numeroPensionadosFsp" type="string" position="70" justify="right" padding="0" setter="setNumeroPensionadosFsp" getter="setNumeroPensionadosFsp" minOccurs="0"  nillable="true"/>
+		</record>
+		
+		<record  name="PILA-2388-Tipo5" class="com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadPensTp05">
+			<field length="2" rid="true" literal="5" name="tipoRegistro" type="int" position="0" justify="right" padding="0" setter="setTipoRegistro" getter="setTipoRegistro" minOccurs="0"  nillable="true"/>
+			<field length="5" name="secuencia" type="int" position="2" justify="right" padding="0" setter="setSecuencia" getter="setSecuencia" minOccurs="0"  nillable="true"/>
+			<field length="6" name="codigoAdministradoraSalud" type="string" position="7" justify="right" padding=" " setter="setCodigoAdministradoraSalud" getter="setCodigoAdministradoraSalud" minOccurs="0"  nillable="true"/>
+			<field length="16" name="nitEPSoEOC" type="string" position="13" justify="right" padding=" " setter="setNitEPSoEOC" getter="setNitEPSoEOC" minOccurs="0"  nillable="true"/>
+			<field length="1" name="digitoVerificacionEPSoEOC" type="string" position="29" justify="right" padding="0" setter="setDigitoVerificacionEPSoEOC" getter="setDigitoVerificacionEPSoEOC" minOccurs="0"  nillable="true"/>
+			<field length="12" name="valorTotalCotOblAdmin" type="string" position="30" justify="right" padding="0" setter="setValorTotalCotOblAdmin" getter="setValorTotalCotOblAdmin" minOccurs="0"  nillable="true"/>
+			<field length="12" name="valorTotalUPCAdmin" type="string" position="42" justify="right" padding="0" setter="setValorTotalUPCAdmin" getter="setValorTotalUPCAdmin" minOccurs="0"  nillable="true"/>
+			<field length="4" name="nroDiasMoraLiquidados" type="string" position="54" justify="right" padding="0" setter="setNroDiasMoraLiquidados" getter="setNroDiasMoraLiquidados" minOccurs="0"  nillable="true"/>
+			<field length="10" name="valorIntMoraCotObligatorias" type="string" position="58" justify="right" padding="0" setter="setValorIntMoraCotObligatorias" getter="setValorIntMoraCotObligatorias" minOccurs="0"  nillable="true"/>
+			<field length="12" name="valorIntMoraUPCAdicionales" type="string" position="68" justify="right" padding="0" setter="setValorIntMoraUPCAdicionales" getter="setValorIntMoraUPCAdicionales" minOccurs="0"  nillable="true"/>
+			<field length="12" name="subTotalAportesCot" type="string" position="78" justify="right" padding="0" setter="setSubTotalAportesCot" getter="setSubTotalAportesCot" minOccurs="0"  nillable="true"/>
+			<field length="12" name="subTotalAportesUPC" type="string" position="90" justify="right" padding="0" setter="setSubTotalAportesUPC" getter="setSubTotalAportesUPC" minOccurs="0"  nillable="true"/>
+			<field length="12" name="totalPagarAdministradora" type="string" position="102" justify="right" padding="0" setter="setTotalPagarAdministradora" getter="setTotalPagarAdministradora" minOccurs="0"  nillable="true"/>
+			<field length="10" name="valorFosyga" type="string" position="114" justify="right" padding="0" setter="setValorFosyga" getter="setValorFosyga" minOccurs="0"  nillable="true"/>
+			<field length="7" name="totalAfiliadosAdministradora" type="string" position="124" justify="right" padding="0" setter="setTotalAfiliadosAdministradora" getter="setTotalAfiliadosAdministradora" minOccurs="0"  nillable="true"/>
+		</record>
+		
+		<record  name="PILA-2388-Tipo6" class="com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadPensTp06">
+			<field length="2" rid="true" literal="6" name="tipoRegistro" type="int" position="0" justify="right" padding="0" setter="setTipoRegistro" getter="setTipoRegistro" minOccurs="0"  nillable="true"/>
+			<field length="5"  minOccurs="0" name="Secuencia." type="int" position="2" justify="right" padding="0" setter="setSecuencia" getter="getSecuencia"/>
+			<field length="6" name="codigoCcf" type="string" position="7" justify="right" padding=" " setter="setCodigoCcf" getter="setCodigoCcf" minOccurs="0"  nillable="true"/>
+			<field length="16" name="nitCcf" type="string" position="13" justify="right" padding=" " setter="setNitCcf" getter="setNitCcf" minOccurs="0"  nillable="true"/>
+			<field length="1" name="digitoVerificacionCcf" type="string" position="29" justify="right" padding="0" setter="setDigitoVerificacionCcf" getter="setDigitoVerificacionCcf" minOccurs="0"  nillable="true"/>
+			<field length="12" name="valorAporteCcf" type="string" position="30" justify="right" padding="0" setter="setValorAporteCcf" getter="setValorAporteCcf" minOccurs="0"  nillable="true"/>
+			<field length="4" name="diasMora" type="string" position="42" justify="right" padding="0" setter="setDiasMora" getter="setDiasMora" minOccurs="0"  nillable="true"/>
+			<field length="10" name="valorInteresesMora" type="string" position="46" justify="right" padding="0" setter="setValorInteresesMora" getter="setValorInteresesMora" minOccurs="0"  nillable="true"/>
+			<field length="12" name="totalPagarCcf" type="string" position="56" justify="right" padding="0" setter="setTotalPagarCcf" getter="setTotalPagarCcf" minOccurs="0"  nillable="true"/>
+			<field length="7" name="totalAfiliadosAdministradora" type="string" position="68" justify="right" padding="0" setter="setTotalAfiliadosAdministradora" getter="setTotalAfiliadosAdministradora" minOccurs="0"  nillable="true"/>
+		</record>
+		
+		<record  name="PILA-2388-Tipo7" class="com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadPensTp07">
+			<field length="2" name="tipoRegistro" rid="true" literal="7" type="int" position="0" justify="right" padding="0" setter="setTipoRegistro" getter="setTipoRegistro" minOccurs="0"  nillable="true"/>
+			<field length="15" name="totalAPagarPension" type="string" position="2" justify="right" padding="0" setter="setTotalAPagarPension" getter="setTotalAPagarPension" minOccurs="0"  nillable="true"/>
+			<field length="15" name="totalAPagarPension" type="string" position="2" justify="right" padding="0" setter="setTotalAPagarPension" getter="setTotalAPagarPension" minOccurs="0"  nillable="true"/>
+			<field length="12" name="totalAPagarFondoSolPensional" type="string" position="14" justify="right" padding="0" setter="setTotalAPagarFondoSolPensional" getter="setTotalAPagarFondoSolPensional" minOccurs="0"  nillable="true"/>
+			<field length="12" name="totalAPagarSalud" type="string" position="26" justify="right" padding="0" setter="setTotalAPagarSalud" getter="setTotalAPagarSalud" minOccurs="0"  nillable="true"/>
+			<field length="12" name="totalAPagarCCF" type="string" position="38" justify="right" padding="0" setter="setTotalAPagarCCF" getter="setTotalAPagarCCF" minOccurs="0"  nillable="true"/>
+			<field length="12" name="granTotalAPagar" type="string" position="50" justify="right" padding="0" setter="setGranTotalAPagar" getter="setGranTotalAPagar" minOccurs="0"  nillable="true"/>
+			<field length="3" name="nroAdminPensionesReportadas" type="string" position="62" justify="right" padding="0" setter="setNroAdminPensionesReportadas" getter="setNroAdminPensionesReportadas" minOccurs="0"  nillable="true"/>
+			<field length="3" name="nroEPSoEOCReportadas" type="string" position="65" justify="right" padding="0" setter="setNroEPSoEOCReportadas" getter="setNroEPSoEOCReportadas" minOccurs="0"  nillable="true"/>
+			<field length="3" name="nroCCFReportadas" type="string" position="68" justify="right" padding="0" setter="setNroCCFReportadas" getter="setNroCCFReportadas" minOccurs="0"  nillable="true"/>
+		</record>
+
+	</stream>
+</beanio>

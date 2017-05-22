@@ -1,0 +1,366 @@
+/// <reference path="../../dt/angular.d.ts"/>
+
+namespace app.settlement {
+
+  /**
+  * @class SettlementController
+  * @author Luis Felipe Zapata <lzapta@swat-it.co>
+  * @description
+  */
+  class SettlementController {
+
+    /**
+    * @type {Boolean} showLoading - Indica si debe mostrar la imagen de loading
+    * y bloquear la pantalla hasta que espere el usuario que termine la carga
+    * del login.
+    */
+    public showLoading: Boolean = false;
+
+    /**
+    * @type {Boolean} showPanel - Indica si se oculta el panel o se muestra.
+    */
+    public showPanel: boolean = true;
+
+    /**
+    * @type {String} pathFile - Ruta del archivo de liquidación almacenado
+    * para cargar desde la lista de dashboard.
+    */
+    private pathFile: String = null;
+
+    /**
+    * @type {Boolean} fileLocalIsLoad - Indica si se paso el path de un archivo
+    * almacenado desde el liquidador y cargado por el dashboard.
+    */
+    private fileLocalIsLoad: Boolean = false;
+
+    /**
+    * @type {NativeNotificationService} nativeNotification - Clase que se encarga
+    * de mostrar notificaciones por medio de alerts nativos.
+    * @see app.native.NativeNotificationService
+    */
+    private nativeNotification: any;
+
+    /**
+    * @type {Object<name,path,data,origin>} file - Contiene la información del archivo
+    * que se carga.
+    * @see SettOptionsControler.file
+    * @see SettTotalsControler.file
+    * @see SettContributorsController.file
+    */
+    public file: any = {
+      name: "SETTLEMENT.LOAD.MESSAGES.NO_FILE",
+      path: "",
+      data: null,
+      origin: null
+    };
+
+    /**
+    * @type {Object<object>} listErrorsContributors - Un array con la estructura
+    * de los errores que entrega el validador para los registros tipo 2.
+    */
+    public listErrorsContributors: any = null;
+
+    /**
+    * @type {Object<periodPension,periodHealth,totalContributor,totalPay,totalError>}
+    * info - información resumida del archivo.
+    * @see SettInfoControler.info
+    */
+    public info: any = {
+      periodPension: "No definido",
+      periodHealth: "No definido",
+      totalContributor: 0,
+      totalPay: 0,
+      totalError: 0
+    };
+
+    /**
+    * @type {String} currentTab - Indica la posición actual del menu de tab.
+    */
+    public currentTab: string = "contributors";
+
+    /**
+    * @type {Class} soiService - Servicio para consultar los archivos JAR que se
+    * utilizan con soi para validar y cargar la información de las planillas.
+    */
+    private soiService: any;
+
+    /**
+    * @type {Class} serviceSettlement - Servicio que contiene los consumos a REST
+    * para realizar las validaciones de registros.
+    */
+    private serviceSettlement: any;
+
+    /**
+    * @type {Class} serviceJar - Servicio que consulta los archivos JAR.
+    */
+    private serviceJar: any;
+
+    /**
+    * @type {Class} serviceFile - Servicio que ejecuta el llamado a metodos
+    * nativos de Nodejs para la manipulación de archivos.
+    */
+    private serviceFile: any;
+
+    private $filter: any;
+    private $localStorage: any;
+    private $rootScope: any;
+    private $scope: any;
+
+    static $inject = ["native.notification.service", "$rootScope", "$scope", "jar.soi.service", "native.file.service", "native.jar.service", "settlement.service", "$filter", "$localStorage"];
+
+    constructor(nativeNotification, $rootScope, $scope, soiService, serviceFile, serviceJar, serviceSettlement, $filter, $localStorage) {
+      this.nativeNotification = nativeNotification;
+      this.$rootScope = $rootScope;
+      this.$scope = $scope;
+      this.soiService = soiService;
+      this.serviceJar = serviceJar;
+      this.serviceFile = serviceFile;
+      this.serviceSettlement = serviceSettlement;
+      this.$filter = $filter;
+      this.$localStorage = $localStorage;
+      this.$scope.$on("clear-container", () => {
+        this.listErrorsContributors = null;
+        this.file.totals = null;
+        this.file.data = null;
+        this.info = {};
+        this.showLoading = true;
+      });
+      this.$scope.$on("load-file-config-soi", () => {
+        this.currentTab = "contributors";
+        this.getFileConfig();
+      });
+      this.$scope.$on("update-totals", () => {
+        this.updateTotals();
+      });
+      this.$scope.$on("validate-register-table", (event, numberRegister) => {
+        this.validateRegister(numberRegister);
+      });
+      this.$scope.$on("update-info-panel", () => {
+        this.updateInfoPanel();
+      });
+    }
+
+    $doCheck() {
+      if (this.pathFile && !this.fileLocalIsLoad) {
+        this.fileLocalIsLoad = true;
+        setTimeout(() => {
+          this.$rootScope.$broadcast("load-file-settlement", this.pathFile);
+        });
+      }
+    }
+
+    /**
+    * @description
+    * Ejecuta el llamado al metodo para validar los totales de la planilla.
+    */
+    private updateTotals() {
+      this.serviceSettlement.getTotals().get().$promise.then((response) => {
+        let data = response.data;
+        if (data.error) {
+          let title = this.$filter("translate")("MESSAGES.TITLES.ERROR");
+          this.nativeNotification.show(title, data.message);
+          this.showLoading = false;
+          this.file.data = null;
+          return;
+        }
+        this.file.totals = data;
+        setTimeout(() => {
+          this.$scope.$apply();
+        });
+        this.updateInfoPanel();
+      });
+    }
+
+    /**
+    * @description
+    * Realiza el switch entre las pestañas de la vista.
+    * @param {string} tabForChange - identificador que se le da a las pestañas
+    * para realizar la carga.
+    */
+    public actionChangeTab(tabForChange: string) {
+      this.currentTab = tabForChange;
+      setTimeout(() => {
+        this.$rootScope.$broadcast("clear-inputs-table-edit");
+      });
+    }
+
+    /**
+    * @private
+    * @description
+    * Consulta si existe el archivo de configuración en la aplicación, de no
+    * existir realiza el proceso de descarga. Este archivo es utilizado por los
+    * metodos del JAR que realiza las validaciones de los campos.
+    */
+    private getFileConfig() {
+      let fileConfig = this.serviceFile.getPathOptions("archivoEnProcesoDTO.json");
+      if (fileConfig) {
+        this.initializeSettlement();
+        return;
+      }
+      let params: any = {
+        regTp01: this.file.data.regTp1Txt,
+        idSoiAportante: this.$localStorage.soiContributorIdNumber,
+        idSegUsuario: this.$localStorage.soiAccountIdNumber,
+        token: this.$localStorage.token
+      };
+      let result = this.serviceJar.execJson("pila-business", "getValidationFileConfig", params);
+      result.then((data) => {
+        if (data.code === "00") {
+          let fileProcess = this.serviceFile.createFileOptions("archivoEnProcesoDTO.json", data.archivoEnProcesoDTO);
+          fileProcess.then(() => {
+            let fileData = this.serviceFile.createFileOptions("validacionArchivoDataSourceDTO.json", data.validacionArchivoDataSourceDTO);
+            fileData.then(() => {
+              this.initializeSettlement();
+            });
+          });
+        } else {
+          let title = this.$filter("translate")("MESSAGES.TITLES.ERROR");
+          if (data.message) {
+            this.nativeNotification.show(title, data.message);
+          } else {
+            this.nativeNotification.show(title, "Problemas con conexión al servidor, no se puede descargar archivos de configuración.");
+          }
+          this.file.data = null;
+          this.showLoading = false;
+        }
+      });
+    }
+
+    /**
+    * @private
+    * @description
+    * Realiza las validaciones iniciales del documento entregando todos los
+    * posibles errores que presenta el archivo.
+    */
+    private initializeSettlement() {
+      // Parametros solicidatos por el servicio JAR para validar los archivos.
+      let params = {
+        archivoProcesoJson: this.serviceFile.getPathOptions("archivoEnProcesoDTO.json"),
+        archivoDatasourceJson: this.serviceFile.getPathOptions("validacionArchivoDataSourceDTO.json"),
+        pathArchivo2388: this.file.path
+      };
+      // Se ejecuta el llamado al servicio que valida los errores del archivo
+      this.serviceSettlement.initialize(params).get().$promise.then((response) => {
+        let data = response.data;
+        if (data.error) {
+          let title = this.$filter("translate")("MESSAGES.TITLES.ERROR");
+          this.nativeNotification.show(title, data.message);
+          this.showLoading = false;
+          this.file.data = null;
+          return;
+        }
+        // Si es correcto el proceso de descarga de los archivos de configuración
+        let newListError = {};
+        // Se convierte el resultado de los errores de los archivos en Objectos para
+        // Integrarlos con las tablas.
+        for (let i = 0; i < this.file.data.regsTp02.registers.length; i++) {
+          let currentSequence: number = this.file.data.regsTp02.registers[i].regs1;
+          let newObject = this.$filter("filter")(data, { linea: Number(currentSequence) + 1 }, true);
+          if (newObject.length > 0) {
+            newObject = this.arrayErrorsToObject(newObject);
+            newListError[currentSequence] = newObject;
+          }
+        }
+        // Se ejecuta el llamado para actualizar los datos y la información de los paneles.
+        this.file.data.regsTp02.errors = newListError;
+        this.updateTotals();
+        this.updateInfoPanel();
+      });
+    }
+
+    /**
+    * @description
+    * Convierte el array que entrega los servicios de validación con los errores
+    * en un objeto para ser utilizao en las tablas de edición.
+    */
+    private arrayErrorsToObject(registersErrors: any) {
+      let objectErrors: any = {};
+      for (let i = 0; i < registersErrors.length; i++) {
+        let field: number = registersErrors[i].campo;
+        objectErrors[field] = registersErrors[i];
+      }
+      return objectErrors;
+    }
+
+    /**
+    * @description
+    * Ejecuta la validación de un registro comparandolo con el servicio REST
+    * del JAR.
+    */
+    public validateRegister(numberRegister) {
+      numberRegister = Number(numberRegister);
+      // Se agregan los parametros solicitados por el servicio de valdiación de registros
+      let params = {
+        regTp02: this.soiService.lineRegisterType2ToArray(this.file.data, numberRegister),
+        nroLinea: numberRegister + 2
+      };
+      this.serviceSettlement.validateRegister(params).get().$promise.then((response) => {
+        let numberSequence = numberRegister + 1;
+        // Si la respuesta es correcta se procesa la carga de los errores de los campos
+        if (response.data.estadoSolicitud === "OK") {
+          let errors = response.data.erroresRegistros;
+          if (errors.length > 0) {
+            // Se valida si existe el campo para almacenar los errores del registros
+            if (!this.file.data.regsTp02.errors.hasOwnProperty(numberSequence)) {
+              this.file.data.regsTp02.errors[numberSequence] = [];
+            }
+            // Si esisten errores se indican en los registros de las tablas convirtiendo
+            // La estructura de array en objetos para que se pueda utilizar en la tabla
+            this.file.data.regsTp02.errors[numberSequence] = this.arrayErrorsToObject(errors);
+          } else {
+            delete this.file.data.regsTp02.errors[numberSequence];
+          }
+          // Se actualiza la información del panel en el campo de errores.
+          this.updateTotals(); 
+          this.updateInfoPanel();
+        }
+      });
+    }
+
+    /**
+    * @description
+    * El metodo permite actualizar las variables de información para mostrar
+    * en el panel izquierdo.
+    */
+    private updateInfoPanel() {
+      this.info.totalContributor = this.file.data.regsTp02.registers.length;
+      let arrayErrors = [];
+      this.info.totalErrorContributor = 0;
+      for (let key in this.file.data.regsTp02.errors) {
+        let object: any = Object;
+        let arrayObject: any = object.values(this.file.data.regsTp02.errors[key]);
+        arrayErrors = arrayErrors.concat(arrayObject);
+      }
+      for (let i = 0; i < this.file.data.regsTp02.registers.length; i++) {
+        let filterError = {
+          linea: i + 1
+        };
+        if (this.$filter("filter")(arrayErrors, filterError, true).length > 0) {
+          this.info.totalErrorContributor += 1;
+        }
+      }
+      this.info.totalError = arrayErrors.length;
+      this.listErrorsContributors = {
+        data: arrayErrors,
+        registers: this.file.data.regsTp02.registers
+      };
+      if (this.file.totals) {
+        this.info.totalPay = this.file.totals.totalAPagar;
+        this.info.periodHealth = this.file.totals.periodoSalud;
+        this.info.periodPension = this.file.totals.periodoNoSalud;
+      }
+      this.showLoading = false;
+    }
+
+  }
+
+  // Agrega el componente al modulo principal.
+  let app: any = angular.module("PILA");
+  app.component("settlement", {
+    bindings: {
+      pathFile: "<" // Ruta del archivo de liquidar que se carga automaticamente.
+    },
+    controller: SettlementController,
+    templateUrl: "./components/settlement/main.html"
+  });
+}

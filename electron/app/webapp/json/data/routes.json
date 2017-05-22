@@ -1,0 +1,130 @@
+{
+  "modal": {
+    "name": "modal",
+    "url": "/modal",
+    "component": "modal"
+  },
+
+  "login": {
+    "name": "login",
+    "url": "/login",
+    "component": "login"
+  },
+
+  "dashboard": {
+    "name": "dashboard",
+    "url": "/dashboard",
+    "views": {
+      "menus": {
+        "component": "menus"
+      },
+      "": {
+        "component": "dashboard"
+      }
+    }
+  },
+
+  "dashboardNotification": {
+    "name": "dashboardNotification",
+    "url": "/dashboard-notification",
+    "component": "dashboardNotification"
+  },
+
+  "dashboardTable": {
+    "name": "dashboardTable",
+    "url": "/dashboard-table",
+    "component": "dashboardTable"
+  },
+
+  "convert": {
+    "name": "convert",
+    "url": "/convert",
+    "views": {
+      "menus": {
+        "component": "menus"
+      },
+      "": {
+        "component": "convert"
+      }
+    }
+  },
+
+  "errorConvert": {
+    "name": "errorConvert",
+    "url": "/error-convert/{data}/{file}",
+    "views": {
+      "menus": {
+        "component": "menus"
+      },
+      "": {
+        "component": "errorConvert"
+      }
+    }
+  },
+
+  "errorContributors": {
+    "name": "errorContributors",
+    "url": "/error-contributors",
+    "component": "errorContributors"
+  },
+
+  "tableEdit": {
+    "name": "tableEdit",
+    "url": "/table-edit",
+    "component": "tableEdit"
+  },
+
+  "settOptions": {
+    "name": "settOptions",
+    "url": "/sett-options",
+    "component": "settOptions"
+  },
+
+  "settInfo": {
+    "name": "settInfo",
+    "url": "/sett-info",
+    "component": "settInfo"
+  },
+
+  "settTotals": {
+    "name": "settTotals",
+    "url": "/sett-totals",
+    "component": "settTotals"
+  },
+
+  "settErrors": {
+    "name": "settErrors",
+    "url": "/sett-errors",
+    "component": "settErrors"
+  },
+
+  "menus": {
+    "name": "menus",
+    "url": "/menus",
+    "component": "menus"
+  },
+
+  "supportPanel": {
+    "name": "supportPanel",
+    "url": "/support-panel",
+    "component": "supportPanel"
+  },
+
+  "supportTable": {
+    "name": "supportTable",
+    "url": "/support-table",
+    "component": "supportTable"
+  },
+
+  "supportLoad": {
+    "name": "supportLoad",
+    "url": "/support-load",
+    "component": "supportLoad"
+  },
+
+  "supportConfigEmails": {
+    "name": "supportConfigEmails",
+    "url": "/support-config-emails",
+    "component": "supportConfigEmails"
+  }
+}

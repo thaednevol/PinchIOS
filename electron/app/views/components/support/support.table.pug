@@ -1,0 +1,16 @@
+.support-contributor
+
+  .support-contributor__container
+
+    .sy-table__container.sett-contributor__table-edit
+      .sy__title-table
+        span(ng-bind="'SUPPORT.TABLE.DATA_EMPLOYED' | translate")
+        //- Barra de menu utilizada para agregar CSV y eliminar registros.
+        .support-contributor__menu
+          .support-contributor__menu-item
+            i.mdi.mdi-email-outline(ng-click="$ctrl.actionAddEmail()" ng-mouseover="$ctrl.actionShowTooltip($event)" ng-mouseleave="$ctrl.actionHideTooltip($event)")
+              span Agregar emails
+            i.mdi.mdi-close-circle-outline(ng-click="$ctrl.actionDeleteContributor()" ng-mouseover="$ctrl.actionShowTooltip($event)" ng-mouseleave="$ctrl.actionHideTooltip($event)")
+              span Eliminar cotizante
+
+      table-edit(data="$ctrl.listContributors" labels="$ctrl.labelsTable" id-table="'listContributors'" active-filter="true" fixed-columns="true" selected-item="$ctrl.selectedItem" cell-no-edit="$ctrl.cellNoEdit")

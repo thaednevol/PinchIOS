@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="lib" path="/Users/jgutierrez/lucasian/soi.empresarial.git/trunk/tech/wks.cons/lib/common.api.biz.jar"/>
+	<classpathentry kind="lib" path="/Users/jgutierrez/lucasian/soi.empresarial.git/trunk/tech/wks.cons/lib/leaf-evol-common-base.jar"/>
+	<classpathentry kind="lib" path="/Users/jgutierrez/lucasian/soi.empresarial.git/trunk/tech/wks.cons/lib/leaf-evol-common-exceptions.jar"/>
+	<classpathentry kind="lib" path="/Users/jgutierrez/lucasian/soi.empresarial.git/trunk/tech/wks.cons/lib/leaf-evol-common-jee.jar"/>
+	<classpathentry kind="lib" path="/Users/jgutierrez/lucasian/soi.empresarial.git/trunk/tech/wks.cons/lib/arc-biz-1.0.jar"/>
+	<classpathentry kind="lib" path="/Users/jgutierrez/lucasian/soi.empresarial.git/trunk/tech/wks.cons/lib/cfg-biz-1.0.jar"/>
+	<classpathentry kind="lib" path="/Users/jgutierrez/lucasian/soi.empresarial.git/trunk/tech/wks.cons/lib/seg-biz-1.0.jar"/>
+	<classpathentry kind="lib" path="/Users/jgutierrez/lucasian/soi.empresarial.git/trunk/tech/wks.cons/lib/ArialFont.jar"/>
+	<classpathentry kind="lib" path="/Users/jgutierrez/lucasian/soi.empresarial.git/trunk/tech/wks.cons/lib/iText-2.1.7.jar"/>
+	<classpathentry kind="lib" path="/Users/jgutierrez/lucasian/soi.empresarial.git/trunk/tech/wks.cons/lib/jasperreports-3.7.4.jar"/>
+	<classpathentry kind="lib" path="/Users/jgutierrez/lucasian/soi.empresarial.git/trunk/tech/wks.cons/lib/log4j-1.2.17 copia.jar"/>
+	<classpathentry kind="lib" path="/Users/jgutierrez/lucasian/soi.empresarial.git/trunk/tech/wks.cons/lib/gson-2.8.0.jar"/>
+	<classpathentry kind="lib" path="/Users/jgutierrez/lucasian/nsoi.repository/branch.abril.2017/lib.biz/nsoi/sop.api.biz.jar"/>
+	<classpathentry kind="lib" path="/Users/jgutierrez/lucasian/soi.empresarial.git/trunk/tech/wks.cons/lib/mail-1.4.jar"/>
+	<classpathentry kind="lib" path="/Users/jgutierrez/lucasian/nsoi.repository/branch.abril.2017/lib.biz/nsoi/pla.api.biz.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

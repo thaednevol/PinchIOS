@@ -1,0 +1,29 @@
+
+//- Tablas normales
+.table__container(ng-if="$ctrl.data && !$ctrl.activeFilter")
+  include table.data.pug
+
+//- Tabla utilizada para registros de tipo 2, son con filtros, paginación y columnas fijas
+.table__container(ng-if="$ctrl.data && $ctrl.activeFilter && $ctrl.fixedColumns")
+  .table__left
+    include table.fixed.columns.pug
+  .table__right
+    include table.data.edit.pug
+    //- Barra de scroll  para los errores.
+    .table__scroll-error
+      .item
+  //- Filtro de busqueda para las celdas
+  include table.filter.pug
+
+//- Tabla con filtro activo
+.table__container(ng-if="$ctrl.data && $ctrl.activeFilter && !$ctrl.fixedColumns")
+  include table.data.edit.pug
+  include table.filter.pug
+
+//- Paginación de las tablas de registro tipo 2
+.table__nav(ng-if="$ctrl.data && $ctrl.activeFilter")
+  a(ng-click="$ctrl.actionChangePage('prev')")
+    i.fa.fa-chevron-circle-left
+  a(ng-click="$ctrl.actionChangePage('next')")
+    i.fa.fa-chevron-circle-right
+  span(ng-bind="($ctrl.startLimit + 1) + ' a ' + $ctrl.currentNumberRegisterLoad  + ' Total registros: ' + $ctrl.data.registers.length")

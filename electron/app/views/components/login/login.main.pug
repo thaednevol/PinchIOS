@@ -1,0 +1,57 @@
+.login
+
+  .login__container
+
+    //- Cabecere del login
+    .login__head
+      img(src="../img/system/logoSoi.png")
+
+    .login__head-text
+      span(ng-bind="'LOGIN.TEXT.HEAD' | translate")
+
+    //- Formulario de login
+    .login__form
+
+      .login__form-container(ng-class="{'login__form-container--error': $ctrl.errorForm}" ng-keypress="$ctrl.actionKeyPress($event)")
+
+        //- Datos de la empresa
+        .login__form-inputs
+          .login__form-inputs-head
+            span(ng-bind="'LOGIN.FORM.COMPANY' | translate")
+          div
+            select(ng-model="$ctrl.form.typeCompany" ng-class="{'login__form-inputs--error': $ctrl.errorForm['typeCompany']}" name="tipoIdEmpresa" tabindex="1" ng-options="item.value as item.text | translate for item in $ctrl.listCompany")
+          div
+            input(ng-model="$ctrl.form.company" ng-class="{'login__form-inputs--error': $ctrl.errorForm['company']}" name="numeroIdEmpresa" tabindex="2")
+
+        //- Datos del usuario
+        .login__form-inputs
+          .login__form-inputs-head
+            span(ng-bind="'LOGIN.FORM.USER' | translate")
+          div
+            select(ng-model="$ctrl.form.typeUser" ng-class="{'login__form-inputs--error': $ctrl.errorForm['typeUser']}" name="tipoIdUsuario" tabindex="3" ng-options="item.value as item.text | translate for item in $ctrl.listUser")
+          div
+            input(ng-model="$ctrl.form.user" ng-class="{'login__form-inputs--error': $ctrl.errorForm['user']}" name="numeroIdUsuario" tabindex="4")
+
+        //- Contraseña
+        .login__form-inputs--password.login__form-inputs
+          .login__form-inputs-head
+            span(ng-bind="'LOGIN.FORM.PASSWORD' | translate")
+          div
+            input(ng-model="$ctrl.form.password" type="password" ng-class="{'login__form-inputs--error': $ctrl.errorForm['password']}" name="claveUsuario" tabindex="5")
+
+        //- Boton para no cerrar la sesion
+        .login__form-checkbox
+          input(ng-model="$ctrl.form.saveSession" type="checkbox" name="claveUsuario" tabindex="6")
+          span(ng-bind="'LOGIN.FORM.DO_NOT_SING_OUT' | translate")
+
+        //- Mensaje de error en proceso de login
+        .login__form-error(ng-if="$ctrl.messageError")
+          i.mdi.mdi-alert-circle
+          span(ng-bind="$ctrl.messageError")
+
+        //- Botones de acciones sesión
+        .login__form-actions
+          .sy__button--green(ng-click="$ctrl.actionValidateLogin()" tabindex="7")
+            span(ng-bind="'LOGIN.FORM.LOGIN' | translate")
+
+loading(show-loading="$ctrl.showLoading")

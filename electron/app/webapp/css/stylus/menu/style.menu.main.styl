@@ -1,0 +1,117 @@
+.menu
+  display: flex;
+  flex-direction: column;
+  color: #75818c;
+  font-size: 12px;
+
+  &__logo
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    img
+      width: 182px;
+
+  &__buttons
+    display: flex;
+    justify-content: space-between;
+    height: 100%;
+    a
+      padding: 10px;
+      min-width: 100px;
+      text-decoration: none;
+      display: flex;
+      color: #75818c;
+      font-weight: 400;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      flex: 1;
+      cursor: pointer;
+      margin-right: 0 5px;
+      background: url(../img/menu/mline.png) no-repeat;
+      span
+        text-align: center;
+        line-height: 12px;
+        font-weight: 400px;
+        white-space: nowrap;
+        margin-bottom: -4px;
+      i
+        font-size: 24px;
+        margin-bottom: 4px;
+    &--active
+      border-bottom: 3px solid #0079c0;
+      color: #0079c0 !important;
+      font-weight: bold !important;
+
+  // Boton del perfil del usuario
+  &__user
+    border-left: 1px solid #b5bdd2;
+    height: 100%;
+    align-items: center;
+    display: flex;
+    padding: 0px 5px;
+    position relative;
+    &:hover
+      background: white !important;
+    &-container
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      i
+        margin-right: 3px;
+        color: #0079c0;
+        font-size: 20px;
+      span
+        font-weight: bold !important;
+        margin-right: 4px;
+        font-size: 11px !important;
+        ^[1]:hover &
+          color: #0079c0 !important;
+
+    // Menu emergente del boton de usuario
+    &-sub
+      animation: 0.3s linear 0s normal forwards 1 hover-fade;
+      background: white;
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      width: 100%;
+      right: 0px;
+      top: 27px;
+      border-left: 1px solid #ebebeb;
+      padding: 10px 5px;
+      border-bottom: 3px solid #0079c0;
+      border-right: 1px solid #ebebeb;
+      box-sizing: border-box;
+      z-index: 9999;
+      a
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+        font-size: 13px !important;
+        cursor: pointer;
+        margin-right: 10px;
+        i
+          margin-left: 5px;
+          font-size: 24px;
+        &:hover
+          color: #0079c0 !important;
+
+  // Es el contenedor de arriba que solo muestra la información del usuario
+  &__container--top
+    display: flex;
+    justify-content: flex-end;
+    height: 30px;
+    align-items: center;
+
+  // Es el contenedor de abajo que muestra logo y botones del menu principal
+  &__container--bottom
+    border-bottom: 1px solid #c7cfe2;
+    border-top: 1px solid #b5bdd2;
+    height: 72px;
+    display: flex;
+    justify-content: space-between;
+    background: white;
+    padding-left: 10px;

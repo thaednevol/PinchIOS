@@ -1,0 +1,26 @@
+.dashboard
+  .sy__title-content
+    span(ng-bind="'DASHBOARD.TITLE' | translate")
+
+  //- Cabecera con información del aportante o datos del usuario que se logea
+  .dashboard__contributor(ng-if="$ctrl.account")
+    //- Aportante
+    .dashboard__contributor-item
+      span(ng-bind="'DASHBOARD.ACCOUNT.LABEL.CONTRIBUTOR' | translate")
+      span(ng-bind="$ctrl.account.contributor")
+    //- Tipo Empresa
+    .dashboard__contributor-item
+      span(ng-bind="'DASHBOARD.ACCOUNT.LABEL.TYPE_COMPANY' | translate")
+      span(ng-bind="$ctrl.account.typeCompany")
+    //- Clase empresa
+    .dashboard__contributor-item
+      span(ng-bind="'DASHBOARD.ACCOUNT.LABEL.CLASS_COMPANY' | translate")
+      span(ng-bind="$ctrl.account.classCompany")
+
+  //- Componente de manejo de notificaciones
+  dashboard-notification
+
+  //- Contenedor de tablas de filtro
+  .dashboard__tables
+    dashboard-table(list-table="$ctrl.listTableLocal" labels-table="$ctrl.listLabelTableLocal" type-table="'LOCAL'")
+    dashboard-table(list-table="$ctrl.listTableServer" labels-table="$ctrl.listLabelTableSever" type-table="'SETTLEMENT'")

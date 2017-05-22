@@ -1,0 +1,20 @@
+//- Para los archivos de producción los script seran minificados y ofuscados
+if production
+  script(src='../js/lib/angular/angular.min.js')
+  script(src='../js/lib/ngLocale/angular-locale_es-co.js')
+  script(src='../js/lib/angular-resource/angular-resource.min.js')
+  script(src='../js/lib/angular-ui-router/release/angular-ui-router.min.js')
+  script(src='../js/lib/ngstorage/ngStorage.min.js')
+  script(src='../js/lib/angular-translate/angular-translate.min.js')
+  script(src='../js/lib/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js')
+  script(src='../js/main.min.js')
+else
+  script(src='../js/lib/angular/angular.js')
+  script(src='../js/lib/ngLocale/angular-locale_es-co.js')
+  script(src='../js/lib/angular-resource/angular-resource.js')
+  script(src='../js/lib/angular-ui-router/release/angular-ui-router.js')
+  script(src='../js/lib/ngstorage/ngStorage.js')
+  script(src='../js/lib/angular-translate/angular-translate.js')
+  script(src='../js/lib/angular-translate-loader-static-files/angular-translate-loader-static-files.js')
+  script(src='../js/main.js')
+  //- script(src='../js/main.min.js')
