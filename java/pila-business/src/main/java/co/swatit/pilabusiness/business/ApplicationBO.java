@@ -1,6 +1,8 @@
 package co.swatit.pilabusiness.business;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.ws.rs.core.MediaType;
 
@@ -8,15 +10,20 @@ import co.swatit.pilabusiness.utils.AttributePropertiesUtil;
 import co.swatit.pilabusiness.utils.ResponseUtil;
 import co.swatit.pilabusiness.utils.enums.ServiceNameEnum;
 import co.swatit.pilautil.constants.ServicesParamsConstants;
+import co.swatit.pilautil.dto.in.GetConsultFileInDTO;
 import co.swatit.pilautil.dto.in.GetContributorsInformationInDTO;
 import co.swatit.pilautil.dto.in.GetFilteredPayrollsInDTO;
 import co.swatit.pilautil.dto.in.GetNotificationsInDTO;
 import co.swatit.pilautil.dto.in.GetPayrollContributorsInDTO;
 import co.swatit.pilautil.dto.in.GetPayrollHeaderInDTO;
+import co.swatit.pilautil.dto.in.GetPutPayrollInDTO;
 import co.swatit.pilautil.dto.in.GetValidateFileInDTO;
 import co.swatit.pilautil.dto.in.GetValidationFileConfigInDTO;
 import co.swatit.pilautil.dto.in.LoginInDTO;
 import co.swatit.pilautil.dto.in.ValidateTokenInDTO;
+import co.swatit.pilautil.dto.out.GetConsultFileOutDTO;
+import co.swatit.pilautil.dto.out.GetConsultPayrollOutDTO;
+import co.swatit.pilautil.dto.out.GetValidateFileOutDTO;
 import co.swatit.pilautil.exception.BusinessException;
 import co.swatit.pilautil.exception.ErrorMessagesLoader;
 import co.swatit.pilautil.exception.InvokeException;
@@ -26,6 +33,8 @@ import co.swatit.pilautil.generics.FileUtilities;
 import co.swatit.pilautil.generics.Validation;
 import co.swatit.pilautil.request.rest.ParserUtils;
 import co.swatit.pilautil.request.rest.ServiceRequestProvider;
+
+import com.ach.pla.biz.type.NotificacionDeArchivoEnProcesoType;
 
 /**
  * Clase encargada de implementar la lógica del negocio del proyecto
@@ -90,6 +99,15 @@ public final class ApplicationBO {
 			break;
 		case CREATEPAYROLL:
 			retorno = createPayroll(parameters);
+			break;
+		case VALIDATEFILE:
+			retorno = validateFile(parameters);
+			break;
+		case CONSULTFILE:
+			retorno = consultFile(parameters);
+			break;
+		case PUTPAYROLL:
+			retorno = putPayroll(parameters);
 			break;
 		default:
 			retorno = ResponseUtil.manageException(CodeErrorEnum.ERRORSERVICENOTFOUND.getCode(),
@@ -434,7 +452,130 @@ public final class ApplicationBO {
 			FileUtilities.zipFile(inDTO.getRutaLocalArchivo(), inDTO.getFileName(), inDTO.getFileNameZip());
 			
 			resp = ServiceRequestProvider.callPostWS(AttributePropertiesUtil.PILA_WS_URL,
-					AttributePropertiesUtil.CREATE_PAYROLL, paramData, MediaType.APPLICATION_JSON);
+					AttributePropertiesUtil.VALIDATE_FILE, paramData, MediaType.APPLICATION_JSON);
+			GetValidateFileOutDTO getValidateFileOutDTO = ParserUtils.INSTANCE.parseJSONToObject(resp,
+					GetValidateFileOutDTO.class);
+			
+			
+			GetConsultFileInDTO getConsultFileInDTO = new GetConsultFileInDTO();
+			getConsultFileInDTO.setIdFile(getValidateFileOutDTO.getIdArchivoEnProceso());
+			resp = ParserUtils.INSTANCE.convertObjectToJSON(getConsultFileInDTO);
+			
+			resp = ServiceRequestProvider.callPostWS(AttributePropertiesUtil.PILA_WS_URL,
+					AttributePropertiesUtil.CONSULT_FILE, resp, MediaType.APPLICATION_JSON);
+			GetConsultFileOutDTO getConsultFileOutDTO = ParserUtils.INSTANCE.parseJSONToObject(resp,
+					GetConsultFileOutDTO.class);
+			
+			while (getConsultFileOutDTO.getIdPlanilla() == 0) {
+				FileUtilities.sleep();
+				resp = ParserUtils.INSTANCE.convertObjectToJSON(getConsultFileInDTO);
+				resp = ServiceRequestProvider.callPostWS(AttributePropertiesUtil.PILA_WS_URL,
+						AttributePropertiesUtil.CONSULT_FILE, resp, MediaType.APPLICATION_JSON);
+				getConsultFileOutDTO = ParserUtils.INSTANCE.parseJSONToObject(resp,
+						GetConsultFileOutDTO.class);
+			}
+			
+			GetConsultPayrollOutDTO getConsultPayrollOutDTO = new GetConsultPayrollOutDTO();
+			GetPutPayrollInDTO getPutPayrollInDTO = new GetPutPayrollInDTO();
+			getConsultPayrollOutDTO.setPeriodoNoSalud(inDTO.getPeriodoNoSalud());
+			getConsultPayrollOutDTO.setPeriodoSalud(inDTO.getPeriodoSalud());
+			getPutPayrollInDTO.setGetConsultPayrollOutDTO(getConsultPayrollOutDTO);
+			getPutPayrollInDTO.setIdPlanilla(getConsultFileOutDTO.getIdPlanilla());
+			
+			getValidateFileOutDTO.setIdSegUsuario(inDTO.getIdSegUsuario());
+			getValidateFileOutDTO.setIdSoiPlanilla(getConsultFileOutDTO.getIdPlanilla());
+			getValidateFileOutDTO.setNotificacionDeArchivoEnProcesoType(NotificacionDeArchivoEnProcesoType.SOBREESCRIBIR_NOTIFICACION);
+			getValidateFileOutDTO.setNumeroTotalDeEmpleadosPorPantalla(inDTO.getNumeroTotalDeEmpleadosPorPantalla());
+			getValidateFileOutDTO.setNombreArchivo(inDTO.getFileName());
+			getValidateFileOutDTO.setIdAportante(inDTO.getIdAportante());
+			
+			getPutPayrollInDTO.setGetValidateFileOutDTO(getValidateFileOutDTO);
+			
+			resp = ParserUtils.INSTANCE.convertObjectToJSON(getPutPayrollInDTO);
+			
+			resp = ServiceRequestProvider.callPostWS(AttributePropertiesUtil.PILA_WS_URL,
+					AttributePropertiesUtil.PUT_PAYROLL, resp, MediaType.APPLICATION_JSON);
+			
+		} catch (IOException e) {
+			resp = ResponseUtil.manageException(CodeErrorEnum.ERRORPARSEJSON.getCode(),
+					ErrorMessagesLoader.INSTANCE.getErrorMensage(CodeErrorEnum.ERRORPARSEJSON.getDescription()), e);
+		} catch (InvokeException e) {
+			resp = ResponseUtil.manageException(CodeErrorEnum.WSCLIENTERROR.getCode(),
+					ErrorMessagesLoader.INSTANCE.getErrorMensage(CodeErrorEnum.WSCLIENTERROR.getDescription()), e);
+		}
+		return resp;
+	}
+	
+	private static String validateFile(String paramData) {
+		String resp = Constants.EMPTY;
+		try {
+			GetValidateFileInDTO inDTO = ParserUtils.INSTANCE.parseJSONToObject(paramData,GetValidateFileInDTO.class);
+			
+			FileUtilities.zipFile(inDTO.getRutaLocalArchivo(), inDTO.getFileName(), inDTO.getFileNameZip());
+			
+			if ( inDTO.getFileZip()==null || inDTO.getFileZip().length==0 ){
+				inDTO.setArchivoZip(FileUtilities.readZipFile(inDTO.getRutaLocalArchivo()+File.separator+inDTO.getFileNameZip()));
+				paramData = ParserUtils.INSTANCE.convertObjectToJSON(inDTO);
+			}						
+			
+			resp = ServiceRequestProvider.callPostWS(AttributePropertiesUtil.PILA_WS_URL,
+					AttributePropertiesUtil.VALIDATE_FILE, paramData, MediaType.APPLICATION_JSON);
+			
+			
+			
+		} catch (IOException e) {			
+			resp = ResponseUtil.manageException(CodeErrorEnum.ERRORPARSEJSON.getCode(),
+					ErrorMessagesLoader.INSTANCE.getErrorMensage(CodeErrorEnum.ERRORPARSEJSON.getDescription()), e);
+		} catch (InvokeException e) {
+			resp = ResponseUtil.manageException(CodeErrorEnum.WSCLIENTERROR.getCode(),
+					ErrorMessagesLoader.INSTANCE.getErrorMensage(CodeErrorEnum.WSCLIENTERROR.getDescription()), e);
+		}
+		return resp;
+	}
+	
+	
+	private static String consultFile(String paramData) {
+		String resp = Constants.EMPTY;
+		try {
+			
+			GetConsultFileInDTO inDTO = ParserUtils.INSTANCE.parseJSONToObject(paramData,
+					GetConsultFileInDTO.class);
+			
+			resp = ServiceRequestProvider.callPostWS(AttributePropertiesUtil.PILA_WS_URL,
+					AttributePropertiesUtil.CONSULT_FILE, paramData, MediaType.APPLICATION_JSON);
+			/*GetConsultFileOutDTO getConsultFileOutDTO = ParserUtils.INSTANCE.parseJSONToObject(resp,
+					GetConsultFileOutDTO.class);
+			
+			while (getConsultFileOutDTO.getIdPlanilla() == 0) {
+				FileUtilities.sleep();
+				resp = ParserUtils.INSTANCE.convertObjectToJSON(inDTO);
+				resp = ServiceRequestProvider.callPostWS(AttributePropertiesUtil.PILA_WS_URL,
+						AttributePropertiesUtil.CONSULT_FILE, resp, MediaType.APPLICATION_JSON);
+				getConsultFileOutDTO = ParserUtils.INSTANCE.parseJSONToObject(resp,
+						GetConsultFileOutDTO.class);
+			}*/
+			
+		} catch (IOException e) {
+			resp = ResponseUtil.manageException(CodeErrorEnum.ERRORPARSEJSON.getCode(),
+					ErrorMessagesLoader.INSTANCE.getErrorMensage(CodeErrorEnum.ERRORPARSEJSON.getDescription()), e);
+		} catch (InvokeException e) {
+			resp = ResponseUtil.manageException(CodeErrorEnum.WSCLIENTERROR.getCode(),
+					ErrorMessagesLoader.INSTANCE.getErrorMensage(CodeErrorEnum.WSCLIENTERROR.getDescription()), e);
+		}
+		return resp;
+	}
+	
+	
+	private static String putPayroll(String paramData) {
+		String resp = Constants.EMPTY;
+		try {
+			
+			GetPutPayrollInDTO inDTO = ParserUtils.INSTANCE.parseJSONToObject(paramData,
+					GetPutPayrollInDTO.class);
+			
+			resp = ServiceRequestProvider.callPostWS(AttributePropertiesUtil.PILA_WS_URL,
+					AttributePropertiesUtil.PUT_PAYROLL, paramData, MediaType.APPLICATION_JSON);
+			
 		} catch (IOException e) {
 			resp = ResponseUtil.manageException(CodeErrorEnum.ERRORPARSEJSON.getCode(),
 					ErrorMessagesLoader.INSTANCE.getErrorMensage(CodeErrorEnum.ERRORPARSEJSON.getDescription()), e);

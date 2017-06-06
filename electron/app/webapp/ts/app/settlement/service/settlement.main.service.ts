@@ -1,4 +1,4 @@
-/// <reference path="../../dt/angular.d.ts"/>
+/// <reference path="../../../dt/angular.d.ts"/>
 
 namespace app.settlement {
 
@@ -22,11 +22,13 @@ namespace app.settlement {
     private routeserver: string;
 
     private $resource: any;
-    static $inject = ["$resource", "OPTIONS"];
+    private $filter:any;
+    static $inject = ["$resource", "OPTIONS", "$filter"];
 
-    constructor($resource, OPTIONS) {
+    constructor($resource, OPTIONS, $filter) {
       this.$resource = $resource;
       this.OPTIONS = OPTIONS;
+      this.$filter = $filter;
       this.routeserver = `${this.OPTIONS.SERVER_SPRING.SERVER}:${this.OPTIONS.SERVER_SPRING.PORT}/`;
     }
 
@@ -41,10 +43,17 @@ namespace app.settlement {
         get: {
           method: "GET",
           transformResponse: (data) => {
+            if (data.indexOf("Apache Tomcat") !== -1) {
+              data = {
+                error: true,
+                message: this.$filter("translate")("MESSAGES.ERROR_500")
+              };
+              data = JSON.stringify(data);
+            }
             if (data === "") {
               data = {
                 error: true,
-                message: "El servicio de 'incializarliquidacion' retorna vacio, el error afectara la validación de las celdas."
+                message: this.$filter("translate")("MESSAGES.ERROR_SETTLEMENT_INITIALIZE")
               };
               data = JSON.stringify(data);
             }
@@ -89,7 +98,7 @@ namespace app.settlement {
             if (data === "") {
               data = {
                 error: true,
-                message: "El servicio de 'gettotales' retorna vacio, no se visualizara los totales de la planilla."
+                message: this.$filter("translate")("MESSAGES.ERROR_SETTLEMENT_TOTALES")
               };
               data = JSON.stringify(data);
             }

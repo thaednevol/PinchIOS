@@ -5,9 +5,9 @@
       //- Cabecera de la tabla
       thead
         tr
-          th(ng-repeat="textHead in $ctrl.labels track by $index")
+          th(ng-repeat="textHead in $ctrl.labels track by $index" ng-class="{'table__fixed-filter--enable': $ctrl.objectFilter[$ctrl.keyFilter[$index]]}")
             span(ng-bind="::textHead")
-            i.fa.fa-filter.table__fixed-filter(ng-show="$ctrl.activeFilter" ng-click="$ctrl.actionOpenFilter($event, $index)" ng-class="{'table__fixed-filter--enable': $ctrl.objectFilter[$ctrl.keyFilter[$index]]}")
+            i.fa.fa-filter.table__fixed-filter(ng-show="$ctrl.activeFilter" ng-click="$ctrl.actionOpenFilter($event, $index)")
     .table__fixed-limit
   //- Tabla con datos
   table.table__data(border="1" id="{{$ctrl.idTable}}")
@@ -20,3 +20,6 @@
     tbody
       tr(ng-repeat="register in $ctrl.data.registers | filter:$ctrl.objectFilter | limitTo:$ctrl.limitRegister:$ctrl.startLimit track by $index" ng-init="$last && $ctrl.changeLimitRegister()" ng-class="{'table__data--error':$ctrl.data.errors.hasOwnProperty($ctrl.valueRowId(register))}" id="row-{{$index}}")
         td(ng-repeat="textRegister in register track by $index" ng-bind="textRegister || ' '" ng-click="$ctrl.actionSelectCell(this, $event)" ng-mousedown="$ctrl.actionContextMenuCell(this, $event)" ng-class="{'table__data-field--error': $ctrl.data.errors[$ctrl.valueRowId(register)].hasOwnProperty($index + 1), 'table__data--block-cell':$ctrl.cellNoEdit.indexOf($index) !== -1 && $ctrl.cellNoEdit.length > 0}")
+      tr(ng-if="($ctrl.data.registers | filter:$ctrl.objectFilter).length === 0")
+        td.table__data--no-data(colspan="{{$ctrl.labels.length}}")
+          span(ng-bind="'SETTLEMENT.TABLES.NO_REGISTER' | translate")

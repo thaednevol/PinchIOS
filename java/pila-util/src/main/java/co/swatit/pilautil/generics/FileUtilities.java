@@ -64,6 +64,7 @@ public final class FileUtilities {
 		try {
 			fileOutputStream = new FileOutputStream(filePath);
 			fileOutputStream.write(bytes);
+			fileOutputStream.flush();
 		} catch (FileNotFoundException e) {
 			LOGGER.error(ErrorMessagesLoader.INSTANCE.getErrorMensage(CodeErrorEnum.EXCEPTION.getDescription()), e);
 		} catch (IOException e) {
@@ -108,6 +109,7 @@ public final class FileUtilities {
 						dest = null;
 						File fileDest = new File(dirDestination.getAbsolutePath()
 								+ "/" + filePath);
+						LOGGER.info("Genero archivo: "+fileDest.getAbsolutePath());
 						if (entry.isDirectory()) {
 							fileDest.mkdirs();
 						} else {
@@ -173,6 +175,9 @@ public final class FileUtilities {
 		nombreArchivo.append(filePath);
 		nombreArchivo.append(File.separator);
 		nombreArchivo.append(idArchivoEnProceso);
+		
+		LOGGER.info("Archivo Generado: "+nombreArchivo.toString());
+		
 		if (!fileName.equals("")) {
 			FileOutputStream fileOutStream;
 			try {
@@ -270,10 +275,28 @@ public final class FileUtilities {
     		//remember close it
     		zos.close();
 
-    		System.out.println("Done");
-
     	}catch(IOException ex){
     	   ex.printStackTrace();
     	}
     }
+	
+	public static void sleep() {
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException ex) {
+			Thread.currentThread().interrupt();
+		}
+	}
+	
+	public static void main(String args[]) {
+		boolean bandera = true;
+		int i = 0;
+		while (bandera) {
+			sleep();
+			if (i == 10) {
+				bandera = false;
+			}
+			i++;
+		}
+	}
 }

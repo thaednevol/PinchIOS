@@ -20,7 +20,8 @@ namespace app.settlement {
       totalContributor: 0,
       totalPay: 0,
       totalError: 0,
-      totalErrorContributor: 0 
+      totalErrorContributor: 0,
+      totalFilterRegister: 0
     };
 
     constructor() {

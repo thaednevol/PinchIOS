@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 
 import co.swatit.pilautil.constants.ServicesConstants;
 import co.swatit.pilautil.dto.ResponseDTO;
+import co.swatit.pilautil.dto.in.GetConsultFileInDTO;
 import co.swatit.pilautil.dto.in.GetContributorsInformationInDTO;
 import co.swatit.pilautil.dto.in.GetFilteredPayrollsInDTO;
 import co.swatit.pilautil.dto.in.GetNotificationsInDTO;
@@ -327,15 +328,16 @@ public class PilaWS {
 	}
 	
 	
-	@GET
+	@POST
 	@Path(ServicesConstants.WS_CONSULT_FILE)
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public GetConsultFileOutDTO consultFile(@PathParam("idFile") Long idFile) {
+	public GetConsultFileOutDTO consultFile(GetConsultFileInDTO getConsultFileInDTO) {
 		LOGGER.info(Constants.STARTING_SERVICE + ServicesConstants.WS_CONSULT_FILE);
 		GetConsultFileOutDTO response = new GetConsultFileOutDTO();
 		
 		try {
-			response = PilaBO.consultFile(idFile);
+			response = PilaBO.consultFile(getConsultFileInDTO.getIdFile());
 		} catch (BusinessException ex) {
 			response = Utilities.buildResponse(response, CodeErrorEnum.ERROR, ex);
 		}
@@ -383,6 +385,7 @@ public class PilaWS {
 	@Path(ServicesConstants.WS_CREATE_PAYROLL)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	//{"getValidateFileOutDTO":	{"idArchivoEnProceso":30805,"errores":[],"idSegUsuario":5728,"idSoiPlanilla":41820,"notificacionDeArchivoEnProcesoType":"SOBREESCRIBIR_NOTIFICACION","numeroTotalDeEmpleadosPorPantalla":201,"nombreArchivo":"/data/nsoi.out.directories/nsoi/entrada/ArchivosDeEntrada/05-2017/1494369020622-ARCHIVO PLANO ACTIVOS NEC248-005 CP4923.TXT","idAportante":4891,"idSoiPlanillaGuardada":118224,"codTipoPlanilla":"E","idSoiTpPlanilla":1}	,"getUsuarioAutenticadoInDTO":{"idSoiAportanteUsuario":5352,"permitirActualizarDatosApteMigrado":false,"apteUgpp":false,"idRecursoLiquidacionPlanillaU":5465,"usuarioCreacion":"CC180818","ipUsuarioOrigen":"localhost"},"idPlanilla":30739,"getConsultPayrollOutDTO":{"periodoSalud":"2017-03","periodoNoSalud":"2017-02","confirmacionRetroactivo":false,"calcularMora":true}}
 	public GetPutPayrollOutDTO createPayroll(GetValidateFileInDTO getValidateFileInDTO) {
 		LOGGER.info(Constants.STARTING_SERVICE + ServicesConstants.WS_CREATE_PAYROLL);
 		GetPutPayrollOutDTO response = new GetPutPayrollOutDTO();

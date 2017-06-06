@@ -49,6 +49,8 @@ public final class VOBuilder {
 			result.setTrazaErrorValidacion(archivoEnProcesoConsultaDTO.getTrazaErrorValidacion());
 			result.setUsuarioCreacion(archivoEnProcesoConsultaDTO.getUsuarioCreacion());
 			result.setUsuarioModificacion(archivoEnProcesoConsultaDTO.getUsuarioModificacion());
+			result.setNombreArchivoError(archivoEnProcesoConsultaDTO.getNombreArchivoError());
+			result.setNombreArchivoErrorAsofondo(archivoEnProcesoConsultaDTO.getNombreArchivoErrorAsofondo());
 		}
 		
 		return result;

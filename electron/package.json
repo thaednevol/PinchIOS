@@ -1,6 +1,6 @@
 {
   "name": "ACH-SOI",
-  "version": "2.0.6",
+  "version": "2.0.9",
   "description": "Proyecto encargado de gestionar planillas de pago PILA para ACH",
   "author": "Swat-it <info@swat-it.co>",
   "main": "main.js",
@@ -47,8 +47,10 @@
     "typescript": "^2.1.4"
   },
   "dependencies": {
+    "archiver": "^1.3.0",
     "csvtojson": "^1.1.5",
     "electron-contextmenu-middleware": "^1.0.3",
+    "json2csv": "^3.7.3",
     "node-notifier": "^5.1.2",
     "nodemailer": "^4.0.1",
     "open": "0.0.5",

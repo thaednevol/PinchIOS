@@ -53,6 +53,10 @@ public class GetValidateFileInDTO extends RequestDTO {
 	
 	private String rutaLocalArchivo;
 	
+	private String periodoSalud;
+	
+	private String periodoNoSalud;
+	
 	/**
 	 * Método getter del atributo aportanteLey1429.
 	 * 
@@ -203,5 +207,17 @@ public class GetValidateFileInDTO extends RequestDTO {
 	}
 	public void setRutaLocalArchivo(String rutaLocalArchivo) {
 		this.rutaLocalArchivo = rutaLocalArchivo;
+	}
+	public String getPeriodoSalud() {
+		return periodoSalud;
+	}
+	public void setPeriodoSalud(String periodoSalud) {
+		this.periodoSalud = periodoSalud;
+	}
+	public String getPeriodoNoSalud() {
+		return periodoNoSalud;
+	}
+	public void setPeriodoNoSalud(String periodoNoSalud) {
+		this.periodoNoSalud = periodoNoSalud;
 	}
 }

@@ -1,20 +1,26 @@
 .error__table
   .error__table-head
-    span Total errores del cotizante:
+    span(ng-if="$ctrl.styleError" ng-bind="'ERROR.CONTRIBUTORS.ERROR' | translate")
+    span(ng-if="!$ctrl.styleError" ng-bind="'ERROR.CONTRIBUTORS.CORRECTED' | translate")
     span(ng-bind="($ctrl.data.data | filter:$ctrl.objectFilter:true).length || 0")
   .error__table-container
     table
       thead
         tr
           th(ng-bind="'Línea'")
+          th(ng-bind="'Tipo Documento'" ng-if="$ctrl.data.data[0].tipoIdentificacion")
+          th(ng-bind="'Identificación Cotizante'" ng-if="$ctrl.data.data[0].nroIdentificacion")
           th(ng-bind="'Error'")
           th(ng-bind="'Esperado'")
           th(ng-bind="'Encontrado'")
       tbody
-        tr(ng-repeat="register in $ctrl.data.data | filter:$ctrl.objectFilter:true track by $index")
+        tr(ng-repeat="register in $ctrl.data.data | filter:$ctrl.objectFilter:true track by $index" ng-class="{'error__table--priority': register.enfasis}")
           td(ng-bind="register.linea")
-          td.error__table--error
+          td(ng-bind="register.tipoIdentificacion" ng-if="register.tipoIdentificacion")
+          td(ng-bind="register.nroIdentificacion" ng-if="register.nroIdentificacion")
+          td.error__table--error(ng-if="$ctrl.styleError")
             i.mdi.mdi-alert
             span(ng-bind="register.error")
+          td(ng-if="!$ctrl.styleError" ng-bind="register.error")
           td(ng-bind="register.sugerencias ? register.sugerencias.join(';') : '-'")
-          td(ng-bind="$ctrl.data.registers[register.linea - 2]['regs' + (register.campo - 1)]")
+          td(ng-bind="register.currentValue")

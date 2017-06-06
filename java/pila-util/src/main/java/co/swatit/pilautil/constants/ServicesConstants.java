@@ -61,7 +61,7 @@ public final class ServicesConstants {
 	/**
 	 * Nombre del servicio que consulta el archivo que se va a cargar por archivo.
 	 */
-	public static final String WS_CONSULT_FILE = "consultFile/{idFile}";
+	public static final String WS_CONSULT_FILE = "consultFile";
 	
 	
 	/**

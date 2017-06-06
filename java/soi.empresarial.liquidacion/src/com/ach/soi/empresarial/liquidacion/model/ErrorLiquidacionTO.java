@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 public class ErrorLiquidacionTO {
 
+	
 	private boolean errorRegistro;
 	private int linea;
 	private boolean autocorregible;
@@ -11,6 +12,10 @@ public class ErrorLiquidacionTO {
 	private String error;
 	private String[] sugerencias;
 	private Integer campo;
+	private String tipoIdentificacion;
+	private String nroIdentificacion;
+	private boolean enfasis = false;
+	private boolean aplicarSegundaValidacion = false;
 	public int getLinea() {
 		return linea;
 	}
@@ -46,22 +51,51 @@ public class ErrorLiquidacionTO {
 	}
 	public void setCampo(Integer campo) {
 		this.campo = campo;
-	}
-	
-	
+	}	
 	public boolean isErrorRegistro() {
 		return errorRegistro;
 	}
 	public void setErrorRegistro(boolean errorRegistro) {
 		this.errorRegistro = errorRegistro;
 	}
+	
+	public String getTipoIdentificacion() {
+		return tipoIdentificacion;
+	}
+	public void setTipoIdentificacion(String tipoIdentificacion) {
+		this.tipoIdentificacion = tipoIdentificacion;
+	}
+	public String getNroIdentificacion() {
+		return nroIdentificacion;
+	}
+	public void setNroIdentificacion(String nroIdentificacion) {
+		this.nroIdentificacion = nroIdentificacion;
+	}
+	public boolean isEnfasis() {
+		return enfasis;
+	}
+	public void setEnfasis(boolean enfasis) {
+		this.enfasis = enfasis;
+	}
+	
+	public boolean isAplicarSegundaValidacion() {
+		return aplicarSegundaValidacion;
+	}
+	public void setAplicarSegundaValidacion(boolean aplicarSegundaValidacion) {
+		this.aplicarSegundaValidacion = aplicarSegundaValidacion;
+	}
 	@Override
 	public String toString() {
-		return "ErrorLiquidacionTO [linea=" + linea + ", autocorregible="
-				+ autocorregible + ", nombreCampo=" + nombreCampo + ", error="
-				+ error + ", sugerencias=" + Arrays.toString(sugerencias)
-				+ ", campo=" + campo + "]";
+		return "ErrorLiquidacionTO [errorRegistro=" + errorRegistro
+				+ ", linea=" + linea + ", autocorregible=" + autocorregible
+				+ ", nombreCampo=" + nombreCampo + ", error=" + error
+				+ ", sugerencias=" + Arrays.toString(sugerencias) + ", campo="
+				+ campo + ", tipoIdentificacion=" + tipoIdentificacion
+				+ ", nroIdentificacion=" + nroIdentificacion + ", enfasis="
+				+ enfasis + "]";
 	}
+	
+	
 	
 	
 }

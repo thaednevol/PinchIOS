@@ -29,8 +29,10 @@ class ConfigsRouteApplication {
   * agregadas en la función.
   */
   private appRouter() {
-    this.app.config(["$translateProvider", "$stateProvider", "$urlRouterProvider",
-      ($translateProvider, $stateProvider, $urlRouterProvider) => {
+    this.app.config(["$translateProvider", "$stateProvider", "$urlRouterProvider", "$qProvider",
+      ($translateProvider, $stateProvider, $urlRouterProvider, $qProvider) => {
+        // Valdiación para errores 500 en servidor JAVA.
+        $qProvider.errorOnUnhandledRejections(false);
         // Ajuste de la ruta de archivos de idiomas
         $translateProvider.useStaticFilesLoader({
           prefix: "../json/language/",

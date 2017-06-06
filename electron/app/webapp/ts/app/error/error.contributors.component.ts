@@ -24,7 +24,13 @@ namespace app.error {
     * esto se realiza para la tabla en la cual los errores son solo para un
     * tipo de registro y no para todos.
     */
-    public objectFilter: any = {};
+    public objectFilter: any = null;
+
+    /**
+    * @type {Boolean} styleError - Se utiliza para indicar un estilo css con
+    * iconos de que los registros presentan error.
+    */
+    public styleError:boolean = true;
 
     constructor() {
     }
@@ -36,7 +42,8 @@ namespace app.error {
   app.component("errorContributors", {
     bindings: {
       data: "=", // Datos utilizados para mostrar las tabla con errores.
-      objectFilter: "="  // Datos del filtro para mostrar solo los errores de un registro.
+      objectFilter: "=",  // Datos del filtro para mostrar solo los errores de un registro.
+      styleError: "=" // Indica si se aplica un estilo css para resaltar los campos como error
     },
     controller: ErrorContributorsController,
     templateUrl: "./components/error/error.contributors.html"

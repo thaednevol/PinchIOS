@@ -1,0 +1,8 @@
+.sy-table__container(ng-if="$ctrl.listErrorsContributors")
+  .sy__title-table(ng-bind="'SETTLEMENT.TABLES.CORRECTED' | translate")
+  error-contributors(data="$ctrl.listErrorsContributors" object-filter="{autocorregible:true}" style-error="false")
+  .sy__button-container.sett__buttons
+    div
+      .sy__button--blue(ng-class="{}" ng-click="$ctrl.actionExportToCsv()")
+        i.mdi.mdi-content-save
+        span(ng-bind="'SETTLEMENT.ACTIONS.EXPORT_CSV' | translate")

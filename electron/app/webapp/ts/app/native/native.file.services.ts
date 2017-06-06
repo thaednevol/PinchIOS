@@ -17,6 +17,7 @@ namespace app.native {
    * @see {@link https://nodejs.org/api/fs.html#fs_fs_readfile_file_options_callback|readFile}
    * @see {@link https://nodejs.org/api/fs.html#fs_fs_stat_path_callback|stat}
    * @see {@link https://nodejs.org/api/process.html#process_process_env|env}
+   * @see {@link https://www.npmjs.com/package/json2csv|json2csv}
    */
   class NativeFileService {
 
@@ -54,6 +55,8 @@ namespace app.native {
     */
     public listFiles: any[];
 
+    private archiver: any = require("archiver");
+    private json2csv: any = require("json2csv");
     private fs: any = require("fs");
     private path: any = require("path");
     private ipcRender: any = require("electron").ipcRenderer;
@@ -83,7 +86,7 @@ namespace app.native {
       this.createFolder(this.folders.app);
       // Si el sistema es windows aplica el atributo de oculto a la carpeta.
       if (/^win/.test(process.platform)) {
-        this.exec("attrib +h " + this.folders.app);
+        this.exec("attrib +h -r " + this.folders.app);
       }
       // Valida carpeta de logs
       this.folders.log = this.path.join(this.folders.app, this.OPTIONS.FOLDERS.LOGS);
@@ -303,9 +306,9 @@ namespace app.native {
     * @return {Promise} El metodo resolve contiene la ruta del archivo que se
     * crea, en caso de error retorna null en el resolve.
     */
-    public createFileTemp(name: string, data: any = {}): any {
+    public createFileTemp(name: string, data: any = {}, showNotification: boolean = true): any {
       let fileName = this.path.join(this.folders.temp, name);
-      return this.createFile(fileName, JSON.stringify(data));
+      return this.createFile(fileName, JSON.stringify(data), showNotification);
     }
 
     /**
@@ -430,6 +433,24 @@ namespace app.native {
       return this.validatePath(path);
     }
 
+    /**
+    * @description
+    * Utiliza el path de NodeJS para entregar la ruta absoluta donde se encuentra
+    * almcenado el archivo temp o entregar la carpeta temp para almacenar
+    * algun archivo que se requiera.
+    *
+    * @param {string} [name=null] - Nombre del archivo
+    * @return {String|null} Ruta completa donde se encuentra el archivo, en caso de
+    * error retorna null.
+    */
+    public getPathTemp(name: string = null): any {
+      let path = this.path.join(this.folders.temp);
+      if (name) {
+        path = this.path.join(this.folders.temp, `${name}`);
+      }
+      return this.validatePath(path);
+    }
+
 
     /**
     * @private
@@ -461,6 +482,24 @@ namespace app.native {
       // Uso para Windows
       if (/^win/.test(process.platform)) {
         nameFile = pathFile.substr(pathFile.lastIndexOf("\\") + 1);
+      }
+      return nameFile;
+    }
+
+    /**
+    * @description
+    * Entrega el nombre del archivo analizando la cadena string, segun el sistema
+    * operativo que se usa el path de un archivo usa \ o /.
+    *
+    * @param {String} pathFile - Ruta completa del archivo.
+    * @return {String} Nombre del archivo que se carga desde un path.
+    */
+    public getFilePathOnly(pathFile: string): any {
+      // Uso para Unix
+      let nameFile: string = pathFile.substr(0, pathFile.lastIndexOf("/") + 1);
+      // Uso para Windows
+      if (/^win/.test(process.platform)) {
+        nameFile = pathFile.substr(0, pathFile.lastIndexOf("\\") + 1);
       }
       return nameFile;
     }
@@ -547,6 +586,46 @@ namespace app.native {
           resolve(contentCSV);
         });
       });
+    }
+
+    /**
+    * @description
+    * Convierte una estructura JSON a CSV, crea el archivo en la ruta que se le
+    * indica con el contenido.
+    *
+    * @param {String} routeFile - Ruta donde se almacenara el archivo.
+    * @param {Object} dataJson - Objeto JSON con la información que se agregara.
+    * @param {Array<String>} fields - Nombre de los campos que se va a crear.
+    * @return {Promise} Promesa del proces de almacenado del archivo.
+    */
+    public jsonToCsv(routeFile: string, dataJson: any, fields: any): any {
+      let csvContent: any = this.json2csv({
+        data: dataJson,
+        fields: fields,
+        hasCSVColumnTitle: false,
+        del: this.OPTIONS.CSV.DELIMITER
+      });
+      return this.createFile(routeFile, csvContent, true);
+    }
+
+    /**
+    * @description
+    * Realiza el proceso de creación de archivos ZIP, asigna el contenido de un
+    * arhivo y lo almacena en la ruta indicada en el path.
+    */
+    public createFileZip(path: string, file: any): string {
+      let nameFileInZip = this.getNameFilePath(file);
+      let routeFileZip = this.path.join(path, `${nameFileInZip}.zip`);
+      let fileZip = this.fs.createWriteStream(routeFileZip);
+      let archive = this.archiver("zip", {
+        store: true
+      });
+      archive.pipe(fileZip);
+      archive.file(file, {
+        name: nameFileInZip
+      });
+      archive.finalize();
+      return routeFileZip;
     }
   }
 

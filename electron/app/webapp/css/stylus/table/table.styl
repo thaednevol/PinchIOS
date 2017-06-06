@@ -18,8 +18,18 @@
       color: #75818c;
 
   &__data
+    &--no-data
+      border: none !important;
+      span
+        font-size: 18px !important;
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 0px;
     &--filter
-      min-height: 100px;
+      min-height: 150px;
     th
       span
         margin-right: 15px !important;
@@ -42,6 +52,9 @@
     padding: 5px 10px;
     display: flex;
     flex-direction: column;
+    &-input
+      &--full
+        width: 100% !important;
     &-head
       span
         color: #8c8c8c;
@@ -50,6 +63,21 @@
     &-body
       display: flex;
       margin-top: 5px;
+      flex-direction: column;
+    &-block
+      margin-bottom: 5px;
+    &-close
+      color: red;
+      font-size: 21px;
+      position: absolute;
+      top: -12px;
+      right: -9px;
+      cursor: pointer;
+      i
+        &::before
+          border-radius: 100%;
+          background: rgba(255,255,255,1);
+          background: -webkit-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 10%, rgba(237,237,237,0) 100%);
     input
       border: none;
       border-bottom: 1px solid black !important;
@@ -58,6 +86,7 @@
       margin-left: 5px;
     &-delete
       color: red;
+      font-size: 18px !important;
 
 
   &__container
@@ -74,7 +103,6 @@
     min-width: 111px;
     margin-right: -1px;
     padding-top: 24px;
-    max-height: 236px;
 
   &__right
     position: relative;
@@ -109,7 +137,10 @@
       cursor: pointer;
       color: #ccc;
       &--enable
-        color: black !important;
+        span
+          color: #1a54a2 !important;
+        i
+          color: #1a54a2 !important;
     &-columns
       overflow: hidden;
       position: absolute;
@@ -149,7 +180,7 @@
       position: absolute;
       right: 0px;
       border-left: 1px solid #b5bdd2;
-      height: calc(100% - 44px);
+      height: calc(100% - 22px);
       top: 25px;
       &-item
         position: absolute;

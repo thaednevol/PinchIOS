@@ -9,31 +9,43 @@ import org.apache.log4j.PatternLayout;
 import org.apache.log4j.RollingFileAppender;
 import org.springframework.boot.SpringApplication;
 
+import co.swatit.pilautil.generics.Validation;
+
+
 
 public class LiquidacionServer {
 
+	private static Logger logger = getLogger();
+	
 	public static void main(String[] args) {
+		logger.info("Start - Init-LiqServer");
         SpringApplication.run(LiquidacionRestController.class, args);
+        logger.info("End - Init-LiqServer");
 
     }
 	
-	static{
-		String path = System.getenv().get("LOG_PILA");
-        if (path!=null && !path.trim().equals("")) {
-            // creates pattern layout
-            PatternLayout layout = new PatternLayout("[%p] %d %c %M - %m%n");
 
+	private static Logger getLogger ( ){
+		String path = System.getenv().get("LOG_PILA");
+        if (!Validation.isNullOrEmpty(path)) {
+            // creates pattern layout
+            PatternLayout layout = new PatternLayout();
+            layout.setConversionPattern("[%p] %d %c %M - %m%n");
+
+            // creates daily rolling file appender
             RollingFileAppender rollingAppender = new RollingFileAppender();
             rollingAppender.setFile(path);
             rollingAppender.setLayout(layout);
-            rollingAppender.setMaxFileSize("1MB");
-            rollingAppender.setMaxBackupIndex(3);
+            rollingAppender.setMaxFileSize("10MB");
+            rollingAppender.setMaxBackupIndex(6);
             rollingAppender.activateOptions();
 
             // configures the root logger
-            Logger rootLogger = Logger.getRootLogger();
-            rootLogger.setLevel(Level.TRACE);
-            rootLogger.addAppender(rollingAppender);
+            Logger springLogger = Logger.getLogger("org.springframework.web");
+            springLogger.setLevel(Level.FATAL);
+            springLogger.addAppender(rollingAppender);
+            
+            return springLogger;
 
         }
         else{
@@ -46,9 +58,11 @@ public class LiquidacionServer {
         	 ca.activateOptions();
 
              // configures the root logger
-             Logger rootLogger = Logger.getRootLogger();
-             rootLogger.setLevel(Level.ALL);             
-             rootLogger.addAppender(ca);
+             Logger springLogger = Logger.getLogger("org.springframework.web");
+             springLogger.setLevel(Level.FATAL);             
+             springLogger.addAppender(ca);
+             
+             return springLogger;
         }
 	}
 	

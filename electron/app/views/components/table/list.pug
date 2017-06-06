@@ -11,7 +11,7 @@
           table-edit(data="[$ctrl.data.regTp01]" labels="$ctrl.data.labelsTp01" id-table="'regTp01'")
         //- Registro tipo 2
         .sy-table__container.sy-table__container--padding
-          table-edit(data="$ctrl.data.regsTp02" labels="$ctrl.data.labelsTp02" id-table="'regsTp02'" active-filter="true")
+          table-edit(data="$ctrl.data.regsTp02" labels="$ctrl.data.labelsTp02" id-table="'regsTp02'" active-filter="true" object-filter="{}")
         //- Registro tipo 3
         .sy-table__container.sy-table__container--padding(ng-if="$ctrl.data.regsTp03.length > 0")
           table-edit(data="$ctrl.data.regsTp03" labels="$ctrl.data.labelsTp03" id-table="'regsTp03'")

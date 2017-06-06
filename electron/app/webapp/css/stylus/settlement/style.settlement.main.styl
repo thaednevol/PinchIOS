@@ -1,3 +1,9 @@
+@import "style.settlement.contributors"
+@import "style.settlement.info"
+@import "style.settlement.options"
+@import "style.settlement.tabs"
+@import "style.settlement.popup.errors"
+
 .sett
   display: flex;
   flex-direction: column;
@@ -5,9 +11,13 @@
   margin-bottom: 0px !important;
   min-height: 650px !important;
   &--no-file
-    height: calc(100% - 130px);
+    height: 100%;
     @media (min-height: 740px)
-      height: calc(100% - 153px) !important;
+      height: calc(100% - 120px) !important;
+
+  &__buttons
+    padding: 8px 0px !important
+    height: 50px;
 
   &__content
     display: flex;

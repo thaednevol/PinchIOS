@@ -108,10 +108,12 @@
 
   "SETTLEMENT": {
     "TITLE": "Liquidar planilla",
+    "FILE_WITH_ERROR": "El archivo de planilla presenta errores, no se puede realizar el proceso hasta no corregirlos en su totalidad.",
     "TABS": {
       "CONTRIBUTORS": "Planilla",
       "TOTALS": "Totales",
-      "ERRORS": "Errores"
+      "ERRORS": "Errores",
+      "CORRECTED": "Correcciones Realizadas"
     },
     "LOAD": {
       "TITLE": "Archivo Plano",
@@ -135,7 +137,11 @@
       "RIESGO": "Aportes del período para Riesgos Laborales",
       "PARAFISCAL": "Aportes del período para Parafiscales",
       "GRAN_TOTAL": "Total a pagar durante el período",
-      "ERRORS": "Errores del Cotizante"
+      "ERRORS": "Errores del Cotizante",
+      "CORRECTED": "Correcciones Realizadas",
+      "NO_REGISTER": "No existen registros para la consulta.",
+      "REPLACE_FOR": "Reemplazar por:",
+      "REPLACE_ACTION": "Reemplazar"
     },
     "INFO": {
       "PERIOD_PENSION": "Periodo otros subsistemas:",
@@ -144,7 +150,20 @@
       "TOTAL_PAY": "Total a Pagar:",
       "TOTAL_ERROR": "Total Errores:",
       "UNDEFINED": "No definido",
-      "TOTAL_ERROR_CONTRIBUTOR": "Cotizantes con errores:"
+      "TOTAL_ERROR_CONTRIBUTOR": "Cotizantes con errores:",
+      "TOTAL_FILTER_REGISTER": "Registros Visualizados:",
+      "TOTAL_FILTER_REGISTER": "Registros Visualizados:"
+    },
+    "ACTIONS": {
+      "EXPORT_CSV": "Exportar archivo CSV",
+      "CLOSE": "Cerrar"
+    },
+    "ERRORS": {
+      "VALIDATE_FILE": "Ocurrio error generando número de planilla en NSOI, comuníquese con el administrador. Codigo de error: "
+    },
+    "CONFIRMATION": {
+      "SETTLEMENT_CREATED_TITLE": "Planilla Creada",
+      "SETTLEMENT_CREATED": "Planilla cargada con éxito en NSOI, número generado: "
     }
   },
 
@@ -160,6 +179,13 @@
     "ACTIONS": {
       "SAVE": "Guardar",
       "GENERATE": "Generar archivo 2388/5858"
+    }
+  },
+
+  "ERROR": {
+    "CONTRIBUTORS": {
+      "ERROR": " Total errores del cotizante:",
+      "CORRECTED": " Total errores corregidos:"
     }
   },
 
@@ -184,6 +210,9 @@
       "ERROR": "Error",
       "INFO": "Información"
     },
+    "ERROR_500": "El servidor presenta una falla, intente nuevamente de si el error continua contacte al administrador.",
+    "ERROR_SETTLEMENT_INITIALIZE": "El servicio de 'incializarliquidacion' retorna vacio, el error afectara la validación de las celdas.",
+    "ERROR_SETTLEMENT_TOTALES": "El servicio de 'gettotales' retorna vacio, no se visualizara los totales de la planilla.",
     "EMAIL_USER_PASSWORD_BAD": "El nombre de usuario y contraseña no son aceptados.",
     "EMAIL_SERVER_BAD": "El nombre y puertos asignados al servidor no son correctos.",
     "EMAIL_SERVER_NO_CONNECT": "No se puede establecer conexión con el servidor de email.",
@@ -201,7 +230,7 @@
 
   "SUPPORT": {
     "TITLE": "Soporte de pago",
-    "CONTINUE_EMAIL_SENT":"Existe un punto de guardado, desea continuar el envio desde este punto.",
+    "CONTINUE_EMAIL_SENT": "Existe un punto de guardado, desea continuar el envio desde este punto.",
     "PANEL": {
       "TEMPLATE_NUMBER": "Número de Planilla",
       "PAYMENT_DATE": "Fecha de Pago:",

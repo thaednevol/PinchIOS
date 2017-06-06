@@ -10,6 +10,19 @@ namespace app.settlement {
   class SettlementController {
 
     /**
+    * @type {Array<String>} listErrorsValidateFile - Listado de mensajes de error
+    * que se mostraran en una tabla emergente si el proceso de validar el archivo
+    * de liquidación en la función "validateFileSettlement" tiene errores.
+    */
+    public listErrorsValidateFile:any = [];
+
+    /**
+    * @type {Boolean} showErrorValidateFile - Da la orden de cuando mostrar la
+    * ventana con el listado de mensajes de error del servicio.
+    */
+    public showErrorValidateFile:boolean = false;
+
+    /**
     * @type {Boolean} showLoading - Indica si debe mostrar la imagen de loading
     * y bloquear la pantalla hasta que espere el usuario que termine la carga
     * del login.
@@ -61,6 +74,12 @@ namespace app.settlement {
     public listErrorsContributors: any = null;
 
     /**
+    * @type {Object<object>} listErrorsCorrected - Almacena una copia de la lista
+    * de errores con la información de las correcciones que se realizaron.
+    */
+    public listErrorsCorrected: any = null;
+
+    /**
     * @type {Object<periodPension,periodHealth,totalContributor,totalPay,totalError>}
     * info - información resumida del archivo.
     * @see SettInfoControler.info
@@ -70,7 +89,9 @@ namespace app.settlement {
       periodHealth: "No definido",
       totalContributor: 0,
       totalPay: 0,
-      totalError: 0
+      totalError: 0,
+      totalErrorContributor: 0,
+      totalFilterRegister: 0
     };
 
     /**
@@ -120,6 +141,7 @@ namespace app.settlement {
       this.$localStorage = $localStorage;
       this.$scope.$on("clear-container", () => {
         this.listErrorsContributors = null;
+        this.listErrorsCorrected = null;
         this.file.totals = null;
         this.file.data = null;
         this.info = {};
@@ -168,6 +190,9 @@ namespace app.settlement {
           this.$scope.$apply();
         });
         this.updateInfoPanel();
+      }, (error) => {
+        console.info(error);
+        this.updateInfoPanel();
       });
     }
 
@@ -192,11 +217,12 @@ namespace app.settlement {
     * metodos del JAR que realiza las validaciones de los campos.
     */
     private getFileConfig() {
-      let fileConfig = this.serviceFile.getPathOptions("archivoEnProcesoDTO.json");
-      if (fileConfig) {
-        this.initializeSettlement();
-        return;
-      }
+      // Se comenta para obligar a realizar el proceso de descarga siempre.
+      // let fileConfig = this.serviceFile.getPathOptions("archivoEnProcesoDTO.json");
+      // if (fileConfig) {
+      //   this.initializeSettlement();
+      //   return;
+      // }
       let params: any = {
         regTp01: this.file.data.regTp1Txt,
         idSoiAportante: this.$localStorage.soiContributorIdNumber,
@@ -263,8 +289,17 @@ namespace app.settlement {
         }
         // Se ejecuta el llamado para actualizar los datos y la información de los paneles.
         this.file.data.regsTp02.errors = newListError;
-        this.updateTotals();
-        this.updateInfoPanel();
+        this.file.data.regsTp02.corrected = [];
+        angular.copy(newListError, this.file.data.regsTp02.corrected);
+        this.applyCorrections();
+      }, (response) => {
+        if (response.data.data.error) {
+          let title = this.$filter("translate")("MESSAGES.TITLES.ERROR");
+          this.nativeNotification.show(title, response.data.data.message);
+          this.showLoading = false;
+          this.file.data = null;
+          return;
+        }
       });
     }
 
@@ -311,7 +346,7 @@ namespace app.settlement {
             delete this.file.data.regsTp02.errors[numberSequence];
           }
           // Se actualiza la información del panel en el campo de errores.
-          this.updateTotals(); 
+          this.updateTotals();
           this.updateInfoPanel();
         }
       });
@@ -325,11 +360,19 @@ namespace app.settlement {
     private updateInfoPanel() {
       this.info.totalContributor = this.file.data.regsTp02.registers.length;
       let arrayErrors = [];
+      let arrayCorrected = [];
       this.info.totalErrorContributor = 0;
+      // Prepara datos con errores para msotrar en la tabla de errores
       for (let key in this.file.data.regsTp02.errors) {
         let object: any = Object;
         let arrayObject: any = object.values(this.file.data.regsTp02.errors[key]);
         arrayErrors = arrayErrors.concat(arrayObject);
+      }
+      // Prepara datos para mostrar en la tabla de correcciones
+      for (let key in this.file.data.regsTp02.corrected) {
+        let object: any = Object;
+        let arrayObject: any = object.values(this.file.data.regsTp02.corrected[key]);
+        arrayCorrected = arrayCorrected.concat(arrayObject);
       }
       for (let i = 0; i < this.file.data.regsTp02.registers.length; i++) {
         let filterError = {
@@ -340,9 +383,13 @@ namespace app.settlement {
         }
       }
       this.info.totalError = arrayErrors.length;
+      // Lista de errores para ver en el menu de la tabla y en la tabla de errores
       this.listErrorsContributors = {
-        data: arrayErrors,
-        registers: this.file.data.regsTp02.registers
+        data: arrayErrors
+      };
+      // Lista de correcciones que se han realizado en la tabla.
+      this.listErrorsCorrected = {
+        data: arrayCorrected
       };
       if (this.file.totals) {
         this.info.totalPay = this.file.totals.totalAPagar;
@@ -350,6 +397,43 @@ namespace app.settlement {
         this.info.periodPension = this.file.totals.periodoNoSalud;
       }
       this.showLoading = false;
+    }
+
+    /**
+    * @private
+    * @description
+    * Aplica las correcciones automaticas de los registros.
+    */
+    private applyCorrections(): void {
+      let errors = this.file.data.regsTp02.errors;
+      let rows: any = Object.keys(errors);
+      // Recorre las filas de los registros de la tabla con error.
+      for (let positionRow = 0; positionRow <= rows.length - 1; positionRow++) {
+        let currentRow = rows[positionRow];
+        let cols: any = Object.keys(errors[currentRow]);
+        // Recorre cada columna de la fila para realizar la corrección.
+        for (let positionCol = 0; positionCol < cols.length; positionCol++) {
+          let currentCol = cols[positionCol];
+          let currentError = errors[currentRow][currentCol];
+          // Se valida si existen sugerencias y si cuenta con la opción de autocorreción activa.
+          if (currentError.autocorregible && currentError.sugerencias.length > 0) {
+            this.file.data.regsTp02.corrected[currentRow][currentCol].currentValue = this.file.data.regsTp02.registers[currentRow - 1][`regs${currentCol - 1}`];
+            this.file.data.regsTp02.registers[currentRow - 1][`regs${currentCol - 1}`] = currentError.sugerencias[0];
+            // Se elimina la información de la columna del error para evitar que se resalte la celda en la tabla.
+            delete errors[currentRow][currentCol];
+          } else {
+            currentError.currentValue = this.file.data.regsTp02.registers[currentRow - 1][`regs${currentCol - 1}`];
+          }
+        }
+        // Si no hay mas errores en el registro se elimina.
+        if(Object.keys(errors[currentRow]).length === 0){
+          delete errors[currentRow];
+        }
+      }
+      setTimeout(() => {
+        this.$scope.$apply();
+      });
+      this.updateTotals();
     }
 
   }
@@ -361,6 +445,6 @@ namespace app.settlement {
       pathFile: "<" // Ruta del archivo de liquidar que se carga automaticamente.
     },
     controller: SettlementController,
-    templateUrl: "./components/settlement/main.html"
+    templateUrl: "./components/settlement/settlement.main.html"
   });
 }

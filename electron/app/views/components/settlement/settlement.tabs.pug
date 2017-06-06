@@ -5,3 +5,5 @@
     span(ng-bind="'SETTLEMENT.TABS.TOTALS' | translate" ng-click="$ctrl.actionChangeTab('totals')")
   .sett__tabs-button(ng-if="$ctrl.listErrorsContributors" ng-class="{'sett__tabs-button--active': $ctrl.currentTab === 'errors'}")
     span(ng-bind="'SETTLEMENT.TABS.ERRORS' | translate" ng-click="$ctrl.actionChangeTab('errors')")
+  .sett__tabs-button(ng-if="$ctrl.listErrorsContributors" ng-class="{'sett__tabs-button--active': $ctrl.currentTab === 'corrected'}")
+    span(ng-bind="'SETTLEMENT.TABS.CORRECTED' | translate" ng-click="$ctrl.actionChangeTab('corrected')")

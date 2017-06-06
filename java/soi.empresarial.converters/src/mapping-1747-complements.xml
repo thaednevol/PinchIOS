@@ -13,6 +13,7 @@
       		<field name="indTarifaEspecialPens"/>
       		<field name="fechaDesde"/>
       		<field name="fechaHasta"/>
+      		<field name="diasNovedad"/>
       		<field name="horasLaboradas"/>
       		<field name="ibcNovedad"/>      		
     	</record>  

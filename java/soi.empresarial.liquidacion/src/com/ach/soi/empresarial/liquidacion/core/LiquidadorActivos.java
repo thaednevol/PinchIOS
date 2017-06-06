@@ -37,27 +37,38 @@ import com.lucasian.exception.ExceptionMessage;
 
 public class LiquidadorActivos {
 
+	
+	private static FileFormat ps = null;
+	private static ArchivoEntradaParser mn = null;
+	
 	private static Map<String, CampoLeido1747> camposBeanT02 = null;
 	
 	private static final Logger LOGGER = Logger.getLogger(LiquidadorActivos.class.getName());
 	
+	static{
+		try{
+			ConfigurationReader cfg = new ConfigurationReader();
+			ps = cfg.loadConfigurationFile(LiquidadorActivos.class.getResourceAsStream("/archivo2388-config.xml"));
+			mn = new ArchivoEntradaParser(TipoInputImplType.IO_BUFFERED_READER, ps);
+		}catch ( Exception e ){
+			LOGGER.fatal(e);
+		}
+	}
+	
 	public ErrorLiquidacionTO[] completarPlanillaAportanteDTO ( PlanillaAportanteDTO planillaApteDto, String regT01 ) throws ApplicationException,Exception{
 		
-		FileFormat ps = null;
-		ArchivoEntradaParser mn = null;
 		PlanillaRegT01 bean01 = null;
-		ConfigurationReader cfg = new ConfigurationReader();
+		
 		Collection<ErrorLiquidacionTO> errores = new ArrayList<ErrorLiquidacionTO>();
 		
-		ps = cfg.loadConfigurationFile(this.getClass().getResourceAsStream("/archivo2388-config.xml"));
+		
 		ErrorLiquidacionTO err;
-		try{
-			mn = new ArchivoEntradaParser(TipoInputImplType.IO_BUFFERED_READER, ps);
+		try{			
 			mn.inicializarMio(regT01);
 			bean01 = (PlanillaRegT01)mn.getNextRecord();
 			this.completarPlanillaAportanteDTODePlanillaRegT01(bean01, planillaApteDto);
 		}catch ( ApplicationException e ){
-			err = crearRegistroErrorLexicoSintacticoRegistro(e, 1 ,1);				
+			err = crearRegistroErrorLexicoSintacticoRegistro(e,null, 1 ,1);				
 			errores.add(err);			
 		}
 		return errores.toArray(new ErrorLiquidacionTO[0]);				
@@ -167,10 +178,10 @@ public class LiquidadorActivos {
 				nroLinea++;
 				LOGGER.info("validarRegsTp02Archivo2388()->"+nroLinea);
 				if ( line.startsWith("02") ){
-					errorRegs = this.validarRegistroTp02(line, archivoDto, datasourceValidacion, nroLinea);
+					errorRegs = this.validarRegistroTp02(line, archivoDto, datasourceValidacion, nroLinea);					
 					if ( errorRegs!=null && errorRegs.length>0 ){
 						regsError++;
-						erroresLiquidacion.addAll(Arrays.asList(errorRegs));
+						erroresLiquidacion.addAll(Arrays.asList(errorRegs));												
 					}
 					else{
 						oks ++;
@@ -199,17 +210,16 @@ public class LiquidadorActivos {
 		LOGGER.info("inicio: validarRegsTp02Archivo2388() -> "+registroTp02);
 		cargarSingletonAdministradoras(datasourceValidacion);
 		Collection<ErrorLiquidacionTO> errores = new ArrayList<ErrorLiquidacionTO>();
+		Collection<ErrorLiquidacionTO> erroresRevalidacion = new ArrayList<ErrorLiquidacionTO>();
 		LiquidacionPlanillaXArchivoEvolMngr mngr = new LiquidacionPlanillaXArchivoEvolMngr();
-		FileFormat ps = null;
-		ArchivoEntradaParser mn = null;
+				
 		PlanillaRegT02 bean02 = null;
-		try{
-			ConfigurationReader cfg = new ConfigurationReader();
-			ps = cfg.loadConfigurationFile(this.getClass().getResourceAsStream("/archivo2388-config.xml"));
-			mn = new ArchivoEntradaParser(TipoInputImplType.IO_BUFFERED_READER, ps);
-			mn.inicializarMio(registroTp02);
+		try{		
+			
 			LOGGER.info("validarRegsTp02Archivo2388() -> Inicializa Cfg");
 			try{
+				
+				mn.inicializarMio(registroTp02);
 				bean02 = (PlanillaRegT02)mn.getNextRecord();
 				if ( camposBeanT02==null ){
 					camposBeanT02 = bean02.getCampos();
@@ -218,7 +228,7 @@ public class LiquidadorActivos {
 				LOGGER.info("validarRegsTp02Archivo2388() -> Obtuvo el record");
 			}catch ( ApplicationException e ){
 				this.manejarBeanConErroresLexicoSintacticos(errores, bean02, e, nroLinea);
-				LOGGER.error("validarRegsTp02Archivo2388() -> Errores sintacticos");
+				LOGGER.error("validarRegsTp02Archivo2388() -> Errores sintacticos: "+nroLinea);
 				return errores.toArray(new ErrorLiquidacionTO[0]);
 			}						
 			archivoDto.setPlanillaCorrector(false);
@@ -230,13 +240,26 @@ public class LiquidadorActivos {
 				totalizador.agregarCotizanteAlTotal(czte, nroLinea);
 				LOGGER.info("validarRegsTp02Archivo2388() -> Finaliza Validacion semantica");
 			}catch ( ApplicationException e ){
-				LOGGER.error("validarRegsTp02Archivo2388() -> Errores semanticos");
+				LOGGER.error("validarRegsTp02Archivo2388() -> Errores semanticos: "+nroLinea);
 				this.manejarExcepcionesSemanticas(errores, bean02, e, nroLinea);
+				try{
+					for ( ErrorLiquidacionTO err:errores ){
+						if ( err.isAplicarSegundaValidacion() ){
+							//Revalida el registro con ibcs modificados										
+							mngr.procesarBeanRegistroT02Individual(datasourceValidacion.getPlanillaApteDto(),bean02, archivoDto, datasourceValidacion);						
+							break;
+						}
+					}
+				}catch ( ApplicationException e1 ){
+					LOGGER.error("validarRegsTp02Archivo2388() -> Errores semanticos en revalidacion: "+nroLinea);
+					this.manejarExcepcionesSemanticas(erroresRevalidacion, bean02, e1, nroLinea);
+					errores.addAll(erroresRevalidacion);
+				}
 				return errores.toArray(new ErrorLiquidacionTO[0]);
 			}		
 		}catch (Exception e) {
 			ErrorLiquidacionTO errorTo = new ErrorLiquidacionTO();
-			LOGGER.error("validarRegsTp02Archivo2388() -> Errores inesperado",e);
+			LOGGER.fatal("validarRegsTp02Archivo2388() -> Errores inesperado",e);
 			errorTo.setAutocorregible(false);
 			errorTo.setCampo(0);
 			errorTo.setErrorRegistro(true);
@@ -306,23 +329,35 @@ public class LiquidadorActivos {
 														ApplicationException exc, int nroLinea) {
 
 		int secuenciaError = 0;
-		exc.printStackTrace();
 		ErrorLiquidacionTO err = null;	
+		
+		/*if ( bean instanceof PlanillaRegT02 ){
+			PlanillaRegT02 b02 = (PlanillaRegT02)bean;
+			System.out.println("_________________________________________");
+			System.out.println("Validacion Cotizante");
+			System.out.println("Tipo Identif: "+b02.getTpDocumentoCotizante3Type());
+			System.out.println("Nro Identif: "+b02.getNumeroIdentificacionCotizante4Type());
+			System.out.println("IBC Pens: "+b02.getIBCPension42Type());
+			System.out.println("Cot Pens: "+b02.getCotizacionObligatoria47Type());
+			System.out.println("IBC Salud: "+b02.getIBCSalud43Type());
+			System.out.println("Cot Salud: "+b02.getCotizacionOblSalud55Type());
+			System.out.println("_________________________________________");
+		}*/
+		
 		if (exc.isMultiple()) {
 			for (ApplicationException e : exc.getAppExceptionSet()) {
-				err = crearRegistroErrorLexicoSintacticoRegistro(e, nroLinea,++secuenciaError);				
+				err = crearRegistroErrorLexicoSintacticoRegistro(e, bean,nroLinea,++secuenciaError);				
 				errores.add(err);
 			}
 		} else {
 			
-			System.out.println("Cod Exc (1): "+exc.getCodigo());
-			err = crearRegistroErrorLexicoSintacticoRegistro(exc,nroLinea,++secuenciaError);
+			err = crearRegistroErrorLexicoSintacticoRegistro(exc,bean,nroLinea,++secuenciaError);
 			errores.add(err);
 		}
 	}
 	
 
-	public void manejarBeanConErroresLexicoSintacticos(Collection<ErrorLiquidacionTO> errores,PlanillaRegTAbstract bean, ApplicationException exc, int nroLinea) {
+	public void manejarBeanConErroresLexicoSintacticos(Collection<ErrorLiquidacionTO> errores,PlanillaRegTAbstract bean,ApplicationException exc, int nroLinea) {
 
 		int secuenciaError = 0;
 		
@@ -331,34 +366,45 @@ public class LiquidadorActivos {
 			for (CampoLeido1747 campo : bean.getCampos().values()) {
 				ErrorLiquidacionTO err = null;
 				if (campo.isConError()) {
-					err = crearRegistroErrorLexicoSintacticoEnCampo(++secuenciaError,campo.getExcepcion(), campo,nroLinea);
+					err = crearRegistroErrorLexicoSintacticoEnCampo(++secuenciaError,campo.getExcepcion(),bean, campo,nroLinea);
 					errores.add(err);
 				}
 				
 			}
 		} else {
-			ErrorLiquidacionTO err = crearRegistroErrorLexicoSintacticoRegistro(exc,nroLinea,++secuenciaError);
+			ErrorLiquidacionTO err = crearRegistroErrorLexicoSintacticoRegistro(exc,bean,nroLinea,++secuenciaError);
 			errores.add(err);
 		}
 	}
 
 	
 	
-	private ErrorLiquidacionTO crearRegistroErrorLexicoSintacticoEnCampo(int secuenciaError,ApplicationException excepcion, CampoLeido1747 campo, int nroLinea) {
+	private ErrorLiquidacionTO crearRegistroErrorLexicoSintacticoEnCampo(int secuenciaError,ApplicationException excepcion, PlanillaRegTAbstract reg,CampoLeido1747 campo, int nroLinea) {
 
 		//return err;
 		ErrorLiquidacionTO err = new ErrorLiquidacionTO();
-		
-		
+						
 		ExceptionMessage msge = DesktopExceptionMngr.getInstance().manejarException(excepcion);
 		err.setCampo(0);
 		err.setNombreCampo(campo!=null?campo.getNombreCampo():"-");
 		err.setLinea(nroLinea);
 		err.setErrorRegistro(campo==null);
 		err.setError(msge.getMensaje());
+		if ( reg!=null && reg instanceof PlanillaRegT02 ){
+			PlanillaRegT02 reg2 = (PlanillaRegT02)reg;
+			err.setTipoIdentificacion(reg2.getTpDocumentoCotizante3Type());
+			err.setNroIdentificacion(reg2.getNumeroIdentificacionCotizante4Type());
+		}		
 		if ( campo!=null && campo.getValorEsperado()!=null && !campo.getValorEsperado().trim().equals("") ){
-			err.setSugerencias(campo.getValorEsperado().split(";"));
+			if ( campo.getValorEsperado().contains(";") ){
+				err.setSugerencias(campo.getValorEsperado().split(";"));
+			}
+			else{
+				err.setSugerencias(campo.getValorEsperado().split("\\s+"));
+			}
+			
 			if ( err.getSugerencias().length==1 ){
+				this.verificarErrorIBCoCotizacion(err, reg, campo);
 				err.setAutocorregible(true);
 			}
 		}
@@ -376,8 +422,60 @@ public class LiquidadorActivos {
 	}
 	
 	
+	private void verificarErrorIBCoCotizacion ( ErrorLiquidacionTO error, PlanillaRegTAbstract reg,CampoLeido1747 campo  ) {
+		if ( !(reg instanceof PlanillaRegT02) || campo==null ){
+			return;
+		}
+		PlanillaRegT02 reg02 = (PlanillaRegT02)reg;
+		
+		this.aplicarSugerenciasEnCampo(error, reg02.getIBCCCF45(),campo);			
+		this.aplicarSugerenciasEnCampo(error, reg02.getIBCOtrosParafiscales95(),campo);
+		this.aplicarSugerenciasEnCampo(error, reg02.getIBCPension42(),campo);
+		this.aplicarSugerenciasEnCampo(error, reg02.getIBCRiesgosProfesionales44(),campo);
+		this.aplicarSugerenciasEnCampo(error, reg02.getIBCSalud43(),campo);
+		this.aplicarSugerenciasEnCampo(error, reg02.getIBCOtrosParafiscales95(),campo);
+		this.aplicarSugerenciasEnCampo(error, reg02.getValorApCCF65(),campo);
+		this.aplicarSugerenciasEnCampo(error, reg02.getValorApICBF69(),campo);
+		this.aplicarSugerenciasEnCampo(error, reg02.getValorApMEN73(),campo);
+		this.aplicarSugerenciasEnCampo(error, reg02.getValorApSENA67(),campo);
+		this.aplicarSugerenciasEnCampo(error, reg02.getValorESAP71(),campo);
+		this.aplicarSugerenciasEnCampo(error, reg02.getCotizacionOblSalud55(),campo);
+		this.aplicarSugerenciasEnCampo(error, reg02.getCotOblARP63(),campo);		
+	}
+	
+	private void aplicarSugerenciasEnCampo ( ErrorLiquidacionTO error,CampoLeido1747 campoLeido, CampoLeido1747 campoError ){
+		if ( campoError.getNombreCampo().equals(campoLeido.getNombreCampo()) ){
+			verificarSiEnfatizarError(error, campoLeido.getValorNumerico());
+			campoLeido.setValorCrudo(error.getSugerencias()[0]);
+			campoLeido.setValorNumerico(this.getValorLong(error.getSugerencias()[0]));
+			error.setAplicarSegundaValidacion(true);
+		}
+	}
+	
+	private void verificarSiEnfatizarError ( ErrorLiquidacionTO error, Long valorEncontrado ){
+		Long valorEsperado = 0l;
+		try{
+			valorEsperado = Long.valueOf(error.getSugerencias()[0]);
+		}catch ( Exception e ){
+			return;
+		}
+		if ( valorEncontrado!=null && ((valorEsperado-valorEncontrado)>100 || (valorEsperado-valorEncontrado)<-100) ){
+			error.setEnfasis(true);
+		}
+		
+	}
+	
+	
+	private Long getValorLong ( String val ){
+		try{
+			return Long.valueOf(val);
+		}catch ( Exception e ){
+			return 0l;
+		}
+	}
+	
 
-	private ErrorLiquidacionTO crearRegistroErrorLexicoSintacticoRegistro(ApplicationException excepcion, int numeroLineaActual, int idErrorActual) {
+	private ErrorLiquidacionTO crearRegistroErrorLexicoSintacticoRegistro(ApplicationException excepcion, PlanillaRegTAbstract reg, int numeroLineaActual, int idErrorActual) {
 		
 		ErrorLiquidacionTO err = new ErrorLiquidacionTO();
 		
@@ -394,10 +492,21 @@ public class LiquidadorActivos {
 		err.setLinea(numeroLineaActual);
 		err.setErrorRegistro(campo==null);
 		err.setError(msge.getMensaje());
+		if ( reg!=null && reg instanceof PlanillaRegT02 ){
+			PlanillaRegT02 reg2 = (PlanillaRegT02)reg;
+			err.setTipoIdentificacion(reg2.getTpDocumentoCotizante3Type());
+			err.setNroIdentificacion(reg2.getNumeroIdentificacionCotizante4Type());
+		}		
 		if ( campo!=null && campo.getValorEsperado()!=null && !campo.getValorEsperado().trim().equals("") ){
-			err.setSugerencias(campo.getValorEsperado().split(";"));
+			if ( campo.getValorEsperado().contains(";") ){
+				err.setSugerencias(campo.getValorEsperado().split(";"));
+			}
+			else{
+				err.setSugerencias(campo.getValorEsperado().split("\\s+"));
+			}
 			if ( err.getSugerencias().length==1 ){
 				err.setAutocorregible(true);
+				this.verificarErrorIBCoCotizacion(err, reg, campo);
 			}
 		}
 		

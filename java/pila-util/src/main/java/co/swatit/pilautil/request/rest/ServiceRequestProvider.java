@@ -119,8 +119,7 @@ public final class ServiceRequestProvider {
 	private static WebResource getWebResource(String url, String operation) throws InvokeException {
 		WebResource webResource;
 		if (url != null) {
-			LOGGER.info(new StringBuilder("Invocando el servicio web:: ").append(url).append(":: Con los parámetros: ")
-					.toString());
+			LOGGER.info(new StringBuilder("Invocando el servicio web:: ").append(url).append("::Operation:").append(operation).toString());
 			Client client = Client.create();
 			webResource = client.resource(url);
 			if (operation != null) {
@@ -144,9 +143,11 @@ public final class ServiceRequestProvider {
 	 */
 	private static String getResponseFromService(ClientResponse response) throws InvokeException {
 		String output;
+		if ( response!=null ){
+			LOGGER.info("Status respuesta:::" + response.getStatus());
+		}
 		if (response != null && response.getStatus() == NumberConstants.TWO_HUNDRED) {
 			output = response.getEntity(String.class);
-			LOGGER.info("Se recibe respuesta del servicio web:::" + output);
 			if (output == null) {
 				throw new InvokeException(CodeErrorEnum.WSEMPTYRESPONSE);
 			}
@@ -170,6 +171,9 @@ public final class ServiceRequestProvider {
 	 */
 	private static ClientResponse invokeWebResource(final Object request, final String mediaType,
 			WebResource webResource) {
+		LOGGER.info("Request: "+request);
+		LOGGER.info("Request Class: "+request.getClass());	
+		LOGGER.info("mediaType: "+mediaType);
 		ClientResponse response;
 		if (request != null) {
 			// Se establecen los parametros del servicio
@@ -188,6 +192,7 @@ public final class ServiceRequestProvider {
 		} else {
 			response = webResource.accept(mediaType).post(ClientResponse.class);
 		}
+		LOGGER.info("Response: "+response);
 		return response;
 	}
 

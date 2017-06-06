@@ -33,6 +33,6 @@ namespace app.settlement {
       file: "=" // Información del archivo que se edita
     },
     controller: SettTotalsController,
-    templateUrl: "./components/settlement/totals.html"
+    templateUrl: "./components/settlement/settlement.table.totals.html"
   });
 }

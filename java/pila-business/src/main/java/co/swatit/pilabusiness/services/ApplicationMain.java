@@ -5,6 +5,7 @@ import co.swatit.pilabusiness.utils.LogFileGenerator;
 import co.swatit.pilabusiness.utils.ResponseUtil;
 import co.swatit.pilabusiness.utils.enums.ServiceNameEnum;
 import co.swatit.pilautil.constants.NumberConstants;
+import co.swatit.pilautil.dto.out.GetValidateFileOutDTO;
 import co.swatit.pilautil.exception.BusinessException;
 import co.swatit.pilautil.exception.ErrorMessagesLoader;
 import co.swatit.pilautil.exception.codeenum.CodeErrorEnum;
@@ -27,6 +28,7 @@ public final class ApplicationMain {
 	private ApplicationMain() {
 
 	}
+
 
 	/**
 	 * Método encargado de recibir la acción y el JSON para orquestar la función a ejecutar.
@@ -57,6 +59,7 @@ public final class ApplicationMain {
 	 */
 	public static void main(String[] args) {
 
+		
 		/* Se llama el método que genera el archivo de log */
 		LogFileGenerator.buildFileLog();
 		String response;
@@ -80,6 +83,7 @@ public final class ApplicationMain {
 		}
 		System.out.println(response);
 	}
+	
 
 	/**
 	 * 

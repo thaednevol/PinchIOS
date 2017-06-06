@@ -57,7 +57,7 @@ namespace app.jar {
     * metodo se ejecuta despues de hacer login en la aplicación.
     */
     public runServer() {
-      let result = this.jar.execJar(this.OPTIONS.JAR.FILES.SETTLEMENT.NAME);
+      let result = this.jar.execJarLiquidacionSvr(this.OPTIONS.JAR.FILES.SETTLEMENT.NAME);
       result.then((data) => { }, (error) => { });
     }
 

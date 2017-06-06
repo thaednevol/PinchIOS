@@ -27,3 +27,10 @@
   .sett-info__content 
       .sett-info__title(ng-bind="'SETTLEMENT.INFO.TOTAL_ERROR_CONTRIBUTOR' | translate")
       .sett-info__text--error.sett-info__text(ng-bind="$ctrl.info.totalErrorContributor || 0")
+  
+  //- Agrega una información del total de registros filtrados
+  .sett-info__divider
+  .sett-info__content 
+      .sett-info__title(ng-bind="'SETTLEMENT.INFO.TOTAL_FILTER_REGISTER' | translate")
+      .sett-info__text(ng-bind="$ctrl.info.totalFilterRegister || 0")
+        

@@ -28,7 +28,10 @@ public enum ServiceNameEnum {
 	GETPAYROLLCONTRIBUTORS("getPayrollContributors"),
 	/** Servicio que obtiene la información de un listado de ids de aportantes */
 	GETCONTRIBUTORSINFORMATION("getContributorsInformation"),
-	CREATEPAYROLL("createPayroll");
+	CREATEPAYROLL("createPayroll"),
+	VALIDATEFILE("validateFile"),
+	CONSULTFILE("consultFile"),
+	PUTPAYROLL("putPayroll");
 
 	/**
 	 * Nombre del servicio

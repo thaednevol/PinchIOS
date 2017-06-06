@@ -90,6 +90,20 @@ namespace app.native {
       return this.execCommand(command);
     }
 
+
+    /**
+    * @description
+    * Ejecuta el jar del WebServer de liquidacion con parametros personalizados de memoria.
+    *
+    * @param {string} nameJar - Nombre del archivo JAR que se ejecutara.
+    * @return {Promise} Resultado entregado por la función this.execCommand().
+    */
+    public execJarLiquidacionSvr(nameJar: string): any {
+      let routeJar = this.getRouteJar(nameJar);
+      let command: string = `${this.OPTIONS.JAR.COMMAND_LIQ_SVR} ${routeJar}`;
+      return this.execCommand(command);
+    }
+
     /**
     * @private
     * @description

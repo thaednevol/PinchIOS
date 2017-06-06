@@ -34,6 +34,8 @@ public class GetPayrollHeaderInDTO extends RequestDTO {
 	private String numeroPlanilla;
 	
 	private Long idAportante;
+	
+	private Long idSegUsuario;
 
 	/**
 	 * Método getter del atributo numeroPlanilla de la clase GetPayrollContributorsInDTO
@@ -52,6 +54,16 @@ public class GetPayrollHeaderInDTO extends RequestDTO {
 	 */
 	public void setNumeroPlanilla(String numeroPlanilla) {
 		this.numeroPlanilla = numeroPlanilla;
+	}
+	
+	
+
+	public Long getIdSegUsuario() {
+		return idSegUsuario;
+	}
+
+	public void setIdSegUsuario(Long idSegUsuario) {
+		this.idSegUsuario = idSegUsuario;
 	}
 
 	/*

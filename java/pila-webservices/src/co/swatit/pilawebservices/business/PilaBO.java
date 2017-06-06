@@ -1,5 +1,6 @@
 package co.swatit.pilawebservices.business;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -720,6 +721,7 @@ public final class PilaBO {
 				consultarPlanillaFilterDTO.setNumeroPlanilla(inDTO.getNumeroPlanilla());
 				//se agrega el idAportante
 				consultarPlanillaFilterDTO.setIdSoiAportante(inDTO.getIdAportante());
+				consultarPlanillaFilterDTO.setIdSegUsuario(inDTO.getIdSegUsuario());
 				PagedTableDTO<PlanillaConsultadaListadoDTO> ejbResponse = planillaConsulta.consultarListadoPlanilla(
 						consultarPlanillaFilterDTO, NumberConstants.ONE, NumberConstants.ONE);
 				if (ejbResponse.size() < NumberConstants.ONE) {
@@ -802,6 +804,8 @@ public final class PilaBO {
 				consultarPlanillaFilterDTO.setEstadoPlanilla(EstadoPlanillaType.PAGADA);
 				consultarPlanillaFilterDTO.setOrigenSoportesPago(Boolean.TRUE);
 				consultarPlanillaFilterDTO.setNumeroPlanilla(inDTO.getNumeroPlanilla());
+				consultarPlanillaFilterDTO.setIdSegUsuario(inDTO.getIdSegUsuario());
+				consultarPlanillaFilterDTO.setIdSoiAportante(inDTO.getIdSoiAportante());
 				PagedTableDTO<PlanillaConsultadaListadoDTO> ejbResponse = planillaConsulta.consultarListadoPlanilla(
 						consultarPlanillaFilterDTO, NumberConstants.ONE, NumberConstants.ONE);
 				if (ejbResponse.size() < NumberConstants.ONE) {
@@ -952,10 +956,16 @@ public final class PilaBO {
 					.lookup(PropertyLoader.INSTANCE.getProperty(Constants.GLOBAL_PROP,
 							"CONFIGURATION_CONNECTION_CLASS"));
 			
-			FileUtilities.write(inDTO.getFileNameZip(), inDTO.getFileZip());
-			FileUtilities.unzipFile(inDTO.getFileNameZip(), PropertyLoader.INSTANCE.getProperty(Constants.GLOBAL_PROP, "PATH_FILE_TMP"));
-			String rutaArchivo = PropertyLoader.INSTANCE.getProperty(Constants.GLOBAL_PROP, "PATH_FILE_TMP") + "/" + inDTO.getFileName();
-			nombreArchivo = FileUtilities.copyGetFile(inDTO.getFileName(), FileUtilities.readZipFile(rutaArchivo));
+			String tmpPath = PropertyLoader.INSTANCE.getProperty(Constants.GLOBAL_PROP, "PATH_FILE_TMP");
+			String rutaArchivoZip = tmpPath + File.separator + inDTO.getFileNameZip();
+			
+			LOGGER.info("Contenido Zip: "+inDTO.getFileZip());
+			FileUtilities.write(rutaArchivoZip, inDTO.getFileZip());
+			LOGGER.info("Escribio archivo ZIP en: "+rutaArchivoZip);
+			FileUtilities.unzipFile(rutaArchivoZip, tmpPath);
+			LOGGER.info("descomprimio archivo ZIP en: "+tmpPath);			
+			nombreArchivo = FileUtilities.copyGetFile(inDTO.getFileName(), FileUtilities.readZipFile(tmpPath+File.separator+inDTO.getFileName()));
+			LOGGER.info("copio archivo: "+nombreArchivo);
 			
 			archivoNotificacionDTO.setAportanteLey1429(inDTO.isAportanteLey1429());
 			archivoNotificacionDTO.setNombreArchivo(nombreArchivo);
@@ -967,11 +977,7 @@ public final class PilaBO {
 			
 			ArchivoNotificacionResultadoDTO archivoNotificacionResultadoDTO = bean.notificarNuevoProcesoValidaryGuardarArchivo(archivoNotificacionDTO);
 			
-			if (archivoNotificacionResultadoDTO.getAppExList() == null /*&&
-					archivoNotificacionResultadoDTO.getAppExArchivoAdvertenciaCertificaCalculoInteresesMora() == null && 
-					archivoNotificacionResultadoDTO.getAppExArchivoAdvertenciaParaPublicasPlanillaRetroactivos() == null && 
-					archivoNotificacionResultadoDTO.getAppExArchivoAdvertenciaPlanillaReferidaNoEncontrada() == null TODO &&
-					archivoNotificacionResultadoDTO.getAppExArchivoAdvertenciaPlanillaRepetida() == null*/) {
+			if (archivoNotificacionResultadoDTO.getAppExList() == null) {
 				archivoNotificacionDTO.setNotificacionDeArchivoEnProcesoType(NotificacionDeArchivoEnProcesoType.SOBREESCRIBIR_NOTIFICACION);
 				archivoNotificacionDTO.setUsuarioAceptaSobreescribirPlanilla(true);
 				archivoNotificacionResultadoDTO = bean.notificarNuevoProcesoValidaryGuardarArchivo(archivoNotificacionDTO);
@@ -1042,6 +1048,20 @@ public final class PilaBO {
 			
 			archivoEnProcesoConsultaDTO = bean.consultarProcesoValidarYGuardarArchivo(archivoEnProcesoConsultaDTO);
 			response = VOBuilder.armarArchivoResponse(archivoEnProcesoConsultaDTO);
+			
+			String filePath = FileUtilities.createDir(PropertyLoader.INSTANCE.getProperty(Constants.GLOBAL_PROP, "PATH_FILE"));
+			byte[] archivoError = FileUtilities.readZipFile(filePath + "/" + response.getNombreArchivoError());
+			response.setArchivoError(archivoError);
+			//TODO
+//			FileUtilities.write("/tmp/archivoError.xls", archivoError);
+//			System.out.println(filePath + "/" + response.getNombreArchivoError() + ", archivo[" + archivoError +"]" );
+			
+			byte[] archivoErrorAsofondo = FileUtilities.readZipFile(filePath + "/" + response.getNombreArchivoErrorAsofondo());
+			response.setArchivoErrorAsofondo(archivoErrorAsofondo);
+			//TODO
+//			FileUtilities.write("/tmp/archivoErrorAsofondo.xls", archivoErrorAsofondo);
+//			System.out.println(filePath +  "/" + response.getNombreArchivoErrorAsofondo() + ", archivo[" + archivoErrorAsofondo +"]");
+			
 		} catch (NamingException e) {
 			throw new BusinessException(CodeErrorEnum.ERRORCONNECTIONREFUSED, e);
 		} catch (ApplicationException e) {
@@ -1062,29 +1082,12 @@ public final class PilaBO {
 			// Se realiza la conexión con el servidor SOI
 			connection = connect();
 			
-			GetPayrollHeaderInDTO inDTO = new GetPayrollHeaderInDTO();
-			inDTO.setToken("1234");
-			inDTO.setNumeroPlanilla(idSheet.toString());
+			PlanillaRegistroConsultaTempArchivosSvc bean = (PlanillaRegistroConsultaTempArchivosSvc) connection
+					.lookup(PropertyLoader.INSTANCE.getProperty(Constants.GLOBAL_PROP,
+							"CONSULT_PAYROLL_INFORMATION_CONNECTION_CLASS"));
 			
-			PlanillaConsultaSvc planillaConsulta = (PlanillaConsultaSvc) connection.lookup(PropertyLoader.INSTANCE
-					.getProperty(Constants.GLOBAL_PROP, "GET_PAYROLL_INFORMATION_CONNECTION_CLASS"));
-			ConsultarPlanillaFilterDTO consultarPlanillaFilterDTO = new ConsultarPlanillaFilterDTO();
-			consultarPlanillaFilterDTO.setEstadoPlanilla(EstadoPlanillaType.PAGADA);
-			consultarPlanillaFilterDTO.setOrigenSoportesPago(Boolean.TRUE);
-			consultarPlanillaFilterDTO.setNumeroPlanilla(inDTO.getNumeroPlanilla());
-			//se agrega el idAportante
-			consultarPlanillaFilterDTO.setIdSoiAportante(inDTO.getIdAportante());
-			PagedTableDTO<PlanillaConsultadaListadoDTO> ejbResponse = planillaConsulta.consultarListadoPlanilla(
-					consultarPlanillaFilterDTO, NumberConstants.ONE, NumberConstants.ONE);
-			
-			
-			//TODO
-//			PlanillaRegistroConsultaTempArchivosSvc bean = (PlanillaRegistroConsultaTempArchivosSvc) connection
-//					.lookup(PropertyLoader.INSTANCE.getProperty(Constants.GLOBAL_PROP,
-//							"CONSULT_PAYROLL_INFORMATION_CONNECTION_CLASS"));
-//			
-//			PlanillaConsultadaDTO planillaConsultadaDTO = bean.consultarPlanilla(idSheet);
-//			response = VOBuilder.arrmarPlanillaResponse(planillaConsultadaDTO);
+			PlanillaConsultadaDTO planillaConsultadaDTO = bean.consultarPlanilla(idSheet);
+			response = VOBuilder.arrmarPlanillaResponse(planillaConsultadaDTO);
 		} catch (NamingException e) {
 			throw new BusinessException(CodeErrorEnum.ERRORCONNECTIONREFUSED, e);
 		} catch (ApplicationException e) {
@@ -1107,6 +1110,7 @@ public final class PilaBO {
 			ArchivoNotificacionDTO archivoNotificacionDTO = VOBuilder.armarArchivoNotificacion(getPutPayrollInDTO.getGetValidateFileOutDTO(), planillaConsultadaDTO);
 			UsuarioAutenticadoDTO usuarioAutenticadoDTO = VOBuilder.armarUsuarioAutenticado(getPutPayrollInDTO.getGetUsuarioAutenticadoInDTO());
 			
+			archivoNotificacionDTO.setIdSoiPlanilla(getPutPayrollInDTO.getIdPlanilla());
 			// Se realiza la conexión con el servidor SOI
 			connection = connect();
 			PlanillaRegistroConsultaTempArchivosSvc bean = (PlanillaRegistroConsultaTempArchivosSvc) connection
@@ -1143,8 +1147,17 @@ public final class PilaBO {
 		GetPutPayrollOutDTO response = null;
 		GetPutPayrollInDTO getPutPayrollInDTO = new GetPutPayrollInDTO();
 		GetValidateFileOutDTO getValidateFileOutDTO = validateFile(getValidateFileInDTO);
-		GetConsultPayrollOutDTO getConsultPayrollOutDTO = consultPayroll(getValidateFileOutDTO.getIdSoiPlanilla());
+		GetConsultFileOutDTO getConsultFileOutDTO = consultFile(getValidateFileOutDTO.getIdArchivoEnProceso());
+		while (getConsultFileOutDTO.getIdPlanilla() == 0) {
+			FileUtilities.sleep();
+			getConsultFileOutDTO = consultFile(getValidateFileOutDTO.getIdArchivoEnProceso());
+		}
+		System.out.println("Termino... idPlanilla[" +getConsultFileOutDTO.getIdPlanilla() + "]");
+		GetConsultPayrollOutDTO getConsultPayrollOutDTO = consultPayroll(getValidateFileOutDTO.getIdArchivoEnProceso());
+		getConsultPayrollOutDTO.setPeriodoNoSalud(getValidateFileInDTO.getPeriodoNoSalud());
+		getConsultPayrollOutDTO.setPeriodoSalud(getValidateFileInDTO.getPeriodoSalud());
 		getPutPayrollInDTO.setGetConsultPayrollOutDTO(getConsultPayrollOutDTO);
+		getPutPayrollInDTO.setIdPlanilla(getConsultFileOutDTO.getIdPlanilla());
 		response = putPayroll(getPutPayrollInDTO);
 		
 		return response;

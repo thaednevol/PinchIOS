@@ -3,10 +3,15 @@ package com.ach.soi.empresarial.liquidacion.server;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.RollingFileAppender;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import co.swatit.pilautil.dto.out.ValidacionArchivoDataSourceDTO;
+import co.swatit.pilautil.generics.Validation;
 
 import com.ach.arc.biz.r1747.util.ValidacionArchivoDataSource;
 import com.ach.arc.biz.transfer.ArchivoEnProcesoDTO;
@@ -40,7 +46,7 @@ public class LiquidacionRestController {
 	private static ValidacionArchivoDataSource validacionPlanillaDd;
 	private static ArchivoEnProcesoDTO archivoEnProceso;
 	
-	private static final Logger LOGGER = Logger.getLogger(LiquidacionRestController.class.getName());
+	private static final Logger LOGGER = getLogger();
 	
 	@RequestMapping("/incializarliquidacion")
 	@ResponseBody
@@ -202,7 +208,47 @@ public class LiquidacionRestController {
     }
 	
 	
-	
+
+	private static Logger getLogger ( ){
+		String path = System.getenv().get("LOG_PILA");
+        if (!Validation.isNullOrEmpty(path)) {
+            // creates pattern layout
+            PatternLayout layout = new PatternLayout();
+            layout.setConversionPattern("[%p] %d %c %M - %m%n");
+
+            // creates daily rolling file appender
+            RollingFileAppender rollingAppender = new RollingFileAppender();
+            rollingAppender.setFile(path);
+            rollingAppender.setLayout(layout);
+            rollingAppender.setMaxFileSize("10MB");
+            rollingAppender.setMaxBackupIndex(6);
+            rollingAppender.activateOptions();
+
+            // configures the root logger
+            Logger rootLogger = Logger.getRootLogger();
+            rootLogger.setLevel(Level.ERROR);
+            rootLogger.addAppender(rollingAppender);
+            
+            return rootLogger;
+
+        }
+        else{
+        	 PatternLayout layout = new PatternLayout("[%p] %d %c %M - %m%n");
+
+        	 ConsoleAppender ca = new ConsoleAppender();
+        	 ca.setWriter(new OutputStreamWriter(System.out));
+        	 ca.setLayout(layout);
+        	 ca.setName("soi.empresarial.console.appender");
+        	 ca.activateOptions();
+
+             // configures the root logger
+             Logger rootLogger = Logger.getRootLogger();
+             rootLogger.setLevel(Level.ERROR);             
+             rootLogger.addAppender(ca);
+             
+             return rootLogger;
+        }
+	}
 	
 	
 }

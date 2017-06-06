@@ -12,6 +12,18 @@ namespace app.table {
   class TableEditController {
 
     /**
+    * @type {Boolean} replaceActive - Indica si se debe hacer visible la opción
+    * de reemplazar el contenido de todas las celdas.
+    */
+    public replaceActive: boolean = false;
+
+    /**
+    * @type {String} inputFilterReplace - Model o del input que se encarga de
+    * realizar el reemplazo del contenido.
+    */
+    public inputFilterReplace: string = "";
+
+    /**
     * @type {Object} contextMenu - Menu Contextual utilizado en los campos de
     * input que muestran las sugerencias de corrección de errores.
     */
@@ -450,7 +462,7 @@ namespace app.table {
       }
       // Se valida si esta al borde derecho de la tabla para moverlo un poco
       // a la izquieda y permitir que se vea la ventana del filtro.
-      if(window.innerWidth - event.pageX < 150){
+      if (window.innerWidth - event.pageX < 150) {
         positionLeft -= window.innerWidth - event.pageX;
       }
       let panelHide: any = document.getElementsByClassName("sett__right-content--without-panel");
@@ -471,13 +483,8 @@ namespace app.table {
     */
     private listenerInputFilter() {
       let input = document.getElementById("table-filter");
+      let inputReplace = document.getElementById("table-filter-replace");
       input.focus();
-      input.addEventListener("focusout", () => {
-        setTimeout(() => {
-          this.showFilter = false;
-          this.$scope.$digest();
-        }, this.OPTIONS.TABLES.TIMER.WAIT);
-      });
     }
 
     /**
@@ -486,11 +493,50 @@ namespace app.table {
     * el boton de eliminar presente en el campo de filtro.
     */
     public actionDeleteFilter() {
+      this.showFilter = false;
       delete this.objectFilter[this.keyFilter[this.positionFilter]];
       delete this.keyFilter[this.positionFilter];
-      this.showFilter = false;
+      this.removeUndefinedKeys();
       setTimeout(() => {
         this.$scope.$digest();
+      });
+    }
+
+    /**
+    * @private
+    * @description
+    * Valida que el objeto de filtro no contenta elementos no definidos, si los
+    * encuentra los elimina para evitar que la tabla de resultados quede vacia.
+    */
+    private removeUndefinedKeys(): void {
+      for (let key of Object.keys(this.objectFilter)) {
+        if (key === "undefined") {
+          delete this.objectFilter[key];
+        }
+      }
+    }
+
+    /**
+    * @description
+    * Toma los registros que tiene el filtro y los reemplaza por el contenido
+    * especificado en la celda.
+    */
+    public actionReplaceContent(): void {
+      this.showFilter = true;
+      let modelFilter = this.objectFilter[this.keyFilter[this.positionFilter]];
+      let content = this.$filter("filter")(this.data.registers, this.objectFilter);
+      if (!this.inputFilterReplace || this.inputFilterReplace === "" || !modelFilter || modelFilter === "") return;
+      let reg = new RegExp(modelFilter, "g");
+      for (let register of content) {
+        register[`regs${this.positionFilter}`] = register[`regs${this.positionFilter}`].replace(reg, this.inputFilterReplace);
+      }
+      if (this.inputFilterReplace !== "" && this.inputFilterReplace) {
+        this.objectFilter[this.keyFilter[this.positionFilter]] = this.inputFilterReplace;
+      }
+      this.inputFilterReplace = null;
+      this.showFilter = false;
+      setTimeout(() => {
+        this.$scope.$apply();
       });
     }
 
@@ -542,11 +588,14 @@ namespace app.table {
       if (this.startLimit !== 0) {
         this.startLimit = 0;
       }
-      if (this.keyFilter[this.positionFilter]) {
-        if (this.objectFilter[this.keyFilter[this.positionFilter]] === "") {
-          this.actionDeleteFilter();
+      this.removeUndefinedKeys();
+      setTimeout(() => {
+        if (this.keyFilter[this.positionFilter]) {
+          if (this.objectFilter[this.keyFilter[this.positionFilter]].length === 0) {
+            this.actionDeleteFilter();
+          }
         }
-      }
+      });
     }
 
     /**
@@ -632,7 +681,9 @@ namespace app.table {
       fixedColumns: "<", // Indica si se insertan dos columnas fijas, de seleccion y linea.
       selectedItem: "=", // Lista para indicar que inputs se seleccionan
       cellNoEdit: "<", // Indica que celdas de la tabla no se pueden editar.
-      activeSubMenu: "<" // Indica si se debe activar la opción del submenu en la tabla
+      activeSubMenu: "<", // Indica si se debe activar la opción del submenu en la tabla
+      objectFilter: "=", // Almacena la información de los registros visualizados en el filtro.
+      replaceActive: "<" // Indica si se debe reemplzar el contenido con el filtro
     },
     controller: TableEditController,
     templateUrl: "./components/table/table.html"

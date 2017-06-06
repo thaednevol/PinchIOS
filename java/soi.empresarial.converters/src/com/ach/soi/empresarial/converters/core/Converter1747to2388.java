@@ -114,6 +114,13 @@ public class Converter1747to2388 extends CommonConverter{
             
 	        CommonBean bean = null;
 	        int regsNoIdentificados = 0;
+	        ParsersUtil parseUtil = null;
+	        if ( tieneDatosComplementarios ){
+	        	parseUtil = new ParsersUtil(datosComplementarios);
+	        }
+	        else{
+	        	parseUtil = new ParsersUtil();
+	        }
 	        do{	
 	        	try{
 	        		bean = (CommonBean)in.read();	
@@ -126,7 +133,7 @@ public class Converter1747to2388 extends CommonConverter{
 		        		ParsersUtil.completarConvertirTp02(regTp01, regTp02);
 		        		//divide multiples registros
 		        		if ( ParsersUtil.tieneNovedadesAusentismo(regTp02) ){
-		        			regsTp2.addAll(ParsersUtil.generarMultiRegistrosNovedadAusentismo(regTp02,regTp01));
+		        			regsTp2.addAll(parseUtil.generarMultiRegistrosNovedadAusentismo(regTp02,regTp01));
 		        		}
 		        		else{
 		        			regsTp2.add(regTp02);	
@@ -189,10 +196,7 @@ public class Converter1747to2388 extends CommonConverter{
 	        
 	        int index = 0;
 	        for ( Reg2388ReadTp02 tp2:regsTp2 ){
-	        	tp2.setSecuencia(index+1);
-	        	if ( tieneDatosComplementarios ){
-	        		this.incluirDatosComplementarios(datosComplementarios, tp2);
-	        	}
+	        	tp2.setSecuencia(index+1);	        	
 	        	archivoResultado.getRegsTp02()[index]=tp2.toStringArray();
 	        	index++;
 	        }
@@ -334,107 +338,5 @@ public class Converter1747to2388 extends CommonConverter{
         return regTp2.toStringArray();
 	}
 	
-	
-	private void incluirDatosComplementarios ( DatosComplementarios1747Reader datosComplementarios, 
-											Reg2388ReadTp02 regTp2 ) throws Exception{
-		StringBuilder key = new StringBuilder();
-		key.append(regTp2.getTipoDocumentoCotizante()).append(":");
-		key.append(regTp2.getNumeroDocumentoCotizante());
-		String novedad = null;
-		
-		boolean regIge = false;
-		boolean regVac = false;
-		boolean regLma = false;
-		boolean regSln = false;
-		boolean regIrl = false;
-
-		if ( isNovedadMarcada(regTp2.getIge()) ){
-			novedad = "IGE";
-			regIge = true;
-		}
-		if ( isNovedadMarcada(regTp2.getVac()) ){
-			novedad = "VAC";
-			regVac = true;
-		}
-		if ( isNovedadMarcada(regTp2.getLma()) ){
-			novedad = "LMA";
-			regLma = true;
-		}
-		if ( isNovedadMarcada(regTp2.getSln()) ){
-			novedad = "SLN";
-			regSln = true;
-		}
-		if ( isNovedadMarcada(regTp2.getIrl()) ){
-			novedad = "IRL";
-			regIrl = true;
-		}
-		
-		if ( novedad!=null ){
-			key.append(":").append(novedad);
-		}
-		
-		DatosComplementarios1747 datos = datosComplementarios.getDatosComplementarios(key.toString());
-		if ( datos==null ){
-			return;
-		}
-		
-		if ( datos.getIbcNovedad()!=null && datos.getIbcNovedad().length()>1 ){
-			regTp2.setIbcCcf(datos.getIbcNovedad());
-			regTp2.setIbcOtrosParafiscales(datos.getIbcNovedad());
-			regTp2.setIbcPension(datos.getIbcNovedad());
-			regTp2.setIbcRiesgo(datos.getIbcNovedad());
-			regTp2.setIbcSalud(datos.getIbcNovedad());
-		}
-		if ( datos.getClaseRiesgo()!=null && !datos.getClaseRiesgo().trim().equals("") ){
-			regTp2.setClaseRiesgoAfiliado(datos.getClaseRiesgo());
-		}
-		if ( datos.getCodigoArl()!=null && !datos.getCodigoArl().trim().equals("") ){
-			regTp2.setCodigoArlAfiliado(datos.getCodigoArl());
-		}
-		if ( datos.getFechaDesde()!=null && !datos.getFechaDesde().trim().equals("") ){
-			if ( regIge ){
-				regTp2.setFechaInicioIge(datos.getFechaDesde());
-			}
-			else if( regIrl ){
-				regTp2.setFechaInicioIrl(datos.getFechaDesde());
-			}
-			else if( regVac ){
-				regTp2.setFechaInicioVac(datos.getFechaDesde());
-			}
-			else if( regSln ){
-				regTp2.setFechaInicioSln(datos.getFechaDesde());
-			}
-			else if( regLma ){
-				regTp2.setFechaInicioLma(datos.getFechaDesde());
-			}
-		}
-		if ( datos.getFechaHasta()!=null && !datos.getFechaHasta().trim().equals("") ){
-			if ( regIge ){
-				regTp2.setFechaFinIge(datos.getFechaHasta());
-			}
-			else if( regIrl ){
-				regTp2.setFechaFinIrl(datos.getFechaHasta());
-			}
-			else if( regVac ){
-				regTp2.setFechaFinVac(datos.getFechaHasta());
-			}
-			else if( regSln ){
-				regTp2.setFechaFinSln(datos.getFechaHasta());
-			}
-			else if( regLma ){
-				regTp2.setFechaFinLma(datos.getFechaHasta());
-			}
-		}
-		if ( datos.getHorasLaboradas()!=null && !datos.getHorasLaboradas().trim().equals("") ){
-			regTp2.setNumeroHorasLaboradas(datos.getHorasLaboradas());
-		}
-		if ( datos.getIndTarifaEspecialPens()!=null&&!datos.getIndTarifaEspecialPens().trim().equals("") ){
-			regTp2.setTarifaEspecialPensiones(datos.getIndTarifaEspecialPens());
-		}
-	}
-	
-	private boolean isNovedadMarcada ( String nov ){
-		return nov!=null&nov.equals("X");
-	}
 
 }

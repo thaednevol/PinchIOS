@@ -14,7 +14,7 @@ import co.swatit.pilautil.dto.ResponseDTO;
 		"usuarioCreacion", "trazaErrorGuardar", "codigoErrorGuardar",
 		"trazaErrorValidacion", "codigoErrorValidacion", "rutaArchivoErrores", 
 		"porcentajeAvanceGuardado", "rutaArchivoPlanilla", "cotizantesIngresados",
-		"porcentajeAvanceValidacion", "estado", "idPlanilla", "idTmpValidacionArchivo"})
+		"porcentajeAvanceValidacion", "estado", "idPlanilla", "idTmpValidacionArchivo", "nombreArchivoError", "nombreArchivoErrorAsofondo"})
 public class GetConsultFileOutDTO extends ResponseDTO {
 
 	/**
@@ -63,6 +63,14 @@ public class GetConsultFileOutDTO extends ResponseDTO {
 	private Long idPlanilla;
 
 	private Long idTmpValidacionArchivo;
+	
+	private String nombreArchivoError;
+	
+	private byte[] archivoError;
+	
+	private String nombreArchivoErrorAsofondo;
+	
+	private byte[] archivoErrorAsofondo;
 
 	public Integer getSupera5smmlv() {
 		return supera5smmlv;
@@ -230,6 +238,38 @@ public class GetConsultFileOutDTO extends ResponseDTO {
 
 	public void setIdTmpValidacionArchivo(Long idTmpValidacionArchivo) {
 		this.idTmpValidacionArchivo = idTmpValidacionArchivo;
+	}
+
+	public String getNombreArchivoError() {
+		return nombreArchivoError;
+	}
+
+	public void setNombreArchivoError(String nombreArchivoError) {
+		this.nombreArchivoError = nombreArchivoError;
+	}
+
+	public String getNombreArchivoErrorAsofondo() {
+		return nombreArchivoErrorAsofondo;
+	}
+
+	public void setNombreArchivoErrorAsofondo(String nombreArchivoErrorAsofondo) {
+		this.nombreArchivoErrorAsofondo = nombreArchivoErrorAsofondo;
+	}
+
+	public byte[] getArchivoError() {
+		return archivoError;
+	}
+
+	public void setArchivoError(byte[] archivoError) {
+		this.archivoError = archivoError;
+	}
+
+	public byte[] getArchivoErrorAsofondo() {
+		return archivoErrorAsofondo;
+	}
+
+	public void setArchivoErrorAsofondo(byte[] archivoErrorAsofondo) {
+		this.archivoErrorAsofondo = archivoErrorAsofondo;
 	}
 
 }

@@ -12,6 +12,26 @@ namespace app.settlement {
   class SettOptionsController {
 
     /**
+    * @type {Array<String>} listErrorsValidateFile - Listado de mensajes de error
+    * que se mostraran en una tabla emergente si el proceso de validar el archivo
+    * de liquidación en la función "validateFileSettlement" tiene errores.
+    */
+    public listErrorsValidateFile: any = [];
+
+    /**
+    * @type {Boolean} showErrorValidateFile - Da la orden de cuando mostrar la
+    * ventana con el listado de mensajes de error del servicio.
+    */
+    public showErrorValidateFile: boolean = false;
+
+    /**
+    * @type {Boolean} showLoading - Indica si debe mostrar la imagen de loading
+    * y bloquear la pantalla hasta que espere el usuario que termine la carga
+    * del login.
+    */
+    public showLoading: Boolean = false;
+
+    /**
     * @type {Object<name,path,data,origin>} file - Contiene la información del archivo
     * que se carga.
     * @see SettlementController.file
@@ -24,10 +44,9 @@ namespace app.settlement {
     };
 
     /**
-    * @type {Object<object>} errors - Lista de errores que tiene el registro
-    * documento de la planilla.
+    * @type {Object} info - Información del panel de la planilla.
     */
-    public errors: any = {};
+    public info: any = {};
 
     /**
     * @type {Class} soiService - Servicio con funciones de llamado de SOI.
@@ -48,23 +67,48 @@ namespace app.settlement {
     private serviceJar: any;
 
     /**
+    * @type {Boolean} dialogIsOpen - Indica si la ventana de carga de un archivo
+    * se encuentra abierta para evitar abrir una de nuevo, cuando se cierra
+    * la ventana el valor de la variable cambia para poder abrir una de nuevo.
+    */
+    private dialogIsOpen: boolean = false;
+
+    /**
     * @type {Class} serviceDialog - Servicio nativo de Electron para mostrar ventanas dialog.
     * @see app.native.DialogNodeService
     */
     private serviceDialog: any;
 
+    /**
+    * @type {SwatService} swat - Consulta los servicios que utiliza los JAR de
+    * Swat para la aplicación.
+    * @see app.jar.SwatService
+    */
+    private swat: any
+
+    /**
+    * @type {Object} OPTIONS - Equivale al archivo de opciones del sistema.
+    * @see app/webapp/json/data/options.json
+    */
+    private OPTIONS: any;
+
     private $scope: any;
     private $rootScope: any;
+    private $filter: any;
+    private $localStorage: any;
+    static $inject = ["jar.swat.service", "jar.soi.service", "native.file.service", "native.jar.service", "native.dialog.service", "OPTIONS", "$scope", "$rootScope", "$filter", "$localStorage"];
 
-    static $inject = ["jar.soi.service", "native.file.service", "native.jar.service", "native.dialog.service", "$scope", "$rootScope"];
-
-    constructor(soiService, serviceFile, serviceJar, serviceDialog, $scope, $rootScope) {
+    constructor(swat, soiService, serviceFile, serviceJar, serviceDialog, OPTIONS, $scope, $rootScope, $filter, $localStorage) {
+      this.swat = swat;
       this.soiService = soiService;
       this.serviceFile = serviceFile;
       this.serviceJar = serviceJar;
       this.serviceDialog = serviceDialog;
+      this.OPTIONS = OPTIONS;
       this.$scope = $scope;
       this.$rootScope = $rootScope;
+      this.$filter = $filter;
+      this.$localStorage = $localStorage;
       this.loadListenerDrag();
       this.$scope.$on("load-file-settlement", (event, data) => {
         this.file.path = data;
@@ -79,12 +123,18 @@ namespace app.settlement {
     * 2388.
     */
     public actionDialogOpen() {
+      if (this.dialogIsOpen) return;
+      this.dialogIsOpen = true;
       let result = this.serviceDialog.openFile();
       result.then((pathFile) => {
-        if (!pathFile) return;
+        if (!pathFile) {
+          this.dialogIsOpen = false;
+          return;
+        }
         this.file.path = pathFile[0];
         this.file.name = this.serviceFile.getNameFilePath(pathFile[0]);
         this.validateFile();
+        this.dialogIsOpen = false;
       });
     }
 
@@ -141,11 +191,35 @@ namespace app.settlement {
     * del archivo. El evento se activa desde la vista el presionar el boton
     * de generar planilla.
     */
-    public actionDialogSave() {
-      let result = this.serviceDialog.saveFile();
-      result.then((pathFile) => {
-        this.generate2388(pathFile);
+    public actionGenerate2388() {
+      if (this.isFileWithErrors()) return;
+      this.showLoading = true;
+      let result = this.serviceFile.createFileTemp(`${this.file.name}temp2388.txt`, {}, false);
+      result.then((path) => {
+        if (!path) {
+          this.showLoading = false;
+          return;
+        }
+        this.generate2388(path);
       });
+    }
+
+    /**
+    * @private
+    * @description
+    * Valida si el archivo cuenta aun con errore que requieran ser corregidos,
+    * de ser asi muestra una advertencia de error y evita que se continue con
+    * el proceso.
+    */
+    private isFileWithErrors(): boolean {
+      let error = false;
+      if (this.info.totalError > 0) {
+        error = true;
+        let title = this.$filter("translate")("MESSAGES.TITLES.ERROR");
+        let message = this.$filter("translate")("SETTLEMENT.FILE_WITH_ERROR");
+        this.serviceDialog.showDialogError(title, message);
+      }
+      return error;
     }
 
     /**
@@ -155,7 +229,7 @@ namespace app.settlement {
     * el servicio JAR encargado de la creación.
     *
     * @param {String} pathFile - Ruta donde se almacenara la planilla.
-    * @see actionDialogSave()
+    * @see actionGenerate2388()
     */
     private generate2388(pathFile) {
       let dialogSave = this.saveJSONTemp();
@@ -165,7 +239,37 @@ namespace app.settlement {
           tipoArchivo: "1747",
           pathArchivoData: pathJsonFile
         };
-        this.serviceJar.execJson("soi-empresarial-converters-1.0", "escribirArchivo2388", options);
+        let result = this.serviceJar.execJson(this.OPTIONS.JAR.FILES.CONVERT.NAME, this.OPTIONS.JAR.FILES.CONVERT.METHOD.WRITE_2388, options);
+        result.then((data2388) => {
+          let pathConfig = this.serviceFile.getPathOptions(this.OPTIONS.FILES.CONFIG_SOI.VALIDATION_DATA_SOURCE);
+          let resultContentFile = this.serviceFile.getContentFileJson(pathConfig);
+          resultContentFile.then((fileConfig) => {
+            let params = {
+              totalContributor: this.info.totalContributor,
+              aportanteLey1429: fileConfig.planillaApteDto.aportanteLey1429,
+              aportanteLey1607: fileConfig.planillaApteDto.aportanteLey1607,
+              idSoiTpPlanilla: fileConfig.planillaApteDto.idSoiTpPlanilla,
+              periodHealth: this.info.periodHealth,
+              periodPension: this.info.periodPension
+            };
+            let resultValidation = this.swat.validateFileSettlement(pathFile, params);
+            resultValidation.then((data) => {
+              setTimeout(() => {
+                this.$scope.$apply();
+              });
+              if (data.errores.length > 0) {
+                this.listErrorsValidateFile = data.errores;
+                this.showErrorValidateFile = true;
+                this.showLoading = false;
+              } else {
+                let newInfoForService = Object.assign(params, data);
+                this.$localStorage.validateFile = newInfoForService;
+                this.swat.consultFileSettlement();
+                this.showLoading = false;
+              }
+            });
+          });
+        });
       });
     }
 
@@ -177,7 +281,7 @@ namespace app.settlement {
     private saveJSONTemp() {
       this.$rootScope.$broadcast("clear-inputs-table-edit");
       let dataForSave: any = this.soiService.registerType2ToArray(this.file.data);
-      return this.serviceFile.createFileTemp(`${this.file.name}.json`, dataForSave);
+      return this.serviceFile.createFileTemp(`${this.file.name}.json`, dataForSave, false);
     }
 
     /**
@@ -236,7 +340,10 @@ namespace app.settlement {
   app.component("settOptions", {
     bindings: {
       file: "=", // Información del archivo que se edita
-      errors: "=" // Lista de errores del documento.
+      info: "=", // Información del panel de la planilla
+      showErrorValidateFile: "=", // Indica si mostrar la ventana de erorres de validación de archivos
+      listErrorsValidateFile: "=", // Listado de errores de validación de archivos
+      showLoading: "="
     },
     controller: SettOptionsController,
     templateUrl: "./components/settlement/settlement.options.html"

@@ -1,7 +1,16 @@
 .table__filter(ng-show="$ctrl.showFilter")
+  .table__filter-close
+    i.mdi-close-circle.mdi(ng-click="$ctrl.showFilter = false")
   .table__filter-head
     span(ng-bind="$ctrl.labels[$ctrl.positionFilter]")
   .table__filter-body
-    input#table-filter(ng-model="$ctrl.objectFilter[$ctrl.keyFilter[$ctrl.positionFilter]]" ng-change="$ctrl.actionPageToStart()")
-    a.table__filter-delete(ng-click="$ctrl.actionDeleteFilter()" ng-if="$ctrl.objectFilter[$ctrl.keyFilter[$ctrl.positionFilter]]")
-      i.fa.fa-trash
+    .table__filter-block
+      input#table-filter(ng-model="$ctrl.objectFilter[$ctrl.keyFilter[$ctrl.positionFilter]]" ng-change="$ctrl.actionPageToStart()")
+      a.table__filter-delete(ng-click="$ctrl.actionDeleteFilter()" ng-if="$ctrl.objectFilter[$ctrl.keyFilter[$ctrl.positionFilter]]")
+        i.fa.fa-trash
+    .table__filter-head.table__filter-block(ng-if="$ctrl.replaceActive  && $ctrl.cellNoEdit.indexOf($ctrl.positionFilter) === -1")
+      span(ng-bind="'SETTLEMENT.TABLES.REPLACE_FOR' | translate")
+    .table__filter-block(ng-if="$ctrl.replaceActive && $ctrl.cellNoEdit.indexOf($ctrl.positionFilter) === -1")
+      input.table__filter-input--full#table-filter-replace(ng-model="$ctrl.inputFilterReplace")
+    .table__filter-block(ng-if="$ctrl.replaceActive  && $ctrl.cellNoEdit.indexOf($ctrl.positionFilter) === -1")
+      .sy__button--green(ng-class="{'sy__button--disabled': !$ctrl.inputFilterReplace || !$ctrl.objectFilter[$ctrl.keyFilter[$ctrl.positionFilter]]}" ng-click="$ctrl.actionReplaceContent()" ng-bind="'SETTLEMENT.TABLES.REPLACE_ACTION' | translate")

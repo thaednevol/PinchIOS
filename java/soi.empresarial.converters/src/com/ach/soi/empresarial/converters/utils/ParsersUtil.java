@@ -6,7 +6,9 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 
+import com.ach.soi.empresarial.converters.core.DatosComplementarios1747Reader;
 import com.ach.soi.empresarial.converters.model.CommonBean;
+import com.ach.soi.empresarial.converters.model.beans1747.DatosComplementarios1747;
 import com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadPensTp01;
 import com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadTp01;
 import com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadTp02;
@@ -14,6 +16,15 @@ import com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadTp02;
 public class ParsersUtil {
 
 	
+	private DatosComplementarios1747Reader datosComplementarios = null;
+	
+	public ParsersUtil ( DatosComplementarios1747Reader datosComplementarios ){
+		this.datosComplementarios = datosComplementarios;
+	}
+	
+	public ParsersUtil ( ){
+		
+	}
 	
 	public static boolean tieneNovedadesAusentismo ( Reg2388ReadTp02 regTp2 ){
 		if ( regTp2.getIge()!=null && regTp2.getIge().equals("X") ){
@@ -90,8 +101,9 @@ public class ParsersUtil {
 	}
 	
 
-	public static Collection<Reg2388ReadTp02> generarMultiRegistrosNovedadAusentismo ( Reg2388ReadTp02 regTp02Original, CommonBean regTp01 ){		
+	public Collection<Reg2388ReadTp02> generarMultiRegistrosNovedadAusentismo ( Reg2388ReadTp02 regTp02Original, CommonBean regTp01) throws Exception{		
 		Collection<Reg2388ReadTp02> regsGenerados = new ArrayList<Reg2388ReadTp02>();
+		Collection<Reg2388ReadTp02> resultado = new ArrayList<Reg2388ReadTp02>();
 		
 		String primerDiaMes = getPrimerDiaMes(regTp01);
 		String ultimoDiaMes = getUltimoDiaMes(regTp01);
@@ -149,14 +161,137 @@ public class ParsersUtil {
 			regsGenerados.add(regIrl);
 		}
 		int cantidadNovedades = regsGenerados.size()+1; //Toma en cuenta el registro de dias laborados para el calculo		
-		for ( Reg2388ReadTp02 tp2:regsGenerados ){			
-			tp2.dividirAportesPorNovedades(cantidadNovedades);
+		for ( Reg2388ReadTp02 tp2:regsGenerados ){
+			if ( datosComplementarios!=null ){
+				this.incluirDatosComplementarios(datosComplementarios, tp2);
+			}
+			else{
+				tp2.dividirAportesPorNovedades(cantidadNovedades);
+			}
+		}	
+		if ( datosComplementarios!=null ){
+			this.incluirDatosComplementarios(datosComplementarios, regDiasLaborados);
+			ajustarRegistroDiasLabConDatosComplem(regsGenerados, regDiasLaborados,datosComplementarios);			
+		}
+		else{
+			regDiasLaborados.dividirAportesPorNovedades(cantidadNovedades);
+			ajustarRegistroDiasLab(regsGenerados, regDiasLaborados, regTp02Original);
 		}		
-		regDiasLaborados.dividirAportesPorNovedades(cantidadNovedades);
-		ajustarRegistroDiasLab(regsGenerados, regDiasLaborados, regTp02Original);
-		regsGenerados.add(regDiasLaborados);
+		resultado.add(regDiasLaborados);
+		//Con el fin de reordenarlos
+		for ( Reg2388ReadTp02 reg:regsGenerados ){
+			resultado.add(reg);
+		}		
+		return resultado;
+	}
+	
+	
+	private boolean isNovedadMarcada ( String nov ){
+		return nov!=null&nov.equals("X");
+	}
+
+	private void incluirDatosComplementarios ( 	DatosComplementarios1747Reader datosComplementarios, 
+												Reg2388ReadTp02 regTp2 ) throws Exception{
+		StringBuilder key = new StringBuilder();
+		key.append(regTp2.getTipoDocumentoCotizante()).append(":");
+		key.append(regTp2.getNumeroDocumentoCotizante());
+		String novedad = null;
 		
-		return regsGenerados;
+		boolean regIge = false;
+		boolean regVac = false;
+		boolean regLma = false;
+		boolean regSln = false;
+		boolean regIrl = false;
+
+		if ( isNovedadMarcada(regTp2.getIge()) ){
+			novedad = "IGE";
+			regIge = true;
+		}
+		if ( isNovedadMarcada(regTp2.getVac()) ){
+			novedad = "VAC";
+			regVac = true;
+		}
+		if ( isNovedadMarcada(regTp2.getLma()) ){
+			novedad = "LMA";
+			regLma = true;
+		}
+		if ( isNovedadMarcada(regTp2.getSln()) ){
+			novedad = "SLN";
+			regSln = true;
+		}
+		if ( isNovedadMarcada(regTp2.getIrl()) ){
+			novedad = "IRL";
+			regIrl = true;
+		}
+		
+		if ( novedad!=null ){
+			key.append(":").append(novedad);
+		}
+		
+		DatosComplementarios1747 datos = datosComplementarios.getDatosComplementarios(key.toString());
+		if ( datos==null ){
+			return;
+		}
+		
+		if ( datos.getIbcNovedad()!=null && datos.getIbcNovedad().length()>1 ){
+			regTp2.setIbcCcf(datos.getIbcNovedad());
+			regTp2.setIbcOtrosParafiscales(datos.getIbcNovedad());
+			regTp2.setIbcPension(datos.getIbcNovedad());
+			regTp2.setIbcRiesgo(datos.getIbcNovedad());
+			regTp2.setIbcSalud(datos.getIbcNovedad());
+		}
+		if ( datos.getDiasNovedad()!=null && !datos.getDiasNovedad().trim().equals("") ){
+			regTp2.setDiasCcf(datos.getDiasNovedad());
+			regTp2.setDiasPension(datos.getDiasNovedad());
+			regTp2.setDiasRiesgo(datos.getDiasNovedad());
+			regTp2.setDiasSalud(datos.getDiasNovedad());						
+		}
+		if ( datos.getClaseRiesgo()!=null && !datos.getClaseRiesgo().trim().equals("") ){
+			regTp2.setClaseRiesgoAfiliado(datos.getClaseRiesgo());
+		}
+		if ( datos.getCodigoArl()!=null && !datos.getCodigoArl().trim().equals("") ){
+			regTp2.setCodigoArlAfiliado(datos.getCodigoArl());
+		}
+		if ( datos.getFechaDesde()!=null && !datos.getFechaDesde().trim().equals("") ){
+			if ( regIge ){
+				regTp2.setFechaInicioIge(datos.getFechaDesde());
+			}
+			else if( regIrl ){
+				regTp2.setFechaInicioIrl(datos.getFechaDesde());
+			}
+			else if( regVac ){
+				regTp2.setFechaInicioVac(datos.getFechaDesde());
+			}
+			else if( regSln ){
+				regTp2.setFechaInicioSln(datos.getFechaDesde());
+			}
+			else if( regLma ){
+				regTp2.setFechaInicioLma(datos.getFechaDesde());
+			}
+		}
+		if ( datos.getFechaHasta()!=null && !datos.getFechaHasta().trim().equals("") ){
+			if ( regIge ){
+				regTp2.setFechaFinIge(datos.getFechaHasta());
+			}
+			else if( regIrl ){
+				regTp2.setFechaFinIrl(datos.getFechaHasta());
+			}
+			else if( regVac ){
+				regTp2.setFechaFinVac(datos.getFechaHasta());
+			}
+			else if( regSln ){
+				regTp2.setFechaFinSln(datos.getFechaHasta());
+			}
+			else if( regLma ){
+				regTp2.setFechaFinLma(datos.getFechaHasta());
+			}
+		}
+		if ( datos.getHorasLaboradas()!=null && !datos.getHorasLaboradas().trim().equals("") ){
+			regTp2.setNumeroHorasLaboradas(datos.getHorasLaboradas());
+		}
+		if ( datos.getIndTarifaEspecialPens()!=null&&!datos.getIndTarifaEspecialPens().trim().equals("") ){
+			regTp2.setTarifaEspecialPensiones(datos.getIndTarifaEspecialPens());
+		}
 	}
 	
 	
@@ -164,7 +299,112 @@ public class ParsersUtil {
 		return val==null || val.trim().equals("");
 	}
 	
-	private static void ajustarRegistroDiasLab ( Collection<Reg2388ReadTp02> registrosGenerados, Reg2388ReadTp02 registroDl, Reg2388ReadTp02 registroOriginal ){
+	private void ajustarRegistroDiasLabConDatosComplem ( Collection<Reg2388ReadTp02> registrosGenerados, Reg2388ReadTp02 registroDl,DatosComplementarios1747Reader datosComplementarios ){
+		Collection<String> ibcsEps = new ArrayList<String>();
+		Long sumaIbcsEps = 0l;
+		Long sumaDiasEps = 0l;
+		Long sumaIbcsAfp = 0l;
+		Long sumaDiasAfp = 0l;
+		Long sumaIbcsArl = 0l;
+		Long sumaDiasArl = 0l;
+		Long sumaIbcsCcf = 0l;
+		Long sumaDiasCcf = 0l;
+		Long sumaIbcsOtrosPf = 0l;
+		
+		Long ibcEpsDl = 0l;
+		Long diasEpsDl = 0l;
+		Long ibcAfpDl = 0l;
+		Long diaAfpDl = 0l;
+		Long ibcArlDl = 0l;
+		Long diaArldl = 0l;
+		Long ibcCcfDl = 0l;
+		Long diaCcfDl = 0l;
+		Long ibcOtrosPfDl = 0l;
+		
+		Collection<String> diasEps = new ArrayList<String>();		
+		Collection<String> ibcsAfp = new ArrayList<String>();
+		Collection<String> diasAfp = new ArrayList<String>();		
+		Collection<String> ibcsArl = new ArrayList<String>();
+		Collection<String> diasArl = new ArrayList<String>();		
+		Collection<String> ibcsCcf = new ArrayList<String>();
+		Collection<String> diasCcf = new ArrayList<String>();		
+		Collection<String> ibcsOtrosPf = new ArrayList<String>();
+		
+		for ( Reg2388ReadTp02 tp02:registrosGenerados ){
+			ibcsEps.add(tp02.getIbcSalud());						
+			ibcsAfp.add(tp02.getIbcPension());
+			ibcsArl.add(tp02.getIbcRiesgo());
+			ibcsCcf.add(tp02.getIbcCcf());
+			ibcsOtrosPf.add(tp02.getIbcOtrosParafiscales());
+			
+			diasEps.add(tp02.getDiasSalud());
+			diasAfp.add(tp02.getDiasPension());
+			diasArl.add(tp02.getDiasRiesgo());
+			diasCcf.add(tp02.getDiasCcf());
+		}
+		
+		sumaIbcsAfp = this.getSumaValoresString(ibcsAfp);
+		ibcAfpDl = this.getValorLong(registroDl.getIbcPension());
+		registroDl.setIbcPension((ibcAfpDl-sumaIbcsAfp)+"");
+		
+		sumaIbcsArl = this.getSumaValoresString(ibcsArl);		
+		ibcArlDl = this.getValorLong(registroDl.getIbcRiesgo());
+		registroDl.setIbcRiesgo((ibcArlDl-sumaIbcsArl)+"");
+		
+		sumaIbcsCcf = this.getSumaValoresString(ibcsCcf);
+		ibcCcfDl = this.getValorLong(registroDl.getIbcCcf());
+		registroDl.setIbcCcf((ibcCcfDl-sumaIbcsCcf)+"");
+		
+		sumaIbcsEps = this.getSumaValoresString(ibcsEps);
+		ibcEpsDl = this.getValorLong(registroDl.getIbcSalud());
+		registroDl.setIbcSalud((ibcEpsDl-sumaIbcsEps)+"");
+		
+		sumaIbcsOtrosPf = this.getSumaValoresString(ibcsOtrosPf);
+		ibcOtrosPfDl = this.getValorLong(registroDl.getIbcOtrosParafiscales());
+		registroDl.setIbcOtrosParafiscales((ibcOtrosPfDl-sumaIbcsOtrosPf)+"");
+		
+		sumaDiasAfp = this.getSumaValoresString(diasAfp);
+		diaAfpDl = this.getValorLong(registroDl.getDiasPension());
+		registroDl.setDiasPension((diaAfpDl-sumaDiasAfp)+"");
+		
+		sumaDiasArl = this.getSumaValoresString(diasArl);
+		diaArldl = this.getValorLong(registroDl.getDiasRiesgo());
+		registroDl.setDiasRiesgo((diaArldl-sumaDiasArl)+"");
+		
+		sumaDiasCcf = this.getSumaValoresString(diasCcf);
+		diaCcfDl = this.getValorLong(registroDl.getDiasCcf());
+		registroDl.setDiasCcf((diaCcfDl-sumaDiasCcf)+"");
+		
+		sumaDiasEps = this.getSumaValoresString(diasEps);
+		diasEpsDl = this.getValorLong(registroDl.getDiasSalud());
+		registroDl.setDiasSalud((diasEpsDl-sumaDiasEps)+"");		
+	}
+	
+	private Long getValorLong ( String valStr ){
+		Long val = null;
+		try{
+			val = Long.valueOf(valStr);
+		}catch ( NumberFormatException e ){
+			val = 0l;
+		}
+		return val;
+	}
+	
+	private Long getSumaValoresString ( Collection<String> vals ){
+		Long val = null;
+		Long result = 0l;
+		for ( String v:vals ){
+			try{
+				val = Long.valueOf(v);
+			}catch ( NumberFormatException e ){
+				val = 0l;
+			}
+			result += val;
+		}
+		return result;
+	}
+	
+	private void ajustarRegistroDiasLab ( Collection<Reg2388ReadTp02> registrosGenerados, Reg2388ReadTp02 registroDl, Reg2388ReadTp02 registroOriginal ){
 		int cantidadNovedades = registrosGenerados.size()+1;
 		
 		String valorEsperado = null;

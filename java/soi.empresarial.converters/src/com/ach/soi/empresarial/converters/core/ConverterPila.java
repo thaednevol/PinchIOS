@@ -1,15 +1,8 @@
 package com.ach.soi.empresarial.converters.core;
 
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintStream;
-import java.nio.charset.Charset;
 import java.util.Locale;
-import java.util.logging.ConsoleHandler;
 
 import com.ach.soi.empresarial.converters.model.Archivo2388TO;
 import com.ach.soi.empresarial.converters.model.ErrorGeneralTO;
@@ -40,14 +33,14 @@ public class ConverterPila {
 		}
 		else if ( method.equalsIgnoreCase("convertirArchivoA2388") ){
 			/*try{
-				OutputStreamWriter str = new OutputStreamWriter(new FileOutputStream("/Users/jgutierrez/lucasian/soi.empresarial.git/archivos/ESIMED/esimed_gen.json"), "UTF-8");
+				OutputStreamWriter str = new OutputStreamWriter(new FileOutputStream("/Users/jgutierrez/lucasian/tmp/may_2017/ESIMED/esimed_gen.json"), "UTF-8");
 				str.write(conv.convertirArchivoA2388(request));
 				str.flush();
 				str.close();
 			}catch ( Exception e ){
 				
-			}
-			*/
+			}*/
+			
 			System.out.println(conv.convertirArchivoA2388(request));
 			//conv.convertirArchivoA2388(request);
 		}

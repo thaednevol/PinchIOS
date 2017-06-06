@@ -11,7 +11,7 @@
         i.mdi.mdi-format-indent-decrease(ng-click="$ctrl.showPanel = false" ng-if="$ctrl.showPanel")
         i.mdi.mdi-format-indent-increase(ng-click="$ctrl.showPanel = true" ng-if="!$ctrl.showPanel")
       //- Opciones de carga de archivo
-      sett-options(file="$ctrl.file" ng-if="$ctrl.showPanel")
+      sett-options(file="$ctrl.file" ng-if="$ctrl.showPanel" info="$ctrl.info" show-error-validate-file="$ctrl.showErrorValidateFile" list-errors-validate-file="$ctrl.listErrorsValidateFile" show-loading="$ctrl.showLoading")
       //- Lista de valores informativos del archivo
       sett-info(info="$ctrl.info" ng-if="$ctrl.showPanel")
 
@@ -19,6 +19,9 @@
       .sett__menu
         include settlement.tabs.pug
       .sett__right-content(ng-if="$ctrl.file.data" ng-class="{'sett__right-content--without-panel': !$ctrl.showPanel}")
-        sett-contributors(ng-show="$ctrl.currentTab === 'contributors'" file="$ctrl.file" list-errors-contributors="$ctrl.listErrorsContributors")
+        sett-contributors(ng-show="$ctrl.currentTab === 'contributors'" file="$ctrl.file" list-errors-contributors="$ctrl.listErrorsContributors" info="$ctrl.info")
         sett-totals(ng-show="$ctrl.currentTab === 'totals'" file="$ctrl.file")
-        sett-errors(ng-if="$ctrl.currentTab === 'errors' && $ctrl.listErrorsContributors" list-errors-contributors="$ctrl.listErrorsContributors")
+        sett-table-errors(ng-if="$ctrl.currentTab === 'errors' && $ctrl.listErrorsContributors" list-errors-contributors="$ctrl.listErrorsContributors")
+        sett-table-corrected(ng-if="$ctrl.currentTab === 'corrected' && $ctrl.listErrorsCorrected" list-errors-contributors="$ctrl.listErrorsCorrected")
+    
+    include settlement.popup.errors.pug

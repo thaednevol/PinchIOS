@@ -48,6 +48,18 @@ public final class AttributePropertiesUtil {
 	public static final String GET_CONTRIBUTORS_INFORMATION = PropertyLoader.INSTANCE.getPropertyInternal(
 			Constants.PILA_BUSINESS_PROPERTIES, "GET_CONTRIBUTORS_INFORMATION");
 
+	public static final String VALIDATE_FILE = PropertyLoader.INSTANCE.getPropertyInternal(
+			Constants.PILA_BUSINESS_PROPERTIES, "VALIDATE_FILE");
+	
+	public static final String CONSULT_FILE = PropertyLoader.INSTANCE.getPropertyInternal(
+			Constants.PILA_BUSINESS_PROPERTIES, "CONSULT_FILE");
+	
+	public static final String CONSULT_PAYROLL = PropertyLoader.INSTANCE.getPropertyInternal(
+			Constants.PILA_BUSINESS_PROPERTIES, "CONSULT_PAYROLL");
+	
+	public static final String PUT_PAYROLL = PropertyLoader.INSTANCE.getPropertyInternal(
+			Constants.PILA_BUSINESS_PROPERTIES, "PUT_PAYROLL");
+	
 	public static final String CREATE_PAYROLL = PropertyLoader.INSTANCE.getPropertyInternal(
 			Constants.PILA_BUSINESS_PROPERTIES, "CREATE_PAYROLL");
 

@@ -83,10 +83,11 @@ namespace app.native {
     * @description
     * Abre la ventana de dialog para indicar donde se debe almacenar un archivo.
     *
+    * @param {String} format - Extensión que tiene el archivo que se graba.
     * @return {Promise|null} Solo retorna el metodo resolve con el path del archivo
     * o null en caso de un error.
     */
-    public saveFile(): any {
+    public saveFile(format: string = "txt"): any {
       if (this.dialogEnabled) return null;
       this.dialogEnabled = true;
       this.createMainSaveFile();
@@ -95,7 +96,7 @@ namespace app.native {
       return new Promise((resolve, reject) => {
         // Acción cuando se presiona el boton de aceptar de la ventana.
         this.ipcRender.once("dialog-save-file-selected-file", function(event, path) {
-          resolve(`${path}.txt`);
+          resolve(`${path}.${format}`);
         });
         // Acción si se cancela la odren de grabar
         this.ipcRender.once("dialog-save-file-no-selected-file", function(event, path) {

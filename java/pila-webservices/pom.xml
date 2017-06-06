@@ -83,11 +83,11 @@
 			<version>3.1.2.2</version>
 			<scope>test</scope>
 		</dependency>
-		<!--dependency>
+		<dependency>
 			<groupId>flatworm</groupId>
 			<artifactId>flatworm</artifactId>
 			<version>1.2</version>
-		</dependency-->
+		</dependency>
 		<!-- Lucasian Dependencies -->
 		<dependency>
 			<groupId>commons-beanutils</groupId>

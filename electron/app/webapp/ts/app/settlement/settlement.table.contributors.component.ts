@@ -76,6 +76,18 @@ namespace app.settlement {
     private dialogIsOpen: boolean = false;
 
     /**
+    * @type {Object} objectFilter - Lista de opciones o palabras para filtrar
+    */
+    public objectFilter: any = {};
+
+    /**
+    * @type {Object<periodPension,periodHealth,totalContributor,totalPay,totalError>}
+    * info - información resumida del archivo.
+    * @see SettlementController.info
+    */
+    public info: any = {};
+
+    /**
     * @type {Class} dialogService - Ejecuta el llamado a los Dialogs nativos.
     */
     private dialogService;
@@ -100,6 +112,13 @@ namespace app.settlement {
           linea: line
         };
       });
+    }
+
+    $doCheck() {
+      if (this.file.data.regsTp02 && this.objectFilter) {
+        let total: any = this.$filter("filter")(this.file.data.regsTp02.registers, this.objectFilter);
+        this.info.totalFilterRegister = total.length;
+      }
     }
 
     /**
@@ -244,9 +263,10 @@ namespace app.settlement {
   app.component("settContributors", {
     bindings: {
       file: "=", // Información del archivo que se edita
-      listErrorsContributors: "="
+      listErrorsContributors: "=",
+      info: "="
     },
     controller: SettContributorsController,
-    templateUrl: "./components/settlement/contributors.html"
+    templateUrl: "./components/settlement/settlement.table.contributors.html"
   });
 }

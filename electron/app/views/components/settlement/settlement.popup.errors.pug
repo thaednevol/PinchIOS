@@ -1,0 +1,8 @@
+.sett-errors(ng-if="$ctrl.showErrorValidateFile")
+  .sett-errors__content
+    .sett-errors__list
+      //- Listado de elementos que se cargaran con el error
+      p(ng-repeat="registerError in $ctrl.listErrorsValidateFile" ng-bind="registerError")
+    //- Botond e accioens
+    .sy__button--blue(ng-click="$ctrl.showErrorValidateFile = false")
+      span(ng-bind="'SETTLEMENT.ACTIONS.CLOSE' | translate")

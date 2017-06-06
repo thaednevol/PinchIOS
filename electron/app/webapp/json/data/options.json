@@ -1,5 +1,5 @@
 {
-  "VERSION": "2.0.6",
+  "VERSION": "2.0.9",
   "APP_ID": "ach.soi.electron.co.swat-it",
 
   "NOTIFICATIONS": {
@@ -17,12 +17,14 @@
     "TIMEOUT_EXEC": 93000,
     "BUFFER_EXEC": 92160000000000000000000,
     "COMMAND": "java -Dfile.encoding=UTF-8 -jar",
+    "COMMAND_LIQ_SVR": "java -Dfile.encoding=UTF-8 -Xms128M -Xmx4092M -jar",
     "FILES": {
       "CONVERT": {
         "NAME": "soi-empresarial-converters-1.0",
         "METHOD": {
           "CONVERT_TO_2388": "convertirArchivoA2388",
-          "VALIDATE_FILE": "validarArchivoPila"
+          "VALIDATE_FILE": "validarArchivoPila",
+          "WRITE_2388": "escribirArchivo2388"
         }
       },
       "SETTLEMENT": {
@@ -40,8 +42,12 @@
           "GET_NOTIFICATIONS": "getNotifications",
           "VALIDATE_TOKEN": "validateToken",
           "INFO_HEAD_SETTLEMENT": "getPayrollHeader",
-          "LIST_CONTRIBUTORS": "getPayrollContributors"
-        }
+          "LIST_CONTRIBUTORS": "getPayrollContributors",
+          "VALIDATE_FILE": "validateFile",
+          "CONSULT_FILE": "consultFile",
+          "PUT_PAYROLL": "putPayroll"
+        },
+        "TIMER_WAIT": 20000
       }
     }
   },
@@ -52,7 +58,7 @@
     "FORMAT_HISTORY": "formatHistory.json",
     "EMAILS_CONTRIBUTORS": "emailsContributors.json",
     "EMAILS_SYSTEM": "emailsSystem.json",
-    "PROGRESS_EMAILS":"progressEmails.json",
+    "PROGRESS_EMAILS": "progressEmails.json",
     "CONFIG_SOI": {
       "VALIDATION_DATA_SOURCE": "validacionArchivoDataSourceDTO.json"
     },
@@ -100,5 +106,24 @@
 
   "EMAILS": {
     "NUMBER_BLOCK": 5
+  },
+
+
+  "SETTLEMENT": {
+    "VALIDATE_FILE_ENUM": {
+      "EN_PROCESO": 1,
+      "TERMINADO_SIN_ERRORES": 2,
+      "INICIO_VALIDACION_BDUA": 10,
+      "TERMINADO_CON_ERRORES": {
+        "TERMINADO_CON_ERRORES": 3,
+        "TERMINADO_CON_ERRORES_ALMACENAMIENTO": 4,
+        "TERMINADO_CON_ERRORES_DE_SISTEMA": 7,
+        "TERMINADO_CON_ERRORES_ALMACENAMIENTO_DE_SISTEMA": 8,
+        "TERMINADO_CON_ERRORES_LEY_1233": 9,
+        "ALMACENANDO_COTIZANTES": 6,
+        "ARCHIVO_NO_ENCONTRADO": 5
+      },
+      "ADVERTENCIAS_VALIDACION_BDUA": 11
+    }
   }
 }

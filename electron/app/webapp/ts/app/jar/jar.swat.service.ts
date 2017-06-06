@@ -36,14 +36,37 @@ namespace app.jar {
     */
     private jarSwat: any;
 
+    /**
+    * @type {NativeFileService} file - Manipula los archivos que se encuentran
+    * almacenados en la carpeta del programa.
+    * @see app.native.NativeFileService
+    */
+    private file: any;
+
+    /**
+    * @type {String} timerConsultFile - Identificador del timer que se utiliza
+    * para realizar el llamado al metodo JAR de consulta de información.
+    */
+    private timerConsultFile: any = null;
+
+    /**
+    * @type {NativeDialogService} dialog - Administra las ventanas nativas
+    * del sistema operativo.
+    */
+    private dialog: any;
+
+
+
     private $localStorage: any;
     private $filter: any;
-    static $inject = ["native.jar.service", "OPTIONS", "native.notification.service", "$localStorage", "$filter"];
+    static $inject = ["native.dialog.service", "native.jar.service", "OPTIONS", "native.file.service", "native.notification.service", "$localStorage", "$filter"];
 
-    constructor(jar, OPTIONS, nativeNotification, $localStorage, $filter) {
+    constructor(dialog, jar, OPTIONS, file, nativeNotification, $localStorage, $filter) {
+      this.dialog = dialog;
       this.jar = jar;
       this.jarSwat = OPTIONS.JAR.FILES.SWAT;
       this.OPTIONS = OPTIONS;
+      this.file = file;
       this.nativeNotification = nativeNotification;
       this.$localStorage = $localStorage;
       this.$filter = $filter;
@@ -158,7 +181,9 @@ namespace app.jar {
     public infoHeadSettlement(numberSettlement: string): any {
       let params: any = {
         token: this.$localStorage.token,
-        numeroPlanilla: numberSettlement
+        numeroPlanilla: numberSettlement,
+        idAportante: this.$localStorage.soiContributorIdNumber,
+        idSegUsuario: this.$localStorage.soiAccountIdNumber
       };
       return new Promise((resolve) => {
         let result = this.jar.execJson(this.jarSwat.NAME, this.jarSwat.METHOD.INFO_HEAD_SETTLEMENT, params);
@@ -196,9 +221,130 @@ namespace app.jar {
     public listContributorsSettlement(numberSettlement: string): any {
       let params: any = {
         token: this.$localStorage.token,
-        numeroPlanilla: numberSettlement
+        numeroPlanilla: numberSettlement,
+        idSoiAportante: this.$localStorage.soiContributorIdNumber,
+        idSegUsuario: this.$localStorage.soiAccountIdNumber
       };
       return this.jar.execJson(this.jarSwat.NAME, this.jarSwat.METHOD.LIST_CONTRIBUTORS, params);
+    }
+
+    /**
+    * @description
+    * Realiza el proceso de validación de un archivo de liquidación para poder
+    * realizar el proces de generar la planilla con el formato 2388.
+    *
+    * @param {String} pathFile - Nombre del archivo generado de la planilla 2388
+    * para comprimir.
+    * @param {Object} data - Información de parametros para el envio de la
+    * petición.
+    * @return {Promise} La promesa solo retorna un resolve, en caso de error
+    * el campo error del object es true.
+    */
+    public validateFileSettlement(pathFile: string, data: any): any {
+      let folderTemp = this.file.getPathTemp();
+      let routeFileZip = this.file.createFileZip(folderTemp, pathFile);
+      let params: any = {
+        token: this.$localStorage.token,
+        numeroTotalDeEmpleadosPorPantalla: data.totalContributor,
+        aportanteLey1429: data.aportanteLey1429,
+        fileName: this.file.getNameFilePath(pathFile),
+        idAportante: this.$localStorage.soiContributorIdNumber,
+        idSegUsuario: this.$localStorage.soiAccountIdNumber,
+        aportanteLey1607: data.aportanteLey1607,
+        idSoiTpPlanilla: data.idSoiTpPlanilla,
+        // fileZip: new Buffer(routeFileZip, "utf-8").toJSON().data,
+        fileZip: [],
+        fileNameZip: this.file.getNameFilePath(routeFileZip),
+        rutaLocalArchivo: this.file.getFilePathOnly(pathFile),
+        periodoSalud: data.periodHealth,
+        periodoNoSalud: data.periodPension
+      };
+      return this.jar.execJson(this.jarSwat.NAME, this.jarSwat.METHOD.VALIDATE_FILE, params);
+    }
+
+
+    /**
+    * @description
+    * Realiza el proceso de consultar información de un archivo despues de
+    * generar el archivo ZIP y enviarlo al servicio de SOI para completar el
+    * proceso de liquidación, se ejecuta un cierto tiempo hasta que el servicio
+    * retorne una respuesta.
+    */
+    public consultFileSettlement(): void {
+      if (this.timerConsultFile) {
+        clearTimeout(this.timerConsultFile);
+        this.timerConsultFile = null;
+      }
+      if (!this.$localStorage.validateFile) return;
+      let params: any = {
+        token: this.$localStorage.token,
+        idFile: this.$localStorage.validateFile.idArchivoEnProceso
+      };
+      let result = this.jar.execJson(this.jarSwat.NAME, this.jarSwat.METHOD.CONSULT_FILE, params);
+      result.then((response) => {
+        this.$localStorage.validateFile = Object.assign(this.$localStorage.validateFile, response);
+        if (response.estado === this.OPTIONS.SETTLEMENT.VALIDATE_FILE_ENUM.EN_PROCESO || response.estado === this.OPTIONS.SETTLEMENT.VALIDATE_FILE_ENUM.INICIO_VALIDACION_BDUA) {
+          this.timerConsultFile = setTimeout(this.consultFileSettlement.bind(this), this.jarSwat.TIMER_WAIT);
+        } else {
+          if (response.estado === this.OPTIONS.SETTLEMENT.VALIDATE_FILE_ENUM.TERMINADO_SIN_ERRORES) {
+            this.putPayroll(response.idPlanilla);
+            return;
+          }
+          if (response.estado === this.OPTIONS.SETTLEMENT.VALIDATE_FILE_ENUM.ADVERTENCIAS_VALIDACION_BDUA) {
+            this.putPayroll(response.idPlanilla);
+            return;
+          }
+          let showError = false;
+          let listErrores = this.OPTIONS.SETTLEMENT.VALIDATE_FILE_ENUM.TERMINADO_CON_ERRORES;
+          for (let key of Object.keys(listErrores)) {
+            if (response.estado === listErrores[key]) {
+              showError = true;
+              break;
+            }
+          }
+          if (showError) {
+            this.dialog.showDialogError(this.$filter("translate")("MESSAGES.TITLES.ERROR"), this.$filter("translate")("SETTLEMENT.ERRORS.VALIDATE_FILE") + response.estado);
+          }
+        }
+      });
+    }
+
+    /**
+    * @private
+    * @description
+    * Servicio que se ejecuta despues de realizar el proceso de envio del archivo
+    * zip al servicio de SOI y entonctar en el ciclo de consultFileSettlement un
+    * retorno de que termino sin errores.
+    */
+    private putPayroll(idPlanillaTmp: number): void {
+      let params: any = {
+        token: this.$localStorage.token,
+        "idPlanilla": idPlanillaTmp,
+        getValidateFileOutDTO: {
+          idSegUsuario: this.$localStorage.validateFile.idSegUsuario,
+          idAportante: this.$localStorage.validateFile.idAportante,
+          idArchivoEnProceso: this.$localStorage.validateFile.idArchivoEnProceso,
+          idSoiPlanilla: this.$localStorage.validateFile.idSoiPlanilla,
+          notificacionDeArchivoEnProcesoType: this.$localStorage.validateFile.notificacionDeArchivoEnProcesoType,
+          numeroTotalDeEmpleadosPorPantalla: this.$localStorage.validateFile.numeroTotalDeEmpleadosPorPantalla,
+          nombreArchivo: this.$localStorage.validateFile.nombreArchivo,
+          codTipoPlanilla: this.$localStorage.validateFile.codTipoPlanilla,
+          idSoiTpPlanilla: this.$localStorage.validateFile.idSoiTpPlanilla
+        },
+        "getUsuarioAutenticadoInDTO": null,
+        getConsultPayrollOutDTO: {
+          periodoSalud: this.$localStorage.validateFile.periodHealth,
+          periodoNoSalud: this.$localStorage.validateFile.periodPension
+        }
+      };
+      let result = this.jar.execJson(this.jarSwat.NAME, this.jarSwat.METHOD.PUT_PAYROLL, params);
+      result.then((response) => {
+          if ( response.idNumeroDePlanilla ){
+            let title = this.$filter("translate")("SETTLEMENT.CONFIRMATION.SETTLEMENT_CREATED_TITLE");
+            let message = this.$filter("translate")("SETTLEMENT.CONFIRMATION.SETTLEMENT_CREATED")+response.idNumeroDePlanilla;
+            this.dialog.showDialogError(title, message);
+          }
+      });
     }
 
   }

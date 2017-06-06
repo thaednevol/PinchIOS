@@ -10,8 +10,10 @@ public class DatosComplementarios1747 {
 	private String indTarifaEspecialPens;
 	private String fechaDesde;
 	private String fechaHasta;
+	private String diasNovedad;
 	private String horasLaboradas;
 	private String ibcNovedad;
+	private String fechaNovedad;
 	public String getTipoDocumento() {
 		return tipoDocumento;
 	}
@@ -78,7 +80,19 @@ public class DatosComplementarios1747 {
 	public void setIbcNovedad(String ibcNovedad) {
 		this.ibcNovedad = ibcNovedad;
 	}
-	
+		
+	public String getDiasNovedad() {
+		return diasNovedad;
+	}
+	public void setDiasNovedad(String diasNovedad) {
+		this.diasNovedad = diasNovedad;
+	}
+	public String getFechaNovedad() {
+		return fechaNovedad;
+	}
+	public void setFechaNovedad(String fechaNovedad) {
+		this.fechaNovedad = fechaNovedad;
+	}
 	public String getKey ( ){
 		String novedad = this.getNovedad();
 		if ( novedad!=null ){
@@ -87,17 +101,19 @@ public class DatosComplementarios1747 {
 		return this.getTipoDocumento()+":"+this.getNroDocumento();
 		
 	}
-	
 	@Override
 	public String toString() {
-		return "DatosComplementarios1747Tp02 [tipoDocumento=" + tipoDocumento
+		return "DatosComplementarios1747 [tipoDocumento=" + tipoDocumento
 				+ ", nroDocumento=" + nroDocumento + ", novedad=" + novedad
 				+ ", codigoArl=" + codigoArl + ", claseRiesgo=" + claseRiesgo
 				+ ", indTarifaEspecialPens=" + indTarifaEspecialPens
 				+ ", fechaDesde=" + fechaDesde + ", fechaHasta=" + fechaHasta
-				+ ", horasLaboradas=" + horasLaboradas + ", ibcNovedad="
-				+ ibcNovedad + "]";
+				+ ", diasNovedad=" + diasNovedad + ", horasLaboradas="
+				+ horasLaboradas + ", ibcNovedad=" + ibcNovedad
+				+ ", fechaNovedad=" + fechaNovedad + "]";
 	}
+	
+
 	
 	
 	
