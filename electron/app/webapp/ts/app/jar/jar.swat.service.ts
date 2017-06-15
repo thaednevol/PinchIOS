@@ -59,9 +59,10 @@ namespace app.jar {
 
     private $localStorage: any;
     private $filter: any;
-    static $inject = ["native.dialog.service", "native.jar.service", "OPTIONS", "native.file.service", "native.notification.service", "$localStorage", "$filter"];
+    private $rootScope: any;
+    static $inject = ["native.dialog.service", "native.jar.service", "OPTIONS", "native.file.service", "native.notification.service", "$localStorage", "$filter", "$rootScope"];
 
-    constructor(dialog, jar, OPTIONS, file, nativeNotification, $localStorage, $filter) {
+    constructor(dialog, jar, OPTIONS, file, nativeNotification, $localStorage, $filter, $rootScope) {
       this.dialog = dialog;
       this.jar = jar;
       this.jarSwat = OPTIONS.JAR.FILES.SWAT;
@@ -70,6 +71,7 @@ namespace app.jar {
       this.nativeNotification = nativeNotification;
       this.$localStorage = $localStorage;
       this.$filter = $filter;
+      this.$rootScope = $rootScope;
     }
 
     /**
@@ -288,10 +290,12 @@ namespace app.jar {
         } else {
           if (response.estado === this.OPTIONS.SETTLEMENT.VALIDATE_FILE_ENUM.TERMINADO_SIN_ERRORES) {
             this.putPayroll(response.idPlanilla);
+            this.$rootScope.$broadcast("hide-loading");
             return;
           }
           if (response.estado === this.OPTIONS.SETTLEMENT.VALIDATE_FILE_ENUM.ADVERTENCIAS_VALIDACION_BDUA) {
             this.putPayroll(response.idPlanilla);
+            this.$rootScope.$broadcast("hide-loading");
             return;
           }
           let showError = false;
@@ -304,6 +308,7 @@ namespace app.jar {
           }
           if (showError) {
             this.dialog.showDialogError(this.$filter("translate")("MESSAGES.TITLES.ERROR"), this.$filter("translate")("SETTLEMENT.ERRORS.VALIDATE_FILE") + response.estado);
+            this.$rootScope.$broadcast("hide-loading");
           }
         }
       });
@@ -339,11 +344,12 @@ namespace app.jar {
       };
       let result = this.jar.execJson(this.jarSwat.NAME, this.jarSwat.METHOD.PUT_PAYROLL, params);
       result.then((response) => {
-          if ( response.idNumeroDePlanilla ){
-            let title = this.$filter("translate")("SETTLEMENT.CONFIRMATION.SETTLEMENT_CREATED_TITLE");
-            let message = this.$filter("translate")("SETTLEMENT.CONFIRMATION.SETTLEMENT_CREATED")+response.idNumeroDePlanilla;
-            this.dialog.showDialogError(title, message);
-          }
+        if (response.idNumeroDePlanilla) {
+          let title = this.$filter("translate")("SETTLEMENT.CONFIRMATION.SETTLEMENT_CREATED_TITLE");
+          let message = this.$filter("translate")("SETTLEMENT.CONFIRMATION.SETTLEMENT_CREATED") + response.idNumeroDePlanilla;
+          this.dialog.showDialogError(title, message);
+          this.$rootScope.$broadcast("hide-loading");
+        }
       });
     }
 

@@ -96,6 +96,12 @@ namespace app.support {
 
     private $scope: any;
     private $filter: any;
+
+    /**
+    * @type {Object} objectFilter - Lista de opciones o palabras para filtrar
+    */
+    public objectFilter: any = {};
+
     static $inject = ["OPTIONS", "native.notification.service", "jar.soi.service", "native.dialog.service", "native.file.service", "$scope", "$filter"];
 
     constructor(OPTIONS, notificationService, soi, dialog, file, $scope, $filter) {

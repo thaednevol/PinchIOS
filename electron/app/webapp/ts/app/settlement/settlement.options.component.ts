@@ -172,7 +172,6 @@ namespace app.settlement {
     private loadDataFile() {
       let result = this.serviceJar.execString("soi-empresarial-converters-1.0", "leerArchivo2388", this.file.path);
       result.then((data) => {
-        this.$rootScope.$broadcast("hide-loading");
         data = this.soiService.registerType2ToObject(data);
         this.file.data = data;
         // TODO Se debe guardar una copia del original para detectar si hay cambios en el archivo
@@ -254,24 +253,25 @@ namespace app.settlement {
             };
             let resultValidation = this.swat.validateFileSettlement(pathFile, params);
             resultValidation.then((data) => {
-              setTimeout(() => {
-                this.$scope.$apply();
-              });
               if (data.errores.length > 0) {
                 this.listErrorsValidateFile = data.errores;
                 this.showErrorValidateFile = true;
                 this.showLoading = false;
+                setTimeout(() => {
+                  this.$scope.$apply();
+                });
               } else {
                 let newInfoForService = Object.assign(params, data);
                 this.$localStorage.validateFile = newInfoForService;
                 this.swat.consultFileSettlement();
-                this.showLoading = false;
               }
             });
           });
         });
       });
     }
+
+
 
     /**
     * private

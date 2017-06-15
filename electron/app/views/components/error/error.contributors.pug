@@ -14,7 +14,7 @@
           th(ng-bind="'Esperado'")
           th(ng-bind="'Encontrado'")
       tbody
-        tr(ng-repeat="register in $ctrl.data.data | filter:$ctrl.objectFilter:true track by $index" ng-class="{'error__table--priority': register.enfasis}")
+        tr(ng-repeat="register in $ctrl.data.data | filter:$ctrl.objectFilter:true | limitTo:$ctrl.limitRegister:$ctrl.startLimit track by $index" ng-init="$last && $ctrl.changeLimitRegister()" ng-class="{'error__table--priority': register.enfasis}")
           td(ng-bind="register.linea")
           td(ng-bind="register.tipoIdentificacion" ng-if="register.tipoIdentificacion")
           td(ng-bind="register.nroIdentificacion" ng-if="register.nroIdentificacion")
@@ -24,3 +24,11 @@
           td(ng-if="!$ctrl.styleError" ng-bind="register.error")
           td(ng-bind="register.sugerencias ? register.sugerencias.join(';') : '-'")
           td(ng-bind="register.currentValue")
+    
+  //- Paginación de las tablas de registro tipo 2
+  .table__nav
+    a(ng-click="$ctrl.actionChangePage('prev')")
+      i.fa.fa-chevron-circle-left
+    a(ng-click="$ctrl.actionChangePage('next')")
+      i.fa.fa-chevron-circle-right
+    span(ng-bind="($ctrl.startLimit + 1) + ' a ' + $ctrl.currentNumberRegisterLoad  + ' Total registros: ' + ($ctrl.data.data | filter:$ctrl.objectFilter:true).length")

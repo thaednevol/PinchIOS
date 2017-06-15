@@ -1,10 +1,15 @@
 package com.ach.soi.empresarial.liquidacion.server;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 
 import org.apache.log4j.ConsoleAppender;
@@ -30,6 +35,7 @@ import com.ach.soi.empresarial.liquidacion.core.LiquidadorActivos;
 import com.ach.soi.empresarial.liquidacion.core.TotalizadorActivos;
 import com.ach.soi.empresarial.liquidacion.model.ErrorLiquidacionTO;
 import com.ach.soi.empresarial.liquidacion.model.RequestGeneracionSoportesTO;
+import com.ach.soi.empresarial.liquidacion.model.ResultadoValidacionArchivoTO;
 import com.ach.soi.empresarial.liquidacion.model.ResultadoValidacionCotizanteDTO;
 import com.ach.soi.empresarial.liquidacion.model.TotalesTO;
 import com.ach.soi.empresarial.liquidacion.util.Converter;
@@ -37,7 +43,9 @@ import com.ach.sop.biz.transfer.PlanillaSoporteCotizanteDTO;
 import com.ach.sop.utility.biz.GeneracionSoportesOffline;
 import com.ach.sop.utility.biz.util.ServiciosUtilitarios;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 
 @Controller
 @EnableAutoConfiguration
@@ -50,13 +58,22 @@ public class LiquidacionRestController {
 	
 	@RequestMapping("/incializarliquidacion")
 	@ResponseBody
-    public ErrorLiquidacionTO[] incializarLiquidacion( String archivoProcesoJson, String archivoDatasourceJson , String pathArchivo2388 ) {
+    public ResultadoValidacionArchivoTO incializarLiquidacion( String archivoProcesoJson, String archivoDatasourceJson , String pathArchivo2388, String pathRespuestaJson ) {
 		LOGGER.info("incializarLiquidacion!!!!");
+		ResultadoValidacionArchivoTO resultado = new ResultadoValidacionArchivoTO();
 		BufferedReader lineReader =null;
 		ErrorLiquidacionTO[] erroresLiq = new ErrorLiquidacionTO[0];
+		FileOutputStream os = null;
+        BufferedWriter bw = null;
+
+        Gson gsonWriter=new GsonBuilder().setPrettyPrinting().create();
         try {        	
             JsonReader readerArchivoEnProceso = new JsonReader(new FileReader(new File(archivoProcesoJson)));
-            JsonReader readerArchivoDs = new JsonReader(new FileReader(new File(archivoDatasourceJson)));
+            JsonReader readerArchivoDs = new JsonReader(new FileReader(new File(archivoDatasourceJson)));            
+            
+            StringBuilder pathResultado = new StringBuilder(pathRespuestaJson);
+            pathResultado.append(File.separator).append("Resultado.").append(Calendar.getInstance().getTimeInMillis()).append(".json");          
+            
             Gson gson = new Gson();
             co.swatit.pilautil.dto.out.ArchivoEnProcesoDTO archivoEnProcesoTO = gson.fromJson(readerArchivoEnProceso, co.swatit.pilautil.dto.out.ArchivoEnProcesoDTO.class);
             ValidacionArchivoDataSourceDTO archivoDs = gson.fromJson(readerArchivoDs, ValidacionArchivoDataSourceDTO.class);
@@ -79,23 +96,59 @@ public class LiquidacionRestController {
 			erroresLiq = liquidacion.completarPlanillaAportanteDTO(validacionPlanillaDd.getPlanillaApteDto(), regT01);
 			if ( erroresLiq!=null && erroresLiq.length>0 ){
 				LOGGER.error("Fin: Error en el registro tipo 1.");
-				return erroresLiq;
+				resultado.setError(erroresLiq[0].getError());
+				resultado.setEstado("ERROR");
+				resultado.setPathResultadoJson("");
+				return resultado;
 			}
 			
+			os = new FileOutputStream(new File(pathResultado.toString()),true);
+	        bw = new BufferedWriter(new OutputStreamWriter(os));
+
+	        gsonWriter=new GsonBuilder().setPrettyPrinting().create();
             erroresLiq = liquidacion.validarRegsTp02Archivo2388(archivoEnProceso, validacionPlanillaDd, pathArchivo2388);
+            gsonWriter.toJson(erroresLiq, bw);
             
-            LOGGER.info("Fin: "+validacionPlanillaDd.getAdministradorasPension().size());
+            resultado.setError("");
+			resultado.setEstado("OK");
+			resultado.setPathResultadoJson(pathResultado.toString());
+            
+            LOGGER.info("Resultado Ok: "+pathResultado.toString());        
+            return resultado;
                     
         } catch (Exception ioe){
         	erroresLiq = new ErrorLiquidacionTO[0];
         	
         	LOGGER.error("Error", ioe);
         	ioe.printStackTrace();
-        	return null;
+        	resultado.setError(erroresLiq[0].getError());
+			resultado.setEstado("ERROR");
+			resultado.setPathResultadoJson("");
+        	return resultado;
         }
-        
-        LOGGER.info("Resultado Ok!!!!");        
-        return erroresLiq;
+        finally{
+        	if ( bw!=null ){
+        		try {
+        			bw.flush();
+					bw.close();					
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					LOGGER.error(e);
+				}        		
+        	}
+        	if ( os!=null ){
+        		try {
+					os.flush();
+					os.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					LOGGER.error(e);
+				}        		
+        	}        	
+        }
+                
     }
 	
 	@RequestMapping("/convertircotizante")

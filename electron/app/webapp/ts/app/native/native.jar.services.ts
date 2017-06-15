@@ -85,9 +85,10 @@ namespace app.native {
     * @return {Promise} Resultado entregado por la función this.execCommand().
     */
     public execJar(nameJar: string): any {
+      let execServer: any = require("child_process").exec;
       let routeJar = this.getRouteJar(nameJar);
       let command: string = `${this.OPTIONS.JAR.COMMAND} ${routeJar}`;
-      return this.execCommand(command);
+      execServer(command, { killSignal: "KILL_EXEC_SERVER" });
     }
 
 

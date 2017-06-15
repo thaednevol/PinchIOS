@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.ach.arc.biz.exception.ClavesMensajesArchivoConstants;
 import com.ach.arc.biz.r1747.mngr.LiquidacionPlanillaXArchivoEvolMngr;
 import com.ach.arc.biz.r1747.model.CampoLeido1747;
 import com.ach.arc.biz.r1747.model.bean.PlanillaRegT01;
@@ -214,6 +215,7 @@ public class LiquidadorActivos {
 		LiquidacionPlanillaXArchivoEvolMngr mngr = new LiquidacionPlanillaXArchivoEvolMngr();
 				
 		PlanillaRegT02 bean02 = null;
+		PlanillaCotizanteDTO czte = null;
 		try{		
 			
 			LOGGER.info("validarRegsTp02Archivo2388() -> Inicializa Cfg");
@@ -223,40 +225,72 @@ public class LiquidadorActivos {
 				bean02 = (PlanillaRegT02)mn.getNextRecord();
 				if ( camposBeanT02==null ){
 					camposBeanT02 = bean02.getCampos();
-				}
-				bean02.setNumeroLineaArchivo((int)(bean02.getSecuencia2Type()+1));
+				}																											
 				LOGGER.info("validarRegsTp02Archivo2388() -> Obtuvo el record");
 			}catch ( ApplicationException e ){
 				this.manejarBeanConErroresLexicoSintacticos(errores, bean02, e, nroLinea);
 				LOGGER.error("validarRegsTp02Archivo2388() -> Errores sintacticos: "+nroLinea);
 				return errores.toArray(new ErrorLiquidacionTO[0]);
-			}						
+			}	
+			
+			if ( bean02.getSecuencia2Type()==null||bean02.getSecuencia2Type().intValue()!=nroLinea-1 ){
+				bean02.getSecuencia2().setValorEsperado(""+(nroLinea-1));
+				this.manejarBeanConErroresLexicoSintacticos(errores, bean02, 
+								new ApplicationException(ClavesMensajesArchivoConstants.ERROR_CONSECUTIVO_REGISTRO,new Object[] { bean02.getSecuencia2() }), 
+																nroLinea);
+			}
+			
+			bean02.setNumeroLineaArchivo((int)(bean02.getSecuencia2Type()+1));
+			
 			archivoDto.setPlanillaCorrector(false);
 			try{
 				LOGGER.info("validarRegsTp02Archivo2388() -> Inicializa Validacion semantica");
 				bean02.setValidacionOffline(true);
-				PlanillaCotizanteDTO czte = mngr.procesarBeanRegistroT02Individual(datasourceValidacion.getPlanillaApteDto(),bean02, archivoDto, datasourceValidacion);
-				TotalizadorActivos totalizador = TotalizadorActivos.getInstance(datasourceValidacion);
-				totalizador.agregarCotizanteAlTotal(czte, nroLinea);
-				LOGGER.info("validarRegsTp02Archivo2388() -> Finaliza Validacion semantica");
+				czte = mngr.procesarBeanRegistroT02Individual(datasourceValidacion.getPlanillaApteDto(),bean02, archivoDto, datasourceValidacion);							
 			}catch ( ApplicationException e ){
 				LOGGER.error("validarRegsTp02Archivo2388() -> Errores semanticos: "+nroLinea);
 				this.manejarExcepcionesSemanticas(errores, bean02, e, nroLinea);
-				try{
-					for ( ErrorLiquidacionTO err:errores ){
-						if ( err.isAplicarSegundaValidacion() ){
-							//Revalida el registro con ibcs modificados										
-							mngr.procesarBeanRegistroT02Individual(datasourceValidacion.getPlanillaApteDto(),bean02, archivoDto, datasourceValidacion);						
+				boolean validarNuevamente = true;
+				for ( ErrorLiquidacionTO err:errores ){
+					if ( err.isAplicarSegundaValidacion() ){
+						//Revalida el registro con ibcs modificados										
+						validarNuevamente = true;						
+						break;
+					}
+				}
+				while ( validarNuevamente ){
+					erroresRevalidacion.clear();
+					try{
+						czte = mngr.procesarBeanRegistroT02Individual(datasourceValidacion.getPlanillaApteDto(),bean02, archivoDto, datasourceValidacion);
+					}catch ( ApplicationException e1 ){
+						LOGGER.error("validarRegsTp02Archivo2388() -> Errores semanticos en revalidacion: "+nroLinea);						
+						this.manejarExcepcionesSemanticas(erroresRevalidacion, bean02, e1, nroLinea);
+						errores.addAll(erroresRevalidacion);
+					}
+					validarNuevamente = false;
+					for ( ErrorLiquidacionTO err:erroresRevalidacion ){
+						if ( err.isAplicarSegundaValidacion() ){										
+							validarNuevamente = true;						
 							break;
 						}
-					}
-				}catch ( ApplicationException e1 ){
-					LOGGER.error("validarRegsTp02Archivo2388() -> Errores semanticos en revalidacion: "+nroLinea);
-					this.manejarExcepcionesSemanticas(erroresRevalidacion, bean02, e1, nroLinea);
-					errores.addAll(erroresRevalidacion);
+					}									
 				}
-				return errores.toArray(new ErrorLiquidacionTO[0]);
-			}		
+			}
+			boolean totalizar = false;
+			totalizar = true;
+			for ( ErrorLiquidacionTO err:errores ){
+				if ( !err.isAutocorregible() ){
+					totalizar = false;
+					break;
+				}
+			}
+			//Si se corrigieron todos los errores debe volver a crearse el registro de cotizante ya sin ningun error
+			if ( totalizar && czte!=null ){
+				 				
+				TotalizadorActivos totalizador = TotalizadorActivos.getInstance(datasourceValidacion);
+				totalizador.agregarCotizanteAlTotal(czte, nroLinea);
+				LOGGER.info("validarRegsTp02Archivo2388() -> Finaliza Validacion semantica");
+			}				
 		}catch (Exception e) {
 			ErrorLiquidacionTO errorTo = new ErrorLiquidacionTO();
 			LOGGER.fatal("validarRegsTp02Archivo2388() -> Errores inesperado",e);
@@ -427,7 +461,6 @@ public class LiquidadorActivos {
 			return;
 		}
 		PlanillaRegT02 reg02 = (PlanillaRegT02)reg;
-		
 		this.aplicarSugerenciasEnCampo(error, reg02.getIBCCCF45(),campo);			
 		this.aplicarSugerenciasEnCampo(error, reg02.getIBCOtrosParafiscales95(),campo);
 		this.aplicarSugerenciasEnCampo(error, reg02.getIBCPension42(),campo);
@@ -441,13 +474,21 @@ public class LiquidadorActivos {
 		this.aplicarSugerenciasEnCampo(error, reg02.getValorESAP71(),campo);
 		this.aplicarSugerenciasEnCampo(error, reg02.getCotizacionOblSalud55(),campo);
 		this.aplicarSugerenciasEnCampo(error, reg02.getCotOblARP63(),campo);		
+		this.aplicarSugerenciasEnCampo(error, reg02.getCodAdminRiesgosLab77(),campo);
+		this.aplicarSugerenciasEnCampo(error, reg02.getCotizacionObligatoria47(),campo);
 	}
 	
 	private void aplicarSugerenciasEnCampo ( ErrorLiquidacionTO error,CampoLeido1747 campoLeido, CampoLeido1747 campoError ){
 		if ( campoError.getNombreCampo().equals(campoLeido.getNombreCampo()) ){
 			verificarSiEnfatizarError(error, campoLeido.getValorNumerico());
 			campoLeido.setValorCrudo(error.getSugerencias()[0]);
-			campoLeido.setValorNumerico(this.getValorLong(error.getSugerencias()[0]));
+			if ( campoLeido.getValorAlfanumerico()!=null && !campoLeido.getValorAlfanumerico().trim().equals("") ){
+				campoLeido.setValorAlfanumerico(error.getSugerencias()[0]);
+			}
+			else{
+				campoLeido.setValorNumerico(this.getValorLong(error.getSugerencias()[0]));
+			}
+			
 			error.setAplicarSegundaValidacion(true);
 		}
 	}

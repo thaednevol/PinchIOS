@@ -14,13 +14,13 @@ namespace app.settlement {
     * que se mostraran en una tabla emergente si el proceso de validar el archivo
     * de liquidación en la función "validateFileSettlement" tiene errores.
     */
-    public listErrorsValidateFile:any = [];
+    public listErrorsValidateFile: any = [];
 
     /**
     * @type {Boolean} showErrorValidateFile - Da la orden de cuando mostrar la
     * ventana con el listado de mensajes de error del servicio.
     */
-    public showErrorValidateFile:boolean = false;
+    public showErrorValidateFile: boolean = false;
 
     /**
     * @type {Boolean} showLoading - Indica si debe mostrar la imagen de loading
@@ -160,6 +160,12 @@ namespace app.settlement {
       this.$scope.$on("update-info-panel", () => {
         this.updateInfoPanel();
       });
+      this.$scope.$on("hide-loading", () => {
+        this.showLoading = false;
+        setTimeout(() => {
+          this.$scope.$apply();
+        });
+      });
     }
 
     $doCheck() {
@@ -263,35 +269,42 @@ namespace app.settlement {
       let params = {
         archivoProcesoJson: this.serviceFile.getPathOptions("archivoEnProcesoDTO.json"),
         archivoDatasourceJson: this.serviceFile.getPathOptions("validacionArchivoDataSourceDTO.json"),
-        pathArchivo2388: this.file.path
+        pathArchivo2388: this.file.path,
+        pathRespuestaJson: this.serviceFile.getPathTemp()
       };
       // Se ejecuta el llamado al servicio que valida los errores del archivo
       this.serviceSettlement.initialize(params).get().$promise.then((response) => {
         let data = response.data;
-        if (data.error) {
+        if (data.estado !== "OK") {
           let title = this.$filter("translate")("MESSAGES.TITLES.ERROR");
-          this.nativeNotification.show(title, data.message);
+          this.nativeNotification.show(title, data.error);
           this.showLoading = false;
           this.file.data = null;
           return;
         }
-        // Si es correcto el proceso de descarga de los archivos de configuración
-        let newListError = {};
-        // Se convierte el resultado de los errores de los archivos en Objectos para
-        // Integrarlos con las tablas.
-        for (let i = 0; i < this.file.data.regsTp02.registers.length; i++) {
-          let currentSequence: number = this.file.data.regsTp02.registers[i].regs1;
-          let newObject = this.$filter("filter")(data, { linea: Number(currentSequence) + 1 }, true);
-          if (newObject.length > 0) {
-            newObject = this.arrayErrorsToObject(newObject);
-            newListError[currentSequence] = newObject;
+        let result = this.serviceFile.getContentFileJson(response.data.pathResultadoJson);
+        result.then((contentFile) => {
+          let data = contentFile;
+          // Si es correcto el proceso de descarga de los archivos de configuración
+          let newListError = {};
+          // Se convierte el resultado de los errores de los archivos en Objectos para
+          // Integrarlos con las tablas.
+          return this.processResponseError(data, newListError, 0);
+          for (let i = 0; i < this.file.data.regsTp02.registers.length; i++) {
+            let currentSequence: number = this.file.data.regsTp02.registers[i].regs1;
+            // let newObject = this.$filter("filter")(data, { linea: Number(currentSequence) + 1 }, true);
+            // if (newObject.length > 0) {
+            //   newObject = this.arrayErrorsToObject(newObject);
+            //   newListError[currentSequence] = newObject;
+            // }
           }
-        }
-        // Se ejecuta el llamado para actualizar los datos y la información de los paneles.
-        this.file.data.regsTp02.errors = newListError;
-        this.file.data.regsTp02.corrected = [];
-        angular.copy(newListError, this.file.data.regsTp02.corrected);
-        this.applyCorrections();
+          return;
+          // Se ejecuta el llamado para actualizar los datos y la información de los paneles.
+          this.file.data.regsTp02.errors = newListError;
+          this.file.data.regsTp02.corrected = [];
+          angular.copy(newListError, this.file.data.regsTp02.corrected);
+          this.applyCorrections();
+        });
       }, (response) => {
         if (response.data.data.error) {
           let title = this.$filter("translate")("MESSAGES.TITLES.ERROR");
@@ -301,6 +314,27 @@ namespace app.settlement {
           return;
         }
       });
+    }
+
+    private processResponseError(data: any, newListError: any, numberRegister: number): void {
+      if (numberRegister >= this.file.data.regsTp02.registers.length) {
+        this.file.data.regsTp02.errors = newListError;
+        this.file.data.regsTp02.corrected = [];
+        angular.copy(newListError, this.file.data.regsTp02.corrected);
+        this.applyCorrections();
+        return;
+      }
+      setTimeout(() => {
+        //let currentSequence: number = this.file.data.regsTp02.registers[numberRegister].regs1;
+        let currentSequence: number = numberRegister+1;
+        let newObject = this.$filter("filter")(data, { linea: Number(currentSequence) + 1 }, true);
+        if (newObject.length > 0) {
+          newObject = this.arrayErrorsToObject(newObject);
+          newListError[currentSequence] = newObject;
+        }
+        this.processResponseError(data, newListError, numberRegister + 1);
+      });
+
     }
 
     /**
@@ -344,10 +378,10 @@ namespace app.settlement {
             this.file.data.regsTp02.errors[numberSequence] = this.arrayErrorsToObject(errors);
           } else {
             delete this.file.data.regsTp02.errors[numberSequence];
+            // Se actualiza la información del panel en el campo de errores.
+            this.updateTotals();
+            this.updateInfoPanel();
           }
-          // Se actualiza la información del panel en el campo de errores.
-          this.updateTotals();
-          this.updateInfoPanel();
         }
       });
     }
@@ -404,11 +438,18 @@ namespace app.settlement {
     * @description
     * Aplica las correcciones automaticas de los registros.
     */
-    private applyCorrections(): void {
+    private applyCorrections(positionRow: number = 0): void {
       let errors = this.file.data.regsTp02.errors;
       let rows: any = Object.keys(errors);
-      // Recorre las filas de los registros de la tabla con error.
-      for (let positionRow = 0; positionRow <= rows.length - 1; positionRow++) {
+      if (positionRow >= rows.length) {
+        setTimeout(() => {
+          this.$scope.$apply();
+        });
+        this.updateTotals();
+        return;
+      }
+      setTimeout(() => {
+        // Recorre las filas de los registros de la tabla con error.
         let currentRow = rows[positionRow];
         let cols: any = Object.keys(errors[currentRow]);
         // Recorre cada columna de la fila para realizar la corrección.
@@ -425,15 +466,12 @@ namespace app.settlement {
             currentError.currentValue = this.file.data.regsTp02.registers[currentRow - 1][`regs${currentCol - 1}`];
           }
         }
-        // Si no hay mas errores en el registro se elimina.
-        if(Object.keys(errors[currentRow]).length === 0){
-          delete errors[currentRow];
+        if (Object.keys(errors[currentRow]).length === 0) {
+            delete errors[currentRow];
+            positionRow = positionRow - 1;
         }
-      }
-      setTimeout(() => {
-        this.$scope.$apply();
+        this.applyCorrections(positionRow + 1);
       });
-      this.updateTotals();
     }
 
   }

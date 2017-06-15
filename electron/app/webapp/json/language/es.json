@@ -151,19 +151,18 @@
       "TOTAL_ERROR": "Total Errores:",
       "UNDEFINED": "No definido",
       "TOTAL_ERROR_CONTRIBUTOR": "Cotizantes con errores:",
-      "TOTAL_FILTER_REGISTER": "Registros Visualizados:",
       "TOTAL_FILTER_REGISTER": "Registros Visualizados:"
     },
     "ACTIONS": {
       "EXPORT_CSV": "Exportar archivo CSV",
       "CLOSE": "Cerrar"
     },
+    "CONFIRMATION": {
+      "SETTLEMENT_CREATED_TITLE": "Planilla Cargada",
+      "SETTLEMENT_CREATED": "Planilla creada en Nuevo SOI con el número: "
+    },
     "ERRORS": {
       "VALIDATE_FILE": "Ocurrio error generando número de planilla en NSOI, comuníquese con el administrador. Codigo de error: "
-    },
-    "CONFIRMATION": {
-      "SETTLEMENT_CREATED_TITLE": "Planilla Creada",
-      "SETTLEMENT_CREATED": "Planilla cargada con éxito en NSOI, número generado: "
     }
   },
 

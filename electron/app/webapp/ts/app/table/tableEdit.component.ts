@@ -211,8 +211,12 @@ namespace app.table {
           let currentKey = input.getAttribute("keydata");
           if (this.idTable === "regsTp02") {
             currentKey = Object.keys(this.data.registers[0])[currentKey];
-            this.data.registers[positionInArray][currentKey] = value;
-            this.$rootScope.$broadcast("validate-register-table", input.getAttribute("position"));
+            //Solo se revalida cuando realmente cambia el valor
+            if ( this.data.registers[positionInArray][currentKey] != value ){
+              this.data.registers[positionInArray][currentKey] = value;
+              this.$rootScope.$broadcast("validate-register-table", input.getAttribute("position"));
+            }
+
           } else if (this.data.registers) {
             currentKey = Object.keys(this.data.registers[0])[currentKey];
             this.data.registers[positionInArray][currentKey] = value;

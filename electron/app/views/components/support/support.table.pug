@@ -13,4 +13,4 @@
             i.mdi.mdi-close-circle-outline(ng-click="$ctrl.actionDeleteContributor()" ng-mouseover="$ctrl.actionShowTooltip($event)" ng-mouseleave="$ctrl.actionHideTooltip($event)")
               span Eliminar cotizante
 
-      table-edit(data="$ctrl.listContributors" labels="$ctrl.labelsTable" id-table="'listContributors'" active-filter="true" fixed-columns="true" selected-item="$ctrl.selectedItem" cell-no-edit="$ctrl.cellNoEdit")
+      table-edit(data="$ctrl.listContributors" labels="$ctrl.labelsTable" id-table="'listContributors'" active-filter="true" fixed-columns="true" selected-item="$ctrl.selectedItem" object-filter="$ctrl.objectFilter" cell-no-edit="$ctrl.cellNoEdit")

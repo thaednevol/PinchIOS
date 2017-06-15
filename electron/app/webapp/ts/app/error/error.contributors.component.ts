@@ -30,9 +30,78 @@ namespace app.error {
     * @type {Boolean} styleError - Se utiliza para indicar un estilo css con
     * iconos de que los registros presentan error.
     */
-    public styleError:boolean = true;
+    public styleError: boolean = true;
 
-    constructor() {
+    /**
+    * @type {Number} limitRegister - limita la cantidad de registros que se
+    * renderizan por bloque que se carga de una tabla, cada cierto
+    * tiempo se va aumentando hasta completar el total de elementos.
+    */
+    public limitRegister = 50;
+
+    /**
+    * @type {Number} startLimit - Indica el numero maximo de registros a cargar.
+    */
+    public startLimit = 0;
+
+    /**
+    * @type {Number} currentNumberRegisterLoad - Indica la cantidad de registros
+    * que estan cargados en el momento.
+    */
+    public currentNumberRegisterLoad = 0;
+
+    /**
+    * @type {Object} OPTIONS - Equivale al archivo de opciones del sistema.
+    * @see app/webapp/json/data/options.json
+    */
+    private OPTIONS: any;
+
+    static $inject = ["OPTIONS", "$scope"];
+
+    private $scope: any;
+
+    constructor(OPTIONS, $scope) {
+      this.OPTIONS = OPTIONS;
+      this.$scope = $scope;
+      this.limitRegister = this.OPTIONS.TABLES.ROW_LOAD_BY_PAGE;
+    }
+
+    public changeLimitRegister() {
+      this.setCurrentRegisterLoaded();
+      if (this.limitRegister < this.OPTIONS.TABLES.ROW_LIMIT_BY_PAGE) {
+        setTimeout(() => {
+          this.limitRegister += this.OPTIONS.TABLES.ROW_LOAD_BY_PAGE;
+          this.$scope.$digest();
+        });
+      }
+    }
+
+    /**
+    * @description
+    * Actualiza la información de la cantidad de paginas cargadas.
+    */
+    private setCurrentRegisterLoaded() {
+      this.currentNumberRegisterLoad = this.startLimit + this.limitRegister;
+      if (this.currentNumberRegisterLoad > this.data.data.length) {
+        this.currentNumberRegisterLoad = this.data.data.length;
+      }
+    }
+
+    /**
+    * @description
+    * Realiza el cambio de la pagina de la tabla.
+    */
+    public actionChangePage(orientation) {
+      if (orientation === "next" && this.startLimit + this.OPTIONS.TABLES.ROW_LIMIT_BY_PAGE < this.data.data.length) {
+        this.startLimit += this.OPTIONS.TABLES.ROW_LIMIT_BY_PAGE;
+      }
+      if (orientation === "prev" && this.startLimit > 1) {
+        this.startLimit -= this.OPTIONS.TABLES.ROW_LIMIT_BY_PAGE;
+      }
+      setTimeout(() => {
+        this.setCurrentRegisterLoaded();
+        this.$scope.$digest();
+      });
     }
 
   }

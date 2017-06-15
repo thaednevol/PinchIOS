@@ -213,7 +213,7 @@ namespace app.support {
       this.setListEmails();
       // Consulta el numero de la planilla liquidada
       this.$scope.$on("get-file-settlement", () => {
-        this.getFileSettlement();
+          this.getFileSettlement();
       });
       // broadcast para actualizar la lista de opciones de configuración de email
       this.$scope.$on("support-update-config-emails", () => {

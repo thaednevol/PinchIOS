@@ -6,6 +6,8 @@ import java.util.ArrayList;
 
 import javax.ws.rs.core.MediaType;
 
+import org.apache.log4j.Logger;
+
 import co.swatit.pilabusiness.utils.AttributePropertiesUtil;
 import co.swatit.pilabusiness.utils.ResponseUtil;
 import co.swatit.pilabusiness.utils.enums.ServiceNameEnum;
@@ -47,6 +49,9 @@ import com.ach.pla.biz.type.NotificacionDeArchivoEnProcesoType;
  */
 public final class ApplicationBO {
 
+	
+	private static final Logger LOGGER = Logger.getLogger(ApplicationBO.class.getName());
+	
 	/**
 	 * Método constructor privado
 	 */
@@ -509,6 +514,8 @@ public final class ApplicationBO {
 	private static String validateFile(String paramData) {
 		String resp = Constants.EMPTY;
 		try {
+			LOGGER.info("validateFile - paramData: "+paramData);
+			
 			GetValidateFileInDTO inDTO = ParserUtils.INSTANCE.parseJSONToObject(paramData,GetValidateFileInDTO.class);
 			
 			FileUtilities.zipFile(inDTO.getRutaLocalArchivo(), inDTO.getFileName(), inDTO.getFileNameZip());

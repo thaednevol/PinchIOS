@@ -177,7 +177,6 @@ namespace app.load {
       };
       let result = this.serviceJar.execJson("soi-empresarial-converters-1.0", "validarArchivoPila", this.file);
       result.then((data) => {
-        // this.$rootScope.$broadcast("hide-loading");
         this.dataValidate = data;
         this.showLoading = false;
         this.dialogIsOpen = false;

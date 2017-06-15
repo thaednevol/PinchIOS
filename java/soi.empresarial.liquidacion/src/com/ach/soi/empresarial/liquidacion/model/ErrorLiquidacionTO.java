@@ -12,8 +12,8 @@ public class ErrorLiquidacionTO {
 	private String error;
 	private String[] sugerencias;
 	private Integer campo;
-	private String tipoIdentificacion;
-	private String nroIdentificacion;
+	private String tipoIdentificacion = "N/A";
+	private String nroIdentificacion = "N/A";
 	private boolean enfasis = false;
 	private boolean aplicarSegundaValidacion = false;
 	public int getLinea() {
