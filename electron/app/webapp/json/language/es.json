@@ -125,7 +125,10 @@
         "NEW": "Nuevo",
         "OPEN": "Abrir",
         "SAVE": "Guardar",
-        "GENERATE": "Generar planilla"
+        "GENERATE": "Generar planilla",
+        "REFORMA": "Reforma Tributaria:",
+        "SI": "SI",
+        "NO": "NO"
       }
     },
     "TABLES": {

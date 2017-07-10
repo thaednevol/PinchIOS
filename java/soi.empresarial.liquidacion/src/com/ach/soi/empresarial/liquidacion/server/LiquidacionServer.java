@@ -42,7 +42,7 @@ public class LiquidacionServer {
 
             // configures the root logger
             Logger springLogger = Logger.getLogger("org.springframework.web");
-            springLogger.setLevel(Level.FATAL);
+            springLogger.setLevel(Level.TRACE);
             springLogger.addAppender(rollingAppender);
             
             return springLogger;
@@ -59,7 +59,7 @@ public class LiquidacionServer {
 
              // configures the root logger
              Logger springLogger = Logger.getLogger("org.springframework.web");
-             springLogger.setLevel(Level.FATAL);             
+             springLogger.setLevel(Level.TRACE);             
              springLogger.addAppender(ca);
              
              return springLogger;

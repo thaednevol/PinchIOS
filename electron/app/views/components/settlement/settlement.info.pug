@@ -1,6 +1,14 @@
 .sett-info
 
   .sett-info__divider
+    .sett-info__content
+    .sett-info__title(ng-bind="'SETTLEMENT.LOAD.ACTIONS.REFORMA' | translate")
+    .sett-info__options
+        select(ng-model="$ctrl.info.reforma")
+          option(value="true" ng-bind="'SETTLEMENT.LOAD.ACTIONS.SI' | translate")
+          option(value="false" ng-bind="'SETTLEMENT.LOAD.ACTIONS.NO' | translate")
+
+  .sett-info__divider
 
   .sett-info__content
     .sett-info__title(ng-bind="'SETTLEMENT.INFO.PERIOD_PENSION' | translate")
@@ -17,19 +25,12 @@
   .sett-info__content
     .sett-info__title(ng-bind="'SETTLEMENT.INFO.TOTAL_PAY' | translate")
     .sett-info__text(ng-bind="$ctrl.info.totalPay || 0")
-
-  .sett-info__divider
-
   .sett-info__content
     .sett-info__title(ng-bind="'SETTLEMENT.INFO.TOTAL_ERROR' | translate")
     .sett-info__text--error.sett-info__text(ng-bind="$ctrl.info.totalError || 0")
-
   .sett-info__content 
       .sett-info__title(ng-bind="'SETTLEMENT.INFO.TOTAL_ERROR_CONTRIBUTOR' | translate")
       .sett-info__text--error.sett-info__text(ng-bind="$ctrl.info.totalErrorContributor || 0")
-  
-  //- Agrega una información del total de registros filtrados
-  .sett-info__divider
   .sett-info__content 
       .sett-info__title(ng-bind="'SETTLEMENT.INFO.TOTAL_FILTER_REGISTER' | translate")
       .sett-info__text(ng-bind="$ctrl.info.totalFilterRegister || 0")

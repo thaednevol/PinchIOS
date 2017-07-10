@@ -347,7 +347,7 @@ namespace app.jar {
         if (response.idNumeroDePlanilla) {
           let title = this.$filter("translate")("SETTLEMENT.CONFIRMATION.SETTLEMENT_CREATED_TITLE");
           let message = this.$filter("translate")("SETTLEMENT.CONFIRMATION.SETTLEMENT_CREATED") + response.idNumeroDePlanilla;
-          this.dialog.showDialogError(title, message);
+          this.nativeNotification.show(title, message);
           this.$rootScope.$broadcast("hide-loading");
         }
       });

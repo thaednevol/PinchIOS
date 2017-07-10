@@ -44,6 +44,8 @@ public class GetValidationFileConfigInDTO implements Serializable {
 	 * Token del usuario autenticado
 	 */
 	private String token;
+	
+	private boolean reforma;
 
 	/**
 	 * Método getter del atributo regTp01 de la clase GetApplicationConfigurationInDTO
@@ -120,6 +122,16 @@ public class GetValidationFileConfigInDTO implements Serializable {
 	public void setToken(String token) {
 		this.token = token;
 	}
+	
+	
+
+	public boolean isReforma() {
+		return reforma;
+	}
+
+	public void setReforma(boolean reforma) {
+		this.reforma = reforma;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -129,7 +141,7 @@ public class GetValidationFileConfigInDTO implements Serializable {
 	@Override
 	public String toString() {
 		return "GetApplicationConfigurationInDTO [regTp01=" + regTp01 + ", idSoiAportante=" + idSoiAportante
-				+ ", idSegUsuario=" + idSegUsuario + ", token=" + token + "]";
+				+ ", idSegUsuario=" + idSegUsuario + ", token=" + token + ", reforma=" + reforma+ "]";
 	}
 
 }

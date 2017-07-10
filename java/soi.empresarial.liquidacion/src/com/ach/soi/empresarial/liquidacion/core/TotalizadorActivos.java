@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 
 import com.ach.arc.biz.r1747.util.ValidacionArchivoDataSource;
 import com.ach.cfg.biz.cache.AdministradorasSingleton;
@@ -36,14 +37,14 @@ public class TotalizadorActivos {
 	
 	private static TotalizadorActivos INSTANCE 				= null;
 	//private PlanillaAportanteDTO encabezadoPlanilla 		= null;
-	private ArrayList<PlanillaCotizanteDTO> cotizantes 		= null;
+	private Map<String,PlanillaCotizanteDTO> cotizantes 	= null;
 	private TotalizadorPlanillaMngr totalizador 			= null;
 	private ValidacionArchivoDataSource ds					= null;
 	
 	
 	private TotalizadorActivos ( ValidacionArchivoDataSource ds ) throws Exception{
 		//this.encabezadoPlanilla = encabezadoPlanilla;
-		cotizantes = new ArrayList<PlanillaCotizanteDTO>();
+		cotizantes = new HashMap<String,PlanillaCotizanteDTO>();
 		this.ds = ds;
 		AplicadorMoraDesconectadoDTO desconectado = this.buildAplicadorMoraDesconectado();
 		totalizador = new TotalizadorPlanillaMngr(ds.getPlanillaApteDto(),desconectado);
@@ -62,26 +63,51 @@ public class TotalizadorActivos {
 	}
 	
 
-	public void agregarCotizanteAlTotal ( PlanillaCotizanteDTO cotizante, int nroLinea ) throws Exception{
-		this.agregarAdministradorasCotizante(cotizante);
-		this.cotizantes.add(cotizante);
+	public void eliminarCotizanteTotal ( String tpIdentificacion, String nroIdentific, int nroLinea ) throws Exception{
+		String keyCotizante = nroLinea+"-"+tpIdentificacion+"-"+nroIdentific;
+		if ( cotizantes.containsKey(keyCotizante) ){
+			removeCotizanteDelTotal(nroLinea, keyCotizante);
+		}		
+	}
+	
+	public void totalizarCotizante ( PlanillaCotizanteDTO cotizante, int nroLinea ) throws Exception{
+		String keyCotizante = nroLinea+"-"+cotizante.getCodTipoIdentificacion()+"-"+cotizante.getNroIdentificacion();
+		if ( cotizantes.containsKey(keyCotizante) ){
+			actualizarCotizante(cotizante, nroLinea, keyCotizante);
+		}
+		else{
+			agregarCotizanteAlTotal(cotizante, nroLinea, keyCotizante);
+		}
+	}
+
+	private void agregarCotizanteAlTotal ( PlanillaCotizanteDTO cotizante, int nroLinea, String keyCotizante ) throws Exception{
+		this.agregarAdministradorasCotizante(cotizante);		
+		this.cotizantes.put(keyCotizante,cotizante);
 		totalizador.agregarCotizanteAlTotal(cotizante, false);
 	}
 	
-	public void removeCotizanteDelTotal ( int nroLinea ) throws Exception{
-		this.cotizantes.remove(nroLinea);
-		//TODO: Implementar logica para refrescar totales elimianndo un cotizante 
+	private void removeCotizanteDelTotal ( int nroLinea, String keyCotizante ) throws Exception{		
+		PlanillaCotizanteDTO cotizante = this.cotizantes.get(keyCotizante);
+		totalizador.restarCotizanteAlTotal(cotizante, false); 
+		this.cotizantes.remove(keyCotizante);
 	}
 	
-	public void actualizarCotizante ( PlanillaCotizanteDTO cotizante, int nroLinea ) throws Exception{
-		this.removeCotizanteDelTotal(nroLinea);
-		this.agregarCotizanteAlTotal(cotizante, nroLinea);		 
+	private void actualizarCotizante ( PlanillaCotizanteDTO cotizante, int nroLinea, String keyCotizante ) throws Exception{
+		this.removeCotizanteDelTotal(nroLinea,keyCotizante);
+		this.agregarCotizanteAlTotal(cotizante, nroLinea,keyCotizante);		 
 	}
 	
 	public TotalesTO getTotales ( ) throws Exception{
 		TotalesTO res = this.buildTotales(totalizador.getPlanillaTotalesDTODesconectado(Calendar.getInstance()));
 		return res;
 	}
+	
+
+	public boolean existeCotizanteEnTotal ( String tpIdentificacion, String nroIdentific, int nroLinea ){
+		String keyCotizante = nroLinea+"-"+tpIdentificacion+"-"+nroIdentific;
+		return this.cotizantes.containsKey(keyCotizante);
+	}
+	
 	
 	private void agregarAdministradorasCotizante ( PlanillaCotizanteDTO dto ){
 		AdministradoraVO eps = this.ds.getAdministradoraAFPoEPSPorCodigo(dto.getCodigoAdmSalud());
@@ -166,55 +192,7 @@ public class TotalizadorActivos {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		
-		
-		
-		/*aplicadorMoraDesconectado.getDiaPagoOportunoDTO().setDiaPagoOportuno(15);
-		aplicadorMoraDesconectado.getDiaPagoOportunoDTO().setDigitosDeVerifiacion("2");
-		aplicadorMoraDesconectado.getDiaPagoOportunoDTO().setIdClaseAportante(TipoClaseAportanteType.INDEPENDIENTE.getIdSoiClaseAportante());
-		aplicadorMoraDesconectado.getDiaPagoOportunoDTO().setIdSoiDiaPagoOportuno(-1);
-		aplicadorMoraDesconectado.getDiaPagoOportunoDTO().setIdSoiFormaPresentacion(TipoFormasPresentacionType.CONSOLIDADO.getIdFormaPresentacion());
-		aplicadorMoraDesconectado.setFechaPagoReal(Calendar.getInstance());
-		aplicadorMoraDesconectado.setIvaComisionParametro(new ParametroDTO());
-		aplicadorMoraDesconectado.getIvaComisionParametro().setValorMostrar("0");
-		aplicadorMoraDesconectado.getIvaComisionParametro().setValorNumerico(new BigDecimal("0"));
-		aplicadorMoraDesconectado.getIvaComisionParametro().setValorParametroVO(new ValorParametroVO());
-		aplicadorMoraDesconectado.setValorComisionParametro(new ParametroDTO());
-		aplicadorMoraDesconectado.getValorComisionParametro().setValorMostrar("0");
-		aplicadorMoraDesconectado.getValorComisionParametro().setValorNumerico(new BigDecimal("0"));
-		aplicadorMoraDesconectado.getValorComisionParametro().setValorParametroVO(new ValorParametroVO());
-		aplicadorMoraDesconectado.setParametroDTOTasaFondoARP(new ParametroDTO());
-		aplicadorMoraDesconectado.getParametroDTOTasaFondoARP().setValorMostrar("0.01");
-		aplicadorMoraDesconectado.getParametroDTOTasaFondoARP().setValorNumerico(new BigDecimal("0.01"));
-		aplicadorMoraDesconectado.getParametroDTOTasaFondoARP().setValorParametroVO(new ValorParametroVO());
-		
-		aplicadorMoraDesconectado.setMorasCalculoNuevo(new ArrayList<CfgMoraVO>());
-		CfgMoraVO mora=new CfgMoraVO();
-		mora.setTasaAnual(new BigDecimal("0.10"));
-		mora.setTasaDiaria(new BigDecimal("0.010"));
-		mora.setTasaMensual(new BigDecimal("0.050"));
-		mora.setFechaFin(Calendar.getInstance());
-		Calendar fechaInicioMora=Calendar.getInstance();
-		fechaInicioMora.set(Calendar.YEAR, 2010);
-		mora.setFechaInicio(fechaInicioMora);
-		aplicadorMoraDesconectado.getMorasCalculoNuevo().add(mora);
-		aplicadorMoraDesconectado.setMorasCalculoViejo(new ArrayList<CfgMoraVO>());
-		mora=new CfgMoraVO();
-		mora.setTasaAnual(new BigDecimal("0.001"));
-		mora.setTasaDiaria(new BigDecimal("0.0002"));
-		mora.setTasaMensual(new BigDecimal("0.0030"));
-		mora.setFechaFin(Calendar.getInstance());
-		mora.setFechaInicio(fechaInicioMora);
-		
-		aplicadorMoraDesconectado.getMorasCalculoViejo().add(mora);
-		Calendar diaPagoOportuno=Calendar.getInstance();
-		//diaPagoOportuno.set(Calendar.DAY_OF_MONTH, 1);
-		//Para probar con una fecha oportuna anterior, pero requiero tener configuraciÛn de mora
-		aplicadorMoraDesconectado.setDiaPagoOportunoHabil(diaPagoOportuno);
-		String json=null;
-		Gson gson=new Gson();
-		json=gson.toJson(aplicadorMoraDesconectado);
-		return json;*/
+				
 		return aplicadorMoraDesconectado;
 	}
 	

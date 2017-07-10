@@ -641,6 +641,7 @@ public final class Converter {
 				}
 			}
 			Map<NormatividadType, Boolean> mapaNormatividad = ejbObjectOutput.getNormatividad();
+			retorno.setNormatividad(new HashMap<String, Boolean>());
 			if (Validation.isNotNull(mapaNormatividad)) {
 				for (Map.Entry<NormatividadType, Boolean> entry : mapaNormatividad.entrySet()) {
 					retorno.getNormatividad().put(Utilities.getEnumName(entry.getKey()), entry.getValue());
@@ -1614,6 +1615,9 @@ public final class Converter {
 		for (com.ach.cfg.biz.transfer.AdministradoraTarifaDTO adminTarifa : ejbObjectOutput.getAdministradorasSalud()) {
 			wsOutputDTO.getAdministradorasSalud().add(convertAdministradoraTarifa(adminTarifa));
 		}
+		for (com.ach.cfg.biz.transfer.AdministradoraTarifaDTO adminTarifa : ejbObjectOutput.getAdministradorasTarifasSLN()) {
+			wsOutputDTO.getAdministradorasTarifasSLN().add(convertAdministradoraTarifa(adminTarifa));
+		}
 		for (Map.Entry<TipoSubSistemasType, AdministradoraVO> adminiParafiscales : ejbObjectOutput
 				.getAdministradorasParafiscales().entrySet()) {
 			wsOutputDTO.getAdministradorasParafiscales().put(Utilities.getEnumName(adminiParafiscales.getKey()),
@@ -1626,8 +1630,7 @@ public final class Converter {
 		for (AdministradoraVO adminRiesgo : ejbObjectOutput.getAdministradorasRiesgoYCcf()) {
 			wsOutputDTO.getAdministradorasRiesgoYCcf().add(convertAdministradora(adminRiesgo));
 		}
-		LOGGER.info(Constants.LOG_CLASS_METHOD_EXIT
-				+ "co.swatit.pilautil.converter.Converter.getAdministratorStructures");
+		LOGGER.info(Constants.LOG_CLASS_METHOD_EXIT+ "co.swatit.pilautil.converter.Converter.getAdministratorStructures");
 	}
 
 	/**

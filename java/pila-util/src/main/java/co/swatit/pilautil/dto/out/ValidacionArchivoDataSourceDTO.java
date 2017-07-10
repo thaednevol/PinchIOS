@@ -41,6 +41,7 @@ public class ValidacionArchivoDataSourceDTO implements Serializable {
 	private List<AdministradoraTarifaDTO> administradorasPension;
 	private List<AdministradoraTarifaDTO> administradorasSalud;
 	private List<AdministradoraTarifaDTO> administradorasSaludLey1607;
+	private List<AdministradoraTarifaDTO> administradorasTarifasSLN;
 	private AportanteDTO aportanteDTO;
 	private BigDecimal topeSalarioIntegral;
 	private String tpCotizante;
@@ -236,6 +237,14 @@ public class ValidacionArchivoDataSourceDTO implements Serializable {
 			administradorasSaludLey1607 = new ArrayList<AdministradoraTarifaDTO>();
 		}
 		return administradorasSaludLey1607;
+	}
+	
+
+	public List<AdministradoraTarifaDTO> getAdministradorasTarifasSLN() {
+		if (administradorasTarifasSLN == null) {
+			administradorasTarifasSLN = new ArrayList<AdministradoraTarifaDTO>();
+		}
+		return administradorasTarifasSLN;
 	}
 
 	/**
@@ -622,5 +631,7 @@ public class ValidacionArchivoDataSourceDTO implements Serializable {
 		}
 		return properties;
 	}
+	
+	
 
 }

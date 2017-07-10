@@ -24,7 +24,7 @@ namespace app.settlement {
       totalFilterRegister: 0
     };
 
-    constructor() {
+    constructor($rootScope) {
     }
   }
 

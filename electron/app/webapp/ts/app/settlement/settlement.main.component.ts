@@ -87,6 +87,7 @@ namespace app.settlement {
     public info: any = {
       periodPension: "No definido",
       periodHealth: "No definido",
+      reforma: "true",
       totalContributor: 0,
       totalPay: 0,
       totalError: 0,
@@ -144,7 +145,9 @@ namespace app.settlement {
         this.listErrorsCorrected = null;
         this.file.totals = null;
         this.file.data = null;
+        let reformaTmp = this.info.reforma;
         this.info = {};
+        this.info.reforma = reformaTmp;
         this.showLoading = true;
       });
       this.$scope.$on("load-file-config-soi", () => {
@@ -233,7 +236,8 @@ namespace app.settlement {
         regTp01: this.file.data.regTp1Txt,
         idSoiAportante: this.$localStorage.soiContributorIdNumber,
         idSegUsuario: this.$localStorage.soiAccountIdNumber,
-        token: this.$localStorage.token
+        token: this.$localStorage.token,
+        reforma: this.info.reforma
       };
       let result = this.serviceJar.execJson("pila-business", "getValidationFileConfig", params);
       result.then((data) => {
@@ -270,7 +274,8 @@ namespace app.settlement {
         archivoProcesoJson: this.serviceFile.getPathOptions("archivoEnProcesoDTO.json"),
         archivoDatasourceJson: this.serviceFile.getPathOptions("validacionArchivoDataSourceDTO.json"),
         pathArchivo2388: this.file.path,
-        pathRespuestaJson: this.serviceFile.getPathTemp()
+        pathRespuestaJson: this.serviceFile.getPathTemp(),
+        reformaTributaria: this.info.reforma
       };
       // Se ejecuta el llamado al servicio que valida los errores del archivo
       this.serviceSettlement.initialize(params).get().$promise.then((response) => {
@@ -289,6 +294,7 @@ namespace app.settlement {
           let newListError = {};
           // Se convierte el resultado de los errores de los archivos en Objectos para
           // Integrarlos con las tablas.
+
           return this.processResponseError(data, newListError, 0);
           for (let i = 0; i < this.file.data.regsTp02.registers.length; i++) {
             let currentSequence: number = this.file.data.regsTp02.registers[i].regs1;
@@ -327,10 +333,13 @@ namespace app.settlement {
       setTimeout(() => {
         //let currentSequence: number = this.file.data.regsTp02.registers[numberRegister].regs1;
         let currentSequence: number = numberRegister+1;
-        let newObject = this.$filter("filter")(data, { linea: Number(currentSequence) + 1 }, true);
-        if (newObject.length > 0) {
-          newObject = this.arrayErrorsToObject(newObject);
-          newListError[currentSequence] = newObject;
+        if ( data.length>0 ){
+          let newObject = this.$filter("filter")(data, { linea: Number(currentSequence) + 1 }, true);
+
+          if (newObject.length > 0) {
+            newObject = this.arrayErrorsToObject(newObject);
+            newListError[currentSequence] = newObject;
+          }
         }
         this.processResponseError(data, newListError, numberRegister + 1);
       });
@@ -376,12 +385,37 @@ namespace app.settlement {
             // Si esisten errores se indican en los registros de las tablas convirtiendo
             // La estructura de array en objetos para que se pueda utilizar en la tabla
             this.file.data.regsTp02.errors[numberSequence] = this.arrayErrorsToObject(errors);
+            this.file.data.regsTp02.corrected[numberSequence] = this.arrayErrorsToObject(errors);
+
+            //Aplica las correcciones
+            let currentRow = this.file.data.regsTp02[numberSequence];
+            let cols: any = Object.keys(this.file.data.regsTp02.errors[numberSequence]);
+            // Recorre cada columna de la fila para realizar la corrección.
+            for (let positionCol = 0; positionCol < cols.length; positionCol++) {
+              let currentCol = cols[positionCol];
+              let currentError = this.file.data.regsTp02.errors[numberSequence][currentCol];
+              // Se valida si existen sugerencias y si cuenta con la opción de autocorreción activa.
+              if (currentError.autocorregible && currentError.sugerencias.length > 0) {
+                this.file.data.regsTp02.corrected[numberSequence][currentCol].currentValue = this.file.data.regsTp02.registers[numberSequence - 1][`regs${currentCol - 1}`];
+                this.file.data.regsTp02.registers[numberSequence - 1][`regs${currentCol - 1}`] = currentError.sugerencias[0];
+                // Se elimina la información de la columna del error para evitar que se resalte la celda en la tabla.
+                delete this.file.data.regsTp02.errors[numberSequence][currentCol];
+              } else {
+                currentError.currentValue = this.file.data.regsTp02.registers[numberSequence - 1][`regs${currentCol - 1}`];
+              }
+            }
+            if (Object.keys(this.file.data.regsTp02.errors[numberSequence]).length === 0) {
+              delete this.file.data.regsTp02.errors[numberSequence];
+            }
+            this.updateTotals();
+            this.updateInfoPanel();
           } else {
             delete this.file.data.regsTp02.errors[numberSequence];
             // Se actualiza la información del panel en el campo de errores.
             this.updateTotals();
             this.updateInfoPanel();
           }
+
         }
       });
     }

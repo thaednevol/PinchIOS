@@ -1,5 +1,7 @@
 package co.swatit.pilabusiness.services;
 
+import org.apache.log4j.Logger;
+
 import co.swatit.pilabusiness.business.ApplicationBO;
 import co.swatit.pilabusiness.utils.LogFileGenerator;
 import co.swatit.pilabusiness.utils.ResponseUtil;
@@ -22,6 +24,13 @@ import co.swatit.pilautil.generics.Validation;
  */
 public final class ApplicationMain {
 
+	
+	private static Logger LOGGER = null;
+	static{
+		LogFileGenerator.buildFileLog();
+		LOGGER = Logger.getLogger(ApplicationBO.class.getName());
+	}
+	
 	/**
 	 * M茅todo constructor privado.
 	 */
@@ -61,27 +70,31 @@ public final class ApplicationMain {
 
 		
 		/* Se llama el m茅todo que genera el archivo de log */
-		LogFileGenerator.buildFileLog();
-		String response;
-		/* Se valida la acci贸n y el JSON de entrada */
-		if (args.length > NumberConstants.ONE) {
-			String serviceName = args[NumberConstants.ZERO];
-			String serviceParams = args[NumberConstants.ONE];
-			if (Validation.isNotNull(serviceName)) {
-				response = serviceConsumer(serviceName, serviceParams);
+		try{			
+			String response;
+			/* Se valida la acci贸n y el JSON de entrada */
+			if (args.length > NumberConstants.ONE) {
+				String serviceName = args[NumberConstants.ZERO];
+				String serviceParams = args[NumberConstants.ONE];
+				if (Validation.isNotNull(serviceName)) {
+					response = serviceConsumer(serviceName, serviceParams);
+				} else {
+					/* En caso que los par谩metros de entrada sean nulos */
+					/* En caso que no encuentre una acci贸n a realizar se imprime el error */
+					response = ResponseUtil.manageException(CodeErrorEnum.ERRORPARAMSNULL.getCode(),
+							ErrorMessagesLoader.INSTANCE.getErrorMensage(CodeErrorEnum.ERRORPARAMSNULL.getDescription()),
+							new BusinessException(CodeErrorEnum.ERRORPARAMSNULL));
+				}
 			} else {
-				/* En caso que los par谩metros de entrada sean nulos */
-				/* En caso que no encuentre una acci贸n a realizar se imprime el error */
-				response = ResponseUtil.manageException(CodeErrorEnum.ERRORPARAMSNULL.getCode(),
-						ErrorMessagesLoader.INSTANCE.getErrorMensage(CodeErrorEnum.ERRORPARAMSNULL.getDescription()),
-						new BusinessException(CodeErrorEnum.ERRORPARAMSNULL));
+				response = ResponseUtil.manageException(CodeErrorEnum.ERRORPARAMSQUANTITY.getCode(),
+						ErrorMessagesLoader.INSTANCE.getErrorMensage(CodeErrorEnum.ERRORPARAMSQUANTITY.getDescription()),
+						new BusinessException(CodeErrorEnum.ERRORPARAMSQUANTITY));
 			}
-		} else {
-			response = ResponseUtil.manageException(CodeErrorEnum.ERRORPARAMSQUANTITY.getCode(),
-					ErrorMessagesLoader.INSTANCE.getErrorMensage(CodeErrorEnum.ERRORPARAMSQUANTITY.getDescription()),
-					new BusinessException(CodeErrorEnum.ERRORPARAMSQUANTITY));
+			System.out.println(response);
+		}catch ( Exception e ){
+			System.out.println("ERROR");
+			LOGGER.error("Error de invocaci髇", e);
 		}
-		System.out.println(response);
 	}
 	
 

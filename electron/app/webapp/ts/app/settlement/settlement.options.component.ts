@@ -40,6 +40,7 @@ namespace app.settlement {
       name: "",
       path: "",
       data: null,
+      reforma: null,
       origin: null
     };
 

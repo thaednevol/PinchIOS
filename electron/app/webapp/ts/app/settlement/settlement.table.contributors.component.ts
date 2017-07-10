@@ -17,6 +17,7 @@ namespace app.settlement {
     public file: any = {
       name: "",
       path: "",
+      reforma: null,
       data: [],
       origin: []
     };

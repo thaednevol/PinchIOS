@@ -2,7 +2,6 @@ package co.swatit.pilabusiness.business;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import javax.ws.rs.core.MediaType;
 
@@ -530,10 +529,12 @@ public final class ApplicationBO {
 			
 			
 			
-		} catch (IOException e) {			
+		} catch (IOException e) {		
+			LOGGER.error("validateFile - IOException: ",e);
 			resp = ResponseUtil.manageException(CodeErrorEnum.ERRORPARSEJSON.getCode(),
 					ErrorMessagesLoader.INSTANCE.getErrorMensage(CodeErrorEnum.ERRORPARSEJSON.getDescription()), e);
 		} catch (InvokeException e) {
+			LOGGER.error("validateFile - InvokeException: ",e);
 			resp = ResponseUtil.manageException(CodeErrorEnum.WSCLIENTERROR.getCode(),
 					ErrorMessagesLoader.INSTANCE.getErrorMensage(CodeErrorEnum.WSCLIENTERROR.getDescription()), e);
 		}

@@ -2,8 +2,8 @@ package com.ach.soi.empresarial.liquidacion.core;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
@@ -15,15 +15,18 @@ import com.ach.arc.biz.r1747.model.CampoLeido1747;
 import com.ach.arc.biz.r1747.model.bean.PlanillaRegT01;
 import com.ach.arc.biz.r1747.model.bean.PlanillaRegT02;
 import com.ach.arc.biz.r1747.model.bean.PlanillaRegTAbstract;
+import com.ach.arc.biz.r1747.type.TipoDatoType;
 import com.ach.arc.biz.r1747.type.TipoInputImplType;
 import com.ach.arc.biz.r1747.util.ArchivoEntradaParser;
 import com.ach.arc.biz.r1747.util.ValidacionArchivoDataSource;
 import com.ach.arc.biz.transfer.ArchivoEnProcesoDTO;
+import com.ach.arc.biz.transfer.GrupoCotizantesDTO;
 import com.ach.arc.biz.validatorcfgs.PlanillaAportanteValidatorCfg;
 import com.ach.cfg.biz.cache.AdministradorasSingleton;
 import com.ach.cfg.biz.model.AdministradoraVO;
 import com.ach.cfg.biz.transfer.AdministradoraTarifaDTO;
 import com.ach.pla.biz.mngr.totalizador.TotalizadorPlanillaMngr;
+import com.ach.pla.biz.reglas.NSOIRNCotizante;
 import com.ach.pla.biz.transfer.PlanillaAportanteDTO;
 import com.ach.pla.biz.transfer.PlanillaCotizanteDTO;
 import com.ach.pla.biz.transfer.PlanillaTotalesDTO;
@@ -161,13 +164,45 @@ public class LiquidadorActivos {
 	}
 
 	
+
+	public ErrorLiquidacionTO[] validarRegistroTp02 ( 	Collection<String> registroTp02, 
+														ArchivoEnProcesoDTO archivoDto, 
+														ValidacionArchivoDataSource datasourceValidacion,
+														int nroLinea) throws Exception{
+		
+					
+		LOGGER.info("inicio: validarRegistroTp02() -> "+registroTp02.size());		
+		Collection<ErrorLiquidacionTO> errores = new ArrayList<ErrorLiquidacionTO>();
+		Collection<PlanillaRegT02> registrosT02Agrupados = new ArrayList<PlanillaRegT02>();
+		PlanillaRegT02 bean02 = null;
+		for ( String line:registroTp02 ){
+			try{
+				mn.inicializarMio(line);
+				bean02 = (PlanillaRegT02)mn.getNextRecord();				
+			}catch ( ApplicationException appExc ){
+				this.manejarBeanConErroresLexicoSintacticos(errores, bean02, appExc, nroLinea);
+				LOGGER.error("validarRegsTp02Archivo2388() -> Errores sintacticos: "+nroLinea);
+				continue;
+			}
+			registrosT02Agrupados.add(bean02);																																																																																				
+		}
+		GrupoCotizantesDTO grupoCotizantes = this.agruparCotizantesAplicarValidacionesPrevias(registrosT02Agrupados,errores);		
+		
+		if ( errores.isEmpty() ){
+			this.procesarGrupoCotizantesTp2Desconectado(grupoCotizantes, archivoDto, datasourceValidacion,errores);
+		}
+		
+		return errores.toArray(new ErrorLiquidacionTO[0]);
+	}
+	
 	
 	public ErrorLiquidacionTO[] validarRegsTp02Archivo2388 (ArchivoEnProcesoDTO archivoDto, 
 															ValidacionArchivoDataSource datasourceValidacion,
 															String pathArchivo2388) throws Exception{
 		Collection<ErrorLiquidacionTO> erroresLiquidacion = new ArrayList<ErrorLiquidacionTO>();
 		BufferedReader reader = null;
-		ErrorLiquidacionTO[] errorRegs = null;
+		Collection<ErrorLiquidacionTO> errorRegs = new ArrayList<ErrorLiquidacionTO>();
+		Collection<PlanillaRegT02> registrosT02Agrupados = new ArrayList<PlanillaRegT02>();
 		LOGGER.info("inicio: validarRegsTp02Archivo2388()");
 		try{
 			reader = new BufferedReader(new FileReader(pathArchivo2388));
@@ -175,20 +210,51 @@ public class LiquidadorActivos {
 			int nroLinea = 0;
 			int oks = 0;
 			int regsError = 0;
-			while ( (line=reader.readLine())!=null ){
+			PlanillaRegT02 bean02 = null;
+			do{
+				line=reader.readLine();
 				nroLinea++;
 				LOGGER.info("validarRegsTp02Archivo2388()->"+nroLinea);
-				if ( line.startsWith("02") ){
-					errorRegs = this.validarRegistroTp02(line, archivoDto, datasourceValidacion, nroLinea);					
-					if ( errorRegs!=null && errorRegs.length>0 ){
+				if ( line==null || line!=null && line.startsWith("02") ){
+					//errorRegs = this.validarRegistroTp02(line, archivoDto, datasourceValidacion, nroLinea);
+					
+					if ( line!=null ){
+						try{
+							mn.inicializarMio(line);
+							bean02 = (PlanillaRegT02)mn.getNextRecord();
+							if ( camposBeanT02==null ){
+								camposBeanT02 = bean02.getCampos();
+							}
+						}catch ( ApplicationException appExc ){
+							this.manejarBeanConErroresLexicoSintacticos(errorRegs, bean02, appExc, nroLinea);
+							LOGGER.error("validarRegsTp02Archivo2388() -> Errores sintacticos: "+nroLinea);
+							continue;
+						}
+					}
+					//Termina de agrupar e inicia la validacion
+					if ( (line==null||this.isCambioRegistro((ArrayList<PlanillaRegT02>)registrosT02Agrupados, bean02)) && !registrosT02Agrupados.isEmpty() ){						
+						GrupoCotizantesDTO grupoCotizantes = this.agruparCotizantesAplicarValidacionesPrevias(registrosT02Agrupados,errorRegs);
+						
+						if ( errorRegs.isEmpty() ){
+							 this.procesarGrupoCotizantesTp2Desconectado(grupoCotizantes, archivoDto, datasourceValidacion,errorRegs);
+						}																																				
+						registrosT02Agrupados.clear();				
+					}
+					if ( line!=null ){
+						registrosT02Agrupados.add(bean02);
+						bean02.setNumeroLineaArchivo(nroLinea);
+					}
+										
+					if ( !errorRegs.isEmpty() ){
 						regsError++;
-						erroresLiquidacion.addAll(Arrays.asList(errorRegs));												
+						erroresLiquidacion.addAll(errorRegs);
+						errorRegs.clear();
 					}
 					else{
 						oks ++;
 					}
 				}				
-			}
+			}while ( line!=null );
 			LOGGER.info("Registros OK: "+oks);
 			LOGGER.info("Registros Error: "+regsError);
 			LOGGER.info("fin: validarRegsTp02Archivo2388()");
@@ -202,98 +268,201 @@ public class LiquidadorActivos {
 	}
 	
 	
-	public ErrorLiquidacionTO[] validarRegistroTp02 ( 	String registroTp02, 
-													ArchivoEnProcesoDTO archivoDto, 
-													ValidacionArchivoDataSource datasourceValidacion,
-													int nroLinea) throws Exception{
+	private GrupoCotizantesDTO agruparCotizantesAplicarValidacionesPrevias ( Collection<PlanillaRegT02> beans, Collection<ErrorLiquidacionTO> errores ) throws ApplicationException{
+		GrupoCotizantesDTO grupoCotizantes = new GrupoCotizantesDTO();
 		
-					
-		LOGGER.info("inicio: validarRegsTp02Archivo2388() -> "+registroTp02);
-		cargarSingletonAdministradoras(datasourceValidacion);
-		Collection<ErrorLiquidacionTO> errores = new ArrayList<ErrorLiquidacionTO>();
-		Collection<ErrorLiquidacionTO> erroresRevalidacion = new ArrayList<ErrorLiquidacionTO>();
-		LiquidacionPlanillaXArchivoEvolMngr mngr = new LiquidacionPlanillaXArchivoEvolMngr();
-				
-		PlanillaRegT02 bean02 = null;
-		PlanillaCotizanteDTO czte = null;
-		try{		
-			
-			LOGGER.info("validarRegsTp02Archivo2388() -> Inicializa Cfg");
+		PlanillaRegT02 beanTmp = null;
+		Collection<ApplicationException> exceptions = new ArrayList<ApplicationException>();
+		for ( PlanillaRegT02 bean:beans ){			
+			beanTmp = bean;
 			try{
+				grupoCotizantes.addRegistro(beanTmp);
 				
-				mn.inicializarMio(registroTp02);
-				bean02 = (PlanillaRegT02)mn.getNextRecord();
-				if ( camposBeanT02==null ){
-					camposBeanT02 = bean02.getCampos();
-				}																											
-				LOGGER.info("validarRegsTp02Archivo2388() -> Obtuvo el record");
-			}catch ( ApplicationException e ){
-				this.manejarBeanConErroresLexicoSintacticos(errores, bean02, e, nroLinea);
-				LOGGER.error("validarRegsTp02Archivo2388() -> Errores sintacticos: "+nroLinea);
-				return errores.toArray(new ErrorLiquidacionTO[0]);
-			}	
-			
-			if ( bean02.getSecuencia2Type()==null||bean02.getSecuencia2Type().intValue()!=nroLinea-1 ){
-				bean02.getSecuencia2().setValorEsperado(""+(nroLinea-1));
-				this.manejarBeanConErroresLexicoSintacticos(errores, bean02, 
-								new ApplicationException(ClavesMensajesArchivoConstants.ERROR_CONSECUTIVO_REGISTRO,new Object[] { bean02.getSecuencia2() }), 
-																nroLinea);
+			}catch(ApplicationException appExc){
+				this.manejarExcepcionesSemanticas(errores,bean,appExc,bean.getNumeroLineaArchivo());
+				exceptions.add(appExc);
 			}
+		}
+		if ( grupoCotizantes.getRegistros().size()>1 && !grupoCotizantes.isPermiteMultiplesRegs() 
+				&& !grupoCotizantes.isAusentismo() && !grupoCotizantes.isTieneSln() && !grupoCotizantes.isTieneCom() ){
 			
-			bean02.setNumeroLineaArchivo((int)(bean02.getSecuencia2Type()+1));
-			
-			archivoDto.setPlanillaCorrector(false);
-			try{
-				LOGGER.info("validarRegsTp02Archivo2388() -> Inicializa Validacion semantica");
-				bean02.setValidacionOffline(true);
-				czte = mngr.procesarBeanRegistroT02Individual(datasourceValidacion.getPlanillaApteDto(),bean02, archivoDto, datasourceValidacion);							
-			}catch ( ApplicationException e ){
-				LOGGER.error("validarRegsTp02Archivo2388() -> Errores semanticos: "+nroLinea);
-				this.manejarExcepcionesSemanticas(errores, bean02, e, nroLinea);
-				boolean validarNuevamente = true;
-				for ( ErrorLiquidacionTO err:errores ){
-					if ( err.isAplicarSegundaValidacion() ){
-						//Revalida el registro con ibcs modificados										
-						validarNuevamente = true;						
-						break;
-					}
+			ApplicationException appExc = new ApplicationException(ClavesMensajesArchivoConstants.INGRESO_OBLIGATORIO_VSPVST,
+											new Object[] { beanTmp.getINGIngreso15(),beanTmp.getINGIngreso15Type() });
+			this.manejarExcepcionesSemanticas(errores,beanTmp,appExc,beanTmp.getNumeroLineaArchivo());				
+		}
+		
+		
+		return grupoCotizantes;		
+	}
+	
+	
+
+	private GrupoCotizantesDTO procesarGrupoCotizantesTp2Desconectado(	GrupoCotizantesDTO grupoCotizantes, 
+																		ArchivoEnProcesoDTO archivoDto,
+																		ValidacionArchivoDataSource validacionArchivoDs,
+																		Collection<ErrorLiquidacionTO> errores) 
+																		throws ApplicationException {
+		
+		LiquidacionPlanillaXArchivoEvolMngr liquidacionMngr = new LiquidacionPlanillaXArchivoEvolMngr(validacionArchivoDs);		
+		PlanillaCotizanteDTO czte = null;		
+		boolean ocurrioExcepcion = false;
+		int indexRegistros = 0;		
+		int registrosNovedadesNoMultiRegistros = 0;
+		BigDecimal ibcAfp = BigDecimal.ZERO;
+		BigDecimal AporteFssol = BigDecimal.ZERO;
+		BigDecimal AporteFssub = BigDecimal.ZERO;
+		int cantidadReg = 0;
+		int conteoReg = 0;
+		int nroLinea = 0;
+		try{
+			cargarSingletonAdministradoras(validacionArchivoDs);
+			if ( grupoCotizantes.size()==1 ){
+				nroLinea = grupoCotizantes.getRegistro(0).getNumeroLineaArchivo();
+				grupoCotizantes.getRegistro(0).setValidacionOffline(true);
+				czte = this.validarCotizanteIndividualConCorrecciones(errores, grupoCotizantes.getRegistro(0), 
+																	archivoDto, validacionArchivoDs, liquidacionMngr);
+				if (czte!=null){
+					grupoCotizantes.addCzte(czte);
 				}
-				while ( validarNuevamente ){
-					erroresRevalidacion.clear();
-					try{
-						czte = mngr.procesarBeanRegistroT02Individual(datasourceValidacion.getPlanillaApteDto(),bean02, archivoDto, datasourceValidacion);
-					}catch ( ApplicationException e1 ){
-						LOGGER.error("validarRegsTp02Archivo2388() -> Errores semanticos en revalidacion: "+nroLinea);						
-						this.manejarExcepcionesSemanticas(erroresRevalidacion, bean02, e1, nroLinea);
-						errores.addAll(erroresRevalidacion);
-					}
-					validarNuevamente = false;
-					for ( ErrorLiquidacionTO err:erroresRevalidacion ){
-						if ( err.isAplicarSegundaValidacion() ){										
-							validarNuevamente = true;						
-							break;
+				else{
+					ocurrioExcepcion = true;
+				}
+			}
+			else{
+				boolean isColResidenteExt = false;
+				cantidadReg = grupoCotizantes.getCantidadRegistros();
+				for ( PlanillaRegT02 reg:grupoCotizantes.getRegistros() ) {
+					conteoReg++;
+					nroLinea = reg.getNumeroLineaArchivo();
+					//NR268 Se agrega validacion para permitir multiples registros de un mismo cotizante con diferente valor en el campo 74 si
+					//el tipo de cotizante para ese mismo cotizante es diferente
+					//Ajuste NEC164
+					for ( PlanillaRegT02 reg2:grupoCotizantes.getRegistros() ) {
+						if(reg.getNumeroIdentificacionCotizante4Type().equals(reg2.getNumeroIdentificacionCotizante4Type())
+								&& reg.getTpDocumentoCotizante3Type().equals(reg2.getTpDocumentoCotizante3Type())
+									&& reg.getTpCotizante5Type().equals(reg2.getTpCotizante5Type())
+										&& !reg.getCotizanteExoneradoLey160776Type().equals(reg2.getCotizanteExoneradoLey160776Type())
+										&& !archivoDto.isAportanteLey1607()){
+							ApplicationException exc = new ApplicationException(
+									ClavesMensajesArchivoConstants.MULTIPLES_CZTES_EXONERADO_LEY1607_DIFERENTES_VALORES,
+										new Object[] { reg.getCotizanteExoneradoLey160776() });
+							this.manejarExcepcionesSemanticas(errores, reg2, exc, nroLinea);
+							ocurrioExcepcion = true;
 						}
-					}									
+																		
+					}
+					
+					ibcAfp = ibcAfp.add(reg.getIBCPension42()!=null&&reg.getIBCPension42().getValorNumerico()!=null?BigDecimal.valueOf(reg.getIBCPension42().getValorNumerico()):BigDecimal.ZERO);
+					AporteFssol = AporteFssol.add(reg.getApFondoSolidaridadPensionalSubSolidaridad51()!=null&&reg.getApFondoSolidaridadPensionalSubSolidaridad51().getValorNumerico()!=null?BigDecimal.valueOf(reg.getApFondoSolidaridadPensionalSubSolidaridad51().getValorNumerico()):BigDecimal.ZERO);
+					AporteFssub = AporteFssub.add(reg.getApFondoSolidaridadPensionalSubSubsistencia52()!=null&&reg.getApFondoSolidaridadPensionalSubSubsistencia52().getValorNumerico()!=null?BigDecimal.valueOf(reg.getApFondoSolidaridadPensionalSubSubsistencia52().getValorNumerico()):BigDecimal.ZERO);
+											
+					isColResidenteExt = reg.getColResExt8Type()!=null&&reg.getColResExt8Type().equals("X");
+					
+					if(!reg.isTieneNovedadMultiRegistros()&&!isColResidenteExt){
+						registrosNovedadesNoMultiRegistros++;
+					}
+					
+					if(registrosNovedadesNoMultiRegistros > 1){
+						ApplicationException exc = new ApplicationException(ClavesMensajesArchivoConstants.REGISTRO_SIN_AUSENTISMO_INVALIDO);
+						this.manejarExcepcionesSemanticas(errores, reg, exc, nroLinea);
+						ocurrioExcepcion = true;
+					}
+					
+					if(conteoReg == cantidadReg && grupoCotizantes.isAusentismo()){
+						reg.setIbcAfp(ibcAfp);
+						reg.setAporteFssol(AporteFssol);
+						reg.setAporteFssub(AporteFssub);
+						reg.setValidarFspGrupoCztesAusentismo(true);
+					}
+					
+					reg.setCotizanteMultiplesRegistros(true);
+					if ( indexRegistros==grupoCotizantes.size()-1 ){
+						reg.setCotizanteMultiplesRegistros(true);
+					}
+					czte = this.validarCotizanteIndividualConCorrecciones(errores, reg, 
+																			archivoDto, validacionArchivoDs, liquidacionMngr);					
+					if (czte!=null){
+						grupoCotizantes.addCzte(czte);
+					}
+					else{
+						ocurrioExcepcion = true;
+					}
+					indexRegistros++;
 				}
+				
+				try{
+					if(grupoCotizantes.size()>1 && !ocurrioExcepcion){
+						liquidacionMngr.validarDiasAportesMulplesRegistros(grupoCotizantes, archivoDto, false);
+					}
+				}catch(ApplicationException exc) {
+					this.manejarExcepcionesSemanticas(errores,grupoCotizantes.getRegistros().get(0),exc, grupoCotizantes.getRegistros().get(0).getNumeroLineaArchivo());
+					ocurrioExcepcion = true;
+				}
+				
+				try{
+					if(grupoCotizantes.isAusentismo() && !ocurrioExcepcion){
+						
+						NSOIRNCotizante rnCotizante = new NSOIRNCotizante();				
+						int cantidadTotalCotizantes = grupoCotizantes.getCotizantes().size();
+						
+						rnCotizante.validarCotizantesMultiplesRegistrosNEC164(grupoCotizantes.getCotizantes().get(0),
+																				grupoCotizantes.getCotizantes().subList(1, cantidadTotalCotizantes),
+																				archivoDto.getPeriodoSalud().getPeriodoCalendar(), false);				
+						
+						
+						liquidacionMngr.validarDiasAportesMulplesRegistros(grupoCotizantes, archivoDto, false);
+					}
+				}catch(ApplicationException exc) {
+					this.manejarExcepcionesSemanticas(errores,grupoCotizantes.getRegistros().get(0),exc,grupoCotizantes.getRegistros().get(0).getNumeroLineaArchivo());
+					ocurrioExcepcion = true;
+				}
+					
+				if ( !ocurrioExcepcion ){
+					liquidacionMngr.validacionesCotizantesMultiplesContratos(grupoCotizantes, archivoDto);
+				}
+						
+				grupoCotizantes.setOcurrioExcepcion(ocurrioExcepcion);
+				
+				try{
+					Collection<ApplicationException> excepcionesValidacionIbc = new ArrayList<ApplicationException>();
+					if(grupoCotizantes!=null && !grupoCotizantes.getCotizantes().isEmpty()){
+						liquidacionMngr.validarTopeIBCMultiplesContratos(grupoCotizantes.getRegistros().get(0),grupoCotizantes.getCotizantes(), archivoDto, excepcionesValidacionIbc);
+						for ( ApplicationException appExc:excepcionesValidacionIbc ){
+							this.manejarExcepcionesSemanticas(errores,grupoCotizantes.getRegistros().get(0),appExc, grupoCotizantes.getRegistros().get(0).getNumeroLineaArchivo());
+						}
+					}
+				}catch(ApplicationException exc) {
+					this.manejarExcepcionesSemanticas(errores,grupoCotizantes.getRegistros().get(0),exc, grupoCotizantes.getRegistros().get(0).getNumeroLineaArchivo());
+				}			
 			}
 			boolean totalizar = false;
-			totalizar = true;
+			boolean tieneErroresNoCorregibles = false;
 			for ( ErrorLiquidacionTO err:errores ){
 				if ( !err.isAutocorregible() ){
-					totalizar = false;
+					tieneErroresNoCorregibles = true;
 					break;
 				}
 			}
+			totalizar = errores.isEmpty()||(!tieneErroresNoCorregibles&&!grupoCotizantes.getCotizantes().isEmpty());
+			LOGGER.info("totalizar cotizante: "+totalizar);
 			//Si se corrigieron todos los errores debe volver a crearse el registro de cotizante ya sin ningun error
-			if ( totalizar && czte!=null ){
-				 				
-				TotalizadorActivos totalizador = TotalizadorActivos.getInstance(datasourceValidacion);
-				totalizador.agregarCotizanteAlTotal(czte, nroLinea);
-				LOGGER.info("validarRegsTp02Archivo2388() -> Finaliza Validacion semantica");
-			}				
+			TotalizadorActivos totalizador = TotalizadorActivos.getInstance(validacionArchivoDs);
+			if ( totalizar ){					
+				for ( PlanillaCotizanteDTO c:grupoCotizantes.getCotizantes() ){
+					totalizador.totalizarCotizante(c, nroLinea);					
+				}
+			}			
+			else if(!grupoCotizantes.getRegistros().isEmpty()){
+				for ( PlanillaRegT02 bean02:grupoCotizantes.getRegistros() ){
+					if(totalizador.existeCotizanteEnTotal(bean02.getTpDocumentoCotizante3Type(),bean02.getNumeroIdentificacionCotizante4Type(), nroLinea)){
+						totalizador.eliminarCotizanteTotal(bean02.getTpDocumentoCotizante3Type(),bean02.getNumeroIdentificacionCotizante4Type(), nroLinea);
+					}
+				}					
+			}
+			LOGGER.info("procesarGrupoCotizantesTp2Desconectado() -> Finaliza Validacion semantica");
 		}catch (Exception e) {
 			ErrorLiquidacionTO errorTo = new ErrorLiquidacionTO();
-			LOGGER.fatal("validarRegsTp02Archivo2388() -> Errores inesperado",e);
+			LOGGER.fatal("procesarGrupoCotizantesTp2Desconectado() -> Errores inesperado",e);
 			errorTo.setAutocorregible(false);
 			errorTo.setCampo(0);
 			errorTo.setErrorRegistro(true);
@@ -302,29 +471,11 @@ public class LiquidadorActivos {
 			errorTo.setNombreCampo("-");
 			errores.add(errorTo);
 		}
-		return errores.toArray(new ErrorLiquidacionTO[0]);
+				
+		return grupoCotizantes;
 	}
 	
-	
-	private void cargarSingletonAdministradoras ( ValidacionArchivoDataSource ds ) throws Exception{
-		ArrayList<AdministradoraVO> admins = new ArrayList<AdministradoraVO>();
-		
-		for ( AdministradoraTarifaDTO a:ds.getAdministradorasPension() ){
-			admins.add(a.getAdministradora());
-		}
-		
-		for ( AdministradoraTarifaDTO a:ds.getAdministradorasSalud() ){
-			admins.add(a.getAdministradora());
-		}
-		
 
-		for ( AdministradoraVO a:ds.getAdministradorasRiesgoYCcf() ){
-			admins.add(a);
-		}
-		
-		AdministradorasSingleton.getInstance(admins);
-	}
-	
 	public PlanillaTotalesDTO calcularTotalesPlanilla ( ValidacionArchivoDataSource ds, String pathArchivo2388, ArchivoEnProcesoDTO archivoDto ) throws Exception{
 		LOGGER.info("inicio - calcularTotalesPlanilla()");
 		TotalizadorPlanillaMngr totalizador = new TotalizadorPlanillaMngr(ds.getPlanillaApteDto());		
@@ -438,7 +589,7 @@ public class LiquidadorActivos {
 			}
 			
 			if ( err.getSugerencias().length==1 ){
-				this.verificarErrorIBCoCotizacion(err, reg, campo);
+				this.aplicarSugerenciaError(err, reg, campo);
 				err.setAutocorregible(true);
 			}
 		}
@@ -456,12 +607,12 @@ public class LiquidadorActivos {
 	}
 	
 	
-	private void verificarErrorIBCoCotizacion ( ErrorLiquidacionTO error, PlanillaRegTAbstract reg,CampoLeido1747 campo  ) {
-		if ( !(reg instanceof PlanillaRegT02) || campo==null ){
+	private void aplicarSugerenciaError ( ErrorLiquidacionTO error, PlanillaRegTAbstract reg,CampoLeido1747 campoError  ) {
+		if ( !(reg instanceof PlanillaRegT02) || campoError==null ){
 			return;
 		}
 		PlanillaRegT02 reg02 = (PlanillaRegT02)reg;
-		this.aplicarSugerenciasEnCampo(error, reg02.getIBCCCF45(),campo);			
+		/*this.aplicarSugerenciasEnCampo(error, reg02.getIBCCCF45(),campo);			
 		this.aplicarSugerenciasEnCampo(error, reg02.getIBCOtrosParafiscales95(),campo);
 		this.aplicarSugerenciasEnCampo(error, reg02.getIBCPension42(),campo);
 		this.aplicarSugerenciasEnCampo(error, reg02.getIBCRiesgosProfesionales44(),campo);
@@ -475,22 +626,48 @@ public class LiquidadorActivos {
 		this.aplicarSugerenciasEnCampo(error, reg02.getCotizacionOblSalud55(),campo);
 		this.aplicarSugerenciasEnCampo(error, reg02.getCotOblARP63(),campo);		
 		this.aplicarSugerenciasEnCampo(error, reg02.getCodAdminRiesgosLab77(),campo);
-		this.aplicarSugerenciasEnCampo(error, reg02.getCotizacionObligatoria47(),campo);
+		this.aplicarSugerenciasEnCampo(error, reg02.getCotizacionObligatoria47(),campo);*/
+		for ( CampoLeido1747 campoLeido:reg02.getCampos().values() ){
+			if ( campoError.getNombreCampo().equals(campoLeido.getNombreCampo()) ){
+				this.aplicarSugerenciasEnCampo(error, campoLeido,campoError);
+			}
+		}
 	}
 	
 	private void aplicarSugerenciasEnCampo ( ErrorLiquidacionTO error,CampoLeido1747 campoLeido, CampoLeido1747 campoError ){
-		if ( campoError.getNombreCampo().equals(campoLeido.getNombreCampo()) ){
+		//if ( campoError.getNombreCampo().equals(campoLeido.getNombreCampo()) ){
 			verificarSiEnfatizarError(error, campoLeido.getValorNumerico());
 			campoLeido.setValorCrudo(error.getSugerencias()[0]);
-			if ( campoLeido.getValorAlfanumerico()!=null && !campoLeido.getValorAlfanumerico().trim().equals("") ){
-				campoLeido.setValorAlfanumerico(error.getSugerencias()[0]);
+			error.setAplicarSegundaValidacion(true);
+			if ( campoLeido.getValorAlfanumerico()!=null && !campoLeido.getValorAlfanumerico().trim().equals("") && campoLeido.getTipoDato()==TipoDatoType.A ){
+				if ( campoLeido.getValorAlfanumerico()!=null && campoLeido.getValorAlfanumerico().trim().equals(error.getSugerencias()[0].trim()) ){
+					error.setAplicarSegundaValidacion(false);
+				}
+				else{
+					campoLeido.setValorAlfanumerico(error.getSugerencias()[0]);
+				}
+			}			
+			else if ( campoLeido.getValorNumerico()!=null && campoLeido.getTipoDato()==TipoDatoType.N ){				
+				if ( campoLeido.getValorNumerico()!=null && campoLeido.getValorNumerico().equals(this.getValorLong(error.getSugerencias()[0].trim())) ){
+					error.setAplicarSegundaValidacion(false);
+				}
+				else{
+					campoLeido.setValorNumerico(this.getValorLong(error.getSugerencias()[0]));
+				}
+			}
+			else if ( campoLeido.getValorDecimal()!=null && campoLeido.getTipoDato()==TipoDatoType.D ){
+				if ( campoLeido.getValorDecimal()!=null && campoLeido.getValorDecimal().equals(this.getValorDecimal(error.getSugerencias()[0].trim())) ){
+					error.setAplicarSegundaValidacion(false);
+				}
+				else{
+					campoLeido.setValorDecimal(this.getValorDecimal(error.getSugerencias()[0]));
+				}
 			}
 			else{
-				campoLeido.setValorNumerico(this.getValorLong(error.getSugerencias()[0]));
+				error.setAplicarSegundaValidacion(false);
 			}
 			
-			error.setAplicarSegundaValidacion(true);
-		}
+		//}
 	}
 	
 	private void verificarSiEnfatizarError ( ErrorLiquidacionTO error, Long valorEncontrado ){
@@ -512,6 +689,15 @@ public class LiquidadorActivos {
 			return Long.valueOf(val);
 		}catch ( Exception e ){
 			return 0l;
+		}
+	}
+	
+
+	private BigDecimal getValorDecimal ( String val ){
+		try{
+			return BigDecimal.valueOf(Double.valueOf(val));
+		}catch ( Exception e ){
+			return BigDecimal.ZERO;
 		}
 	}
 	
@@ -547,7 +733,7 @@ public class LiquidadorActivos {
 			}
 			if ( err.getSugerencias().length==1 ){
 				err.setAutocorregible(true);
-				this.verificarErrorIBCoCotizacion(err, reg, campo);
+				this.aplicarSugerenciaError(err, reg, campo);
 			}
 		}
 		
@@ -562,6 +748,104 @@ public class LiquidadorActivos {
 			
 		return err;
 	}
+	
+
+
+	private PlanillaCotizanteDTO validarCotizanteIndividualConCorrecciones ( 	
+												Collection<ErrorLiquidacionTO> errores, 
+												PlanillaRegT02 regT02,
+												ArchivoEnProcesoDTO archivoDto,
+												ValidacionArchivoDataSource validacionArchivoDs,
+												LiquidacionPlanillaXArchivoEvolMngr liquidacionMngr
+												) throws ApplicationException{
+		
+		PlanillaCotizanteDTO czte = null;
+		int nroLinea = 0;
+		Collection<ErrorLiquidacionTO> erroresRevalidacion = new ArrayList<ErrorLiquidacionTO>();
+		try{
+			nroLinea = regT02.getNumeroLineaArchivo();
+			regT02.setValidacionOffline(true);
+			czte = liquidacionMngr.procesarBeanRegistroT02Individual(	validacionArchivoDs.getPlanillaApteDto(),
+																		regT02, 
+																		archivoDto,validacionArchivoDs);					
+			
+		}catch ( ApplicationException e ){
+			LOGGER.error("validarRegsTp02Archivo2388() -> Errores semanticos validacion registro unico: "+nroLinea);
+			this.manejarExcepcionesSemanticas(errores, regT02, e, nroLinea);
+			boolean validarNuevamente = true;
+			for ( ErrorLiquidacionTO err:errores ){
+				if ( err.isAplicarSegundaValidacion() ){
+					//Revalida el registro con ibcs modificados										
+					validarNuevamente = true;						
+					break;
+				}
+			}
+			while ( validarNuevamente ){
+				LOGGER.info("validarNuevamente: "+validarNuevamente);
+				erroresRevalidacion.clear();
+				try{
+					regT02.setValidacionOffline(true);
+					czte = liquidacionMngr.procesarBeanRegistroT02Individual(validacionArchivoDs.getPlanillaApteDto(),
+																			regT02, archivoDto, 
+																			validacionArchivoDs);
+				}catch ( ApplicationException e1 ){
+					LOGGER.error("validarRegsTp02Archivo2388() -> Errores semanticos validacion registro unico: "+nroLinea);						
+					this.manejarExcepcionesSemanticas(erroresRevalidacion, regT02, e1, nroLinea);
+					errores.addAll(erroresRevalidacion);
+				}
+				validarNuevamente = false;
+				for ( ErrorLiquidacionTO err:erroresRevalidacion ){
+					if ( err.isAplicarSegundaValidacion() ){										
+						validarNuevamente = true;						
+						break;
+					}
+				}									
+			}
+		}
+		return czte;
+	}
+		
+	
+	private void cargarSingletonAdministradoras ( ValidacionArchivoDataSource ds ) throws Exception{
+		ArrayList<AdministradoraVO> admins = new ArrayList<AdministradoraVO>();
+		
+		for ( AdministradoraTarifaDTO a:ds.getAdministradorasPension() ){
+			admins.add(a.getAdministradora());
+		}
+		
+		for ( AdministradoraTarifaDTO a:ds.getAdministradorasSalud() ){
+			admins.add(a.getAdministradora());
+		}
+		
+
+		for ( AdministradoraVO a:ds.getAdministradorasRiesgoYCcf() ){
+			admins.add(a);
+		}
+		
+		AdministradorasSingleton.getInstance(admins);
+	}
+	
+	
+	private boolean isCambioRegistro ( ArrayList<PlanillaRegT02> beansAgrupados, PlanillaRegT02 beanActual ){
+		String keyRegActual = ((PlanillaRegT02) beanActual).getTpDocumentoCotizante3Type()+";"+((PlanillaRegT02) beanActual).getNumeroIdentificacionCotizante4Type();
+		String keyRegGrupo = "";
+				
+		if ( beanActual.getNumeroLineaArchivo()==2 ){
+			return false;
+		}
+		if ( beansAgrupados.size()>0 ){
+			keyRegGrupo = ((PlanillaRegT02) beansAgrupados.get(0)).getTpDocumentoCotizante3Type()+";"
+											+((PlanillaRegT02) beansAgrupados.get(0)).getNumeroIdentificacionCotizante4Type();
+		}
+				
+		if ( !keyRegActual.equals(keyRegGrupo) ){
+			return true;
+		}
+		
+		return false;
+	}
+	
+	
 
 	
 }

@@ -144,6 +144,7 @@ namespace app.native {
       this.ipcMain.removeAllListeners("open-error-dialog");
     }
 
+  
     /**
     * @description
     * Entrega una ventana donde se solicita una confirmación de una acción,

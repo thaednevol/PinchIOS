@@ -39,7 +39,6 @@ import co.swatit.pilautil.dto.out.ValidacionArchivoDataSourceDTO;
 import co.swatit.pilautil.dto.out.ValorParametroDTO;
 import co.swatit.pilautil.exception.BusinessException;
 import co.swatit.pilautil.generics.Constants;
-import co.swatit.pilautil.generics.Utilities;
 import co.swatit.pilautil.generics.Validation;
 
 import com.ach.apt.biz.model.AportanteVO;
@@ -1509,8 +1508,10 @@ public final class Converter {
 			retorno.setPlanillaApteDto(apteDto);
 			retorno.getPropiedadesNec160Map().putAll(ejbObjectOutput.getPropiedadesNec160Map());
 			retorno.setAportanteVo(convertAportante(ejbObjectOutput.getAportanteDTO()));
-			
-			retorno.addProperty("cods.tp.cztes.independientes", "3,16,33,34,35,36,42,43,52,53,56");
+			for ( Map.Entry<String, String> entry:ejbObjectOutput.getProperties().entrySet() ){
+				retorno.addProperty(entry.getKey(), entry.getValue());
+			}
+			//retorno.addProperty("cods.tp.cztes.independientes", "3,16,33,34,35,36,42,43,52,53,56");
 		} else {
 			LOGGER.warn(Constants.LOG_NULL_PARAMETER + "ejbObjectOutput");
 		}
@@ -1684,6 +1685,10 @@ public final class Converter {
 		wsOutputDTO.setAdministradorasSalud(new ArrayList<com.ach.cfg.biz.transfer.AdministradoraTarifaDTO>());
 		for (AdministradoraTarifaDTO adminTarifa : ejbObjectOutput.getAdministradorasSalud()) {
 			wsOutputDTO.getAdministradorasSalud().add(convertAdministradoraTarifa(adminTarifa));
+		}
+		wsOutputDTO.setAdministradorasTarifasSLN(new ArrayList<com.ach.cfg.biz.transfer.AdministradoraTarifaDTO>());
+		for (AdministradoraTarifaDTO adminTarifa : ejbObjectOutput.getAdministradorasTarifasSLN()) {
+			wsOutputDTO.getAdministradorasTarifasSLN().add(convertAdministradoraTarifa(adminTarifa));
 		}
 		wsOutputDTO.setAdministradorasParafiscales(new Hashtable<TipoSubSistemasType, AdministradoraVO>());
 		for (Map.Entry<String, AdministradoraDTO> adminiParafiscales : ejbObjectOutput.getAdministradorasParafiscales().entrySet()) {

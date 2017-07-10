@@ -499,7 +499,7 @@ namespace app.native {
       let nameFile: string = pathFile.substr(0, pathFile.lastIndexOf("/") + 1);
       // Uso para Windows
       if (/^win/.test(process.platform)) {
-        nameFile = pathFile.substr(0, pathFile.lastIndexOf("\\") + 1);
+        nameFile = pathFile.substr(0, pathFile.lastIndexOf("\\") + 1) + "\\";
       }
       return nameFile;
     }

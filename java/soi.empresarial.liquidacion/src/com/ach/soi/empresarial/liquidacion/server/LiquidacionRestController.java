@@ -5,7 +5,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
@@ -45,7 +44,6 @@ import com.ach.sop.utility.biz.util.ServiciosUtilitarios;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 
 @Controller
 @EnableAutoConfiguration
@@ -58,7 +56,11 @@ public class LiquidacionRestController {
 	
 	@RequestMapping("/incializarliquidacion")
 	@ResponseBody
-    public ResultadoValidacionArchivoTO incializarLiquidacion( String archivoProcesoJson, String archivoDatasourceJson , String pathArchivo2388, String pathRespuestaJson ) {
+    public ResultadoValidacionArchivoTO incializarLiquidacion( String archivoProcesoJson, 
+    															String archivoDatasourceJson, 
+    															String pathArchivo2388, 
+    															String pathRespuestaJson, 
+    															boolean reformaTributaria ) {
 		LOGGER.info("incializarLiquidacion!!!!");
 		ResultadoValidacionArchivoTO resultado = new ResultadoValidacionArchivoTO();
 		BufferedReader lineReader =null;
@@ -77,6 +79,8 @@ public class LiquidacionRestController {
             Gson gson = new Gson();
             co.swatit.pilautil.dto.out.ArchivoEnProcesoDTO archivoEnProcesoTO = gson.fromJson(readerArchivoEnProceso, co.swatit.pilautil.dto.out.ArchivoEnProcesoDTO.class);
             ValidacionArchivoDataSourceDTO archivoDs = gson.fromJson(readerArchivoDs, ValidacionArchivoDataSourceDTO.class);
+            //Setea el valor del campo reforma tributaria seleccionado por el usuario
+            archivoDs.getPlanillaApteDto().setAportanteLey1607(reformaTributaria);
             
             validacionPlanillaDd = Converter.convertValidacionArchivoDataSource(archivoDs, archivoDs.getPlanillaApteDto());
             
@@ -168,17 +172,20 @@ public class LiquidacionRestController {
 	
 	@RequestMapping("/validarcotizante")
 	@ResponseBody
-    public ResultadoValidacionCotizanteDTO validarCotizante( String regTp02[], int nroLinea ) {
+    public ResultadoValidacionCotizanteDTO validarCotizante( String regTp02[][], int nroLinea ) {
 		LOGGER.info("Validar Cotizante!!!!");
 		LOGGER.info("Registro: "+regTp02); 
 		LiquidadorActivos liquidador = new LiquidadorActivos();
-		ResultadoValidacionCotizanteDTO resultado = new ResultadoValidacionCotizanteDTO();	
+		ResultadoValidacionCotizanteDTO resultado = new ResultadoValidacionCotizanteDTO();
+		Collection<String> regsValidacion = new ArrayList<String>();
 		try{
-			Reg2388ReadTp02 regT02Bean = Reg2388ReadTp02.buildRecordFromStringArray(regTp02);
-			Converter1747to2388 converter = new Converter1747to2388();
-			String regT02Str = converter.getRegT02FromBean(regT02Bean);
-			
-			resultado.setErroresRegistros(liquidador.validarRegistroTp02(regT02Str, archivoEnProceso, validacionPlanillaDd, nroLinea));
+			for ( String reg[]:regTp02 ){
+				Reg2388ReadTp02 regT02Bean = Reg2388ReadTp02.buildRecordFromStringArray(reg);
+				Converter1747to2388 converter = new Converter1747to2388();
+				String regT02Str = converter.getRegT02FromBean(regT02Bean);
+				regsValidacion.add(regT02Str);
+			}						
+			resultado.setErroresRegistros(liquidador.validarRegistroTp02(regsValidacion, archivoEnProceso, validacionPlanillaDd, nroLinea));
 			resultado.setEstadoSolicitud("OK");
 		}catch ( Exception e ){
 			LOGGER.error("Error no controlado",e);
@@ -210,7 +217,9 @@ public class LiquidacionRestController {
     public ResultadoValidacionCotizanteDTO agregarCotizante( String regTp02[], int nroLinea  ) {
 		LOGGER.info("Inicio Validacion Cotizante nuevo!!!!");			
 		try{
-			return validarCotizante(regTp02, nroLinea);
+			String[][] regs = new String[1][regTp02.length];
+			regs[0] = regTp02;
+			return validarCotizante(regs, nroLinea);
 		}catch ( Exception e ){
 			LOGGER.error("Error no controlado",e);					
 		}
@@ -223,7 +232,7 @@ public class LiquidacionRestController {
     public void eliminarCotizante( String regTp02[], int nroLinea  ) {
 		LOGGER.info("Inicio Validacion Cotizante eliminado!!!!");			
 		try{
-			validarCotizante(regTp02, nroLinea);
+			//validarCotizante(regTp02, nroLinea);
 		}catch ( Exception e ){
 			LOGGER.error("Error no controlado",e);					
 		}
@@ -302,6 +311,5 @@ public class LiquidacionRestController {
              return rootLogger;
         }
 	}
-	
-	
+		
 }

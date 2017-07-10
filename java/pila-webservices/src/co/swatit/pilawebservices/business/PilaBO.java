@@ -464,6 +464,8 @@ public final class PilaBO {
 						.getPlanillaAportanteDTOFromRegT01(planillaRegT01, Long.valueOf(inDTO.getIdSoiAportante()),
 								Long.valueOf(inDTO.getIdSegUsuario()));
 				PlanillaAportanteDTO planillaAportanteDTO = Converter.convertPlanillaAportante(planillaSOI);
+				planillaAportanteDTO.setAportanteLey1607(inDTO.isReforma());
+				planillaSOI.setAportanteLey1607(inDTO.isReforma());
 				// Se obtiene el objeto ArchivoEnProcesoDTO convertido y se pone en el objeto de respuesta
 				configOutDTO.setArchivoEnProcesoDTO(ApplicationConfiguration.buildArchivoEnProceso(
 						planillaAportanteDTO, planillaRegT01));
