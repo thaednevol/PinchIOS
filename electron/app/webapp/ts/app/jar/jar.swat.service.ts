@@ -272,7 +272,7 @@ namespace app.jar {
     * proceso de liquidación, se ejecuta un cierto tiempo hasta que el servicio
     * retorne una respuesta.
     */
-    public consultFileSettlement(): void {
+    public consultFileSettlement(): any {
       if (this.timerConsultFile) {
         clearTimeout(this.timerConsultFile);
         this.timerConsultFile = null;
@@ -289,13 +289,22 @@ namespace app.jar {
           this.timerConsultFile = setTimeout(this.consultFileSettlement.bind(this), this.jarSwat.TIMER_WAIT);
         } else {
           if (response.estado === this.OPTIONS.SETTLEMENT.VALIDATE_FILE_ENUM.TERMINADO_SIN_ERRORES) {
-            this.putPayroll(response.idPlanilla);
-            this.$rootScope.$broadcast("hide-loading");
+            //this.putPayroll(response.idPlanilla);
+            //this.$rootScope.$broadcast("hide-loading");
+            //this.$rootScope.$broadcast("generate-payroll",response.idPlanilla);
+            //this.$rootScope.$broadcast("hide-loading");
+            this.$rootScope.$broadcast("save-planilla",response.idPlanilla);
             return;
           }
+
           if (response.estado === this.OPTIONS.SETTLEMENT.VALIDATE_FILE_ENUM.ADVERTENCIAS_VALIDACION_BDUA) {
-            this.putPayroll(response.idPlanilla);
+            //this.putPayroll(response.idPlanilla);
+            this.$rootScope.$broadcast("update-validation-result",response.idPlanilla,
+                                                                  response.archivoErrorAsofondo,
+                                                                  response.archivoError,
+                                                                  null,null);
             this.$rootScope.$broadcast("hide-loading");
+            //this.$rootScope.$broadcast("save-planilla",response.idPlanilla);
             return;
           }
           let showError = false;
@@ -312,6 +321,7 @@ namespace app.jar {
           }
         }
       });
+      return result;
     }
 
     /**
@@ -321,7 +331,9 @@ namespace app.jar {
     * zip al servicio de SOI y entonctar en el ciclo de consultFileSettlement un
     * retorno de que termino sin errores.
     */
-    private putPayroll(idPlanillaTmp: number): void {
+    public putPayroll(idPlanillaTmp: number): any {
+      this.$rootScope.$broadcast("show-loading");
+      let messageResult = "";
       let params: any = {
         token: this.$localStorage.token,
         "idPlanilla": idPlanillaTmp,
@@ -342,15 +354,7 @@ namespace app.jar {
           periodoNoSalud: this.$localStorage.validateFile.periodPension
         }
       };
-      let result = this.jar.execJson(this.jarSwat.NAME, this.jarSwat.METHOD.PUT_PAYROLL, params);
-      result.then((response) => {
-        if (response.idNumeroDePlanilla) {
-          let title = this.$filter("translate")("SETTLEMENT.CONFIRMATION.SETTLEMENT_CREATED_TITLE");
-          let message = this.$filter("translate")("SETTLEMENT.CONFIRMATION.SETTLEMENT_CREATED") + response.idNumeroDePlanilla;
-          this.nativeNotification.show(title, message);
-          this.$rootScope.$broadcast("hide-loading");
-        }
-      });
+      return this.jar.execJson(this.jarSwat.NAME, this.jarSwat.METHOD.PUT_PAYROLL, params);
     }
 
   }

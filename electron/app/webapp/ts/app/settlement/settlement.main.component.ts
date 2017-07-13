@@ -95,6 +95,23 @@ namespace app.settlement {
       totalFilterRegister: 0
     };
 
+
+    /**
+    * @type {Object<periodPension,periodHealth,totalContributor,totalPay,totalError>}
+    * validationResult - Resultados de la validacion de planilla en SOI
+    * @see SettInfoControler.info
+    */
+    public validationResult: any = {
+      error: false,
+      errorMessage: "",
+      ruafOrBdua: false,
+      ruafXlsContent: "",
+      bduaXlsContent: "",
+      errorXlsContent: "",
+      resultMessage: "",
+      idTmpPlanilla: 0
+    };
+
     /**
     * @type {String} currentTab - Indica la posición actual del menu de tab.
     */
@@ -128,9 +145,17 @@ namespace app.settlement {
     private $rootScope: any;
     private $scope: any;
 
-    static $inject = ["native.notification.service", "$rootScope", "$scope", "jar.soi.service", "native.file.service", "native.jar.service", "settlement.service", "$filter", "$localStorage"];
+    /**
+    * @type {SwatService} swat - Consulta los servicios que utiliza los JAR de
+    * Swat para la aplicación.
+    * @see app.jar.SwatService
+    */
+    private swat: any
 
-    constructor(nativeNotification, $rootScope, $scope, soiService, serviceFile, serviceJar, serviceSettlement, $filter, $localStorage) {
+    static $inject = ["jar.swat.service", "native.notification.service", "$rootScope", "$scope", "jar.soi.service", "native.file.service", "native.jar.service", "settlement.service", "$filter", "$localStorage"];
+
+    constructor(swat, nativeNotification, $rootScope, $scope, soiService, serviceFile, serviceJar, serviceSettlement, $filter, $localStorage) {
+      this.swat = swat;
       this.nativeNotification = nativeNotification;
       this.$rootScope = $rootScope;
       this.$scope = $scope;
@@ -147,6 +172,7 @@ namespace app.settlement {
         this.file.data = null;
         let reformaTmp = this.info.reforma;
         this.info = {};
+        this.validationResult = {};
         this.info.reforma = reformaTmp;
         this.showLoading = true;
       });
@@ -162,6 +188,9 @@ namespace app.settlement {
       });
       this.$scope.$on("update-info-panel", () => {
         this.updateInfoPanel();
+      });
+      this.$scope.$on("save-planilla", (event, idTmpPlanilla) => {
+        this.savePlanilla(idTmpPlanilla);
       });
       this.$scope.$on("hide-loading", () => {
         this.showLoading = false;
@@ -367,10 +396,20 @@ namespace app.settlement {
     */
     public validateRegister(numberRegister) {
       numberRegister = Number(numberRegister);
+      let identificationSelected = this.file.data.regsTp02.registers[numberRegister]["regs3"];
+      let tpIdentificationSelected = this.file.data.regsTp02.registers[numberRegister]["regs2"];
+      let selectedRegs = this.$filter("filter")(this.file.data.regsTp02.registers, { regs3: identificationSelected }, true);
+      let nroLinea0 = Number(selectedRegs[0]["regs1"])+1;
+      let regsForValidate = [];
+      //Para enviar a validar los multiples registros de un solo cotizante
+      for (let i = 0; i < selectedRegs.length; i++) {
+        regsForValidate[i] = this.soiService.lineRegisterType2ToSeparatedString(this.file.data, selectedRegs[i]["regs1"]-1);
+      }
       // Se agregan los parametros solicitados por el servicio de valdiación de registros
       let params = {
-        regTp02: this.soiService.lineRegisterType2ToArray(this.file.data, numberRegister),
-        nroLinea: numberRegister + 2
+        regTp02: regsForValidate,
+        //regTp02: this.soiService.lineRegisterType2ToArray(this.file.data, numberRegister),
+        nroLinea: nroLinea0
       };
       this.serviceSettlement.validateRegister(params).get().$promise.then((response) => {
         let numberSequence = numberRegister + 1;
@@ -505,6 +544,20 @@ namespace app.settlement {
             positionRow = positionRow - 1;
         }
         this.applyCorrections(positionRow + 1);
+      });
+    }
+
+    public savePlanilla ( idTmpPlanilla ){
+      let result = this.swat.putPayroll(idTmpPlanilla);
+
+      result.then((response) => {
+        if (response.idNumeroDePlanilla) {
+          let messageResult = this.$filter("translate")("SETTLEMENT.CONFIRMATION.SETTLEMENT_CREATED") + response.idNumeroDePlanilla;
+          this.validationResult.resultMessage = messageResult;
+          this.validationResult.ruafOrBdua = false;
+          this.validationResult.error = false;
+          this.$rootScope.$broadcast("hide-loading");
+        }
       });
     }
 

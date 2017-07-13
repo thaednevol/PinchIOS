@@ -3,6 +3,38 @@
   //- Lista de tablas del archivo
   .sett-contributor__container
 
+
+    //Confirmacion
+    .sy-table__container(ng-if="$ctrl.validationResult.resultMessage")
+      .sett-contributor__messagetitle
+        i.mdi.mdi-bell-outline
+        span(ng-bind="'SETTLEMENT.TABLES.CONFIRMATION' | translate")
+      .sett-contributor__messages        
+        p(ng-bind="$ctrl.validationResult.resultMessage")
+                
+    //Advertencias
+    .sy-table__container(ng-if="$ctrl.validationResult.ruafOrBdua")
+      .sett-contributor__messagetitle
+        i.mdi.mdi-bell-outline
+        span(ng-bind="'SETTLEMENT.TABLES.WARNINGS' | translate")
+      .sett-contributor__messages        
+        p(ng-bind="'SETTLEMENT.TABLES.MSG_BDUA' | translate")
+      .sett-contributor__messageopts
+        .sett-contributor__messageopts__opt
+        .sett-contributor__messageopts__opt
+          a(ng-click="$ctrl.actionGenerateXls('BDUA')")
+            i.mdi.mdi-file-excel
+              span(ng-bind="'SETTLEMENT.TABLES.BDUA' | translate")
+        .sett-contributor__messageopts__opt
+          a(ng-click="$ctrl.actionGenerateXls('RUAF')")
+            i.mdi.mdi-file-excel
+              span(ng-bind="'SETTLEMENT.TABLES.RUAF' | translate")
+        .sett-contributor__messageopts__opt
+          a(ng-click="$ctrl.actionSavePlanilla()")
+            i.mdi.mdi-content-save
+              span(ng-bind="'SETTLEMENT.LOAD.ACTIONS.ACCEPT' | translate")
+        .sett-contributor__messageopts__opt
+    
     //- Registro tipo 1
     .sy-table__container
       .sy__title-table(ng-bind="'SETTLEMENT.TABLES.REGTP01' | translate")

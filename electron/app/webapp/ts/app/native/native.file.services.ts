@@ -327,6 +327,32 @@ namespace app.native {
       return this.createFile(fileName, JSON.stringify(dataJson), false);
     }
 
+
+    /**
+    * @description
+    * Crea un archivo excel con el contenido enviado
+    *
+    * @param {String} name - Nombre del archivo que se crea con la ruta absoluta.
+    * @param {String} dataFile - Contenido el archivo excel    
+    * @return {Promise} El metodo resolve contiene la ruta del archivo que se
+    * crea, en caso de error retorna null en el resolve.
+    */
+    public createXlsFile(name: string, dataFile: any): any {
+      return new Promise((resolve) => {
+        var buf = new Buffer(dataFile, 'base64');
+        this.fs.writeFile(name, buf, (error, data) => {
+          if (error) {
+            delete this.listTailCreateFile[name];
+            resolve(null);
+            return;
+          }
+          resolve(name);
+          return;
+        });
+      });
+    }
+
+
     /**
     * @description
     * Crea un archivo en la ruta especifica, agregando en el la información

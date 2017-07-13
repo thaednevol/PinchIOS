@@ -161,7 +161,9 @@ public final class Converter {
 					.getFechaFinVigenciaCobertura()));
 			AdministradoraVO adminVO = ejbObjectOutput.getAdministradoraFusion();
 			if (Validation.isNotNull(adminVO)) {
-				retorno.setAdministradoraFusion(convertAdministradora(ejbObjectOutput.getAdministradoraFusion()));
+				if ( !adminVO.getIdSoiAdministradora().equals(ejbObjectOutput.getAdministradoraFusion().getIdSoiAdministradora()) ){
+					retorno.setAdministradoraFusion(convertAdministradora(ejbObjectOutput.getAdministradoraFusion()));
+				}
 			}
 		} else {
 			LOGGER.warn(Constants.LOG_NULL_PARAMETER + "ejbObjectOutput");

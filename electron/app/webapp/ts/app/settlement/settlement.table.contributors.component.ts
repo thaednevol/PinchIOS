@@ -89,17 +89,48 @@ namespace app.settlement {
     public info: any = {};
 
     /**
+    * @type {SwatService} swat - Consulta los servicios que utiliza los JAR de
+    * Swat para la aplicación.
+    * @see app.jar.SwatService
+    */
+    private swat: any
+
+
+    /**
+    * @type {Object<periodPension,periodHealth,totalContributor,totalPay,totalError>}
+    * validationResult - Resultados de la validacion de planilla en SOI
+    * @see SettInfoControler.info
+    */
+    public validationResult: any = {
+      error: false,
+      errorMessage: "",
+      ruafOrBdua: false,
+      ruafXlsContent: "",
+      bduaXlsContent: "",
+      errorXlsContent: "",
+      resultMessage: "",
+      idTmpPlanilla: 0
+    };
+
+    /**
     * @type {Class} dialogService - Ejecuta el llamado a los Dialogs nativos.
     */
     private dialogService;
+
+    /**
+    * @type {Class} fileService - Ejecuta el llamado a los Dialogs nativos.
+    */
+    private fileService;
 
     private $scope: any;
     private $rootScope: any;
     private $filter: any;
 
-    static $inject = ["jar.soi.service", "settlement.service", "$rootScope", "$scope", "$filter", "OPTIONS", "native.dialog.service"];
+    static $inject = ["jar.swat.service", "jar.soi.service", "settlement.service", "$rootScope", "$scope", "$filter", "OPTIONS", "native.dialog.service", "native.file.service"];
 
-    constructor(soiService, serviceSettlement, $rootScope, $scope, $filter, OPTIONS, dialogService) {
+    constructor(swat, soiService, serviceSettlement, $rootScope, $scope, $filter, OPTIONS, dialogService, fileService) {
+      this.swat = swat;
+      this.fileService = fileService;
       this.soiService = soiService;
       this.serviceSettlement = serviceSettlement;
       this.$scope = $scope;
@@ -257,6 +288,44 @@ namespace app.settlement {
         target.style.display = "none";
       }
     }
+
+
+    public actionSavePlanilla(): void {
+      this.$rootScope.$broadcast("save-planilla",this.validationResult.idTmpPlanilla);
+      /*let result = this.swat.putPayroll(this.validationResult.idTmpPlanilla);
+
+      result.then((response) => {
+        if (response.idNumeroDePlanilla) {
+          let messageResult = this.$filter("translate")("SETTLEMENT.CONFIRMATION.SETTLEMENT_CREATED") + response.idNumeroDePlanilla;
+          this.validationResult.resultMessage = messageResult;
+          this.validationResult.ruafOrBdua = false;
+          this.validationResult.error = false;
+          this.$rootScope.$broadcast("hide-loading");
+        }
+      });*/
+    }
+
+    /**
+    * @description
+    * Metodo para descargar un archivo excel generado por la aplicacion y
+    * descargado del servidor SOI
+    */
+    public actionGenerateXls(xlsSelected): void {
+      let result = this.dialogService.saveFile("xls");
+      if (!result) return;
+      result.then((pathFile) => {
+        if (!pathFile) return;
+        if ( xlsSelected==="BDUA" ){
+          this.fileService.createXlsFile(pathFile,this.validationResult.bduaXlsContent);
+        }
+        else if( xlsSelected=="RUAF" ){
+          this.fileService.createXlsFile(pathFile,this.validationResult.ruafXlsContent);
+        }
+        else if( xlsSelected=="ERROR" ){
+          this.fileService.createXlsFile(pathFile,this.validationResult.errorXlsContent);
+        }
+      });
+    }
   }
 
   // Agrega el componente al modulo principal.
@@ -265,6 +334,7 @@ namespace app.settlement {
     bindings: {
       file: "=", // Información del archivo que se edita
       listErrorsContributors: "=",
+      validationResult: "=",
       info: "="
     },
     controller: SettContributorsController,

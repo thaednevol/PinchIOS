@@ -45,6 +45,22 @@ namespace app.settlement {
     };
 
     /**
+    * @type {Object<periodPension,periodHealth,totalContributor,totalPay,totalError>}
+    * validationResult - Resultados de la validacion de planilla en SOI
+    * @see SettInfoControler.info
+    */
+    public validationResult: any = {
+      error: false,
+      errorMessage: "",
+      ruafOrBdua: false,
+      ruafXlsContent: "",
+      bduaXlsContent: "",
+      errorXlsContent: "",
+      resultMessage: "",
+      idTmpPlanilla: 0
+    };
+
+    /**
     * @type {Object} info - Información del panel de la planilla.
     */
     public info: any = {};
@@ -116,6 +132,28 @@ namespace app.settlement {
         this.file.name = this.serviceFile.getNameFilePath(data);
         this.validateFile();
       });
+      this.$scope.$on("update-validation-result", (event, idTmpPlanilla, xlsRuaf, xlsBdua, xlsError, okResultMessage) => {
+        this.validationResult.resultMessage = null;
+        this.validationResult.idTmpPlanilla = idTmpPlanilla;
+        this.validationResult.ruafXlsContent = xlsRuaf;
+        this.validationResult.bduaXlsContent = xlsBdua;
+        this.validationResult.errorXlsContent = xlsError;
+        if ( xlsRuaf != null || xlsBdua!=null ){
+          this.validationResult.ruafOrBdua = true;
+        }
+        if ( xlsError!=null ){
+          this.validationResult.error = true;
+        }
+        if ( okResultMessage!=null ){
+          this.validationResult.resultMessage = okResultMessage;
+        }
+      });
+      /*this.$scope.$on("save-planilla-opt", (event, idTmpPlanilla) => {
+        this.$rootScope.$broadcast("save-planilla",idTmpPlanilla);
+      });
+      /*this.$scope.$on("generate-payroll", (event, idTmpPlanilla) => {
+
+      })*/;
     }
 
     /**
@@ -344,6 +382,7 @@ namespace app.settlement {
       info: "=", // Información del panel de la planilla
       showErrorValidateFile: "=", // Indica si mostrar la ventana de erorres de validación de archivos
       listErrorsValidateFile: "=", // Listado de errores de validación de archivos
+      validationResult: "=",
       showLoading: "="
     },
     controller: SettOptionsController,

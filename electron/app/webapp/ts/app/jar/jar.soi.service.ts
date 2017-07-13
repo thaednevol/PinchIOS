@@ -187,6 +187,25 @@ namespace app.jar {
 
     /**
     * @description
+    * Convierte una linea del registro de formato Object a una cadena separada por pipe.
+    *
+    * @param {Object} data - Datos que actuales para el cambio.
+    * @param {Number} position - Numero del linea o registro para cambiar de
+    * objeto a array.
+    * @return {String} Cadena separada por pipe.
+    */
+    public lineRegisterType2ToSeparatedString(data, position) {
+      if (!data) return data;
+      position = position || 0;
+      let newLine = '';
+      for (let i = 0; i <= Object.keys(data.regsTp02.registers[position]).length; i++) {
+        newLine = newLine+data.regsTp02.registers[position][`regs${i}`]+'|';
+      }
+      return newLine;
+    }
+
+    /**
+    * @description
     * Recorre la información de los registros y cambia el valor del numero de
     * secuencia, indicando el registro del cual se tomara referencia para el
     * consecutivo.

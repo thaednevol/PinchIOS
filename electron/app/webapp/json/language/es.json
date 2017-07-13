@@ -127,11 +127,18 @@
         "SAVE": "Guardar",
         "GENERATE": "Generar planilla",
         "REFORMA": "Reforma Tributaria:",
+        "ACCEPT": "Aceptar",
         "SI": "SI",
         "NO": "NO"
       }
     },
     "TABLES": {
+      "WARNINGS": "Advertencias",
+      "CONFIRMATION": "Confirmación",
+      "BDUA": "BDUA",
+      "RUAF": "RUAF",
+      "MSG_BDUA": "Se presentarón errores de validacion de afiliación al administradoras de SALUD de acuerdo a la BDUA, descargue el excel para ver los detalles. Si desea guardar la planilla haga clic en Aceptar",
+      "MSG_RUAF": "Se presentarón errores de validacion de afiliación al administradoras de PENSION de acuerdo a la RUAF",
       "REGTP01": "Encabezado de la planilla",
       "REGSTP02": "Listado de cotizantes",
       "PENSION": "Aportes del período para Pensiones",

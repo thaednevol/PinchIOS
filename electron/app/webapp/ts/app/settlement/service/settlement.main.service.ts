@@ -74,7 +74,7 @@ namespace app.settlement {
       let server: string = `${this.routeserver}${service}`;
       return this.$resource(server, params, {
         get: {
-          method: "GET",
+          method: "POST",
           transformResponse: (data) => {
             return {
               data: JSON.parse(data)
