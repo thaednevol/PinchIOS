@@ -170,17 +170,18 @@ public class LiquidacionRestController {
     }
 	
 	
-	@RequestMapping("/validarcotizante")
+	
+	@RequestMapping(value="/validarcotizante",method={RequestMethod.POST})
 	@ResponseBody
-    public ResultadoValidacionCotizanteDTO validarCotizante( String regTp02[][], int nroLinea ) {
+    public ResultadoValidacionCotizanteDTO validarCotizante( String[] regTp02, int nroLinea ) {
 		LOGGER.info("Validar Cotizante!!!!");
 		LOGGER.info("Registro: "+regTp02); 
 		LiquidadorActivos liquidador = new LiquidadorActivos();
 		ResultadoValidacionCotizanteDTO resultado = new ResultadoValidacionCotizanteDTO();
 		Collection<String> regsValidacion = new ArrayList<String>();
-		try{
-			for ( String reg[]:regTp02 ){
-				Reg2388ReadTp02 regT02Bean = Reg2388ReadTp02.buildRecordFromStringArray(reg);
+		try{			
+			for ( String reg:regTp02 ){
+				Reg2388ReadTp02 regT02Bean = Reg2388ReadTp02.buildRecordFromStringArray(reg.split("\\|"));
 				Converter1747to2388 converter = new Converter1747to2388();
 				String regT02Str = converter.getRegT02FromBean(regT02Bean);
 				regsValidacion.add(regT02Str);
@@ -217,8 +218,8 @@ public class LiquidacionRestController {
     public ResultadoValidacionCotizanteDTO agregarCotizante( String regTp02[], int nroLinea  ) {
 		LOGGER.info("Inicio Validacion Cotizante nuevo!!!!");			
 		try{
-			String[][] regs = new String[1][regTp02.length];
-			regs[0] = regTp02;
+			String[] regs = new String[1];
+			//regs[]regTp02);
 			return validarCotizante(regs, nroLinea);
 		}catch ( Exception e ){
 			LOGGER.error("Error no controlado",e);					

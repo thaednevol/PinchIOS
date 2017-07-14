@@ -1041,6 +1041,7 @@ public final class PilaBO {
 		Context connection = null;
 		
 		try {
+			LOGGER.info("Inicia consulta de estado de archivo: "+idFile);
 			// Se realiza la conexión con el servidor SOI
 			connection = connect();
 			archivoEnProcesoConsultaDTO.setIdArchivoEnProceso(idFile);
@@ -1051,18 +1052,25 @@ public final class PilaBO {
 			archivoEnProcesoConsultaDTO = bean.consultarProcesoValidarYGuardarArchivo(archivoEnProcesoConsultaDTO);
 			response = VOBuilder.armarArchivoResponse(archivoEnProcesoConsultaDTO);
 			
+			LOGGER.info("Finaliza consulta de estado de archivo, BDUA: "+response.getRutaArchivoErrores());
 			String filePath = FileUtilities.createDir(PropertyLoader.INSTANCE.getProperty(Constants.GLOBAL_PROP, "PATH_FILE"));
-			byte[] archivoError = FileUtilities.readZipFile(filePath + "/" + response.getNombreArchivoError());
-			response.setArchivoError(archivoError);
+			if ( response.getNombreArchivoError()!=null && !response.getNombreArchivoError().trim().equals("") ){
+				byte[] archivoError = FileUtilities.readZipFile(filePath+File.separator+response.getNombreArchivoError());
+				response.setArchivoError(archivoError);
+			}
+			LOGGER.info("Finaliza consulta de estado de archivo, RUAF: "+response.getRutaArchivoErroresAf());
 			//TODO
 //			FileUtilities.write("/tmp/archivoError.xls", archivoError);
 //			System.out.println(filePath + "/" + response.getNombreArchivoError() + ", archivo[" + archivoError +"]" );
 			
-			byte[] archivoErrorAsofondo = FileUtilities.readZipFile(filePath + "/" + response.getNombreArchivoErrorAsofondo());
-			response.setArchivoErrorAsofondo(archivoErrorAsofondo);
+			if ( response.getNombreArchivoErrorAsofondo()!=null && !response.getNombreArchivoErrorAsofondo().trim().equals("") ){
+				byte[] archivoErrorAsofondo = FileUtilities.readZipFile(filePath+File.separator+response.getNombreArchivoErrorAsofondo());
+				response.setArchivoErrorAsofondo(archivoErrorAsofondo);
+			}
 			//TODO
 //			FileUtilities.write("/tmp/archivoErrorAsofondo.xls", archivoErrorAsofondo);
 //			System.out.println(filePath +  "/" + response.getNombreArchivoErrorAsofondo() + ", archivo[" + archivoErrorAsofondo +"]");
+			LOGGER.info("Finaliza consulta de estado de archivo, estado: "+response.getEstado());
 			
 		} catch (NamingException e) {
 			throw new BusinessException(CodeErrorEnum.ERRORCONNECTIONREFUSED, e);

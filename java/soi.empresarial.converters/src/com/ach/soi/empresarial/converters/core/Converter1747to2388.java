@@ -16,7 +16,6 @@ import org.beanio.UnidentifiedRecordException;
 
 import com.ach.soi.empresarial.converters.model.Archivo2388TO;
 import com.ach.soi.empresarial.converters.model.CommonBean;
-import com.ach.soi.empresarial.converters.model.beans1747.DatosComplementarios1747;
 import com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadTp01;
 import com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadTp02;
 import com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadTp03;
@@ -29,6 +28,7 @@ import com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadTp09;
 import com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadTp10;
 import com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadTp11;
 import com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadTp12;
+import com.ach.soi.empresarial.converters.utils.Constants;
 import com.ach.soi.empresarial.converters.utils.ParsersUtil;
 
 public class Converter1747to2388 extends CommonConverter{
@@ -109,7 +109,7 @@ public class Converter1747to2388 extends CommonConverter{
         try {
         	
             //in	= factory.createReader("PILA-1747-to-2388", new File(filePath));
-        	in	= factory.createReader("PILA-1747-to-2388", new InputStreamReader(new FileInputStream(filePath), "UTF-8"));
+        	in	= factory.createReader("PILA-1747-to-2388", new InputStreamReader(new FileInputStream(filePath), Constants.GENERAL_ENCODING));
             
             
 	        CommonBean bean = null;

@@ -10,6 +10,7 @@ import com.ach.soi.empresarial.converters.model.ErrorValidacionTO;
 import com.ach.soi.empresarial.converters.model.ResultadoEscrituraTO;
 import com.ach.soi.empresarial.converters.model.SolicitudConversionTO;
 import com.ach.soi.empresarial.converters.model.SolicitudEscrituraTO;
+import com.ach.soi.empresarial.converters.utils.Constants;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
@@ -25,7 +26,7 @@ public class ConverterPila {
 		Locale.setDefault(new Locale("es","CO"));
 		
 		System.setProperty("org.beanio.configuration", "/settings.properties");
-		System.setProperty("file.encoding", "UTF-8");
+		System.setProperty("file.encoding", Constants.GENERAL_ENCODING);
 		
 		
 		if ( method.equals("validarArchivoPila") ){
@@ -104,7 +105,7 @@ public class ConverterPila {
 		ResultadoEscrituraTO resultado = new ResultadoEscrituraTO();
 		try{			
 			solicitud = gson.fromJson(request, SolicitudEscrituraTO.class);
-			JsonReader readerJson = new JsonReader(new InputStreamReader(new FileInputStream(solicitud.getPathArchivoData()), "UTF-8") );
+			JsonReader readerJson = new JsonReader(new InputStreamReader(new FileInputStream(solicitud.getPathArchivoData()), Constants.GENERAL_ENCODING) );
 			readerJson.setLenient(true);
 			Archivo2388TO data = gson.fromJson(readerJson, Archivo2388TO.class);
 			writer.writeFile2388(solicitud.getPathArchivo(), data,solicitud.getTipoArchivo());

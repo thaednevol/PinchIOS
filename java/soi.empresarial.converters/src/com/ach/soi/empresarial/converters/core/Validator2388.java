@@ -2,7 +2,9 @@ package com.ach.soi.empresarial.converters.core;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -26,6 +28,7 @@ import com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadTp09;
 import com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadTp10;
 import com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadTp11;
 import com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadTp12;
+import com.ach.soi.empresarial.converters.utils.Constants;
 
 public class Validator2388 {
 
@@ -48,8 +51,8 @@ public class Validator2388 {
         
         
         try {        
-        	
-            in	= factory.createReader("PILA-2388", new File(filePath));
+        	        	
+            in	= factory.createReader("PILA-2388", new InputStreamReader(new FileInputStream(filePath), Constants.GENERAL_ENCODING));
 	        CommonBean bean = null;
 	        int regsNoIdentificados = 0;
 	        do{	

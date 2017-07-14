@@ -1,6 +1,8 @@
 package com.ach.soi.empresarial.converters.core;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,6 +12,7 @@ import org.beanio.StreamFactory;
 import org.beanio.UnidentifiedRecordException;
 
 import com.ach.soi.empresarial.converters.model.beans1747.DatosComplementarios1747;
+import com.ach.soi.empresarial.converters.utils.Constants;
 
 /**
  * 
@@ -41,7 +44,8 @@ public class DatosComplementarios1747Reader {
         BeanReader in = null;
         DatosComplementarios1747 datos = null;
 		try {        
-            in	= factory.createReader("PILA-1747-Complemento", new File(pathArchivoDatosCompl));
+			
+            in	= factory.createReader("PILA-1747-Complemento", new InputStreamReader(new FileInputStream(pathArchivoDatosCompl), Constants.GENERAL_ENCODING));
             
             while ( (datos=(DatosComplementarios1747)in.read())!=null ){
             	this.datosComplementariosMap.put(datos.getKey(), datos);

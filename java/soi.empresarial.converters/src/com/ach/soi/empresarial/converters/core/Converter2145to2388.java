@@ -1,6 +1,8 @@
 package com.ach.soi.empresarial.converters.core;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -19,6 +21,7 @@ import com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadPensTp
 import com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadPensTp06;
 import com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadPensTp07;
 import com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadTp04;
+import com.ach.soi.empresarial.converters.utils.Constants;
 import com.ach.soi.empresarial.converters.utils.ParsersUtil;
 
 public class Converter2145to2388 extends CommonConverter{
@@ -44,7 +47,7 @@ public class Converter2145to2388 extends CommonConverter{
         
         try {        
         	
-            in	= factory.createReader("PILA-2145-to-2388", new File(filePath));
+        	in	= factory.createReader("PILA-2145-to-2388", new InputStreamReader(new FileInputStream(filePath), Constants.GENERAL_ENCODING));            
 	        CommonBean bean = null;
 	        int regsNoIdentificados = 0;
 	        do{	

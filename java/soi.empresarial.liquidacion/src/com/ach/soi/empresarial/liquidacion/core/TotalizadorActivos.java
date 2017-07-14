@@ -110,8 +110,14 @@ public class TotalizadorActivos {
 	
 	
 	private void agregarAdministradorasCotizante ( PlanillaCotizanteDTO dto ){
-		AdministradoraVO eps = this.ds.getAdministradoraAFPoEPSPorCodigo(dto.getCodigoAdmSalud());
-		AdministradoraVO afp = this.ds.getAdministradoraAFPoEPSPorCodigo(dto.getCodigoAdmPension());
+		AdministradoraVO eps = null;
+		if ( dto.getCodigoAdmSalud()!=null ){
+			eps = this.ds.getAdministradoraAFPoEPSPorCodigo(dto.getCodigoAdmSalud());
+		}
+		AdministradoraVO afp = null;
+		if ( dto.getCodigoAdmPension()!=null ){
+			afp = this.ds.getAdministradoraAFPoEPSPorCodigo(dto.getCodigoAdmPension());
+		}
 		AdministradoraVO arl = null;
 		AdministradoraVO ccf = null;
 		for ( AdministradoraVO adm:this.ds.getAdministradorasRiesgoYCcf() ){

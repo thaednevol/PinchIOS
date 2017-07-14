@@ -1,6 +1,8 @@
 package com.ach.soi.empresarial.converters.core;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 
 import org.beanio.BeanReader;
 import org.beanio.StreamFactory;
@@ -8,6 +10,7 @@ import org.beanio.StreamFactory;
 import com.ach.soi.empresarial.converters.error.ErrorHandlerReader1747;
 import com.ach.soi.empresarial.converters.model.CommonBean;
 import com.ach.soi.empresarial.converters.model.ErrorValidacionTO;
+import com.ach.soi.empresarial.converters.utils.Constants;
 
 public class Validator1747 {
 
@@ -23,8 +26,8 @@ public class Validator1747 {
         
         BeanReader in = null;
         ErrorHandlerReader1747 errorHandler = new ErrorHandlerReader1747();
-        try {                	
-	        in	= factory.createReader("PILA-1747", new File(path));
+        try {                	        	
+	        in	= factory.createReader("PILA-1747", new InputStreamReader(new FileInputStream(path), Constants.GENERAL_ENCODING));
 	        CommonBean bean = null;
 	        in.setErrorHandler(errorHandler);
 	        ErrorValidacionTO errorTo = null;

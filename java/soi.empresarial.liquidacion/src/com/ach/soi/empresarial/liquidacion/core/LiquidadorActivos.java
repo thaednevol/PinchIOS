@@ -1,7 +1,9 @@
 package com.ach.soi.empresarial.liquidacion.core;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,6 +33,7 @@ import com.ach.pla.biz.transfer.PlanillaAportanteDTO;
 import com.ach.pla.biz.transfer.PlanillaCotizanteDTO;
 import com.ach.pla.biz.transfer.PlanillaTotalesDTO;
 import com.ach.pla.biz.type.TipoPlanillaType;
+import com.ach.soi.empresarial.converters.utils.Constants;
 import com.ach.soi.empresarial.liquidacion.exceptions.DesktopExceptionMngr;
 import com.ach.soi.empresarial.liquidacion.model.ErrorLiquidacionTO;
 import com.blackbear.flatworm.ConfigurationReader;
@@ -175,15 +178,18 @@ public class LiquidadorActivos {
 		Collection<ErrorLiquidacionTO> errores = new ArrayList<ErrorLiquidacionTO>();
 		Collection<PlanillaRegT02> registrosT02Agrupados = new ArrayList<PlanillaRegT02>();
 		PlanillaRegT02 bean02 = null;
-		for ( String line:registroTp02 ){
+		int nroLineaActual = nroLinea;
+		for ( String line:registroTp02 ){			
 			try{
 				mn.inicializarMio(line);
-				bean02 = (PlanillaRegT02)mn.getNextRecord();				
+				bean02 = (PlanillaRegT02)mn.getNextRecord();
+				bean02.setNumeroLineaArchivo(nroLineaActual);
 			}catch ( ApplicationException appExc ){
 				this.manejarBeanConErroresLexicoSintacticos(errores, bean02, appExc, nroLinea);
 				LOGGER.error("validarRegsTp02Archivo2388() -> Errores sintacticos: "+nroLinea);
 				continue;
 			}
+			nroLineaActual++;
 			registrosT02Agrupados.add(bean02);																																																																																				
 		}
 		GrupoCotizantesDTO grupoCotizantes = this.agruparCotizantesAplicarValidacionesPrevias(registrosT02Agrupados,errores);		
@@ -205,7 +211,7 @@ public class LiquidadorActivos {
 		Collection<PlanillaRegT02> registrosT02Agrupados = new ArrayList<PlanillaRegT02>();
 		LOGGER.info("inicio: validarRegsTp02Archivo2388()");
 		try{
-			reader = new BufferedReader(new FileReader(pathArchivo2388));
+			reader = new BufferedReader( new InputStreamReader(new FileInputStream(pathArchivo2388), Constants.GENERAL_ENCODING) );
 			String line = null;
 			int nroLinea = 0;
 			int oks = 0;
@@ -364,7 +370,7 @@ public class LiquidadorActivos {
 					
 					if(registrosNovedadesNoMultiRegistros > 1){
 						ApplicationException exc = new ApplicationException(ClavesMensajesArchivoConstants.REGISTRO_SIN_AUSENTISMO_INVALIDO);
-						this.manejarExcepcionesSemanticas(errores, reg, exc, nroLinea);
+						this.manejarExcepcionesSemanticas(errores, reg, exc, grupoCotizantes.getRegistros().get(0).getNumeroLineaArchivo());
 						ocurrioExcepcion = true;
 					}
 					
