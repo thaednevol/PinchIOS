@@ -47,7 +47,8 @@
         //- Cinta de opciones de la tabla de registro tipo 2
         .sett-contributor__menu
           .sett-contributor__menu-item
-            i.mdi.mdi-file-document
+            i.mdi.mdi-file-document(ng-click="$ctrl.actionOnlyErrors()" ng-mouseover="$ctrl.actionShowTooltip($event)" ng-mouseleave="$ctrl.actionHideTooltip($event)")
+              span Mostrar Solo Errores
           .sett-contributor__menu-item
             i.mdi.mdi-menu-left
             i.mdi.mdi-menu-right
@@ -59,11 +60,11 @@
               span Eliminar cotizante
             i.mdi.mdi-table-row-plus-after(ng-click="$ctrl.actionAddRegister()" ng-mouseover="$ctrl.actionShowTooltip($event)" ng-mouseleave="$ctrl.actionHideTooltip($event)")
               span Agregar cotizante
-          .sett-contributor__menu-item
-            i.mdi.mdi-format-list-bulleted
+          .sett-contributor__menu-item 
+            i.mdi.mdi-format-list-bulleted              
 
       //- Tabla de datos del registro tipo 2
-      table-edit(data="$ctrl.file.data.regsTp02" labels="$ctrl.file.data.labelsTp02" id-table="'regsTp02'" active-filter="true" fixed-columns="true" selected-item="$ctrl.selectedItem" cell-no-edit="$ctrl.cellNoEditType2" active-sub-menu="true" object-filter="$ctrl.objectFilter" replace-active="true")
+      table-edit(data="$ctrl.file.data.regsTp02" labels="$ctrl.file.data.labelsTp02" id-table="'regsTp02'" active-filter="true" fixed-columns="true" selected-item="$ctrl.selectedItem" cell-no-edit="$ctrl.cellNoEditType2" active-sub-menu="true" object-filter="$ctrl.objectFilter" only-errors-filter="$ctrl.onlyErrorsFilter" replace-active="true")
 
     //- Tabla para mostrar errores de registros
     .sy-table__container.sett-contributor__error

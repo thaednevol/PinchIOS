@@ -58,7 +58,9 @@ namespace app.native {
     * @return {Promise} Resultado entregado por la función this.execCommand().
     */
     public execJson(nameJar: string, event: string = null, dataJson: any = null): any {
+      //return this.execString(nameJar, event, JSON.stringify(dataJson).replace(/\"/g, "\\\""));
       return this.execString(nameJar, event, JSON.stringify(dataJson).replace(/\"/g, "\\\""));
+
     }
 
     /**
@@ -74,6 +76,22 @@ namespace app.native {
     public execString(nameJar: string, event: string = null, dataString: string = null): any {
       let routeJar = this.getRouteJar(nameJar);
       let command: any = `${this.OPTIONS.JAR.COMMAND} ${routeJar} ${event} "${dataString}"`;
+      return this.execCommand(command);
+    }
+
+    /**
+    * @description
+    * Ejecuta un archivo JAR, pasando como parametros el nombre del evento y
+    * una cadena de string como argumento principal no usa encoding especifico
+    *
+    * @param {string} nameJar - Nombre del archivo JAR que se ejecutara.
+    * @param {string} event - Nombre del metodo que tiene el JAR.
+    * @param {String} dataString - Datos que recibe el parametro en formato String.
+    * @return {Promise} Resultado entregado por la función this.execCommand().
+    */
+    public execStringNoEncoding(nameJar: string, event: string = null, dataString: string = null): any {
+      let routeJar = this.getRouteJar(nameJar);
+      let command: any = `${this.OPTIONS.JAR.COMMAND_NO_ENCODE} ${routeJar} ${event} "${dataString}"`;
       return this.execCommand(command);
     }
 

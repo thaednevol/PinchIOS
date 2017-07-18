@@ -14,7 +14,7 @@ table.table__fixed-columns--data(border="1" id="fix-column-{{$ctrl.idTable}}")
       th Selección
   //- Contenido de la tabla
   tbody
-    tr(ng-repeat="register in $ctrl.data.registers | filter:$ctrl.objectFilter | limitTo:$ctrl.limitRegister:$ctrl.startLimit track by $index")
+    tr(ng-repeat="register in $ctrl.data.registers | filter:$ctrl.objectFilter | filter:$ctrl.onlyErrorsFilter | limitTo:$ctrl.limitRegister:$ctrl.startLimit track by $index")
       td
         i.fa.fa-times-circle-o(ng-if="$ctrl.data.errors.hasOwnProperty(register.regs1)")
         span(ng-bind="$ctrl.actionSetLine(register)")

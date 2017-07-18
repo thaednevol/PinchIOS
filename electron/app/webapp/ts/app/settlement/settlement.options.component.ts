@@ -209,7 +209,7 @@ namespace app.settlement {
     * @see validateFile()
     */
     private loadDataFile() {
-      let result = this.serviceJar.execString("soi-empresarial-converters-1.0", "leerArchivo2388", this.file.path);
+      let result = this.serviceJar.execStringNoEncoding("soi-empresarial-converters-1.0", "leerArchivo2388", this.file.path);
       result.then((data) => {
         data = this.soiService.registerType2ToObject(data);
         this.file.data = data;
@@ -275,7 +275,8 @@ namespace app.settlement {
         let options = {
           pathArchivo: pathFile,
           tipoArchivo: "1747",
-          pathArchivoData: pathJsonFile
+          pathArchivoData: pathJsonFile,
+          aplicarCorrecionesConversiones: "N"
         };
         let result = this.serviceJar.execJson(this.OPTIONS.JAR.FILES.CONVERT.NAME, this.OPTIONS.JAR.FILES.CONVERT.METHOD.WRITE_2388, options);
         result.then((data2388) => {

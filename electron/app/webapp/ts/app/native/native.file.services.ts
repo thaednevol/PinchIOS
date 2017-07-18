@@ -333,7 +333,7 @@ namespace app.native {
     * Crea un archivo excel con el contenido enviado
     *
     * @param {String} name - Nombre del archivo que se crea con la ruta absoluta.
-    * @param {String} dataFile - Contenido el archivo excel    
+    * @param {String} dataFile - Contenido el archivo excel
     * @return {Promise} El metodo resolve contiene la ruta del archivo que se
     * crea, en caso de error retorna null en el resolve.
     */
@@ -378,7 +378,7 @@ namespace app.native {
           // Se le indica que se escribe sobre el archivo.
           this.listTailCreateFile[name] = contentFile;
         }
-        this.fs.writeFile(name, contentFile, (error, data) => {
+        this.fs.writeFile(name, contentFile, "latin1",(error, data) => {
           if (error) {
             delete this.listTailCreateFile[name];
             resolve(null);

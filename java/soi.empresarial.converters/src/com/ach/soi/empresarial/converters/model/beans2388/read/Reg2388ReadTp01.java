@@ -236,23 +236,23 @@ public class Reg2388ReadTp01 extends CommonBean{
 		labels[2]="Secuencia";
 		labels[3]="Nombre aportante";
 		labels[4]="Tipo documento";
-		labels[5]="Nœmero Identificaci—n";
-		labels[6]="D’gito verificaci—n";
+		labels[5]="Número Identificación";
+		labels[6]="Dígito verificación";
 		labels[7]="Tipo Planilla";
-		labels[8]="Nœmero planilla asociada";
+		labels[8]="Número planilla asociada";
 		labels[9]="Fecha pago Planilla asociada";
-		labels[10]="Forma presentaci—n";
-		labels[11]="C—digo sucursal";
+		labels[10]="Forma presentación";
+		labels[11]="Código sucursal";
 		labels[12]="Nombre Sucursal";
-		labels[13]="C—digo ARL";
-		labels[14]="Per’odo otros subsistemas";
-		labels[15]="Per’odo salud";
-		labels[16]="Nœmero Planilla";
+		labels[13]="Código ARL";
+		labels[14]="Período otros subsistemas";
+		labels[15]="Período salud";
+		labels[16]="Número Planilla";
 		labels[17]="Fecha de pago";
-		labels[18]="Nœmero de empleados";
-		labels[19]="Valor n—mina";
+		labels[18]="Número de empleados";
+		labels[19]="Valor nómina";
 		labels[20]="Tipo aportante";
-		labels[21]="C—digo operador";
+		labels[21]="Código operador";
 		return labels;
 	}
 	

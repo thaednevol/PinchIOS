@@ -285,7 +285,7 @@ namespace app.jar {
       let result = this.jar.execJson(this.jarSwat.NAME, this.jarSwat.METHOD.CONSULT_FILE, params);
       result.then((response) => {
         this.$localStorage.validateFile = Object.assign(this.$localStorage.validateFile, response);
-        if (response.estado === this.OPTIONS.SETTLEMENT.VALIDATE_FILE_ENUM.EN_PROCESO || response.estado === this.OPTIONS.SETTLEMENT.VALIDATE_FILE_ENUM.INICIO_VALIDACION_BDUA) {
+        if (response.estado==null || response.estado === this.OPTIONS.SETTLEMENT.VALIDATE_FILE_ENUM.EN_PROCESO || response.estado === this.OPTIONS.SETTLEMENT.VALIDATE_FILE_ENUM.INICIO_VALIDACION_BDUA) {
           this.timerConsultFile = setTimeout(this.consultFileSettlement.bind(this), this.jarSwat.TIMER_WAIT);
         } else {
           if (response.estado === this.OPTIONS.SETTLEMENT.VALIDATE_FILE_ENUM.TERMINADO_SIN_ERRORES) {
@@ -315,10 +315,18 @@ namespace app.jar {
               break;
             }
           }
-          if (showError) {
-            this.dialog.showDialogError(this.$filter("translate")("MESSAGES.TITLES.ERROR"), this.$filter("translate")("SETTLEMENT.ERRORS.VALIDATE_FILE") + response.estado);
-            this.$rootScope.$broadcast("hide-loading");
-          }
+
+          this.dialog.showDialogError(this.$filter("translate")("MESSAGES.TITLES.ERROR"), this.$filter("translate")("SETTLEMENT.ERRORS.VALIDATE_FILE") + response.estado);
+          let folderTemp = this.file.getPathTemp(response.nombreArchivoError);
+
+          let result = this.file.createFileTemp(response.nombreArchivoError, {}, false);
+          result.then((path) => {
+            if (!path) {
+              return;
+            }
+            this.file.createXlsFile(path,response.archivoError);
+          });
+          this.$rootScope.$broadcast("hide-loading");
         }
       });
       return result;

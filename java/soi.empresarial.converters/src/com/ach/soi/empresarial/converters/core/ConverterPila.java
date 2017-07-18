@@ -81,8 +81,11 @@ public class ConverterPila {
 		ConverterController controller = new ConverterController();
 		
 		try{			
+			boolean aplicarCorreccionesConversiones = solicitud.getAplicarCorrecionesConversiones()==null
+														||solicitud.getAplicarCorrecionesConversiones().trim().equals("")
+														||solicitud.getAplicarCorrecionesConversiones().trim().equals("S");
 			Archivo2388TO archivo = controller.convertirArchivoA2388(solicitud.getPathArchivo(), solicitud.getPathArchivoComplementario(),
-																solicitud.getTipoArchivo());
+																solicitud.getTipoArchivo(),aplicarCorreccionesConversiones);
 			response = gson.toJson(archivo, Archivo2388TO.class);
 		}catch ( Exception e ){
 			ErrorGeneralTO errorTO = new ErrorGeneralTO();
@@ -108,7 +111,12 @@ public class ConverterPila {
 			JsonReader readerJson = new JsonReader(new InputStreamReader(new FileInputStream(solicitud.getPathArchivoData()), Constants.GENERAL_ENCODING) );
 			readerJson.setLenient(true);
 			Archivo2388TO data = gson.fromJson(readerJson, Archivo2388TO.class);
-			writer.writeFile2388(solicitud.getPathArchivo(), data,solicitud.getTipoArchivo());
+			
+			boolean aplicarCorreccionesConversiones = solicitud.getAplicarCorrecionesConversiones()==null
+					||solicitud.getAplicarCorrecionesConversiones().trim().equals("")
+					||solicitud.getAplicarCorrecionesConversiones().trim().equals("S");
+			
+			writer.writeFile2388(solicitud.getPathArchivo(), data,solicitud.getTipoArchivo(),aplicarCorreccionesConversiones);
 			resultado.setError(null);
 			resultado.setEstado("OK");
 			resultado.setPathArchio(solicitud.getPathArchivo());

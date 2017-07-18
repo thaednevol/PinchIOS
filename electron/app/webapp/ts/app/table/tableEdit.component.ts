@@ -65,6 +65,8 @@ namespace app.table {
     */
     public objectFilter: any = {};
 
+    public onlyErrorsFilter: any = {};
+
     /**
     * @type {Number} positionFilter - Identifica las cordenadas
     * de carga del input de filtro.
@@ -529,10 +531,12 @@ namespace app.table {
       this.showFilter = true;
       let modelFilter = this.objectFilter[this.keyFilter[this.positionFilter]];
       let content = this.$filter("filter")(this.data.registers, this.objectFilter);
+      content = this.$filter("filter")(content, this.onlyErrorsFilter);
       if (!this.inputFilterReplace || this.inputFilterReplace === "" || !modelFilter || modelFilter === "") return;
       let reg = new RegExp(modelFilter, "g");
       for (let register of content) {
         register[`regs${this.positionFilter}`] = register[`regs${this.positionFilter}`].replace(reg, this.inputFilterReplace);
+        this.$rootScope.$broadcast("validate-register-table",register[`regs1`]-1);
       }
       if (this.inputFilterReplace !== "" && this.inputFilterReplace) {
         this.objectFilter[this.keyFilter[this.positionFilter]] = this.inputFilterReplace;
@@ -687,6 +691,7 @@ namespace app.table {
       cellNoEdit: "<", // Indica que celdas de la tabla no se pueden editar.
       activeSubMenu: "<", // Indica si se debe activar la opción del submenu en la tabla
       objectFilter: "=", // Almacena la información de los registros visualizados en el filtro.
+      onlyErrorsFilter: "=", // Almacena la información de los registros visualizados en el filtro.
       replaceActive: "<" // Indica si se debe reemplzar el contenido con el filtro
     },
     controller: TableEditController,

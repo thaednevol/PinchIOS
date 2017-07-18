@@ -43,7 +43,9 @@ public class ConverterController {
 	 * @param tipoArchivo 1747 para activos, 2145 para pensionados
 	 * @return Objeto que contiene todos los elementos del archivo plano en formato 2388
 	 */
-	public Archivo2388TO convertirArchivoA2388 ( String pathArchivo, String pathArchivoComplementario,String tipoArchivo ) throws Exception{
+	public Archivo2388TO convertirArchivoA2388 ( String pathArchivo, String pathArchivoComplementario,
+													String tipoArchivo, 
+													boolean aplicarCorreccionesConversiones ) throws Exception{
 		
 		Converter1747to2388 converter = new Converter1747to2388();
 		Converter2145to2388 converter2145 = new Converter2145to2388();
@@ -52,9 +54,9 @@ public class ConverterController {
 		
 		switch (tp) {
 		case ACTIVOS:
-			return converter.convertir1747a2388(pathArchivo,pathArchivoComplementario);
+			return converter.convertir1747a2388(pathArchivo,pathArchivoComplementario,aplicarCorreccionesConversiones);
 		case PENSIONADOS:
-			return converter2145.convertir2145a2388(pathArchivo);
+			return converter2145.convertir2145a2388(pathArchivo,aplicarCorreccionesConversiones);
 		default:
 			throw new Exception("Tipo de archivo no implementado: "+tipoArchivo);
 		}

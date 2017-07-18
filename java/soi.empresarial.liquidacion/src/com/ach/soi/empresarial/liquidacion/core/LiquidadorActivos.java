@@ -183,6 +183,9 @@ public class LiquidadorActivos {
 			try{
 				mn.inicializarMio(line);
 				bean02 = (PlanillaRegT02)mn.getNextRecord();
+				if ( bean02.getExcepcion()!=null ){
+					throw bean02.getExcepcion();
+				}
 				bean02.setNumeroLineaArchivo(nroLineaActual);
 			}catch ( ApplicationException appExc ){
 				this.manejarBeanConErroresLexicoSintacticos(errores, bean02, appExc, nroLinea);
@@ -228,6 +231,9 @@ public class LiquidadorActivos {
 						try{
 							mn.inicializarMio(line);
 							bean02 = (PlanillaRegT02)mn.getNextRecord();
+							if ( bean02.getExcepcion()!=null ){
+								throw bean02.getExcepcion();
+							}
 							if ( camposBeanT02==null ){
 								camposBeanT02 = bean02.getCampos();
 							}
@@ -398,7 +404,7 @@ public class LiquidadorActivos {
 				
 				try{
 					if(grupoCotizantes.size()>1 && !ocurrioExcepcion){
-						liquidacionMngr.validarDiasAportesMulplesRegistros(grupoCotizantes, archivoDto, false);
+						liquidacionMngr.validarDiasAportesMulplesRegistros(grupoCotizantes, archivoDto, false,ibcAfp);
 					}
 				}catch(ApplicationException exc) {
 					this.manejarExcepcionesSemanticas(errores,grupoCotizantes.getRegistros().get(0),exc, grupoCotizantes.getRegistros().get(0).getNumeroLineaArchivo());
@@ -416,7 +422,7 @@ public class LiquidadorActivos {
 																				archivoDto.getPeriodoSalud().getPeriodoCalendar(), false);				
 						
 						
-						liquidacionMngr.validarDiasAportesMulplesRegistros(grupoCotizantes, archivoDto, false);
+						liquidacionMngr.validarDiasAportesMulplesRegistros(grupoCotizantes, archivoDto, false,ibcAfp);
 					}
 				}catch(ApplicationException exc) {
 					this.manejarExcepcionesSemanticas(errores,grupoCotizantes.getRegistros().get(0),exc,grupoCotizantes.getRegistros().get(0).getNumeroLineaArchivo());
@@ -573,8 +579,17 @@ public class LiquidadorActivos {
 	private ErrorLiquidacionTO crearRegistroErrorLexicoSintacticoEnCampo(int secuenciaError,ApplicationException excepcion, PlanillaRegTAbstract reg,CampoLeido1747 campo, int nroLinea) {
 
 		//return err;
-		ErrorLiquidacionTO err = new ErrorLiquidacionTO();
-						
+		if ( !(excepcion.getParametrosReemplazo()!=null && excepcion.getParametrosReemplazo().length>0
+				&&excepcion.getParametrosReemplazo()[0] instanceof CampoLeido1747) ){
+			ArrayList<Object> parametrosReemplazo = new ArrayList<Object>();
+			parametrosReemplazo.add(campo);
+			for ( Object obj:excepcion.getParametrosReemplazo() ){
+				parametrosReemplazo.add(obj);
+			}
+			excepcion.setParametrosReemplazo(parametrosReemplazo.toArray(new Object[0]));
+		}
+		
+		ErrorLiquidacionTO err = new ErrorLiquidacionTO();		
 		ExceptionMessage msge = DesktopExceptionMngr.getInstance().manejarException(excepcion);
 		err.setCampo(0);
 		err.setNombreCampo(campo!=null?campo.getNombreCampo():"-");
@@ -646,14 +661,14 @@ public class LiquidadorActivos {
 			campoLeido.setValorCrudo(error.getSugerencias()[0]);
 			error.setAplicarSegundaValidacion(true);
 			if ( campoLeido.getValorAlfanumerico()!=null && !campoLeido.getValorAlfanumerico().trim().equals("") && campoLeido.getTipoDato()==TipoDatoType.A ){
-				if ( campoLeido.getValorAlfanumerico()!=null && campoLeido.getValorAlfanumerico().trim().equals(error.getSugerencias()[0].trim()) ){
+				if ( campoLeido.getValorAlfanumerico().trim().equals(error.getSugerencias()[0].trim()) ){
 					error.setAplicarSegundaValidacion(false);
 				}
 				else{
 					campoLeido.setValorAlfanumerico(error.getSugerencias()[0]);
 				}
 			}			
-			else if ( campoLeido.getValorNumerico()!=null && campoLeido.getTipoDato()==TipoDatoType.N ){				
+			else if ( campoLeido.getTipoDato()==TipoDatoType.N ){				
 				if ( campoLeido.getValorNumerico()!=null && campoLeido.getValorNumerico().equals(this.getValorLong(error.getSugerencias()[0].trim())) ){
 					error.setAplicarSegundaValidacion(false);
 				}
@@ -661,7 +676,7 @@ public class LiquidadorActivos {
 					campoLeido.setValorNumerico(this.getValorLong(error.getSugerencias()[0]));
 				}
 			}
-			else if ( campoLeido.getValorDecimal()!=null && campoLeido.getTipoDato()==TipoDatoType.D ){
+			else if ( campoLeido.getTipoDato()==TipoDatoType.D ){
 				if ( campoLeido.getValorDecimal()!=null && campoLeido.getValorDecimal().equals(this.getValorDecimal(error.getSugerencias()[0].trim())) ){
 					error.setAplicarSegundaValidacion(false);
 				}

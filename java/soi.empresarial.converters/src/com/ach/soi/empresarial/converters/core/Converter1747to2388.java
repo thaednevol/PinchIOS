@@ -80,7 +80,7 @@ public class Converter1747to2388 extends CommonConverter{
 	    return strWriter.toString();
 	}
 	
-	public Archivo2388TO convertir1747a2388 ( String filePath, String filePathArchivoComplementario ) throws Exception{
+	public Archivo2388TO convertir1747a2388 ( String filePath, String filePathArchivoComplementario, boolean aplicarCorreccionesConversiones ) throws Exception{
 		StreamFactory factory = StreamFactory.newInstance();
         factory.loadResource("mapping-1747-to-5858-read.xml");
         
@@ -130,9 +130,11 @@ public class Converter1747to2388 extends CommonConverter{
 		        	}
 		        	else if ( bean instanceof Reg2388ReadTp02 ){	        		
 		        		regTp02 = (Reg2388ReadTp02)bean;
-		        		ParsersUtil.completarConvertirTp02(regTp01, regTp02);
+		        		if ( aplicarCorreccionesConversiones ){
+		        			ParsersUtil.completarConvertirTp02(regTp01, regTp02);
+		        		}
 		        		//divide multiples registros
-		        		if ( ParsersUtil.tieneNovedadesAusentismo(regTp02) ){
+		        		if ( ParsersUtil.tieneNovedadesAusentismo(regTp02) && aplicarCorreccionesConversiones ){
 		        			regsTp2.addAll(parseUtil.generarMultiRegistrosNovedadAusentismo(regTp02,regTp01));
 		        		}
 		        		else{

@@ -976,6 +976,7 @@ public final class PilaBO {
 			archivoNotificacionDTO.setIdAportante(inDTO.getIdAportante());
 			archivoNotificacionDTO.setAportanteLey1607(inDTO.isAportanteLey1607());
 			archivoNotificacionDTO.setIdSoiTpPlanilla(inDTO.getIdSoiTpPlanilla());
+			archivoNotificacionDTO.setPlanillaSoiClick(true);
 			
 			ArchivoNotificacionResultadoDTO archivoNotificacionResultadoDTO = bean.notificarNuevoProcesoValidaryGuardarArchivo(archivoNotificacionDTO);
 			

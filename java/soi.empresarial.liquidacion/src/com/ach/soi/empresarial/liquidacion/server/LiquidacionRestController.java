@@ -30,6 +30,7 @@ import com.ach.arc.biz.r1747.util.ValidacionArchivoDataSource;
 import com.ach.arc.biz.transfer.ArchivoEnProcesoDTO;
 import com.ach.soi.empresarial.converters.core.Converter1747to2388;
 import com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadTp02;
+import com.ach.soi.empresarial.converters.utils.Constants;
 import com.ach.soi.empresarial.liquidacion.core.LiquidadorActivos;
 import com.ach.soi.empresarial.liquidacion.core.TotalizadorActivos;
 import com.ach.soi.empresarial.liquidacion.model.ErrorLiquidacionTO;
@@ -107,7 +108,7 @@ public class LiquidacionRestController {
 			}
 			
 			os = new FileOutputStream(new File(pathResultado.toString()),true);
-	        bw = new BufferedWriter(new OutputStreamWriter(os));
+	        bw = new BufferedWriter(new OutputStreamWriter(os,Constants.GENERAL_ENCODING));
 
 	        gsonWriter=new GsonBuilder().setPrettyPrinting().create();
             erroresLiq = liquidacion.validarRegsTp02Archivo2388(archivoEnProceso, validacionPlanillaDd, pathArchivo2388);

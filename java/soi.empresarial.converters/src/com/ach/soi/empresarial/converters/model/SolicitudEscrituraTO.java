@@ -9,6 +9,7 @@ public class SolicitudEscrituraTO implements Serializable, Cloneable{
 	private String tipoArchivo;
 	private String pathArchivoData;
 	private String pathArchivoComplementario;
+	private String aplicarCorrecionesConversiones;
 	
 	public String getPathArchivo() {
 		return pathArchivo;
@@ -33,7 +34,15 @@ public class SolicitudEscrituraTO implements Serializable, Cloneable{
 	}
 	public void setPathArchivoComplementario(String pathArchivoComplementario) {
 		this.pathArchivoComplementario = pathArchivoComplementario;
+	}
+	public String getAplicarCorrecionesConversiones() {
+		return aplicarCorrecionesConversiones;
+	}
+	public void setAplicarCorrecionesConversiones(
+			String aplicarCorrecionesConversiones) {
+		this.aplicarCorrecionesConversiones = aplicarCorrecionesConversiones;
 	}	
+	
 	
 	
 }

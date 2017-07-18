@@ -58,6 +58,8 @@ namespace app.settlement {
     */
     private startLimit: number = 0;
 
+    private onlyErrors: string = "N";
+
     /**
     * @type {Class} soiService - Ejecuta el llamado a los metodos JAR de SOI.
     */
@@ -80,6 +82,8 @@ namespace app.settlement {
     * @type {Object} objectFilter - Lista de opciones o palabras para filtrar
     */
     public objectFilter: any = {};
+
+    public onlyErrorsFilter: any = {};
 
     /**
     * @type {Object<periodPension,periodHealth,totalContributor,totalPay,totalError>}
@@ -147,11 +151,48 @@ namespace app.settlement {
     }
 
     $doCheck() {
-      if (this.file.data.regsTp02 && this.objectFilter) {
+      if (this.file.data.regsTp02 && this.objectFilter ) {
         let total: any = this.$filter("filter")(this.file.data.regsTp02.registers, this.objectFilter);
         this.info.totalFilterRegister = total.length;
       }
     }
+
+
+    /**
+    * @description
+    * Metodo que permite filtrar unicamente registros con error
+    */
+    public actionOnlyErrors() {
+      if ( this.onlyErrors==="N" ){
+        this.onlyErrors = "S";
+        this.onlyErrorsFilter = (item,index) => {
+                let linea = Number(item["regs1"]);
+                return this.file.data.regsTp02.errors.hasOwnProperty(linea);
+        };
+        /*this.file.data.regsTp02.registers =
+          this.$filter("filter")(this.file.data.regsTp02.registers, (item,index) => {
+                            let linea = Number(item["regs1"])+2;
+                            return this.file.data.regsTp02.errors.hasOwnProperty(linea);
+        });*/
+      }
+      else{
+        this.onlyErrorsFilter = function(item){
+          return item.regs1!='0'
+        };
+        this.onlyErrors = "N";
+      }
+
+    }
+
+    /*public showOnlyErrors = function(myArray) {
+                              return function(item) {
+                                if ( this.onlyErrors==="N" ){
+                                    return true;
+                                }
+                                let linea = Number(item["regs1"])+2;
+                                return this.file.data.regsTp02.errors.hasOwnProperty(linea);
+                              }};*/
+
 
     /**
     * @description

@@ -27,7 +27,7 @@ import com.ach.soi.empresarial.converters.utils.ParsersUtil;
 public class Converter2145to2388 extends CommonConverter{
 
 
-	public Archivo2388TO convertir2145a2388 ( String filePath ) throws Exception{
+	public Archivo2388TO convertir2145a2388 ( String filePath, boolean aplicarCorreccionesConversiones ) throws Exception{
 		StreamFactory factory = StreamFactory.newInstance();
         factory.loadResource("mapping-2145-to-2388-read.xml");
         
@@ -62,7 +62,9 @@ public class Converter2145to2388 extends CommonConverter{
 		        	}
 		        	else if ( bean instanceof Reg2388ReadPensTp02 ){	        		
 		        		regTp02 = (Reg2388ReadPensTp02)bean;
-		        		this.completarConvertirTp02(regTp01, regTp02, primerDiaMes, ultimoDiaMes);
+		        		if ( aplicarCorreccionesConversiones ){
+		        			this.completarConvertirTp02(regTp01, regTp02, primerDiaMes, ultimoDiaMes);
+		        		}
 		        		regsTp2.add(regTp02);
 		        	}
 		        	else if ( bean instanceof Reg2388ReadPensTp03 ){

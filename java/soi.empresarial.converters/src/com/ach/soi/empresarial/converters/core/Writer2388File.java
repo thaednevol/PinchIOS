@@ -12,18 +12,19 @@ import com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadPensTp
 import com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadPensTp02;
 import com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadTp01;
 import com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadTp02;
+import com.ach.soi.empresarial.converters.utils.Constants;
 import com.ach.soi.empresarial.converters.utils.ParsersUtil;
 
 public class Writer2388File {
 
 	
 	
-	public void writeFile2388( String outFilePath, Archivo2388TO archivo2388, String tipoArchivo ) throws Exception{
+	public void writeFile2388( String outFilePath, Archivo2388TO archivo2388, String tipoArchivo, boolean aplicarCorreccionesConversiones ) throws Exception{
 		TipoArchivo tp = TipoArchivo.getTipoArchivoPorCod(tipoArchivo);
 		
 		switch (tp) {
 		case ACTIVOS:
-			this.writeFile2388from1747(outFilePath, archivo2388);
+			this.writeFile2388from1747(outFilePath, archivo2388,aplicarCorreccionesConversiones);
 			break;
 		case PENSIONADOS:
 			this.writeFile2388from2145(outFilePath, archivo2388);
@@ -105,7 +106,7 @@ public class Writer2388File {
 	}
 	
 	
-	private void writeFile2388from1747 ( String outFilePath, Archivo2388TO archivo2388 ) throws Exception{
+	private void writeFile2388from1747 ( String outFilePath, Archivo2388TO archivo2388, boolean aplicarCorreccionesConversiones ) throws Exception{
 		
 		//this.validateFileContent1747(archivo2388);
 			
@@ -113,14 +114,16 @@ public class Writer2388File {
 	    factory.loadResource("mapping-1747-to-5858-write.xml");
 	    Reg2388ReadTp01 regTp01 = null;  
 	    //BeanWriter writer = factory.createWriter("PILA-2388", new File(outFilePath));
-	    BeanWriter writer = factory.createWriter("PILA-2388", new OutputStreamWriter(new FileOutputStream(outFilePath), "UTF-8"));
+	    BeanWriter writer = factory.createWriter("PILA-2388", new OutputStreamWriter(new FileOutputStream(outFilePath), Constants.GENERAL_ENCODING));
 	    try{    
 	    	regTp01 = Reg2388ReadTp01.buildRecordFromStringArray(archivo2388.getRegTp01());
 	        writer.write(regTp01);
 	        
 	        for ( String[] r:archivo2388.getRegsTp02() ){	        	
-	        	Reg2388ReadTp02 regTp02 = Reg2388ReadTp02.buildRecordFromStringArray(r); 	        	
-        		ParsersUtil.completarConvertirTp02(regTp01, regTp02);
+	        	Reg2388ReadTp02 regTp02 = Reg2388ReadTp02.buildRecordFromStringArray(r);
+	        	if ( aplicarCorreccionesConversiones ){
+	        		ParsersUtil.completarConvertirTp02(regTp01, regTp02);
+	        	}
         		writer.write(regTp02);		        	
 	        }
 	        
