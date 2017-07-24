@@ -1,6 +1,6 @@
 {
   "name": "ACH-SOI",
-  "version": "2.3.3",
+  "version": "2.4.0",
   "description": "Proyecto encargado de gestionar planillas de pago PILA para ACH",
   "author": "ACH Colombia <info@ach.com.co>",
   "main": "main.js",
