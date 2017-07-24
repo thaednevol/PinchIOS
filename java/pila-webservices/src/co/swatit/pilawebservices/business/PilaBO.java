@@ -971,12 +971,19 @@ public final class PilaBO {
 			
 			archivoNotificacionDTO.setAportanteLey1429(inDTO.isAportanteLey1429());
 			archivoNotificacionDTO.setNombreArchivo(nombreArchivo);
-			archivoNotificacionDTO.setIdSegUsuario(inDTO.getIdSegUsuario());
+			archivoNotificacionDTO.setIdSegUsuario(inDTO.getIdSegUsuario());						
+			
 			archivoNotificacionDTO.setNumeroTotalDeEmpleadosPorPantalla(inDTO.getNumeroTotalDeEmpleadosPorPantalla());
 			archivoNotificacionDTO.setIdAportante(inDTO.getIdAportante());
 			archivoNotificacionDTO.setAportanteLey1607(inDTO.isAportanteLey1607());
 			archivoNotificacionDTO.setIdSoiTpPlanilla(inDTO.getIdSoiTpPlanilla());
-			archivoNotificacionDTO.setPlanillaSoiClick(true);
+			
+			String validacionCompletaActiva = PropertyLoader.INSTANCE.getProperty(Constants.GLOBAL_PROP, "VALIDACION_COMPLETA_NSOI");
+			if ( validacionCompletaActiva!=null && validacionCompletaActiva.trim().equals("S") ){
+				archivoNotificacionDTO.setPlanillaSoiClick(false);
+			}else{
+				archivoNotificacionDTO.setPlanillaSoiClick(true);
+			}
 			
 			ArchivoNotificacionResultadoDTO archivoNotificacionResultadoDTO = bean.notificarNuevoProcesoValidaryGuardarArchivo(archivoNotificacionDTO);
 			

@@ -183,7 +183,7 @@ public class LiquidadorActivos {
 			try{
 				mn.inicializarMio(line);
 				bean02 = (PlanillaRegT02)mn.getNextRecord();
-				if ( bean02.getExcepcion()!=null ){
+				if ( bean02!=null && bean02.getExcepcion()!=null ){
 					throw bean02.getExcepcion();
 				}
 				bean02.setNumeroLineaArchivo(nroLineaActual);
