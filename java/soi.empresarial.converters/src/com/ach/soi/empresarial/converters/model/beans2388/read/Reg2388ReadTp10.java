@@ -83,7 +83,7 @@ public class Reg2388ReadTp10 extends CommonBean{
 		labels[2]="NIT ESAP.";
 		labels[3]="Dig. Ver. ESAP.";
 		labels[4]="Valor a pagar";
-		labels[5]="D’ías Mora";
+		labels[5]="D’\u00FAas Mora";
 		labels[6]="Intereses mora";
 		labels[7]="Total a pagar";
 		return labels;

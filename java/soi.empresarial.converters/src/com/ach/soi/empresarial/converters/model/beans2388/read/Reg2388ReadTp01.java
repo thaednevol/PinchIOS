@@ -1,6 +1,9 @@
 package com.ach.soi.empresarial.converters.model.beans2388.read;
 
+import java.nio.charset.Charset;
+
 import com.ach.soi.empresarial.converters.model.CommonBean;
+import com.ach.soi.empresarial.converters.utils.Constants;
 
 public class Reg2388ReadTp01 extends CommonBean{
 
@@ -230,7 +233,7 @@ public class Reg2388ReadTp01 extends CommonBean{
 	
 	
 	public static String[] getLabels ( ){
-		String[] labels = new String[22];
+		String[] labels = new String[22];		
 		labels[0]="Tipo Registro";
 		labels[1]="Modalidad";
 		labels[2]="Secuencia";
@@ -240,19 +243,19 @@ public class Reg2388ReadTp01 extends CommonBean{
 		labels[6]="Dígito verificación";
 		labels[7]="Tipo Planilla";
 		labels[8]="Número planilla asociada";
-		labels[9]="Fecha pago Planilla asociada";
-		labels[10]="Forma presentación";
-		labels[11]="Código sucursal";
+		labels[9]= "Fecha pago Planilla asociada" ;
+		labels[10]="Forma presentaci\u00f3n";
+		labels[11]="C\u00f3digo sucursal";
 		labels[12]="Nombre Sucursal";
-		labels[13]="Código ARL";
-		labels[14]="Período otros subsistemas";
-		labels[15]="Período salud";
-		labels[16]="Número Planilla";
+		labels[13]="C\u00f3digo ARL";
+		labels[14]="Per\u00fAodo otros subsistemas";
+		labels[15]="Per\u00fAodo salud";
+		labels[16]="N\u00fAmero Planilla";
 		labels[17]="Fecha de pago";
-		labels[18]="Número de empleados";
-		labels[19]="Valor nómina";
+		labels[18]="N\u00fAmero de empleados";
+		labels[19]="Valor n\u00f3mina";
 		labels[20]="Tipo aportante";
-		labels[21]="Código operador";
+		labels[21]="C\u00f3digo operador";
 		return labels;
 	}
 	

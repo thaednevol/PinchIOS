@@ -1,5 +1,5 @@
 {
-  "VERSION": "2.3.3",
+  "VERSION": "2.4.0",
   "APP_ID": "ach.soi.electron.co.swat-it",
 
   "NOTIFICATIONS": {
@@ -16,9 +16,9 @@
   "JAR": {
     "TIMEOUT_EXEC": 93000,
     "BUFFER_EXEC": 92160000000000000000000,
-    "COMMAND": "java -Dfile.encoding=ISO-8859-1 -jar",
+    "COMMAND": "java -Dfile.encoding=UTF-8 -jar",
     "COMMAND_NO_ENCODE": "java -jar",
-    "COMMAND_LIQ_SVR": "java -Dfile.encoding=ISO-8859-1 -Xms128M -Xmx4092M -jar",
+    "COMMAND_LIQ_SVR": "java -Dfile.encoding=UTF-8 -Xms128M -Xmx4092M -jar",
     "FILES": {
       "CONVERT": {
         "NAME": "soi-empresarial-converters-1.0",

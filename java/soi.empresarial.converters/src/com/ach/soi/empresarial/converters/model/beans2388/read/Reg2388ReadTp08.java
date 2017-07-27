@@ -91,10 +91,10 @@ public class Reg2388ReadTp08 extends CommonBean{
 		labels[2]="NIT Sena.";
 		labels[3]="Dig. Ver. Sena.";
 		labels[4]="Valor Aportes";
-		labels[5]="D’ías Mora";
+		labels[5]="D’\u00FAas Mora";
 		labels[6]="Intereses mora";
 		labels[7]="Total a pagar";
-		labels[8]="Nœúmero de personas";
+		labels[8]="Nœ\u00FAmero de personas";
 		return labels;
 	}
 	

@@ -175,7 +175,7 @@ namespace app.load {
         pathArchivo: this.form.path,
         tipoArchivo: this.form.type
       };
-      let result = this.serviceJar.execJson("soi-empresarial-converters-1.0", "validarArchivoPila", this.file);
+      let result = this.serviceJar.execJsonNoEncoding("soi-empresarial-converters-1.0", "validarArchivoPila", this.file);
       result.then((data) => {
         this.dataValidate = data;
         this.showLoading = false;

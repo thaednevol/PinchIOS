@@ -94,7 +94,7 @@ public class Reg2388ReadTp09 extends CommonBean{
 		labels[5]="D’as Mora";
 		labels[6]="Intereses mora";
 		labels[7]="Total a pagar";
-		labels[8]="Nœúmero de personas";
+		labels[8]="Nœ\u00FAmero de personas";
 		return labels;
 	}
 	

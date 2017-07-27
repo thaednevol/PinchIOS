@@ -100,7 +100,7 @@ public class Reg2388ReadTp07 extends CommonBean{
 		labels[3]="NIT CCF";
 		labels[4]="Dig. Ver. CCF";
 		labels[5]="Valor Aportes";
-		labels[6]="D’ías Mora";
+		labels[6]="D’\u00FAas Mora";
 		labels[7]="Intereses Mora";
 		labels[8]="Total a pagar";
 		labels[9]="Nro Afiliados";
