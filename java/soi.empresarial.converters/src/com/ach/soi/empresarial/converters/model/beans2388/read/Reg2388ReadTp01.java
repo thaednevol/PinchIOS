@@ -201,7 +201,6 @@ public class Reg2388ReadTp01 extends CommonBean{
 		this.codigoOperador = "";
 	}
 	
-	
 	public String[] toStringArray(){
 		String array[] = new String[22];
 		
@@ -230,7 +229,6 @@ public class Reg2388ReadTp01 extends CommonBean{
 		
 		return array;
 	}
-	
 	
 	public static String[] getLabels ( ){
 		String[] labels = new String[22];		
@@ -264,8 +262,8 @@ public class Reg2388ReadTp01 extends CommonBean{
 		String[] arrayAux = Reg2388ReadTp02.fillArray(array, 22);
 		Reg2388ReadTp01 instance = new Reg2388ReadTp01();
 		instance.tipoRegistro=Integer.valueOf(arrayAux[0]);
-		instance.secuencia=Integer.valueOf(arrayAux[1]);
-		instance.modalidadPlanilla=arrayAux[2];
+		instance.modalidadPlanilla=arrayAux[1];
+		instance.secuencia=Integer.valueOf(arrayAux[2]);
 		instance.razonSocialAportante=arrayAux[3];
 		instance.tipoDocumentoAportante=arrayAux[4];
 		instance.numeroIdentificacionAportante=arrayAux[5];
@@ -287,6 +285,5 @@ public class Reg2388ReadTp01 extends CommonBean{
 		instance.codigoOperador=arrayAux[21];
 		return instance;
 	}
-	
 	
 }
