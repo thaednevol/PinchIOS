@@ -103,7 +103,7 @@ public class Reg2388ReadTp04 extends CommonBean{
 		String[] labels = new String[10];
 		labels[0]="Tipo registro";
 		labels[1]="Secuencia";
-		labels[2]="C—\u00F3digo FSP";
+		labels[2]="C\u00f3digo FSP";
 		labels[3]="NIT FSP";
 		labels[4]="Dig. Ver. FSP";
 		labels[5]="Total aportes FSP";

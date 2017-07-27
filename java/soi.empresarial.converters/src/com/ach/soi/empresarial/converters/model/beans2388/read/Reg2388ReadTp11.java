@@ -81,7 +81,7 @@ public class Reg2388ReadTp11 extends CommonBean{
 		labels[2]="NIT MEN";
 		labels[3]="Dig. Ver. MEN";
 		labels[4]="Valor a pagar";
-		labels[5]="D’\u00FAas Mora";
+		labels[5]="D\u00EDas Mora";
 		labels[6]="Intereses Mora";
 		labels[7]="Total a pagar";
 		return labels;

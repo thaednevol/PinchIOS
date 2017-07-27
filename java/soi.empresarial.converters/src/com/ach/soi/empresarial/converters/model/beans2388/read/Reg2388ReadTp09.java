@@ -91,10 +91,10 @@ public class Reg2388ReadTp09 extends CommonBean{
 		labels[2]="NIT ICBF.";
 		labels[3]="Dig. Ver. ICBF.";
 		labels[4]="Valor Aportes";
-		labels[5]="D’as Mora";
+		labels[5]="D\u00EDas Mora";
 		labels[6]="Intereses mora";
 		labels[7]="Total a pagar";
-		labels[8]="Nœ\u00FAmero de personas";
+		labels[8]="N\u00famero de personas";
 		return labels;
 	}
 	
