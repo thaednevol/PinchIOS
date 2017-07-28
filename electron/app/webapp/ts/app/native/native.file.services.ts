@@ -378,7 +378,7 @@ namespace app.native {
           // Se le indica que se escribe sobre el archivo.
           this.listTailCreateFile[name] = contentFile;
         }
-        this.fs.writeFile(name, contentFile, "latin1",(error, data) => {
+        this.fs.writeFile(name, contentFile,(error, data) => {
           if (error) {
             delete this.listTailCreateFile[name];
             resolve(null);

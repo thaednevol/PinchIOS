@@ -246,8 +246,8 @@ public class Reg2388ReadTp01 extends CommonBean{
 		labels[11]="C\u00f3digo sucursal";
 		labels[12]="Nombre Sucursal";
 		labels[13]="C\u00f3digo ARL";
-		labels[14]="Per\u00fAodo otros subsistemas";
-		labels[15]="Per\u00fAodo salud";
+		labels[14]="Per\u00edodo otros subsistemas";
+		labels[15]="Per\u00edodo salud";
 		labels[16]="N\u00fAmero Planilla";
 		labels[17]="Fecha de pago";
 		labels[18]="N\u00fAmero de empleados";
