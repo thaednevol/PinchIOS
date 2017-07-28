@@ -19,7 +19,7 @@
 		
 		<record  name="PILA-2388-Tipo1" minOccurs="1" maxOccurs="1" class="com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadTp01" minLength="2">
 			<field length="2" name="tipoRegistro" rid="true" literal="01" type="int" position="0" justify="left" padding=" " setter="setTipoRegistro" getter="getTipoRegistro"/>
-			<field length="1" minOccurs="0"  name="modalidadPlanilla" type="string" position="2" justify="right" padding="0" setter="setModalidadPlanilla" getter="getModalidadPlanilla" nillable="true"/>
+			<field length="1" minOccurs="0"  name="modalidadPlanilla" type="string" position="2" justify="right" padding="0" setter="setModalidadPlanilla" getter="getModalidadPlanilla" nillable="true" default="0"/>
 			<field length="4" minOccurs="0"  name="secuencia" type="int" position="3" justify="right" padding="0" setter="setSecuencia" getter="getSecuencia" nillable="true" default="0"/>
 			<field length="200" minOccurs="0"  name="razonSocialAportante" type="string" position="7" justify="left" padding=" " setter="setRazonSocialAportante" getter="getRazonSocialAportante" nillable="true" default=" "/>
 			<field length="2"  minOccurs="0"  name="tipoDocumentoAportante" type="string" position="207" justify="left" padding=" " setter="setTipoDocumentoAportante" getter="getTipoDocumentoAportante" nillable="true" default="NI"/>

@@ -205,8 +205,8 @@ public class Reg2388ReadTp01 extends CommonBean{
 		String array[] = new String[22];
 		
 		array[0]=tipoRegistro.toString();
-		array[1]=secuencia.toString();
-		array[2]=modalidadPlanilla;
+		array[1]=modalidadPlanilla;
+		array[2]=secuencia.toString();		
 		array[3]=razonSocialAportante;
 		array[4]=tipoDocumentoAportante;
 		array[5]=numeroIdentificacionAportante;
