@@ -722,6 +722,17 @@ public class LiquidadorActivos {
 		}
 	}
 	
+	private CampoLeido1747 getCampoError ( String nombreCampo ){
+		if ( camposBeanT02==null||camposBeanT02.isEmpty() ){
+			return null;
+		}
+		for ( Map.Entry<String,CampoLeido1747> e:camposBeanT02.entrySet() ){
+			if ( e.getValue().getNombreCampo().equals(nombreCampo) ){									
+				return e.getValue();
+			}
+		}
+		return null;
+	}
 
 	private ErrorLiquidacionTO crearRegistroErrorLexicoSintacticoRegistro(ApplicationException excepcion, PlanillaRegTAbstract reg, int numeroLineaActual, int idErrorActual) {
 		
@@ -733,7 +744,18 @@ public class LiquidadorActivos {
 				excepcion.getParametrosReemplazo()[0] instanceof CampoLeido1747 ){
 			campo = (CampoLeido1747)excepcion.getParametrosReemplazo()[0];			
 		}
-		
+		//cuando el nombre del campo viene en el segundo parametro del error
+		else if( excepcion.getParametrosReemplazo()!=null &&
+				excepcion.getParametrosReemplazo().length>1 ){
+			campo = this.getCampoError(excepcion.getParametrosReemplazo()[1].toString());
+			if ( campo!=null ){
+				ArrayList<Object> parametrosReemplazo = new ArrayList<Object>();				
+				parametrosReemplazo.add(campo);				
+				parametrosReemplazo.add(campo.getNombreCampo());
+				excepcion.setParametrosReemplazo(parametrosReemplazo.toArray(new Object[0]));
+			}
+		}
+				
 		ExceptionMessage msge = DesktopExceptionMngr.getInstance().manejarException(excepcion);
 		err.setCampo(0);
 		err.setNombreCampo(campo!=null?campo.getNombreCampo():"-");
