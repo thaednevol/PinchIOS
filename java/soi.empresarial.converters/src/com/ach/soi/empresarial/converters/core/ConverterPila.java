@@ -2,9 +2,13 @@ package com.ach.soi.empresarial.converters.core;
 
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.Locale;
 
 import com.ach.soi.empresarial.converters.model.Archivo2388TO;
+import com.ach.soi.empresarial.converters.model.CommonBean;
 import com.ach.soi.empresarial.converters.model.ErrorGeneralTO;
 import com.ach.soi.empresarial.converters.model.ErrorValidacionTO;
 import com.ach.soi.empresarial.converters.model.ResultadoEscrituraTO;
@@ -27,14 +31,56 @@ public class ConverterPila {
 		
 		System.setProperty("org.beanio.configuration", "/settings.properties");
 		System.setProperty("file.encoding", Constants.GENERAL_ENCODING);
+		PrintStream out = null;
+		try{
+			out = new PrintStream(System.out, true,Charset.defaultCharset().name());
+		}catch ( UnsupportedEncodingException e ){			
+			out = new PrintStream(System.out, true);
+		}
 		
 		
+		if ( method.equals("test") ){
+			try{
+				String texto = "Validación";
+				String textoUcd = "Validaci\u00f3n";
+				out.println("Test:");
+				out = new PrintStream(System.out, true,Charset.defaultCharset().name());
+				out.println(Charset.defaultCharset().name());
+				out.println(texto);
+				out.println("Unicode: "+textoUcd);
+				out = new PrintStream(System.out, true,"ISO-8859-1");
+				out.println("ISO-8859-1");
+				out.println(texto);
+				out.println("Unicode: "+textoUcd);
+				out = new PrintStream(System.out, true,"UTF-8");
+				out.println("UTF-8");
+				out.println(texto);
+				out.println("Unicode: "+textoUcd);
+				
+				System.out.println("Conversión UTF-8");
+				byte bytes[] = texto.getBytes(Charset.forName("UTF-8"));								
+				byte bytes1[] = textoUcd.getBytes(Charset.forName("UTF-8"));
+				System.out.println(new String(bytes,"UTF-8"));
+				System.out.println("Unicode: "+new String(bytes1,"UTF-8"));
+				
+				System.out.println("Conversión ISO-8859-1");
+				bytes = texto.getBytes(Charset.forName(Constants.GENERAL_ENCODING));								
+				bytes1 = textoUcd.getBytes(Charset.forName(Constants.GENERAL_ENCODING));
+				System.out.println(new String(bytes,Constants.GENERAL_ENCODING));
+				System.out.println("Unicode: "+new String(bytes1,Constants.GENERAL_ENCODING));
+				
+			
+				
+			}catch ( UnsupportedEncodingException e ){
+				e.printStackTrace();
+			}
+		}
 		if ( method.equals("validarArchivoPila") ){
-			System.out.println(conv.validarArchivoPila(request));
+			out.println(conv.validarArchivoPila(request));
 		}
 		else if ( method.equalsIgnoreCase("convertirArchivoA2388") ){
 			/*try{
-				OutputStreamWriter str = new OutputStreamWriter(new FileOutputStream("/Users/jgutierrez/lucasian/tmp/may_2017/ESIMED/esimed_gen.json"), "UTF-8");
+				OutputStreamWriter str = new OutputStreamWriter(new FileOutputStream("/Users/jgutierrez/lucasian/tmp/jul-2017/esimed/esimed_gen.json"), Constants.GENERAL_ENCODING);
 				str.write(conv.convertirArchivoA2388(request));
 				str.flush();
 				str.close();
@@ -42,14 +88,14 @@ public class ConverterPila {
 				
 			}*/
 			
-			System.out.println(conv.convertirArchivoA2388(request));
+			out.println(conv.convertirArchivoA2388(request));
 			//conv.convertirArchivoA2388(request);
 		}
 		else if ( method.equalsIgnoreCase("escribirArchivo2388") ){			
-			System.out.println(conv.escribirArchivo2388(request));
+			out.println(conv.escribirArchivo2388(request));
 		}
-		else if ( method.equalsIgnoreCase("leerArchivo2388") ){
-			System.out.println(conv.leerArchivo2388(request));
+		else if ( method.equalsIgnoreCase("leerArchivo2388") ){			
+			out.println(conv.leerArchivo2388(request));
 		}
 	}
 	

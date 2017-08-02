@@ -176,7 +176,7 @@ public class Reg2388ReadTp03 extends CommonBean{
 		String[] labels = new String[16];
 		labels[0]="Tipo registro";
 		labels[1]="Secuencia";
-		labels[2]="Có—digo AFP";
+		labels[2]="C\u00f3digo AFP";
 		labels[3]="NIT AFP";
 		labels[4]="Dig. Ver. AFP";
 		labels[5]="Total Cot Oblg";
@@ -184,8 +184,8 @@ public class Reg2388ReadTp03 extends CommonBean{
 		labels[7]="Total Cot Vol Aportante";
 		labels[8]="Total Aportes FSP-Sol";
 		labels[9]="Total Aportes FSP-Sub";
-		labels[10]="Dí’as mora";
-		labels[11]="Mora Cotizaci—ón FSP";
+		labels[10]="D\u00faas mora";
+		labels[11]="Mora Cotizaci—\u00f3n FSP";
 		labels[12]="Mora FSP-Sol";
 		labels[13]="Mora FSP-Sub";
 		labels[14]="Total Pagar FSP";

@@ -65,6 +65,22 @@ namespace app.native {
 
     /**
     * @description
+    * Ejecuta un archivo JAR pasando como parametro el nombre del evento, y como
+    * argumento principal un objeto JSON que es convertido a cadena String.
+    *
+    * @param {string} nameJar - Nombre del archivo JAR que se ejecutara.
+    * @param {string} event - Nombre del metodo que tiene el JAR.
+    * @param {Object} dataJson - Datos que recibe el parametro para pasar como JSON.
+    * @return {Promise} Resultado entregado por la función this.execCommand().
+    */
+    public execJsonNoEncoding(nameJar: string, event: string = null, dataJson: any = null): any {
+      //return this.execString(nameJar, event, JSON.stringify(dataJson).replace(/\"/g, "\\\""));
+      return this.execStringNoEncoding(nameJar, event, JSON.stringify(dataJson).replace(/\"/g, "\\\""));
+
+    }
+
+    /**
+    * @description
     * Ejecuta un archivo JAR, pasando como parametros el nombre del evento y
     * una cadena de string como argumento principal.
     *

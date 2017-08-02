@@ -293,7 +293,7 @@ namespace app.native {
     */
     public createFileSettlement(name: string, dataJson: any = {}): any {
       let fileName = this.path.join(this.folders.settlement, name);
-      return this.createFile(fileName, JSON.stringify(dataJson));
+      return this.createFile(fileName, JSON.stringify(dataJson),true,false);
     }
 
     /**
@@ -365,7 +365,7 @@ namespace app.native {
     * @return {Promise} El metodo resolve contiene la ruta del archivo que se
     * crea, en caso de error retorna null en el resolve.
     */
-    public createFile(name: string, contentFile: string, showNotification: boolean = true): any {
+    public createFile(name: string, contentFile: string, showNotification: boolean = true, defaultEncoding: boolean = true): any {
       return new Promise((resolve) => {
         // Se valida si existe una operación de escritura sobre el archivo para
         // ejecutar un timer de 1 segundo esperando que termine para escribir
@@ -378,21 +378,40 @@ namespace app.native {
           // Se le indica que se escribe sobre el archivo.
           this.listTailCreateFile[name] = contentFile;
         }
-        this.fs.writeFile(name, contentFile, "latin1",(error, data) => {
-          if (error) {
+        if ( defaultEncoding===true ){
+          this.fs.writeFile(name, contentFile,(error, data) => {
+            if (error) {
+              delete this.listTailCreateFile[name];
+              resolve(null);
+              return;
+            }
+            // Algunos archivos que se guardan como los de opciones de la aplicación
+            // no deben notificar al usuario que se crearon.
+            if (showNotification) {
+              this.notificationService.show(this.$filter("translate")("MESSAGES.TITLES.INFO"), this.$filter("translate")("MESSAGES.SAVED_FILE"));
+            }
             delete this.listTailCreateFile[name];
-            resolve(null);
+            resolve(name);
             return;
-          }
-          // Algunos archivos que se guardan como los de opciones de la aplicación
-          // no deben notificar al usuario que se crearon.
-          if (showNotification) {
-            this.notificationService.show(this.$filter("translate")("MESSAGES.TITLES.INFO"), this.$filter("translate")("MESSAGES.SAVED_FILE"));
-          }
-          delete this.listTailCreateFile[name];
-          resolve(name);
-          return;
-        });
+          });
+        }
+        else{
+          this.fs.writeFile(name, contentFile,'latin1',(error, data) => {
+            if (error) {
+              delete this.listTailCreateFile[name];
+              resolve(null);
+              return;
+            }
+            // Algunos archivos que se guardan como los de opciones de la aplicación
+            // no deben notificar al usuario que se crearon.
+            if (showNotification) {
+              this.notificationService.show(this.$filter("translate")("MESSAGES.TITLES.INFO"), this.$filter("translate")("MESSAGES.SAVED_FILE"));
+            }
+            delete this.listTailCreateFile[name];
+            resolve(name);
+            return;
+          });
+        }
       });
     }
 

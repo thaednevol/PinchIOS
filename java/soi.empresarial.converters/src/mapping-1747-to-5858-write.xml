@@ -5,7 +5,7 @@
 		<record  name="PILA-2388-Tipo1" minOccurs="1" maxOccurs="1" class="com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadTp01" minLength="2">
 			<field length="2" name="tipoRegistro" rid="true" literal="1" type="int" position="0" justify="right" padding="0" setter="setTipoRegistro" getter="getTipoRegistro"/>
 			<field length="1" minOccurs="0"  name="modalidadPlanilla" type="string" position="2" justify="right" padding="0" setter="setModalidadPlanilla" getter="getModalidadPlanilla" nillable="true"/>
-			<field length="4" name="secuencia" type="string" position="3" justify="right" padding="0" setter="setModalidadPlanilla" getter="getModalidadPlanilla"/>
+			<field length="4" name="secuencia" type="int" position="3" justify="right" padding="0" setter="setSecuencia" getter="getSecuencia"/>
 			<field length="200" name="razonSocialAportante" type="string" position="7" justify="left" padding=" " setter="setRazonSocialAportante" getter="getRazonSocialAportante"/>
 			<field length="2" name="tipoDocumentoAportante" type="string" position="207" justify="left" padding=" " setter="setTipoDocumentoAportante" getter="getTipoDocumentoAportante"/>
 			<field length="16" name="numeroDocumentoAportante" type="string" position="209" justify="left" padding=" " setter="setNumeroIdentificacionAportante" getter="getNumeroIdentificacionAportante"/>
@@ -74,7 +74,7 @@
 			<field length="9" name="ibcSalud" type="string" position="210" justify="right" padding="0" setter="setIbcSalud" getter="getIbcSalud"/>
 			<field length="9" name="ibcRiesgo" type="string" position="219" justify="right" padding="0" setter="setIbcRiesgo" getter="getIbcRiesgo"/>
 			<field length="9" name="ibcCcf" type="string" position="228" justify="right" padding="0" setter="setIbcCcf" getter="getIbcCcf"/>
-			<field length="7" name="tarifaPension" type="string" position="237" justify="right" padding="0" setter="setTarifaPension" getter="getTarifaPension"/>
+			<field length="7" name="tarifaPension" type="string" position="237" justify="left" padding="0" setter="setTarifaPension" getter="getTarifaPension"/>
 			<field length="9" name="cotizacionOblgPension" type="string" position="244" justify="right" padding="0" setter="setCotizacionOblgPension" getter="getCotizacionOblgPension"/>
 			<field length="9" name="aporteVoluntarioAfiliadoPension" type="string" position="253" justify="right" padding="0" setter="setAporteVoluntarioAfiliadoPension" getter="getAporteVoluntarioAfiliadoPension"/>
 			<field length="9" name="aporteVoluntarioAportantePension" type="string" position="262" justify="right" padding="0" setter="setAporteVoluntarioAportantePension" getter="getAporteVoluntarioAportantePension"/>
@@ -82,25 +82,25 @@
 			<field length="9" name="aporteFspSolidaridad" type="string" position="280" justify="right" padding="0" setter="setAporteFspSolidaridad" getter="getAporteFspSolidaridad"/>
 			<field length="9" name="aporteFspSubsistencia" type="string" position="289" justify="right" padding="0" setter="setAporteFspSubsistencia" getter="getAporteFspSubsistencia"/>
 			<field length="9" name="valorNoRetenidoAportes" type="string" position="298" justify="right" padding="0" setter="setValorNoRetenidoAportes" getter="getValorNoRetenidoAportes"/>
-			<field length="7" name="tarifaSalud" type="string" position="307" justify="right" padding="0" setter="setTarifaSalud" getter="getTarifaSalud"/>
+			<field length="7" name="tarifaSalud" type="string" position="307" justify="left" padding="0" setter="setTarifaSalud" getter="getTarifaSalud"/>
 			<field length="9" name="cotizacionObligatoriaSalud" type="string" position="314" justify="right" padding="0" setter="setCotizacionObligatoriaSalud" getter="getCotizacionObligatoriaSalud"/>
 			<field length="9" name="valorUpcAdicional" type="string" position="323" justify="right" padding="0" setter="setValorUpcAdicional" getter="getValorUpcAdicional"/>
 			<field length="15" name="nroAutorizacionIge" type="string" position="332" justify="left" padding=" " setter="setNroAutorizacionIge" getter="getNroAutorizacionIge"/>
 			<field length="9" name="valorIge" type="string" position="347" justify="right" padding="0" setter="setValorIge" getter="getValorIge"/>
 			<field length="15" name="nroAutorizacionLma" type="string" position="356" justify="left" padding=" " setter="setNroAutorizacionLma" getter="getNroAutorizacionLma"/>
 			<field length="9" name="valorLma" type="string" position="371" justify="right" padding="0" setter="setValorLma" getter="getValorLma"/>
-			<field length="9" name="tarifaArl" type="string" position="380" justify="right" padding="0" setter="setTarifaArl" getter="getTarifaArl"/>
+			<field length="9" name="tarifaArl" type="string" position="380" justify="left" padding="0" setter="setTarifaArl" getter="getTarifaArl"/>
 			<field length="9" name="centroTrabajo" type="string" position="389" justify="right" padding="0" setter="setCentroTrabajo" getter="getCentroTrabajo"/>
 			<field length="9" name="cotizacionObligatoriaArl" type="string" position="398" justify="right" padding="0" setter="setCotizacionObligatoriaArl" getter="getCotizacionObligatoriaArl"/>
-			<field length="7" name="tarifaAporteCcf" type="string" position="407" justify="right" padding="0" setter="setTarifaAporteCcf" getter="getTarifaAporteCcf"/>
+			<field length="7" name="tarifaAporteCcf" type="string" position="407" justify="left" padding="0" setter="setTarifaAporteCcf" getter="getTarifaAporteCcf"/>
 			<field length="9" name="valorAporteCcf" type="string" position="414" justify="right" padding="0" setter="setValorAporteCcf" getter="getValorAporteCcf"/>
-			<field length="7" name="tarifaAporteSena" type="string" position="423" justify="right" padding="0" setter="setTarifaAporteSena" getter="getTarifaAporteSena"/>
+			<field length="7" name="tarifaAporteSena" type="string" position="423" justify="left" padding="0" setter="setTarifaAporteSena" getter="getTarifaAporteSena"/>
 			<field length="9" name="valorAporteSena" type="string" position="430" justify="right" padding="0" setter="setValorAporteSena" getter="getValorAporteSena"/>
-			<field length="7" name="tarifaAporteIcbf" type="string" position="439" justify="right" padding="0" setter="setTarifaAporteIcbf" getter="getTarifaAporteIcbf"/>
+			<field length="7" name="tarifaAporteIcbf" type="string" position="439" justify="left" padding="0" setter="setTarifaAporteIcbf" getter="getTarifaAporteIcbf"/>
 			<field length="9" name="valorAporteIcbf" type="string" position="446" justify="right" padding="0" setter="setValorAporteIcbf" getter="getValorAporteIcbf"/>
-			<field length="7" name="tarifaAporteEsap" type="string" position="455" justify="right" padding="0" setter="setTarifaAporteEsap" getter="getTarifaAporteEsap"/>
+			<field length="7" name="tarifaAporteEsap" type="string" position="455" justify="left" padding="0" setter="setTarifaAporteEsap" getter="getTarifaAporteEsap"/>
 			<field length="9" name="valorAporteEsap" type="string" position="462" justify="right" padding="0" setter="setValorAporteEsap" getter="getValorAporteEsap"/>
-			<field length="7" name="tarifaAporteMen" type="string" position="471" justify="right" padding="0" setter="setTarifaAporteMen" getter="getTarifaAporteMen"/>
+			<field length="7" name="tarifaAporteMen" type="string" position="471" justify="left" padding="0" setter="setTarifaAporteMen" getter="getTarifaAporteMen"/>
 			<field length="9" name="valorAporteMen" type="string" position="478" justify="right" padding="0" setter="setValorAporteMen" getter="getValorAporteMen"/>
 			<field length="2" name="tipoDocCotizantePpal" type="string" position="487" justify="left" padding=" " setter="setTipoDocCotizantePpal" getter="getTipoDocCotizantePpal"/>
 			<field length="16" name="numeroDocCotizantePpal" type="string" position="489" justify="left" padding=" " setter="setNumeroDocCotizantePpal" getter="getNumeroDocCotizantePpal"/>

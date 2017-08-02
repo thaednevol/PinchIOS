@@ -108,7 +108,7 @@ public class LiquidacionRestController {
 			}
 			
 			os = new FileOutputStream(new File(pathResultado.toString()),true);
-	        bw = new BufferedWriter(new OutputStreamWriter(os,Constants.GENERAL_ENCODING));
+	        bw = new BufferedWriter(new OutputStreamWriter(os,"UTF-8"));
 
 	        gsonWriter=new GsonBuilder().setPrettyPrinting().create();
             erroresLiq = liquidacion.validarRegsTp02Archivo2388(archivoEnProceso, validacionPlanillaDd, pathArchivo2388);

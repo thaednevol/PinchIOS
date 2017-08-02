@@ -96,11 +96,11 @@ public class Reg2388ReadTp07 extends CommonBean{
 		String[] labels = new String[10];
 		labels[0]="Tipo registro";
 		labels[1]="Secuencia";
-		labels[2]="C—digo CCF";
+		labels[2]="C\u00f3digo CCF";
 		labels[3]="NIT CCF";
 		labels[4]="Dig. Ver. CCF";
 		labels[5]="Valor Aportes";
-		labels[6]="D’ías Mora";
+		labels[6]="D\u00edas Mora";
 		labels[7]="Intereses Mora";
 		labels[8]="Total a pagar";
 		labels[9]="Nro Afiliados";

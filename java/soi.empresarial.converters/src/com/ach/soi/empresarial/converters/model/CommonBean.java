@@ -1,8 +1,11 @@
 package com.ach.soi.empresarial.converters.model;
 
 import java.io.Serializable;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
+
+import com.ach.soi.empresarial.converters.utils.Constants;
 
 
 public class CommonBean implements Serializable{
@@ -57,6 +60,15 @@ public class CommonBean implements Serializable{
 		return result.toArray(new String[0]);
 	}
 	
-	
+	/*public static String getEncodingValue ( String unicodeVal ){
+		Charset charset = Charset.forName(Constants.GENERAL_ENCODING);
+		String res = null;
+		try{
+			res = new String(unicodeVal.getBytes(charset),Constants.GENERAL_ENCODING);
+		}catch ( Exception e ){
+			res = new String(unicodeVal.getBytes(charset));
+		}
+		return res;
+	}*/
 	
 }
