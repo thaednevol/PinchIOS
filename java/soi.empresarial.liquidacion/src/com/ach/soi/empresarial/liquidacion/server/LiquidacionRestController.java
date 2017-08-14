@@ -89,6 +89,9 @@ public class LiquidacionRestController {
             
             archivoEnProceso = Converter.convertArchivoEnProceso(archivoEnProcesoTO);
             
+            //se cambia porpiedad  de  archivoEnProceso PlanillaCorrector( para realizar  las  validaciones de secuencia 
+            archivoEnProceso.setPlanillaCorrector(false);
+            
             LiquidadorActivos liquidacion = new LiquidadorActivos();
             		
 			String regT01 = null;
