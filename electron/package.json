@@ -18,7 +18,7 @@
     "compression": "store",
     "appId": "ach.soi.electron.co.swat-it",
     "win": {
-      "iconUrl": "./public/img/system/logo-soi-clic.ico"
+      "iconUrl": "./public/icon/win/logo-soi-clic.ico"
     }
   },
   "bugs": {
