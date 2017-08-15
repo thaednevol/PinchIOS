@@ -1,5 +1,5 @@
 {
-  "name": "ACH-SOI",
+  "name": "SOI-Clic",
   "version": "2.4.5",
   "description": "Proyecto encargado de gestionar planillas de pago PILA para ACH",
   "author": "ACH Colombia <info@ach.com.co>",
@@ -18,16 +18,17 @@
     "compression": "store",
     "appId": "ach.soi.electron.co.swat-it",
     "win": {
-      "iconUrl": "./public/img/system/logoApp.ico"
+      "iconUrl": "./public/img/system/logo-soi-clic.ico"
     }
   },
   "bugs": {
-    "email": "lzapata@swat-it.co"
+    "email": "soporte@achcolombia.com.co"
   },
   "devDependencies": {
     "devtron": "^1.4.0",
     "electron": "1.6.0",
     "electron-builder": "^13.9.0",
+    "electron-packager": "^8.7.2",
     "electron-rebuild": "^1.5.7",
     "gulp": "^3.9.1",
     "gulp-clean": "^0.3.2",

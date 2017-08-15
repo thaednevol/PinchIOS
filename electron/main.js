@@ -19,6 +19,23 @@ var loadWindow = null;
 
 app.on("ready", () => {
 
+/*
+  var platform = require('os').platform();
+  var trayImage;
+  var imageFolder = __dirname + '/public/img/system/';
+
+  // Determine appropriate icon for platform
+  if (platform == 'darwin') {
+      const nativeImage = require('electron').nativeImage;
+      var image = nativeImage.createFromPath('/public/img/system/logo-soi-clic.png');
+      image.setTemplateImage(true);
+      appIcon = new Tray(image);
+  }
+  else if (platform == 'win32') {
+      trayImage = imageFolder + 'logo-soi-clic.ico';
+      appIcon = new Tray(trayImage);
+  }*/
+
   // Carga el codigo de la ventana
   mainWindow = new BrowserWindow({
     width: 1280,
@@ -27,6 +44,7 @@ app.on("ready", () => {
     minHeight: 720,
     center: true,
     show: false,
+    icon: path.join(__dirname, 'public/icons/png/64x64.png'),
     webPreferences: {
       preload: path.join(__dirname, "preload.js")
     }
