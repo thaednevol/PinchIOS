@@ -759,7 +759,11 @@ public class LiquidadorActivos {
 		ExceptionMessage msge = DesktopExceptionMngr.getInstance().manejarException(excepcion);
 		err.setCampo(0);
 		err.setNombreCampo(campo!=null?campo.getNombreCampo():"-");
-		err.setLinea(numeroLineaActual);
+		if(excepcion.getNumeroLinea() >= 0) {
+			err.setLinea(excepcion.getNumeroLinea());
+		}else {
+			err.setLinea(numeroLineaActual);			
+		}
 		err.setErrorRegistro(campo==null);
 		err.setError(msge.getMensaje());
 		if ( reg!=null && reg instanceof PlanillaRegT02 ){
