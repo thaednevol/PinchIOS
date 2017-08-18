@@ -4,8 +4,7 @@ JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_65.jdk/Contents/Home/jre/
 echo '*********************Generando proyectos java de SOI Empresarial para incluir en aplicativo********************'
 
 
-[ "$1" = "S" ] ; OFUSCAR=$?
-echo 'Ofuscar Codigo' $OFUSCAR
+echo 'Ofuscar Codigo' $1
 
 
 echo 'Generando pila-util.jar'
@@ -25,7 +24,8 @@ echo 'Generando pila-business.jar'
 cd $SOI_EMPRESARIAL_HOME
 cd  java/pila-business/
 mvn clean
-if [ $OFUSCAR==1 ]; then
+if [ $1 = "S" ]; then
+  echo '------- Ofuscando pila-business.jar'
   mvn install
 else
   mvn package
@@ -40,14 +40,16 @@ echo 'Generando soi.empresarial.converters.jar'
 cd $SOI_EMPRESARIAL_HOME
 cd java/soi.empresarial.converters/
 mvn clean
-if [ $OFUSCAR==1 ]; then
+if [ $1 = "S" ]; then
+  echo '------- Ofuscando soi.empresarial.converters'
   mvn install
+  cd target
 else
   mvn package
+  cd target
+    mvn install:install-file -Dfile=soi.empresarial.converters-2.0.0.jar -DgroupId=soi-empresarial -DartifactId=soi-empresarial-converters -Dversion=1.0 -Dpackaging=jar
 fi
 echo 'soi.empresarial.converters.jar Generado'
-cd target
-mvn install:install-file -Dfile=soi.empresarial.converters-2.0.0.jar -DgroupId=soi-empresarial -DartifactId=soi-empresarial-converters -Dversion=1.0 -Dpackaging=jar
 cp soi.empresarial.converters-2.0.0.jar $SOI_EMPRESARIAL_HOME/electron/jar/soi-empresarial-converters-1.0.jar
 
 echo 'Generando soi.empresarial.liquidacion-1.0.1.jar'
@@ -55,7 +57,8 @@ cd $SOI_EMPRESARIAL_HOME
 cd java/soi.empresarial.liquidacion/
 mvn clean
 mvn compile
-if [ $OFUSCAR==1 ]; then
+if [ $1 = "S" ]; then
+  echo '------- Ofuscando soi.empresarial.liquidacion'
   mvn install
 else
   mvn package
