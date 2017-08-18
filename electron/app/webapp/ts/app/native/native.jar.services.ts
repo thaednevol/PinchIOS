@@ -57,6 +57,13 @@ namespace app.native {
       this.OPTIONS = OPTIONS;
       this.$filter = $filter;
       this.file = file;
+      let pathFile = this.file.getPathOptions(this.OPTIONS.FILES.PROXY_CONFIG);
+      if (this.file.validatePath(pathFile) != null) {
+        let result = this.file.getContentFileJson(pathFile);
+        result.then((data) => {
+          this.dataProxy = data;
+        });
+      }
     }
 
     /**
