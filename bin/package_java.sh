@@ -1,9 +1,10 @@
 #!/bin/sh
 JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_65.jdk/Contents/Home/jre/
 
-echo 'Generando proyectos java de SOI Empresarial para incluir en aplicativo'
+echo '*********************Generando proyectos java de SOI Empresarial para incluir en aplicativo********************'
 
-
+OFUSCAR=$1
+echo 'Ofuscar Codigo ' $OFUSCAR
 
 echo 'Generando pila-util.jar'
 cd ..
@@ -22,7 +23,11 @@ echo 'Generando pila-business.jar'
 cd $SOI_EMPRESARIAL_HOME
 cd  java/pila-business/
 mvn clean
-mvn package
+if [ $OFUSCAR='S' ]; then
+  mvn install
+else
+  mvn package
+fi
 
 echo 'pila-business.jar Generado'
 cd target
@@ -33,7 +38,11 @@ echo 'Generando soi.empresarial.converters.jar'
 cd $SOI_EMPRESARIAL_HOME
 cd java/soi.empresarial.converters/
 mvn clean
-mvn package
+if [ $OFUSCAR='S' ]; then
+  mvn install
+else
+  mvn package
+fi
 echo 'soi.empresarial.converters.jar Generado'
 cd target
 mvn install:install-file -Dfile=soi.empresarial.converters-2.0.0.jar -DgroupId=soi-empresarial -DartifactId=soi-empresarial-converters -Dversion=1.0 -Dpackaging=jar
@@ -44,7 +53,11 @@ cd $SOI_EMPRESARIAL_HOME
 cd java/soi.empresarial.liquidacion/
 mvn clean
 mvn compile
-mvn package
+if [ $OFUSCAR='S' ]; then
+  mvn install
+else
+  mvn package
+fi
 
 echo 'soi.empresarial.liquidacion-1.0.1.jar Generado'
 cd target
@@ -54,3 +67,6 @@ if [ -d "$SOI_EMPRESARIAL_HOME/electron/jar/lib" ]; then
   echo 'Eliminando directorio $SOI_EMPRESARIAL_HOME/electron/jar/lib'
   rm -r $SOI_EMPRESARIAL_HOME/electron/jar/lib/
 fi
+
+
+echo '*********************Fin Generación proyectos java de SOI Empresarial para incluir en aplicativo, revise el log********************'

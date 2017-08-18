@@ -6,6 +6,15 @@
 	<version>2.0.0</version>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
+		<resources>
+	      <resource>
+	        <directory>src/</directory>
+	        <includes>
+	          <include>*.xml</include>
+	          <include>*.properties</include>
+	        </includes>
+	      </resource>
+	    </resources>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -13,7 +22,6 @@
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
-					<encoding>UTF8</encoding>
 				</configuration>
 			</plugin>
 			
@@ -82,16 +90,16 @@
 	</build>
 	<dependencies>
 		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>2.8.0</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
 		    <groupId>org.beanio</groupId>
 		    <artifactId>beanio</artifactId>
 		    <version>2.1.0.M2</version>
 		    <scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.0</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>pila-business</groupId>
