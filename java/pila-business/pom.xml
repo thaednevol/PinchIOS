@@ -15,6 +15,38 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
+			
+			<plugin>
+			    <groupId>com.github.wvengen</groupId>
+			    <artifactId>proguard-maven-plugin</artifactId>
+			    <executions>
+			        <execution>
+			            <phase>install</phase>
+			            <goals><goal>proguard</goal></goals>
+			            <configuration>					        
+					        <maxMemory>1024m</maxMemory>
+					        <options>
+					        	<option>-keep public class co.swatit.pilabusiness.services.ApplicationMain { public static void main(java.lang.String[]); }</option>
+								<option>-keep class com.ach.**.biz.transfer.**,com.ach.**.biz.model.**,co.swatit.pilautil.dto.**,!com.lucasian.**,!co.swatit.**,!com.ach.** { *; }</option>
+								<option>-keepattributes *Annotation*,Exceptions,InnerClasses,Signature,Deprecated,SourceFile</option>
+								<option>-keepparameternames</option>								
+								<option>-dontshrink</option>
+								<option>-dontoptimize</option>								
+								<option>-ignorewarnings</option>
+								<option>-dontwarn com.ach.arc.biz.ejb.AlmacenarPlanillasIncompletasMDBean,com.ach.sop.**,oracle.sql.**,com.ach.pse.**,com.ach.intOpe.**,com.ach.aud.**,commonj.**,com.ach.pa.**,weblogic.**,com.ach.pen.**,oracle.jdbc.**,com.bea.**,com.blackbear.**,com.lowagie.**,com.strategicgains.**,domain.**,com.wutka.**,com.tangosol.**,javax.**,junit.**,org.yaml.**,org.**,com.oracle.**,com.google.**,org.springframework.**,com.sun.**,co.swatit.**,com.fasterxml.**,net.sf.**</option>
+							</options>								
+							<includeDependency>false</includeDependency>					
+					        <libs>					        	
+					        	<lib>target/classes/</lib>
+					            <lib>${java.home}/lib/rt.jar</lib>
+					            <lib>${java.home}/lib/jce.jar</lib>
+					            <lib>${java.home}/lib/ext/sunjce_provider.jar</lib>
+					        </libs>
+					    </configuration>
+			        </execution>
+			    </executions>			    
+			</plugin>
+			
 			<!-- Maven Assembly Plugin -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -25,6 +57,7 @@
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
+					<appendAssemblyId>false</appendAssemblyId>
 					<!-- MainClass in mainfest make a executable jar -->
 					<archive>
 					  <manifest>
@@ -51,6 +84,109 @@
 			<groupId>pila-business</groupId>
 			<artifactId>pila-util</artifactId>
 			<version>2.0.0</version>
+		</dependency>
+		<dependency>
+		    <groupId>log4j</groupId>
+		    <artifactId>log4j</artifactId>
+		    <version>1.2.17</version>
+		    <scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-core</artifactId>
+			<version>1.9</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-client</artifactId>
+			<version>1.9</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.2.3</version>
+		</dependency>
+		<dependency>
+			<groupId>co.com.swatit.pila</groupId>
+			<artifactId>pla.api.biz</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>co.com.swatit.pila</groupId>
+			<artifactId>arc.api.biz</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>lucasian-nsoi</groupId>
+			<artifactId>common-biz</artifactId>
+			<version>1.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>lucasian-nsoi</groupId>
+			<artifactId>apt-biz</artifactId>
+			<version>1.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>lucasian-nsoi</groupId>
+			<artifactId>cfg-biz</artifactId>
+			<version>1.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>lucasian-nsoi</groupId>
+			<artifactId>pla-biz</artifactId>
+			<version>1.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>lucasian-nsoi</groupId>
+			<artifactId>arc-biz</artifactId>
+			<version>1.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>lucasian-nsoi</groupId>
+			<artifactId>sop-biz</artifactId>
+			<version>1.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>lucasian-nsoi</groupId>
+			<artifactId>seg-biz</artifactId>
+			<version>1.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>lucasian-leaf</groupId>
+			<artifactId>common-biz</artifactId>
+			<version>1.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>lucasian-leaf</groupId>
+			<artifactId>leaf-base</artifactId>
+			<version>1.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>lucasian-leaf</groupId>
+			<artifactId>leaf-jee</artifactId>
+			<version>1.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>lucasian-leaf</groupId>
+			<artifactId>common-validator</artifactId>
+			<version>1.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>lucasian-leaf</groupId>
+			<artifactId>leaf-exceptions</artifactId>
+			<version>1.0</version>
+			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 </project>

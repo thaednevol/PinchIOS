@@ -320,6 +320,7 @@ namespace app.settlement {
     */
     private saveJSONTemp() {
       this.$rootScope.$broadcast("clear-inputs-table-edit");
+      this.file.data.regTp01[18] = this.file.data.regsTp02.registers.length;
       let dataForSave: any = this.soiService.registerType2ToArray(this.file.data);
       return this.serviceFile.createFileTemp(`${this.file.name}.json`, dataForSave, false);
     }

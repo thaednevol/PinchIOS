@@ -6,9 +6,8 @@
 	<version>1.0.1</version>
 
 
-
 	<build>
-		<sourceDirectory>src</sourceDirectory>
+  		<sourceDirectory>src</sourceDirectory>
 		<resources>
 			<resource>
 				<directory>src</directory>
@@ -17,54 +16,101 @@
 				</excludes>
 			</resource>
 		</resources>
-		<plugins>
-			
-			
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
-			
-		     <plugin>
-		        <groupId>org.apache.maven.plugins</groupId>
-		        <artifactId>maven-jar-plugin</artifactId>
-		        <configuration>
-		          <archive>
-		            <manifest>
-		              <addClasspath>true</addClasspath>
-		              <mainClass>com.ach.soi.empresarial.liquidacion.server.LiquidacionServer</mainClass>
-		              <classpathPrefix>lib/</classpathPrefix>
-		            </manifest>
-		          </archive>
-		        </configuration>
-		      </plugin>
-		      
-		      
-		      <plugin>
+        <plugins>
+        	<plugin>
 		        <groupId>org.apache.maven.plugins</groupId>
 		        <artifactId>maven-dependency-plugin</artifactId>
-		        <executions>
-		          <execution>
-		            <id>copy-dependencies</id>
-		            <phase>package</phase>
-		            <goals>
-		              <goal>copy-dependencies</goal>
-		            </goals>
-		            <configuration>
-		              <outputDirectory>${project.build.directory}/lib</outputDirectory>
-		              <overWriteReleases>false</overWriteReleases>
+		        <version>3.0.1</version>
+		        <configuration>
+		              <includes>**/*.*</includes>		              		             
+		              <excludes>**/resource/email-config.xml,**/resource/jee-config.xml</excludes>
+		              
+		              <outputDirectory>${project.build.directory}/classes</outputDirectory>
+		              <overWriteReleases>true</overWriteReleases>
 		              <overWriteSnapshots>true</overWriteSnapshots>
-		              <excludeTransitive>true</excludeTransitive>
-		            </configuration>
+		           </configuration>
+		        <executions>
+		        
+		          <execution>
+		            <id>unpack-dependencies</id>
+		            <phase>install</phase>
+		            <goals>
+		              <goal>unpack-dependencies</goal>
+		            </goals>		            
+		          </execution>
+		          <execution>
+		            <id>unpack-dependencies-compile</id>
+		            <phase>compile</phase>
+		            <goals>
+		              <goal>unpack-dependencies</goal>
+		            </goals>		            
 		          </execution>
 		        </executions>
 		      </plugin>
-		</plugins>
-	</build>
+        	<plugin>
+			    <groupId>com.github.wvengen</groupId>
+			    <artifactId>proguard-maven-plugin</artifactId>
+			    <executions>
+			        <execution>
+			            <phase>install</phase>
+			            <goals><goal>proguard</goal></goals>
+			            <configuration>					        
+					        <maxMemory>1024m</maxMemory>
+					        <options>
+					        	
+								<option>-keep public class  com.ach.soi.empresarial.liquidacion.server.LiquidacionServer { public static void main(java.lang.String[]); }</option>
+								<option>-keep class com.ach.arc.biz.r1747.converter.**,com.ach.**.biz.transfer.**,com.ach.**.model.**,co.swatit.pilautil.dto.**,com.ach.soi.empresarial.liquidacion.model.**,com.ach.soi.empresarial.liquidacion.server.LiquidacionRestController,!co.swatit.**,!com.ach.**,!com.lucasian.**{ *; }</option>
+								<option>-keep enum **{ *; }</option>
+								<option>-keepattributes Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod</option>
+								<option>-keepparameternames</option>
+								<option>-dontwarn com.ach.arc.biz.ejb.AlmacenarPlanillasIncompletasMDBean,com.ach.sop.**,oracle.sql.**,com.ach.pse.**,com.ach.intOpe.**,com.ach.aud.**,commonj.**,com.ach.pa.**,weblogic.**,com.ach.pen.**,oracle.jdbc.**,com.bea.**,com.blackbear.**,com.lowagie.**,com.strategicgains.**,domain.**,com.wutka.**,com.tangosol.**,javax.**,junit.**,org.yaml.**,org.**,com.oracle.**,com.google.**,org.springframework.**,com.sun.**,co.swatit.**,com.fasterxml.**,net.sf.**</option>
+								<option>-dontnote</option>
+								<option>-dontshrink</option>
+								<option>-dontoptimize</option>								
+								<option>-ignorewarnings</option>
+							</options>								
+							<includeDependency>false</includeDependency>					
+					        <libs>					        	
+					        	<lib>target/classes/</lib>
+					            <lib>${java.home}/lib/rt.jar</lib>
+					            <lib>${java.home}/lib/jce.jar</lib>
+					            <lib>${java.home}/lib/ext/sunjce_provider.jar</lib>
+					        </libs>
+					    </configuration>
+			        </execution>
+			    </executions>			    
+			</plugin>
+			
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>1.5.6.RELEASE</version>
+                <configuration>
+				   <classifier>exec</classifier>
+	        		<mainClass>com.ach.soi.empresarial.liquidacion.server.LiquidacionServer</mainClass>
+	        		<excludeArtifactIds>log4j,jasper-itext,jasper-reports,commons-beanutils,coherence-standalone,commons-digester,javax.mail,flatwormjbel,gson,beanio,castor-maven-plugins</excludeArtifactIds>
+	        		<excludeGroupIds>soi-empresarial,lucasian-nsoi,pila-business,org.apache.commons,lucasian-leaf</excludeGroupIds>
+	        	</configuration>
+			      <executions>
+			        <execution>
+			        	<id>install</id>
+				        <phase>install</phase>	
+				         <goals>
+				            <goal>repackage</goal>
+				         </goals>
+			        </execution>
+			        <execution>
+			        	<id>package</id>
+				        <phase>package</phase>	
+				         <goals>
+				            <goal>repackage</goal>
+				         </goals>
+			        </execution>			        
+			      </executions>
+            </plugin>            
+        </plugins>
+        
+    </build>
 	<repositories>
     	<repository> 
         	<id>repository.spring.milestone</id> 
@@ -138,9 +184,9 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>lucasian-nsoi</groupId>
+			<groupId>pila-business</groupId>
 			<artifactId>pila-util</artifactId>
-			<version>2.0</version>
+			<version>2.0.0</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -273,6 +319,7 @@
 		<dependency>
 		  <groupId>org.springframework.boot</groupId>
 		  <artifactId>spring-boot-starter</artifactId>
+		  <scope>compile</scope>
 		  <exclusions>
 		    <exclusion>
 		      <groupId>org.springframework.boot</groupId>
@@ -284,6 +331,7 @@
 		<dependency>
 		  <groupId>org.springframework.boot</groupId>
 		  <artifactId>spring-boot-starter-web</artifactId>
+		  <scope>compile</scope>
 		  <exclusions>
 		    <exclusion>
 		      <groupId>org.springframework.boot</groupId>
