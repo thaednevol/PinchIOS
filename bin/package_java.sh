@@ -3,8 +3,10 @@ JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_65.jdk/Contents/Home/jre/
 
 echo '*********************Generando proyectos java de SOI Empresarial para incluir en aplicativo********************'
 
-OFUSCAR=$1
+
+[ "$1" = "S" ] ; OFUSCAR=$?
 echo 'Ofuscar Codigo' $OFUSCAR
+
 
 echo 'Generando pila-util.jar'
 cd ..
@@ -23,7 +25,7 @@ echo 'Generando pila-business.jar'
 cd $SOI_EMPRESARIAL_HOME
 cd  java/pila-business/
 mvn clean
-if [ $OFUSCAR=='S' ]; then
+if [ $OFUSCAR==1 ]; then
   mvn install
 else
   mvn package
@@ -38,7 +40,7 @@ echo 'Generando soi.empresarial.converters.jar'
 cd $SOI_EMPRESARIAL_HOME
 cd java/soi.empresarial.converters/
 mvn clean
-if [ $OFUSCAR=='S' ]; then
+if [ $OFUSCAR==1 ]; then
   mvn install
 else
   mvn package
@@ -53,7 +55,7 @@ cd $SOI_EMPRESARIAL_HOME
 cd java/soi.empresarial.liquidacion/
 mvn clean
 mvn compile
-if [ $OFUSCAR=='S' ]; then
+if [ $OFUSCAR==1 ]; then
   mvn install
 else
   mvn package
