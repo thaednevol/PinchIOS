@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>pila-business</groupId>
-	<artifactId>pila-business</artifactId>
+	<groupId>soi.empresarial.converters</groupId>
+	<artifactId>soi.empresarial.converters</artifactId>
 	<version>2.0.0</version>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
@@ -13,6 +13,7 @@
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
+					<encoding>UTF8</encoding>
 				</configuration>
 			</plugin>
 			
@@ -26,7 +27,7 @@
 			            <configuration>					        
 					        <maxMemory>1024m</maxMemory>
 					        <options>
-					        	<option>-keep public class co.swatit.pilabusiness.services.ApplicationMain { public static void main(java.lang.String[]); }</option>
+					        	<option>-keep public class com.ach.soi.empresarial.converters.core.ConverterPila { public static void main(java.lang.String[]); }</option>
 								<option>-keep class com.ach.**.biz.transfer.**,com.ach.**.biz.model.**,co.swatit.pilautil.dto.**,!com.lucasian.**,!co.swatit.**,!com.ach.** { *; }</option>
 								<option>-keepattributes *Annotation*,Exceptions,InnerClasses,Signature,Deprecated,SourceFile</option>
 								<option>-keepparameternames</option>								
@@ -61,7 +62,7 @@
 					<!-- MainClass in mainfest make a executable jar -->
 					<archive>
 					  <manifest>
-						<mainClass>co.swatit.pilabusiness.services.ApplicationMain</mainClass>
+						<mainClass>com.ach.soi.empresarial.converters.core.ConverterPila</mainClass>
 					  </manifest>
 					</archive>
 
@@ -80,6 +81,18 @@
 		</plugins>
 	</build>
 	<dependencies>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+		    <groupId>org.beanio</groupId>
+		    <artifactId>beanio</artifactId>
+		    <version>2.1.0.M2</version>
+		    <scope>compile</scope>
+		</dependency>
 		<dependency>
 			<groupId>pila-business</groupId>
 			<artifactId>pila-util</artifactId>
