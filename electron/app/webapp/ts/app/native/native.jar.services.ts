@@ -35,16 +35,28 @@ namespace app.native {
     */
     private OPTIONS: any;
 
+    /**
+    * @type {NativeFileService} file - Manipula los archivos que se encuentran
+    * almacenados en la carpeta del programa.
+    * @see app.native.NativeFileService()
+    */
+    private file: any;
+
+    /**
+    * @type {Object} dataProxy - Contiene los datos de la configuracion del proxy.
+    */
+    public dataProxy: any = {};
 
     private $filter: any;
     private exec: any = require("child_process").exec;
     private path: any = require("path");
-    static $inject = ["native.debug.service", "OPTIONS", "$filter"];
+    static $inject = ["native.debug.service", "OPTIONS", "$filter", "native.file.service"];
 
-    constructor(debug, OPTIONS, $filter) {
+    constructor(debug, OPTIONS, $filter, file) {
       this.debug = debug;
       this.OPTIONS = OPTIONS;
       this.$filter = $filter;
+      this.file = file;
     }
 
     /**
@@ -77,6 +89,57 @@ namespace app.native {
       //return this.execString(nameJar, event, JSON.stringify(dataJson).replace(/\"/g, "\\\""));
       return this.execStringNoEncoding(nameJar, event, JSON.stringify(dataJson).replace(/\"/g, "\\\""));
 
+    }
+
+    /**
+    * @description
+    * Ejecuta un archivo JAR, pasando como parametros el nombre del evento y
+    * una cadena de string como argumento principal y configuracion de proxy.
+    *
+    * @param {string} nameJar - Nombre del archivo JAR que se ejecutara.
+    * @param {string} event - Nombre del metodo que tiene el JAR.
+    * @param {String} dataString - Datos que recibe el parametro en formato String.
+    * @return {Promise} Resultado entregado por la función this.execCommand().
+    */
+    public execStringProxy(nameJar: string, event: string = null, dataString: string = null): any {
+      let routeJar = this.getRouteJar(nameJar);
+      let command: any = `${this.OPTIONS.JAR.COMMAND_PROXY} `;
+      command += `${this.OPTIONS.JAR.COMMAND_PROXY_HOST}${this.dataProxy.server} `;
+      command += `${this.OPTIONS.JAR.COMMAND_PROXY_PORT}${this.dataProxy.port} `;
+      command += (this.dataProxy.user == null || this.dataProxy.user == "") ? `` : `${this.OPTIONS.JAR.COMMAND_PROXY_USER}${this.dataProxy.user} `;
+      command += (this.dataProxy.pass == null || this.dataProxy.pass == "") ? `` : `${this.OPTIONS.JAR.COMMAND_PROXY_PASS}${this.dataProxy.pass} `;
+      command += `${this.OPTIONS.JAR.COMMAND_JAR} ${routeJar} ${event} "${dataString}"`;
+      return this.execCommand(command);
+    }
+
+
+    /**
+    * @description
+    * Ejecuta un archivo JAR pasando como parametro el nombre del evento, y como
+    * argumento principal un objeto JSON que es convertido a cadena String,
+    * adicionalmente verifica si es necesario el uso de proxy y envia los parametros
+    * de proxy en caso de ser necesarios.
+    *
+    * @param {string} nameJar - Nombre del archivo JAR que se ejecutara.
+    * @param {string} event - Nombre del metodo que tiene el JAR.
+    * @param {Object} dataJson - Datos que recibe el parametro para pasar como JSON.
+    * @return {Promise} Resultado entregado por la función this.execCommand().
+    */
+    public execJsonProxy(nameJar: string, event: string = null, dataJson: any = null): any {
+      let pathFile = this.file.getPathOptions(this.OPTIONS.FILES.PROXY_CONFIG);
+      if (this.file.validatePath(pathFile) != null) {
+        let result = this.file.getContentFileJson(pathFile);
+        result.then((data) => {
+          this.dataProxy = data;
+        });
+        if ((this.dataProxy != null && this.dataProxy.useProxy) || (result != null)) {
+          return this.execStringProxy(nameJar, event, JSON.stringify(dataJson).replace(/\"/g, "\\\""));
+        } else {
+          return this.execString(nameJar, event, JSON.stringify(dataJson).replace(/\"/g, "\\\""));
+        }
+      } else {
+        return this.execString(nameJar, event, JSON.stringify(dataJson).replace(/\"/g, "\\\""));
+      }
     }
 
     /**

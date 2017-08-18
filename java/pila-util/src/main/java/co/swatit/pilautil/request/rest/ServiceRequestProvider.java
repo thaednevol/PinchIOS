@@ -1,5 +1,7 @@
 package co.swatit.pilautil.request.rest;
 
+import java.net.Authenticator; 
+import java.net.PasswordAuthentication; 
 import java.util.Map;
 
 import javax.ws.rs.core.MediaType;
@@ -120,6 +122,7 @@ public final class ServiceRequestProvider {
 		WebResource webResource;
 		if (url != null) {
 			LOGGER.info(new StringBuilder("Invocando el servicio web:: ").append(url).append("::Operation:").append(operation).toString());
+			initializeProxyAuthenticator(); 
 			Client client = Client.create();
 			webResource = client.resource(url);
 			if (operation != null) {
@@ -130,6 +133,18 @@ public final class ServiceRequestProvider {
 			throw new InvokeException(CodeErrorEnum.WSCLIENTERROR);
 		}
 		return webResource;
+	}
+
+	private static void initializeProxyAuthenticator() {
+		final String proxyUser = System.getProperty("http.proxyUser"); 
+		final String proxyPassword = System.getProperty("http.proxyPassword");
+		if (proxyUser != null && proxyPassword != null) {
+			Authenticator.setDefault(new Authenticator() {
+				public PasswordAuthentication getPasswordAuthentication() {
+					return new PasswordAuthentication(proxyUser, proxyPassword.toCharArray());
+				} 
+            });
+		}
 	}
 
 	/**

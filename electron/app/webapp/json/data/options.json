@@ -19,6 +19,12 @@
     "COMMAND": "java -Dfile.encoding=UTF-8 -jar",
     "COMMAND_NO_ENCODE": "java -jar",
     "COMMAND_LIQ_SVR": "java -Dfile.encoding=UTF-8 -Xms128M -Xmx4092M -jar",
+    "COMMAND_PROXY": "java -Dfile.encoding=UTF-8",
+    "COMMAND_PROXY_HOST": "-Dhttp.proxyHost=",
+    "COMMAND_PROXY_PORT": "-Dhttp.proxyPort=",
+    "COMMAND_PROXY_USER": "-Dhttp.proxyUser=",
+    "COMMAND_PROXY_PASS": "-Dhttp.proxyPassword=",
+    "COMMAND_JAR": "-jar",
     "FILES": {
       "CONVERT": {
         "NAME": "soi-empresarial-converters-1.0",
@@ -60,6 +66,7 @@
     "EMAILS_CONTRIBUTORS": "emailsContributors.json",
     "EMAILS_SYSTEM": "emailsSystem.json",
     "PROGRESS_EMAILS": "progressEmails.json",
+    "PROXY_CONFIG": "proxyConfig.json",
     "CONFIG_SOI": {
       "VALIDATION_DATA_SOURCE": "validacionArchivoDataSourceDTO.json"
     },

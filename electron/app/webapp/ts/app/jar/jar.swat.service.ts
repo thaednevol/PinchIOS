@@ -91,7 +91,7 @@ namespace app.jar {
         accountIdNumber: dataForm.user,
         accountPassword: dataForm.password
       };
-      return this.jar.execJson(this.jarSwat.NAME, this.jarSwat.METHOD.LOGIN, dataLogin);
+      return this.jar.execJsonProxy(this.jarSwat.NAME, this.jarSwat.METHOD.LOGIN, dataLogin);
     }
 
     /**
@@ -104,7 +104,7 @@ namespace app.jar {
       let data: any = {
         token: this.$localStorage.token
       };
-      return this.jar.execJson(this.jarSwat.NAME, this.jarSwat.METHOD.VALIDATE_TOKEN, data);
+      return this.jar.execJsonProxy(this.jarSwat.NAME, this.jarSwat.METHOD.VALIDATE_TOKEN, data);
     }
 
     /**
@@ -124,7 +124,7 @@ namespace app.jar {
         token: this.$localStorage.token,
         contributorsIds: listContributors
       };
-      return this.jar.execJson(this.jarSwat.NAME, this.jarSwat.METHOD.CONTRIBUTORS_INFORMATION, data);
+      return this.jar.execJsonProxy(this.jarSwat.NAME, this.jarSwat.METHOD.CONTRIBUTORS_INFORMATION, data);
     }
 
 
@@ -143,7 +143,7 @@ namespace app.jar {
         token: this.$localStorage.token
       };
       // Se consulta la información del servicio REST para retornar la lista de planillas
-      return this.jar.execJson(this.jarSwat.NAME, this.jarSwat.METHOD.FILES_SETTLEMENT, data);
+      return this.jar.execJsonProxy(this.jarSwat.NAME, this.jarSwat.METHOD.FILES_SETTLEMENT, data);
     }
 
     /**
@@ -160,7 +160,7 @@ namespace app.jar {
         version: this.OPTIONS.VERSION
       };
       return new Promise((resolve) => {
-        let result = this.jar.execJson(this.jarSwat.NAME, this.jarSwat.METHOD.GET_NOTIFICATIONS, params);
+        let result = this.jar.execJsonProxy(this.jarSwat.NAME, this.jarSwat.METHOD.GET_NOTIFICATIONS, params);
         result.then((data) => {
           if (data.code !== "00") {
             this.nativeNotification.show(this.$filter("translate")("MESSAGES.TITLES.ERROR"), this.$filter("translate")("MESSAGES.ERROR_NOTIFICATION_SERVER"));
@@ -188,7 +188,7 @@ namespace app.jar {
         idSegUsuario: this.$localStorage.soiAccountIdNumber
       };
       return new Promise((resolve) => {
-        let result = this.jar.execJson(this.jarSwat.NAME, this.jarSwat.METHOD.INFO_HEAD_SETTLEMENT, params);
+        let result = this.jar.execJsonProxy(this.jarSwat.NAME, this.jarSwat.METHOD.INFO_HEAD_SETTLEMENT, params);
         result.then((data) => {
           let infoHead = null;
           if (data.code === "00") {
@@ -227,7 +227,7 @@ namespace app.jar {
         idSoiAportante: this.$localStorage.soiContributorIdNumber,
         idSegUsuario: this.$localStorage.soiAccountIdNumber
       };
-      return this.jar.execJson(this.jarSwat.NAME, this.jarSwat.METHOD.LIST_CONTRIBUTORS, params);
+      return this.jar.execJsonProxy(this.jarSwat.NAME, this.jarSwat.METHOD.LIST_CONTRIBUTORS, params);
     }
 
     /**
@@ -261,7 +261,7 @@ namespace app.jar {
         periodoSalud: data.periodHealth,
         periodoNoSalud: data.periodPension
       };
-      return this.jar.execJson(this.jarSwat.NAME, this.jarSwat.METHOD.VALIDATE_FILE, params);
+      return this.jar.execJsonProxy(this.jarSwat.NAME, this.jarSwat.METHOD.VALIDATE_FILE, params);
     }
 
 
@@ -282,7 +282,7 @@ namespace app.jar {
         token: this.$localStorage.token,
         idFile: this.$localStorage.validateFile.idArchivoEnProceso
       };
-      let result = this.jar.execJson(this.jarSwat.NAME, this.jarSwat.METHOD.CONSULT_FILE, params);
+      let result = this.jar.execJsonProxy(this.jarSwat.NAME, this.jarSwat.METHOD.CONSULT_FILE, params);
       result.then((response) => {
         this.$localStorage.validateFile = Object.assign(this.$localStorage.validateFile, response);
         if (response.estado==null || response.estado === this.OPTIONS.SETTLEMENT.VALIDATE_FILE_ENUM.EN_PROCESO || response.estado === this.OPTIONS.SETTLEMENT.VALIDATE_FILE_ENUM.INICIO_VALIDACION_BDUA) {
@@ -362,7 +362,7 @@ namespace app.jar {
           periodoNoSalud: this.$localStorage.validateFile.periodPension
         }
       };
-      return this.jar.execJson(this.jarSwat.NAME, this.jarSwat.METHOD.PUT_PAYROLL, params);
+      return this.jar.execJsonProxy(this.jarSwat.NAME, this.jarSwat.METHOD.PUT_PAYROLL, params);
     }
 
   }
