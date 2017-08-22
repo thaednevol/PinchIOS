@@ -138,6 +138,23 @@ public final class ServiceRequestProvider {
 	private static void initializeProxyAuthenticator() {
 		final String proxyUser = System.getProperty("http.proxyUser"); 
 		final String proxyPassword = System.getProperty("http.proxyPassword");
+		
+		if ( System.getProperty("http.proxyHost")!=null ){			
+			System.setProperty("https.proxyHost", System.getProperty("http.proxyHost"));		
+		}		
+		
+		if ( System.getProperty("http.proxyPort")!=null ){			
+			System.setProperty("https.proxyPort", System.getProperty("http.proxyPort"));		
+		}		
+		
+		if ( System.getProperty("http.proxyPassword")!=null ){			
+			System.setProperty("https.proxyPassword", System.getProperty("http.proxyPassword"));		
+		}		
+		
+		if ( System.getProperty("http.proxyUser")!=null ){			
+			System.setProperty("https.proxyUser", System.getProperty("http.proxyUser"));		
+		}
+		
 		if (proxyUser != null && proxyPassword != null) {
 			Authenticator.setDefault(new Authenticator() {
 				public PasswordAuthentication getPasswordAuthentication() {
