@@ -268,7 +268,7 @@ namespace app.settlement {
         token: this.$localStorage.token,
         reforma: this.info.reforma
       };
-      let result = this.serviceJar.execJson("pila-business", "getValidationFileConfig", params);
+      let result = this.serviceJar.execJsonProxy("pila-business", "getValidationFileConfig", params);
       result.then((data) => {
         if (data.code === "00") {
           let fileProcess = this.serviceFile.createFileOptions("archivoEnProcesoDTO.json", data.archivoEnProcesoDTO);
