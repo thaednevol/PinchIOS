@@ -57,13 +57,6 @@ namespace app.native {
       this.OPTIONS = OPTIONS;
       this.$filter = $filter;
       this.file = file;
-      let pathFile = this.file.getPathOptions(this.OPTIONS.FILES.PROXY_CONFIG);
-      if (this.file.validatePath(pathFile) != null) {
-        let result = this.file.getContentFileJson(pathFile);
-        result.then((data) => {
-          this.dataProxy = data;
-        });
-      }
     }
 
     /**
@@ -133,20 +126,31 @@ namespace app.native {
     * @return {Promise} Resultado entregado por la función this.execCommand().
     */
     public execJsonProxy(nameJar: string, event: string = null, dataJson: any = null): any {
-      let pathFile = this.file.getPathOptions(this.OPTIONS.FILES.PROXY_CONFIG);
-      if (this.file.validatePath(pathFile) != null) {
-        let result = this.file.getContentFileJson(pathFile);
-        result.then((data) => {
-          this.dataProxy = data;
-        });
-        if ((this.dataProxy != null && this.dataProxy.useProxy) || (result != null)) {
-          return this.execStringProxy(nameJar, event, JSON.stringify(dataJson).replace(/\"/g, "\\\""));
+      return new Promise((resolve, reject) => {
+        let pathFile = this.file.getPathOptions(this.OPTIONS.FILES.PROXY_CONFIG);
+        if (this.file.validatePath(pathFile) != null) {
+          let result = this.file.getContentFileJson(pathFile);
+          result.then((data) => {
+            this.dataProxy = data;
+            if (this.dataProxy != null && this.dataProxy.useProxy) {
+              let prueba = this.execStringProxy(nameJar, event, JSON.stringify(dataJson).replace(/\"/g, "\\\""));
+              prueba.then((data_proxy) =>{
+                resolve(data_proxy);
+              });
+            } else {
+              let prueba = this.execString(nameJar, event, JSON.stringify(dataJson).replace(/\"/g, "\\\""));
+              prueba.then((data_noproxy) =>{
+                resolve(data_noproxy);
+              });
+            }
+          });
         } else {
-          return this.execString(nameJar, event, JSON.stringify(dataJson).replace(/\"/g, "\\\""));
+          let prueba = this.execString(nameJar, event, JSON.stringify(dataJson).replace(/\"/g, "\\\""));
+          prueba.then((data_noproxy) =>{
+            resolve(data_noproxy);
+          });
         }
-      } else {
-        return this.execString(nameJar, event, JSON.stringify(dataJson).replace(/\"/g, "\\\""));
-      }
+      });
     }
 
     /**
