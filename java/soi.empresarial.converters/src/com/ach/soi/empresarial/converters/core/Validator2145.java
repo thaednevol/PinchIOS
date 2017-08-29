@@ -58,10 +58,8 @@ public class Validator2145 {
 	        }
 	        
         } catch (Exception e) {
-        	System.out.println("Exception: " + e.getMessage());
-        } finally{
-        	
-        }
+        	throw new Exception("Errro en el metodo validarArchivo2145", e);
+        } 
         return errorHandler.getErrors().toArray(new ErrorValidacionTO[0]);
 	}
 }

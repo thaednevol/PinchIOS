@@ -51,9 +51,9 @@ public class Validator1747 {
 	        	
 	        }
 	        
-        }finally{
-        	
-        }
+        }catch (Exception e) {
+			throw new Exception("Errro en el metodo validarArchivo1747", e);
+		}
         return errorHandler.getErrors().toArray(new ErrorValidacionTO[0]);
 	}
  

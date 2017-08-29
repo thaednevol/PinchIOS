@@ -1,8 +1,14 @@
 package co.swatit.pilabusiness.services;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import org.apache.log4j.Logger;
 
+import com.google.gson.Gson;
+
 import co.swatit.pilabusiness.business.ApplicationBO;
+import co.swatit.pilabusiness.util.transfer.ErrorTO;
 import co.swatit.pilabusiness.utils.LogFileGenerator;
 import co.swatit.pilabusiness.utils.ResponseUtil;
 import co.swatit.pilabusiness.utils.enums.ServiceNameEnum;
@@ -92,8 +98,20 @@ public final class ApplicationMain {
 			}
 			System.out.println(response);
 		}catch ( Exception e ){
-			System.out.println("ERROR");
-			LOGGER.error("Error de invocación", e);
+			ErrorTO errorTO = new ErrorTO();
+			errorTO.setCode("Error Inesperado");
+			StringWriter errors = new StringWriter();
+			e.printStackTrace(new PrintWriter(errors));
+			errorTO.setStackTrace(errors.toString());
+			errorTO.setMessageError(e.getCause()!= null?e.getCause().toString():e.getMessage());
+			errorTO.setFunctionFail("pila.business module");
+			Gson gson = new Gson();
+			if(errorTO.getMessageError() == null) {
+				errorTO.setMessageError(errorTO.getStackTrace());
+			}
+			String response = gson.toJson(errorTO);
+			System.out.println(response);
+			LOGGER.error("Error de invocaciï¿½n", e);
 		}
 	}
 	

@@ -55,6 +55,8 @@
     "app/webapp/ts/app/support/support.table.component.ts",
     "app/webapp/ts/app/support/support.load.component.ts",
     "app/webapp/ts/app/support/support.config.emails.component.ts",
+    "app/webapp/ts/app/exceptions/ach.exceptions.ts",
+    "app/webapp/ts/app/exceptions/handlerexception.component.ts",
     "app/webapp/ts/app/table/listTable.component.ts",
     "app/webapp/ts/app/table/tableEdit.component.ts",
     "app/webapp/ts/configs/configs.angular.ts",
