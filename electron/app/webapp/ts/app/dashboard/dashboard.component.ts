@@ -132,8 +132,11 @@ namespace app.dashboard {
         this.initializeServer();
       });
       this.getDataTableServerFromFile();
-      this.getDataTableLocal();
+      this.listTableServer = [];
+      this.listTableLocal = [];
+
       this.getDataAcount();
+      this.getDataTableLocal();
       // Validación para detectar conexión a internet.
       if (navigator.onLine) {
         this.token.validate(() => { this.getDataTableServer(); });
@@ -163,7 +166,7 @@ namespace app.dashboard {
         // Se almacena la información de las planillas entregadas por la promesa de la petición.
         this.listTableServer = data.listFilteredPayrollsDetails;
         this.$scope.$digest();
-        this.saveDataTableServer();
+        //this.saveDataTableServer();
       });
     }
 
@@ -198,7 +201,7 @@ namespace app.dashboard {
         valorPagado: this.$filter("translate")("DASHBOARD.TABLE.LABELS.AMOUNT_PAID"),
       };
       // Carga la respueste de la promesa que retorna la ruta de los archivos de planillas liquidadas
-      let pathFile = this.file.getPathOptions(this.OPTIONS.FILES.TEMPLATES.SERVER);
+      /*let pathFile = this.file.getPathOptions(this.OPTIONS.FILES.TEMPLATES.SERVER);
       if (pathFile) {
         // Se extrae la información del archivo de planillas liquidadas.
         let result = this.file.getContentFileJson(pathFile);
@@ -206,7 +209,7 @@ namespace app.dashboard {
           this.listTableServer = data;
           this.$scope.$digest();
         });
-      }
+      }*/
     }
 
     /**
@@ -280,6 +283,8 @@ namespace app.dashboard {
         typeCompany: typeCompany,
         classCompany: classCompany
       };
+
+      this.file.validateFolderApp(code+"_"+numberId);
     }
 
   }

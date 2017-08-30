@@ -63,14 +63,21 @@ namespace app.native {
     private exec: any = require("child_process").exec;
     private $rootScope: any;
     private $filter: any;
-    static $inject = ["native.notification.service", "$rootScope", "$filter", "OPTIONS"];
+    private $localStorage: any;
+    static $inject = ["native.notification.service", "$rootScope", "$filter","$localStorage", "OPTIONS"];
 
-    constructor(notificationService, $rootScope, $filter, OPTIONS) {
+    constructor(notificationService, $rootScope, $filter, $localStorage, OPTIONS) {
       this.notificationService = notificationService;
       this.$rootScope = $rootScope;
       this.$filter = $filter;
+      this.$localStorage = $localStorage;
       this.OPTIONS = OPTIONS;
-      this.validateFolderApp();
+      if ( this.$localStorage!=null && this.$localStorage.authenticatedUserDTO!=null ){
+        this.validateFolderApp(this.$localStorage.authenticatedUserDTO.informacionAportantePlanillaDTO.codSoiTpIdentificacion+"-"+this.$localStorage.authenticatedUserDTO.informacionAportantePlanillaDTO.numeroIdentificacion);
+      }
+      else{
+        this.validateFolderApp("");
+      }
     }
 
     /**
@@ -79,7 +86,7 @@ namespace app.native {
     * Valida si la carpeta de la aplicación existe, almacena la ruta completa de
     * la carpeta, si esta no existe es creada por el sistema.
     */
-    private validateFolderApp(): void {
+    public validateFolderApp(nroIdentificacionAportante): void {
       // Valida la carpeta de la aplicación
       let homeFolder: string = process.env.USERPROFILE || process.env.HOME;
       this.folders.app = this.path.join(homeFolder, this.OPTIONS.FOLDERS.ROOT);
@@ -97,10 +104,10 @@ namespace app.native {
       this.folders.files = this.path.join(this.folders.app, this.OPTIONS.FOLDERS.TEMPLATES.MAIN);
       this.createFolder(this.folders.files);
       // Archivos del historial del convertidor
-      this.folders.convert = this.path.join(this.folders.files, this.OPTIONS.FOLDERS.TEMPLATES.CONVERT);
+      this.folders.convert = this.path.join(this.folders.files, this.OPTIONS.FOLDERS.TEMPLATES.CONVERT,nroIdentificacionAportante);
       this.createFolder(this.folders.convert);
       // Archivos del historial de liquidar
-      this.folders.settlement = this.path.join(this.folders.files, this.OPTIONS.FOLDERS.TEMPLATES.SETTLEMENT);
+      this.folders.settlement = this.path.join(this.folders.files, this.OPTIONS.FOLDERS.TEMPLATES.SETTLEMENT,nroIdentificacionAportante);
       this.createFolder(this.folders.settlement);
       // Carpeta con archivos temporales
       this.folders.temp = this.path.join(this.folders.files, this.OPTIONS.FOLDERS.TEMPLATES.TEMP);
@@ -169,7 +176,7 @@ namespace app.native {
     * @return {Promise} Retorna una promesa, como parametro entrega un array.
     * @see this.loadFilesOfFolder();
     */
-    public loadConvertFiles(): any {
+    public loadConvertFiles(identificacionAportante): any {
       return this.loadFilesOfFolder(this.folders.convert);
     }
 
