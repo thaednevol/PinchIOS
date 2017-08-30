@@ -341,13 +341,11 @@ namespace app.settlement {
           this.applyCorrections();
         });
       }, (response) => {
-        if (response.data.data.error) {
           let title = this.$filter("translate")("MESSAGES.TITLES.ERROR");
-          this.nativeNotification.show(title, response.data.data.message);
+          this.nativeNotification.show(title, "Error inesperado al conectarse al liquidador");
           this.showLoading = false;
           this.file.data = null;
           return;
-        }
       });
     }
 
