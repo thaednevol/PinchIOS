@@ -24,7 +24,12 @@ var filesLoaded = 0;
  */
 function loadJsonOptions() {
   var routeFile = path.join(dirData, "options.json");
-  return fs.readFile(routeFile, "utf8", function(error, data) {
+  var data = fs.readFileSync(routeFile, "utf8");
+  const ipcRenderer = require("electron").ipcRenderer;
+  global.globalOptions = JSON.parse(data);
+  loadComplete();
+  return;
+  /*return fs.readFile(routeFile, "utf8", function(error, data) {
     const ipcRenderer = require("electron").ipcRenderer;
     if (error || data === "") {
       return loadJsonOptions();
@@ -32,7 +37,7 @@ function loadJsonOptions() {
     global.globalOptions = JSON.parse(data);
     loadComplete();
     return;
-  });
+  });*/
 }
 
 /**
@@ -42,14 +47,18 @@ function loadJsonOptions() {
  */
 function loadJsonRoutes() {
   var routeFile = path.join(dirData, "routes.json");
-  return fs.readFile(routeFile, "utf8", function(error, data) {
+  var data = fs.readFileSync(routeFile, "utf8");
+  global.globalRoutes = JSON.parse(data);
+  loadComplete();
+  return;
+  /*return fs.readFile(routeFile, "utf8", function(error, data) {
     if (error || data === "") {
       return loadJsonRoutes();
     }
     global.globalRoutes = JSON.parse(data);
     loadComplete();
     return;
-  });
+  });*/
 }
 
 /**
@@ -60,14 +69,18 @@ function loadJsonRoutes() {
  */
 function loadJsonForms() {
   var routeFile = path.join(dirData, "forms.json");
-  return fs.readFile(routeFile, "utf8", function(error, data) {
+  var data = fs.readFileSync(routeFile, "utf8");
+  global.globalForms = JSON.parse(data);
+  loadComplete();
+  return;
+  /*return fs.readFile(routeFile, "utf8", function(error, data) {
     if (error || data === "") {
       return loadJsonForms();
     }
     global.globalForms = JSON.parse(data);
     loadComplete();
     return;
-  });
+  });*/
 }
 
 /**
@@ -77,14 +90,18 @@ function loadJsonForms() {
  */
 function loadJsonMenus() {
   var routeFile = path.join(dirData, "menus.json");
-  return fs.readFile(routeFile, "utf8", function(error, data) {
+  var data = fs.readFileSync(routeFile, "utf8");
+  global.globalMenus= JSON.parse(data);
+  loadComplete();
+  return;
+  /*return fs.readFile(routeFile, "utf8", function(error, data) {
     if (error || data === "") {
       return loadJsonForms();
     }
     global.globalMenus= JSON.parse(data);
     loadComplete();
     return;
-  });
+  });*/
 }
 
 /**
