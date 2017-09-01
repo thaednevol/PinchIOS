@@ -2,12 +2,19 @@ package com.ach.soi.empresarial.converters.core;
 
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.Locale;
+
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.RollingFileAppender;
 
 import com.ach.soi.empresarial.converters.exception.ErrorTO;
 import com.ach.soi.empresarial.converters.model.Archivo2388TO;
@@ -20,9 +27,36 @@ import com.ach.soi.empresarial.converters.utils.Constants;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
-public class ConverterPila {
+import co.swatit.pilautil.generics.PropertyLoader;
+import co.swatit.pilautil.generics.Validation;
 
+public class ConverterPila {
 	
+	private static Logger logger = getLogger();
+
+	private static Logger getLogger ( ){
+		String path = System.getenv().get("LOG_PILA");
+        if (!Validation.isNullOrEmpty(path)) {
+	    	 // creates pattern layout
+	        PatternLayout layout = new PatternLayout();
+	        layout.setConversionPattern("[%p] %d %c %M - %m%n");
+	
+	        // creates daily rolling file appender
+	        RollingFileAppender rollingAppender = new RollingFileAppender();
+	        rollingAppender.setFile(path);
+	        rollingAppender.setLayout(layout);
+	        rollingAppender.setMaxFileSize("4MB");
+	        rollingAppender.setMaxBackupIndex(2);
+	        rollingAppender.activateOptions();
+	
+	        // configures the root logger
+	        Logger rootLogger = Logger.getLogger("soi.empresarial.converter");
+	        rootLogger.setLevel(Level.TRACE);
+	        rootLogger.addAppender(rollingAppender);
+	        return rootLogger;
+        }
+        return null;
+    }
 	
 	public static void main ( String ars[] ){
 		ConverterPila conv = new ConverterPila();
@@ -78,16 +112,24 @@ public class ConverterPila {
 				}
 			}
 			if ( method.equals("validarArchivoPila") ){
+				logger.info("entra al metodo validarArchivoPila");
 				out.println(conv.validarArchivoPila(request));
+				logger.info("sale del metodo validarArchivoPila");
 			}
-			else if ( method.equalsIgnoreCase("convertirArchivoA2388") ){			
+			else if ( method.equalsIgnoreCase("convertirArchivoA2388") ){	
+				logger.info("entra al metodo convertirArchivoA2388");
 				out.println(conv.convertirArchivoA2388(request));
+				logger.info("sale del metodo leerArchivo2388");
 			}
-			else if ( method.equalsIgnoreCase("escribirArchivo2388") ){			
+			else if ( method.equalsIgnoreCase("escribirArchivo2388") ){	
+				logger.info("entra al metodo escribirArchivo2388");
 				out.println(conv.escribirArchivo2388(request));
+				logger.info("sale del metodo escribirArchivo2388");
 			}
-			else if ( method.equalsIgnoreCase("leerArchivo2388") ){			
+			else if ( method.equalsIgnoreCase("leerArchivo2388") ){
+				logger.info("entra al metodo leerArchivo2388");
 				out.println(conv.leerArchivo2388(request));
+				logger.info("sale del metodo leerArchivo2388");
 			}
 		}catch (Exception e) {
 			ErrorTO errorTO = new ErrorTO();
@@ -103,6 +145,7 @@ public class ConverterPila {
 			}
 			String response = gson.toJson(errorTO);
 			out.println(response);
+			logger.error("Error Inesperado en el comvertidor",e);
 		}
 	}
 	

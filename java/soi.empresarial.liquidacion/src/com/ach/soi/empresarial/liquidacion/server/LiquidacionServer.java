@@ -9,6 +9,7 @@ import org.apache.log4j.PatternLayout;
 import org.apache.log4j.RollingFileAppender;
 import org.springframework.boot.SpringApplication;
 
+import co.swatit.pilautil.generics.PropertyLoader;
 import co.swatit.pilautil.generics.Validation;
 
 
@@ -36,8 +37,10 @@ public class LiquidacionServer {
             RollingFileAppender rollingAppender = new RollingFileAppender();
             rollingAppender.setFile(path);
             rollingAppender.setLayout(layout);
-            rollingAppender.setMaxFileSize("10MB");
-            rollingAppender.setMaxBackupIndex(6);
+            String sizes = null;
+	        Integer numFiles = null;
+	        rollingAppender.setMaxFileSize("4MB");
+	        rollingAppender.setMaxBackupIndex(2);
             rollingAppender.activateOptions();
 
             // configures the root logger

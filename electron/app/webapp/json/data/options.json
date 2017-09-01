@@ -108,7 +108,7 @@
   },
 
   "LOGS": {
-    "SIZE": 1000000,
+    "SIZE": 4000000,
     "NAME": "electron.log"
   },
 
