@@ -50,7 +50,7 @@ namespace app.native {
     private $filter: any;
     private exec: any = require("child_process").exec;
     private path: any = require("path");
-    static $inject = ["native.debug.service", "OPTIONS", "$filter", "native.file.service"];
+    static $inject = ["logger", "OPTIONS", "$filter", "native.file.service"];
 
     constructor(debug, OPTIONS, $filter, file) {
       this.debug = debug;
@@ -227,7 +227,7 @@ namespace app.native {
     */
     private execCommand(command: string): any {
       if (!command || command === "") return;
-      this.debug.info(`command: ${command}`);
+      this.debug.debug(`command: ${command}`);
       return new Promise((resolve, reject) => {
         let optionsCommand = {
           maxBuffer: this.OPTIONS.JAR.BUFFER_EXEC,

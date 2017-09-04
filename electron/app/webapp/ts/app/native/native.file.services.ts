@@ -99,6 +99,7 @@ namespace app.native {
       this.folders.log = this.path.join(this.folders.app, this.OPTIONS.FOLDERS.LOGS);
       this.createFolder(this.folders.log);
       this.createEnvLogs();
+      this.createEnvCommand();
       this.createEnvJar();
       // Carpeta para almacenar archivos.
       this.folders.files = this.path.join(this.folders.app, this.OPTIONS.FOLDERS.TEMPLATES.MAIN);
@@ -140,6 +141,18 @@ namespace app.native {
     private createEnvLogs(): void {
       let pathFileLog = this.path.join(this.folders.log, this.OPTIONS.FILES.LOGS);
       process.env.LOG_PILA = pathFileLog;
+    }
+
+    /**
+    * @private
+    * @description
+    * Crea la ruta donde se almacena el archivo de log, este es almacenado en
+    * una variable de entorno para ser llamada desde el JAR de SWAT para
+    * registrar los eventos de comandos.
+    */
+    private createEnvCommand(): void {
+      let pathFileLog = this.path.join(this.folders.log, this.OPTIONS.LOGS.NAME);
+      process.env.LOG_PILA_ELECTRON = pathFileLog;
     }
 
     /**

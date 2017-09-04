@@ -13,7 +13,7 @@ import co.swatit.pilabusiness.utils.LogFileGenerator;
 import co.swatit.pilabusiness.utils.ResponseUtil;
 import co.swatit.pilabusiness.utils.enums.ServiceNameEnum;
 import co.swatit.pilautil.constants.NumberConstants;
-import co.swatit.pilautil.dto.out.GetValidateFileOutDTO;
+import co.swatit.pilautil.dto.out.GetValidateFileOutDTO; 
 import co.swatit.pilautil.exception.BusinessException;
 import co.swatit.pilautil.exception.ErrorMessagesLoader;
 import co.swatit.pilautil.exception.codeenum.CodeErrorEnum;
