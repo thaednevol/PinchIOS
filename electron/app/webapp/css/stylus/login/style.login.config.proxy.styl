@@ -1,0 +1,164 @@
+.login-proxy
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  &__card
+    display: flex;
+    flex-direction: column;
+    background: white;
+    width: 500px;
+    height: 300px;
+    left: calc(50% - 350px);
+    top: calc(50% - 250px);
+    z-index: 999;
+    padding: 10px;
+    border-radius: 2px;
+    border: 1px solid #b5bdd2;
+    align-items: center;
+  &__modal
+    background: rgba(182, 182, 182, 0.65);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+  &__close
+    position: relative;
+    top: 0px;
+    right: 0;
+    cursor: pointer;
+    width: 100%;
+    i
+      position: absolute;
+      top: -33px;
+      right: -28px;
+      font-size: 35px;
+      color: red;
+  &__title
+    width: 100%;
+    padding-left: 10px;
+    padding-bottom: 12px
+    border-bottom: 1px solid #b5bdd2;
+    color: #bababa;
+    font-size: 22px
+  &__content
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #b5bdd2;
+    justify-content: center;
+  &__bottons
+    display:flex;
+    justify-content: flex-end;
+    width: 100%;
+    padding: 0;
+    margin-top: 20px;
+    padding-bottom: 20px;
+  &__action
+    width: 100px;
+    margin-left: 5px;
+  &__form
+    display: flex;
+    flex-direction: row;
+    width: 435px;
+    max-width: 435px;
+    padding-left:20px;
+    &-item-row-one
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      font-size: 14px;
+      margin-bottom: 10px;
+      align-items: center;
+      padding-top: 10px;
+      span
+        max-width: 150px;
+        min-width: 100px;
+        width: 28%;
+        margin-right: 10px;
+        &:focus
+          border-color: #66afe9 !important;
+          box-shadow: inset 0 1px 1px rgba(0,0,0,0.075), 0 0 8px rgba(102,175,233,0.6);
+    &-item-row-two
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      font-size: 14px;
+      margin-bottom: 10px;
+      align-items: center;
+      padding-top: 10px;
+      input
+        max-width: 250px;
+        width: 70%;
+        box-sizing: border-box;
+        height: 31px;
+        padding: 8px 12px;
+        font-size: 13px;
+        color: #555;
+        background-color: white;
+        border-radius: 2px;
+        border: 1px solid #B0AFAF;
+        box-sizing: border-box;
+        &:focus
+          border-color: #66afe9 !important;
+          box-shadow: inset 0 1px 1px rgba(0,0,0,0.075), 0 0 8px rgba(102,175,233,0.6);
+    &-item-row-three
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      font-size: 14px;
+      margin-bottom: 10px;
+      align-items: center;
+      padding-top: 10px;
+      span
+        max-width: 5px;
+        width: 28%;
+        margin-right: 10px;
+        &:focus
+          border-color: #66afe9 !important;
+          box-shadow: inset 0 1px 1px rgba(0,0,0,0.075), 0 0 8px rgba(102,175,233,0.6);
+    &-item-row-four
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      font-size: 14px;
+      margin-bottom: 10px;
+      align-items: center;
+      padding-top: 10px;
+      input
+        max-width: 250px;
+        width: 70%;
+        box-sizing: border-box;
+        height: 31px;
+        padding: 8px 12px;
+        font-size: 13px;
+        color: #555;
+        background-color: white;
+        border-radius: 2px;
+        border: 1px solid #B0AFAF;
+        box-sizing: border-box;
+        &:focus
+          border-color: #66afe9 !important;
+          box-shadow: inset 0 1px 1px rgba(0,0,0,0.075), 0 0 8px rgba(102,175,233,0.6);
+    &__form-checkbox
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      margin-bottom: 10px;
+    // Si se agregan campos vacios o de un formato que no es adecuado
+    &--error
+      border-color: red !important;
+    &-check
+      justify-content: flex-start !important;
+      input
+        max-width: 20px;
+        max-height: 20px;
+  &__button
+    max-width: 210px;
+    border: 0px solid #0079c0 !important;

@@ -70,6 +70,12 @@ namespace app.login {
     */
     private FORMS: any;
 
+    /**
+    * @type {Boolean} showConfigProxy - Indica si se debe hacer visible el
+    * formulario de configuracion de proxy.
+    */
+    public showConfigProxy: Boolean = false;
+
     private $localStorage: any;
     private $state: any;
     private $rootScope: any;
@@ -102,8 +108,8 @@ namespace app.login {
     */
     private defaultValueForm(): void {
       this.form = {
-        typeCompany: 0,
-        typeUser: 0,
+        typeCompany: 2,
+        typeUser: 1,
         user: "",
         company: "",
         password: ""

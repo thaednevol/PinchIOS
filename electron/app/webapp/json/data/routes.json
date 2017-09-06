@@ -11,6 +11,12 @@
     "component": "login"
   },
 
+  "loginConfigProxy": {
+    "name": "loginConfigProxy",
+    "url": "/login-config-proxy",
+    "component": "loginConfigProxy"
+  },
+
   "dashboard": {
     "name": "dashboard",
     "url": "/dashboard",

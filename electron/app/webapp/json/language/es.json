@@ -9,6 +9,7 @@
       "PASSWORD": "Contraseña",
       "DO_NOT_SING_OUT": "No cerrar sesión",
       "LOGIN": "INGRESAR",
+      "USAR_PROXY": "Usar Proxy",
       "SELECTS": {
         "TYPE_DOC": "Tipo Documento",
         "CC": "Cédula de Ciudadanía",
@@ -18,6 +19,15 @@
         "RC": "Registro Civil",
         "TI": "Tarjeta de Identidad",
         "NIT": "Nit"
+      },
+      "PROXY" :{
+        "TITLE" : "Configurar Proxy",
+        "SERVER" :  "Servidor Proxy:",
+        "USER" : "Usuario:",
+        "PASS" : "Password:",
+        "CANCEL" : "Cancelar",
+        "ACCEPT" : "Aceptar",
+        "TWOPOINT":":"
       }
     }
   },

@@ -1,0 +1,32 @@
+.login-proxy(ng-if="$ctrl.showConfigProxy")
+  .login-proxy__modal
+  .login-proxy__card
+    .login-proxy__close(ng-click="$ctrl.actionCloseProxyConfig()")
+      i.mdi-close-circle.mdi
+
+    .login-proxy__title
+      span(ng-bind="'LOGIN.FORM.PROXY.TITLE' | translate")
+    .login-proxy__content
+
+      .login-proxy__form
+        .login-proxy__form-checkbox
+          input(ng-model="$ctrl.form.useProxy" type="checkbox" tabindex="1")
+          span(ng-bind="'LOGIN.FORM.USAR_PROXY' | translate")
+      .login-proxy__form
+        .login-proxy__form-item-row-one
+          span(ng-bind="'LOGIN.FORM.PROXY.SERVER' | translate")
+          span(ng-bind="'LOGIN.FORM.PROXY.USER' | translate")
+          span(ng-bind="'LOGIN.FORM.PROXY.PASS' | translate")
+        .login-proxy__form-item-row-two
+          input(ng-model="$ctrl.form.server" ng-disabled="!$ctrl.form.useProxy" ng-class="{'login-proxy__form--error': $ctrl.errorForm['server']}" tabindex="2")
+          input(ng-model="$ctrl.form.user"  ng-disabled="!$ctrl.form.useProxy" ng-class="{'login-proxy__form--error': $ctrl.errorForm['user']}" tabindex="4")
+          input( type="password" ng-model="$ctrl.form.pass" ng-disabled="!$ctrl.form.useProxy" ng-class="{'login-proxy__form--error': $ctrl.errorForm['pass']}" tabindex="5")
+        .login-proxy__form-item-row-three
+          span(ng-bind="'LOGIN.FORM.PROXY.TWOPOINT' | translate")
+        .login-proxy__form-item-row-four
+          input(ng-model="$ctrl.form.port"  ng-disabled="!$ctrl.form.useProxy" ng-class="{'login-proxy__form--error': $ctrl.errorForm['port']}" tabindex="3")
+    .login-proxy__bottons
+      .login-proxy__action.sy__button--blue.sy__button--capitalize(ng-click="$ctrl.actionCloseProxyConfig()" tabindex="6")
+        span(ng-bind="'LOGIN.FORM.PROXY.CANCEL' | translate")
+      .login-proxy__action.sy__button--blue.sy__button--capitalize(ng-click="$ctrl.actionSaveConfig()" tabindex="7")
+        span(ng-bind="'LOGIN.FORM.PROXY.ACCEPT' | translate")

@@ -1,3 +1,5 @@
+login-config-proxy(show-loading="$ctrl.showLoading" show-config-proxy="$ctrl.showConfigProxy")
+
 .login
 
   .login__container
@@ -43,6 +45,7 @@
         .login__form-checkbox
           input(ng-model="$ctrl.form.saveSession" type="checkbox" name="claveUsuario" tabindex="6")
           span(ng-bind="'LOGIN.FORM.DO_NOT_SING_OUT' | translate")
+          .login__link(ng-bind="'LOGIN.FORM.USAR_PROXY' | translate" ng-click="$ctrl.showConfigProxy = true" )
 
         //- Mensaje de error en proceso de login
         .login__form-error(ng-if="$ctrl.messageError")
