@@ -31,6 +31,7 @@
     "app/webapp/ts/app/loading/loading.component.ts",
     "app/webapp/ts/app/login/login.component.ts",
     "app/webapp/ts/app/login/login.service.ts",
+    "app/webapp/ts/app/login/login.config.proxy.component.ts",
     "app/webapp/ts/app/login/login.token.service.ts",
     "app/webapp/ts/app/menu/menu.component.ts",
     "app/webapp/ts/app/menu/menu.service.ts",
