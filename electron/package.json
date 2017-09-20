@@ -1,6 +1,6 @@
 {
   "name": "SOI-Clic",
-  "version": "2.4.6",
+  "version": "2.4.8",
   "description": "Proyecto encargado de gestionar planillas de pago PILA para ACH",
   "author": "ACH Colombia <info@ach.com.co>",
   "main": "main.js",

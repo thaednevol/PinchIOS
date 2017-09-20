@@ -6,6 +6,7 @@ package co.swatit.pilautil.dto.out;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,6 +71,8 @@ public class ValidacionArchivoDataSourceDTO implements Serializable {
 	private List<AdministradoraDTO> administradorasRiesgoYCcf;
 	private String fechaPagoOportuno;
 	private Map<String, String> properties;
+	
+	private Collection<AplicabilidadDTO> tiposPlanillaApte = null;
 
 	/**
 	 * Método getter del atributo registrosAplicabilidadApte de la clase ValidacionArchivoDataSourceDTO
@@ -630,6 +633,17 @@ public class ValidacionArchivoDataSourceDTO implements Serializable {
 			properties = new HashMap<String, String>();
 		}
 		return properties;
+	}
+
+	public Collection<AplicabilidadDTO> getTiposPlanillaApte() {
+		if (tiposPlanillaApte == null) {
+			tiposPlanillaApte = new ArrayList<AplicabilidadDTO>();
+		}
+		return tiposPlanillaApte;
+	}
+
+	public void setTiposPlanillaApte(Collection<AplicabilidadDTO> tiposPlanillaApte) {
+		this.tiposPlanillaApte = tiposPlanillaApte;
 	}
 	
 	

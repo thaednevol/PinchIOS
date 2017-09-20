@@ -101,10 +101,14 @@ public class LiquidacionRestController {
 				lineReader.close();
 			}
             			
-			erroresLiq = liquidacion.completarPlanillaAportanteDTO(validacionPlanillaDd.getPlanillaApteDto(), regT01);
+			erroresLiq = liquidacion.completarPlanillaAportanteDTO(validacionPlanillaDd.getPlanillaApteDto(), regT01, archivoEnProceso,validacionPlanillaDd);
 			if ( erroresLiq!=null && erroresLiq.length>0 ){
 				LOGGER.error("Fin: Error en el registro tipo 1.");
-				resultado.setError(erroresLiq[0].getError());
+				String errores = "";
+				for(int i = 0;i<erroresLiq.length ; i++) {
+					errores  = errores+erroresLiq[i].getError()+"\n"; 
+				}
+				resultado.setError(errores);
 				resultado.setEstado("ERROR");
 				resultado.setPathResultadoJson("");
 				return resultado;

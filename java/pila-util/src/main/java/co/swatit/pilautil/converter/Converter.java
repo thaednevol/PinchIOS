@@ -1499,6 +1499,9 @@ public final class Converter {
 		for (com.ach.pla.biz.transfer.AplicabilidadDTO extranjeria : ejbObjectOutput.getExtranjerias()) {
 			wsOutputDTO.getExtranjerias().add(convertAplicabilidad(extranjeria));
 		}
+		for(com.ach.pla.biz.transfer.AplicabilidadDTO tipoPlanilla : ejbObjectOutput.getTiposPlanillaApte()) {
+			wsOutputDTO.getTiposPlanillaApte().add(convertAplicabilidad(tipoPlanilla));
+		}
 		LOGGER.info(Constants.LOG_CLASS_METHOD_EXIT + "co.swatit.pilautil.converter.Converter.getAplicabilityLists");
 	}
 

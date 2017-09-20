@@ -22,7 +22,9 @@ import com.ach.arc.biz.r1747.type.TipoInputImplType;
 import com.ach.arc.biz.r1747.util.ArchivoEntradaParser;
 import com.ach.arc.biz.r1747.util.ValidacionArchivoDataSource;
 import com.ach.arc.biz.transfer.ArchivoEnProcesoDTO;
+import com.ach.arc.biz.transfer.ArchivoNotificacionDTO;
 import com.ach.arc.biz.transfer.GrupoCotizantesDTO;
+import com.ach.arc.biz.validator.PlanillaArcPreValidador;
 import com.ach.arc.biz.validatorcfgs.PlanillaAportanteValidatorCfg;
 import com.ach.cfg.biz.cache.AdministradorasSingleton;
 import com.ach.cfg.biz.model.AdministradoraVO;
@@ -62,7 +64,8 @@ public class LiquidadorActivos {
 		}
 	}
 	
-	public ErrorLiquidacionTO[] completarPlanillaAportanteDTO ( PlanillaAportanteDTO planillaApteDto, String regT01 ) throws ApplicationException,Exception{
+	public ErrorLiquidacionTO[] completarPlanillaAportanteDTO ( PlanillaAportanteDTO planillaApteDto, String regT01 ,ArchivoEnProcesoDTO archivoEnProcesoDTO,
+			ValidacionArchivoDataSource validacionArchivoDataSource) throws ApplicationException,Exception{
 		
 		PlanillaRegT01 bean01 = null;
 		
@@ -74,14 +77,33 @@ public class LiquidadorActivos {
 			mn.inicializarMio(regT01);
 			bean01 = (PlanillaRegT01)mn.getNextRecord();
 			this.completarPlanillaAportanteDTODePlanillaRegT01(bean01, planillaApteDto);
+			this.validarRegistroTp01(bean01, planillaApteDto, archivoEnProcesoDTO,validacionArchivoDataSource);
 		}catch ( ApplicationException e ){
-			err = crearRegistroErrorLexicoSintacticoRegistro(e,null, 1 ,1);				
-			errores.add(err);			
+			for(ApplicationException exc : e.getAppExceptionSet()) {
+				err = crearRegistroErrorLexicoSintacticoRegistro(exc,null, 1 ,1);				
+				errores.add(err);							
+			}
 		}
 		return errores.toArray(new ErrorLiquidacionTO[0]);				
 	}
 	
 	
+	private void validarRegistroTp01(PlanillaRegT01 bean01, PlanillaAportanteDTO planillaApteDto,ArchivoEnProcesoDTO archivoEnProcesoDTO,
+			ValidacionArchivoDataSource validacionArchivoDataSource) throws ApplicationException {
+		PlanillaArcPreValidador planillaArcPreValidador = new PlanillaArcPreValidador(validacionArchivoDataSource);
+		ArchivoNotificacionDTO  archivoNotificacionDTO = new ArchivoNotificacionDTO();
+		archivoNotificacionDTO.setActualizarNombre(false);
+		archivoNotificacionDTO.setIdAportante(archivoEnProcesoDTO.getIdAportante());
+		archivoNotificacionDTO.setIdSegUsuario(archivoEnProcesoDTO.getIdSegUsuario());
+		archivoNotificacionDTO.setNombreArchivo(archivoEnProcesoDTO.getNombreArchivo());
+		archivoNotificacionDTO.setEsPlanillaTipoU(archivoEnProcesoDTO.isEsPlanillaTipoU());
+		archivoNotificacionDTO.setProcesoEdicion(false);
+		archivoNotificacionDTO.setPlanillaSoiClick(true);
+		planillaArcPreValidador.aplicarRNBasicasParaTodosLosArchivos(planillaApteDto.getInformacionAportantePlanillaDTO(), bean01, archivoNotificacionDTO);
+		
+	}
+
+
 	private void completarPlanillaAportanteDTODePlanillaRegT01(
 								PlanillaRegT01 planillaRegT01,PlanillaAportanteDTO planillaAportanteDTO) throws ApplicationException {
 		LOGGER.info("inicio: completarPlanillaAportanteDTODePlanillaRegT01()");
