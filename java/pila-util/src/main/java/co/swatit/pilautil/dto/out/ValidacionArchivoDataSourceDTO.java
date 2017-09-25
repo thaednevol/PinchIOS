@@ -73,6 +73,8 @@ public class ValidacionArchivoDataSourceDTO implements Serializable {
 	private Map<String, String> properties;
 	
 	private Collection<AplicabilidadDTO> tiposPlanillaApte = null;
+	
+	private HashMap<String, AportanteFilialDTO> sucursalesAportanteMap 			= new HashMap<String, AportanteFilialDTO>();
 
 	/**
 	 * Método getter del atributo registrosAplicabilidadApte de la clase ValidacionArchivoDataSourceDTO
@@ -644,6 +646,18 @@ public class ValidacionArchivoDataSourceDTO implements Serializable {
 
 	public void setTiposPlanillaApte(Collection<AplicabilidadDTO> tiposPlanillaApte) {
 		this.tiposPlanillaApte = tiposPlanillaApte;
+	}
+	
+	public Collection<AportanteFilialDTO> getFilialesAportante ( ){
+		return this.sucursalesAportanteMap.values();
+	}
+	
+	public AportanteFilialDTO getFilialAportantePorCodigo ( String codigoFilial ){
+		return this.sucursalesAportanteMap.get(codigoFilial);
+	}
+	
+	public void addFilialAportante ( AportanteFilialDTO filial ){
+		this.sucursalesAportanteMap.put(filial.getCodigo(), filial);
 	}
 	
 	

@@ -318,6 +318,52 @@ public final class Converter {
 		}
 		return retorno;
 	}
+	
+	/**
+	 * 
+	 * Método que convierte un objeto {@link com.ach.apt.biz.transfer.AportanteFilialDTO} provisto por SOI en
+	 * {@link AportanteFilialDTO}
+	 *
+	 * @author SWAT-IT <br>
+	 *         Daniel Moncada Tabares <br>
+	 *         Email: dmoncada@swat-it.co
+	 * 
+	 * @date 14/02/2017
+	 *
+	 * @param ejbObjectOutput
+	 *            objeto {@link com.ach.apt.biz.transfer.AportanteFilialDTO} provisto por SOI
+	 * @return {@link AportanteFilialDTO} objeto con la información obtenida
+	 */
+	public static com.ach.apt.biz.transfer.AportanteFilialDTO convertAportanteFilial(AportanteFilialDTO ejbObjectOutput) {
+		LOGGER.info(Constants.LOG_CLASS_METHOD_NAME + "co.swatit.pilautil.converter.Converter.convertAportanteFilial");
+		com.ach.apt.biz.transfer.AportanteFilialDTO retorno = new com.ach.apt.biz.transfer.AportanteFilialDTO();
+		if (Validation.isNotNull(ejbObjectOutput)) {
+			retorno.setIdSoiFilial(ejbObjectOutput.getIdSoiFilial());
+			retorno.setIdSoiFilialUsuario(ejbObjectOutput.getIdSoiFilialUsuario());
+			retorno.setIdSoiAportante(ejbObjectOutput.getIdSoiAportante());
+			retorno.setIdSoiMunicipio(ejbObjectOutput.getIdSoiMunicipio());
+			retorno.setTipo(ejbObjectOutput.getTipo());
+			retorno.setVigenteFilial(ejbObjectOutput.getVigenteFilial());
+			retorno.setVigenteFilialUsuario(ejbObjectOutput.getVigenteFilialUsuario());
+			retorno.setVigenteDepartamento(ejbObjectOutput.getVigenteDepartamento());
+			retorno.setVigenteMunicipio(ejbObjectOutput.getVigenteMunicipio());
+			retorno.setCodigo(ejbObjectOutput.getCodigo());
+			retorno.setNombre(ejbObjectOutput.getNombre());
+			retorno.setCodigoMunicipio(ejbObjectOutput.getCodigoMunicipio());
+			retorno.setNombreMunicipio(ejbObjectOutput.getNombreMunicipio());
+			retorno.setIdSoiDepartamento(ejbObjectOutput.getIdSoiDepartamento());
+			retorno.setCodigoDepartamento(ejbObjectOutput.getCodigoDepartamento());
+			retorno.setNombreDepartamento(ejbObjectOutput.getNombreDepartamento());
+			retorno.setIdSoiSegUsuario(ejbObjectOutput.getIdSoiSegUsuario());
+			retorno.setEsAdministrador(ejbObjectOutput.getEsAdministrador());
+			retorno.setCantPlanillaFilial(ejbObjectOutput.getCantPlanillaFilial());
+			//retorno.setEventoSucursal(Utilities.getEnumName(ejbObjectOutput.getEventoSucursal()));
+			LOGGER.info(Constants.LOG_CLASS_METHOD_EXIT+ "co.swatit.pilautil.converter.Converter.convertAportanteFilial");
+		} else {
+			LOGGER.warn(Constants.LOG_NULL_PARAMETER + "ejbObjectOutput");
+		}
+		return retorno;
+	}
 
 	/**
 	 * 
@@ -1457,6 +1503,13 @@ public final class Converter {
 			if (Validation.isNotNull(ejbObjectOutput.getProperties())) {
 				retorno.getProperties().putAll(ejbObjectOutput.getProperties());
 			}
+			
+			if ( ejbObjectOutput.getFilialesAportante()!=null ){
+				for ( com.ach.apt.biz.transfer.AportanteFilialDTO apt:ejbObjectOutput.getFilialesAportante() ){
+					retorno.addFilialAportante(convertAportanteFilial(apt));
+				}
+			}
+			
 		} else {
 			LOGGER.warn(Constants.LOG_NULL_PARAMETER + "ejbObjectOutput");
 		}
