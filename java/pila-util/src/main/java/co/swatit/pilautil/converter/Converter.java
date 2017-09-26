@@ -1506,7 +1506,7 @@ public final class Converter {
 			
 			if ( ejbObjectOutput.getFilialesAportante()!=null ){
 				for ( com.ach.apt.biz.transfer.AportanteFilialDTO apt:ejbObjectOutput.getFilialesAportante() ){
-					retorno.addFilialAportante(convertAportanteFilial(apt));
+					retorno.getSucursalesAportante().add(convertAportanteFilial(apt));
 				}
 			}
 			

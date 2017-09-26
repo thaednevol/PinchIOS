@@ -129,11 +129,16 @@ public class LiquidacionRestController {
             return resultado;
                     
         } catch (Exception ioe){
+        	ioe.printStackTrace();
         	erroresLiq = new ErrorLiquidacionTO[0];
         	
         	LOGGER.error("Error", ioe);
         	ioe.printStackTrace();
-        	resultado.setError(erroresLiq[0].getError());
+        	if ( erroresLiq.length>1 ){
+        		resultado.setError(erroresLiq[0].getError());
+        	}else{
+        		resultado.setError(ioe.getMessage());
+        	}
 			resultado.setEstado("ERROR");
 			resultado.setPathResultadoJson("");
         	return resultado;

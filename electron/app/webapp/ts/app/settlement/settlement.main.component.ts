@@ -410,47 +410,53 @@ namespace app.settlement {
         nroLinea: nroLinea0
       };
       this.serviceSettlement.validateRegister(params).get().$promise.then((response) => {
-        let numberSequence = numberRegister + 1;
-        // Si la respuesta es correcta se procesa la carga de los errores de los campos
-        if (response.data.estadoSolicitud === "OK") {
-          let errors = response.data.erroresRegistros;
-          if (errors.length > 0) {
-            // Se valida si existe el campo para almacenar los errores del registros
-            if (!this.file.data.regsTp02.errors.hasOwnProperty(numberSequence)) {
-              this.file.data.regsTp02.errors[numberSequence] = [];
-            }
-            // Si esisten errores se indican en los registros de las tablas convirtiendo
-            // La estructura de array en objetos para que se pueda utilizar en la tabla
-            this.file.data.regsTp02.errors[numberSequence] = this.arrayErrorsToObject(errors);
-            this.file.data.regsTp02.corrected[numberSequence] = this.arrayErrorsToObject(errors);
 
-            //Aplica las correcciones
-            let currentRow = this.file.data.regsTp02[numberSequence];
-            let cols: any = Object.keys(this.file.data.regsTp02.errors[numberSequence]);
-            // Recorre cada columna de la fila para realizar la corrección.
-            for (let positionCol = 0; positionCol < cols.length; positionCol++) {
-              let currentCol = cols[positionCol];
-              let currentError = this.file.data.regsTp02.errors[numberSequence][currentCol];
-              // Se valida si existen sugerencias y si cuenta con la opción de autocorreción activa.
-              if (currentError.autocorregible && currentError.sugerencias.length > 0) {
-                this.file.data.regsTp02.corrected[numberSequence][currentCol].currentValue = this.file.data.regsTp02.registers[numberSequence - 1][`regs${currentCol - 1}`];
-                this.file.data.regsTp02.registers[numberSequence - 1][`regs${currentCol - 1}`] = currentError.sugerencias[0];
-                // Se elimina la información de la columna del error para evitar que se resalte la celda en la tabla.
-                delete this.file.data.regsTp02.errors[numberSequence][currentCol];
+        if (response.data.estadoSolicitud === "OK") {
+            let numberSequence = numberRegister;
+            for (let idx = 0; idx < regsForValidate.length; idx++) {
+              numberSequence = numberSequence + 1;
+              // Si la respuesta es correcta se procesa la carga de los errores de los campos
+              //obtiene los errores del registro actualiza
+              let errors = this.$filter("filter")(response.data.erroresRegistros, { linea: numberSequence + 1 }, true);
+              if (errors.length > 0) {
+                // Se valida si existe el campo para almacenar los errores del registros
+                if (!this.file.data.regsTp02.errors.hasOwnProperty(numberSequence)) {
+                  this.file.data.regsTp02.errors[numberSequence] = [];
+                }
+                // Si esisten errores se indican en los registros de las tablas convirtiendo
+                // La estructura de array en objetos para que se pueda utilizar en la tabla
+                this.file.data.regsTp02.errors[numberSequence] = this.arrayErrorsToObject(errors);
+                this.file.data.regsTp02.corrected[numberSequence] = this.arrayErrorsToObject(errors);
+
+                //Aplica las correcciones
+                let currentRow = this.file.data.regsTp02[numberSequence];
+                let cols: any = Object.keys(this.file.data.regsTp02.errors[numberSequence]);
+                // Recorre cada columna de la fila para realizar la corrección.
+                for (let positionCol = 0; positionCol < cols.length; positionCol++) {
+                  let currentCol = cols[positionCol];
+                  let currentError = this.file.data.regsTp02.errors[numberSequence][currentCol];
+                  // Se valida si existen sugerencias y si cuenta con la opción de autocorreción activa.
+                  if (currentError.autocorregible && currentError.sugerencias.length > 0) {
+                    this.file.data.regsTp02.corrected[numberSequence][currentCol].currentValue = this.file.data.regsTp02.registers[numberSequence - 1][`regs${currentCol - 1}`];
+                    this.file.data.regsTp02.registers[numberSequence - 1][`regs${currentCol - 1}`] = currentError.sugerencias[0];
+                    // Se elimina la información de la columna del error para evitar que se resalte la celda en la tabla.
+                    delete this.file.data.regsTp02.errors[numberSequence][currentCol];
+                  } else {
+                    currentError.currentValue = this.file.data.regsTp02.registers[numberSequence - 1][`regs${currentCol - 1}`];
+                  }
+                }
+                if (Object.keys(this.file.data.regsTp02.errors[numberSequence]).length === 0) {
+                  delete this.file.data.regsTp02.errors[numberSequence];
+                }
+                this.updateTotals();
+                this.updateInfoPanel();
               } else {
-                currentError.currentValue = this.file.data.regsTp02.registers[numberSequence - 1][`regs${currentCol - 1}`];
+                delete this.file.data.regsTp02.errors[numberSequence];
+                // Se actualiza la información del panel en el campo de errores.
+                this.updateTotals();
+                this.updateInfoPanel();
               }
-            }
-            if (Object.keys(this.file.data.regsTp02.errors[numberSequence]).length === 0) {
-              delete this.file.data.regsTp02.errors[numberSequence];
-            }
-            this.updateTotals();
-            this.updateInfoPanel();
-          } else {
-            delete this.file.data.regsTp02.errors[numberSequence];
-            // Se actualiza la información del panel en el campo de errores.
-            this.updateTotals();
-            this.updateInfoPanel();
+
           }
 
         }

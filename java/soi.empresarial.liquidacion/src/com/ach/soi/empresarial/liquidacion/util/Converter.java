@@ -295,7 +295,7 @@ public final class Converter {
 			retorno.setIdSoiSegUsuario(ejbObjectOutput.getIdSoiSegUsuario());
 			retorno.setEsAdministrador(ejbObjectOutput.getEsAdministrador());
 			retorno.setCantPlanillaFilial(ejbObjectOutput.getCantPlanillaFilial());
-			retorno.setEventoSucursal(EventoFilialApteType.valueOf(ejbObjectOutput.getEventoSucursal()));			
+			//retorno.setEventoSucursal(EventoFilialApteType.valueOf(ejbObjectOutput.getEventoSucursal()));			
 		} else {
 			LOGGER.warn(Constants.LOG_NULL_PARAMETER + "ejbObjectOutput");
 		}
@@ -1510,6 +1510,10 @@ public final class Converter {
 			retorno.setAportanteVo(convertAportante(ejbObjectOutput.getAportanteDTO()));
 			for ( Map.Entry<String, String> entry:ejbObjectOutput.getProperties().entrySet() ){
 				retorno.addProperty(entry.getKey(), entry.getValue());
+			}
+			
+			for ( AportanteFilialDTO fil:ejbObjectOutput.getSucursalesAportante() ){
+				retorno.addFilialAportante(convertAportanteFilial(fil));
 			}
 			//retorno.addProperty("cods.tp.cztes.independientes", "3,16,33,34,35,36,42,43,52,53,56");
 		} else {
