@@ -52,6 +52,8 @@ public class AplicabilidadDTO implements Serializable {
 	private Integer planillaVigente;
 	private Integer aplicaNyM;
 	private Integer tipoEmpresaAplicabilidad;
+	
+	private Integer tipoCzteAplicaReformaT;
 
 	/**
 	 * Método getter del atributo idSoiClaseAportante de la clase AplicabilidadDTO
@@ -697,6 +699,14 @@ public class AplicabilidadDTO implements Serializable {
 	 */
 	public void setTipoEmpresaAplicabilidad(Integer tipoEmpresaAplicabilidad) {
 		this.tipoEmpresaAplicabilidad = tipoEmpresaAplicabilidad;
+	}
+	
+	public Integer getTipoCzteAplicaReformaT() {
+		return tipoCzteAplicaReformaT;
+	}
+
+	public void setTipoCzteAplicaReformaT(Integer tipoCzteAplicaReformaT) {
+		this.tipoCzteAplicaReformaT = tipoCzteAplicaReformaT;
 	}
 
 }
