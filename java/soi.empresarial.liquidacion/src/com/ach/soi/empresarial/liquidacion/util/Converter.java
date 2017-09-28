@@ -221,6 +221,7 @@ public final class Converter {
 			retorno.setPlanillaVigente(ejbObjectOutput.getPlanillaVigente());
 			retorno.setAplicaNyM(ejbObjectOutput.getAplicaNyM());
 			retorno.setTipoEmpresaAplicabilidad(ejbObjectOutput.getTipoEmpresaAplicabilidad());
+			retorno.setTipoCzteAplicaReformaT(ejbObjectOutput.getTipoCzteAplicaReformaT());
 		} else {
 		
 		}

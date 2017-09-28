@@ -840,7 +840,7 @@ public class LiquidadorActivos {
 			
 		}catch ( ApplicationException e ){
 			e.printStackTrace();
-			LOGGER.error("validarRegsTp02Archivo2388() -> Errores semanticos validacion registro unico: "+nroLinea);
+			LOGGER.error("validarRegsTp02Archivo2388() -> Errores semanticos validacion registro unico: "+nroLinea,e);
 			this.manejarExcepcionesSemanticas(errores, regT02, e, nroLinea);
 			boolean validarNuevamente = true;
 			for ( ErrorLiquidacionTO err:errores ){
