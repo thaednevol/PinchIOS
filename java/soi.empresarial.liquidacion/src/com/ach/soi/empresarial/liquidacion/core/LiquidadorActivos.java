@@ -451,8 +451,14 @@ public class LiquidadorActivos {
 					ocurrioExcepcion = true;
 				}
 					
-				if ( !ocurrioExcepcion ){
-					liquidacionMngr.validacionesCotizantesMultiplesContratos(grupoCotizantes, archivoDto);
+				
+				try{
+					if(!ocurrioExcepcion){
+						liquidacionMngr.validacionesCotizantesMultiplesContratos(grupoCotizantes, archivoDto);
+					}
+				}catch(ApplicationException exc) {
+					this.manejarExcepcionesSemanticas(errores,grupoCotizantes.getRegistros().get(0),exc, grupoCotizantes.getRegistros().get(0).getNumeroLineaArchivo());
+					ocurrioExcepcion = true;
 				}
 						
 				grupoCotizantes.setOcurrioExcepcion(ocurrioExcepcion);
