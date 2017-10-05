@@ -3,9 +3,11 @@ package com.ach.soi.empresarial.liquidacion.server;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -96,7 +98,7 @@ public class LiquidacionRestController {
             		
 			String regT01 = null;
 			
-			lineReader = new BufferedReader(new FileReader(pathArchivo2388));
+			lineReader = new BufferedReader( new InputStreamReader(new FileInputStream(pathArchivo2388), Constants.GENERAL_ENCODING) );
 			if ( (regT01=lineReader.readLine())!=null ){		
 				lineReader.close();
 			}
