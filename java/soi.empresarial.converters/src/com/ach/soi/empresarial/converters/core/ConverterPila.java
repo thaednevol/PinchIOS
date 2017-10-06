@@ -180,7 +180,7 @@ public class ConverterPila {
 		Writer2388File writer = new Writer2388File();
 		ResultadoEscrituraTO resultado = new ResultadoEscrituraTO();			
 		solicitud = gson.fromJson(request, SolicitudEscrituraTO.class);
-		JsonReader readerJson = new JsonReader(new InputStreamReader(new FileInputStream(solicitud.getPathArchivoData()), "UTF-8") );
+		JsonReader readerJson = new JsonReader(new InputStreamReader(new FileInputStream(solicitud.getPathArchivoData()), Constants.GENERAL_ENCODING) );
 		readerJson.setLenient(true);
 		Archivo2388TO data = gson.fromJson(readerJson, Archivo2388TO.class);
 		
