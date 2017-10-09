@@ -527,7 +527,7 @@ public final class ApplicationBO {
 			resp = ServiceRequestProvider.callPostWS(AttributePropertiesUtil.PILA_WS_URL,
 					AttributePropertiesUtil.VALIDATE_FILE, paramData, MediaType.APPLICATION_JSON);
 			
-			
+			resp = resp.replace("9029", "9029=Cuando un aportante elabora la primera planilla de un periodo con  forma de presentaci\u00f3n \u00FAnico o consolidado, no puede elaborar planillas  para el mismo periodo con forma de presentaci\u00f3n: sucursal o dependencia.  En caso de que se haya equivocado, debe editar la planilla con el fin de  cambiar la forma de presentaci\u00f3n y asignar la sucursal respectiva.");
 			
 		} catch (IOException e) {		
 			LOGGER.error("validateFile - IOException: ",e);
@@ -538,6 +538,8 @@ public final class ApplicationBO {
 			resp = ResponseUtil.manageException(CodeErrorEnum.WSCLIENTERROR.getCode(),
 					ErrorMessagesLoader.INSTANCE.getErrorMensage(CodeErrorEnum.WSCLIENTERROR.getDescription()), e);
 		}
+		
+		//{"idArchivoEnProceso":null,"errores":["9029"],"idSegUsuario":null,"idSoiPlanilla":null,"notificacionDeArchivoEnProcesoType":"NUEVA_NOTIFICACION","numeroTotalDeEmpleadosPorPantalla":0,"nombreArchivo":null,"idAportante":null,"idSoiPlanillaGuardada":null,"codTipoPlanilla":null,"idSoiTpPlanilla":1,"code":null,"message":null}
 		return resp;
 	}
 	
