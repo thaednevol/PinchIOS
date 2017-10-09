@@ -168,7 +168,8 @@ public class Validator2388 {
 	        archivoResultado.setLabelsTp11(Reg2388ReadTp11.getLabels());
 	        archivoResultado.setLabelsTp12(Reg2388ReadTp12.getLabels());
 	        
-	        BufferedReader reader = new BufferedReader(new FileReader(filePath));
+	        BufferedReader reader = new BufferedReader( new InputStreamReader(new FileInputStream(filePath), Constants.GENERAL_ENCODING) );
+	        							
 	        String line1 = reader.readLine();
 	        archivoResultado.setRegTp1Txt(line1);
 	        reader.close();

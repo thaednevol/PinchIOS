@@ -84,8 +84,8 @@ public class ConverterPila {
 					out.println(Charset.defaultCharset().name());
 					out.println(texto);
 					out.println("Unicode: "+textoUcd);
-					out = new PrintStream(System.out, true,"ISO-8859-1");
-					out.println("ISO-8859-1");
+					out = new PrintStream(System.out, true,"UTF-8");
+					out.println("UTF-8");
 					out.println(texto);
 					out.println("Unicode: "+textoUcd);
 					out = new PrintStream(System.out, true,"UTF-8");
@@ -99,7 +99,7 @@ public class ConverterPila {
 					System.out.println(new String(bytes,"UTF-8"));
 					System.out.println("Unicode: "+new String(bytes1,"UTF-8"));
 					
-					System.out.println("Conversi�n ISO-8859-1");
+					System.out.println("Conversi�n UTF-8");
 					bytes = texto.getBytes(Charset.forName(Constants.GENERAL_ENCODING));								
 					bytes1 = textoUcd.getBytes(Charset.forName(Constants.GENERAL_ENCODING));
 					System.out.println(new String(bytes,Constants.GENERAL_ENCODING));

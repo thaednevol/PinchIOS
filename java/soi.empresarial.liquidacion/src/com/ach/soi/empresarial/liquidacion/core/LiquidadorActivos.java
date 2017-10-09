@@ -519,7 +519,7 @@ public class LiquidadorActivos {
 	public PlanillaTotalesDTO calcularTotalesPlanilla ( ValidacionArchivoDataSource ds, String pathArchivo2388, ArchivoEnProcesoDTO archivoDto ) throws Exception{
 		LOGGER.info("inicio - calcularTotalesPlanilla()");
 		TotalizadorPlanillaMngr totalizador = new TotalizadorPlanillaMngr(ds.getPlanillaApteDto());		
-		BufferedReader reader = new BufferedReader(new FileReader(pathArchivo2388));
+		BufferedReader reader = new BufferedReader( new InputStreamReader(new FileInputStream(pathArchivo2388), Constants.GENERAL_ENCODING) );
 		PlanillaCotizanteDTO czte = null;
 		Collection<ErrorLiquidacionTO> errores = new ArrayList<ErrorLiquidacionTO>();
 		try{

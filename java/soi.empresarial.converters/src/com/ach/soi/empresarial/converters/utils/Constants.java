@@ -9,7 +9,7 @@ package com.ach.soi.empresarial.converters.utils;
  */
 public class Constants {
 
-	public static final String GENERAL_ENCODING = "ISO-8859-1";
+	public static final String GENERAL_ENCODING = "UTF-8";
 	
 	public static final String PILA_BUSINESS_PROPERTIES = "/pila-business.properties";
 }

@@ -98,7 +98,7 @@ public class LiquidacionRestController {
             		
 			String regT01 = null;
 			
-			lineReader = new BufferedReader(new FileReader(pathArchivo2388));
+			lineReader = new BufferedReader( new InputStreamReader(new FileInputStream(pathArchivo2388), Constants.GENERAL_ENCODING) );
 			if ( (regT01=lineReader.readLine())!=null ){		
 				lineReader.close();
 			}
