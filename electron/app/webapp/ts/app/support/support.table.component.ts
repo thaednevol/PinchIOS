@@ -311,6 +311,7 @@ namespace app.support {
       setTimeout(() => {
         this.$scope.$digest();
       });
+      this.$scope.$broadcast("borrado_item_contributor",this.listContributors.registers.length);
     }
 
     /**

@@ -186,6 +186,14 @@ namespace app.table {
       setTimeout(() => {
         this.addItemBarError();
       }, this.OPTIONS.TABLES.TIMER.WAIT);
+
+      this.$scope.$on("borrado_item_contributor", (event, totalregistros) => {
+       this.numRegisters = totalregistros;
+       setTimeout(() => {
+          this.setCurrentRegisterLoaded();
+          this.$scope.$digest();
+        });
+      });
     }
 
     /**
