@@ -192,6 +192,10 @@ namespace app.settlement {
       this.$scope.$on("save-planilla", (event, idTmpPlanilla) => {
         this.savePlanilla(idTmpPlanilla);
       });
+      this.$scope.$on("apply-corrections", (event, linea, col) => {
+        this.applyIndividualCorrections(linea,col);
+      });
+
       this.$scope.$on("hide-loading", () => {
         this.showLoading = false;
         setTimeout(() => {
@@ -338,7 +342,11 @@ namespace app.settlement {
           this.file.data.regsTp02.errors = newListError;
           this.file.data.regsTp02.corrected = [];
           angular.copy(newListError, this.file.data.regsTp02.corrected);
-          this.applyCorrections();
+          //Pestaña de errores
+          this.applyCorrections(0,this.file.data.regsTp02.errors);
+          //Pestaña de correcciones
+          this.applyCorrections(0,this.file.data.regsTp02.corrected);
+
         });
       }, (response) => {
           let title = this.$filter("translate")("MESSAGES.TITLES.ERROR");
@@ -354,7 +362,16 @@ namespace app.settlement {
         this.file.data.regsTp02.errors = newListError;
         this.file.data.regsTp02.corrected = [];
         angular.copy(newListError, this.file.data.regsTp02.corrected);
-        this.applyCorrections();
+        /*this.fillCurrentValues();
+        setTimeout(() => {
+          this.$scope.$apply();
+        });
+        this.updateTotals();*/
+        //Pestaña de errores
+        this.applyCorrections(0,this.file.data.regsTp02.errors);
+        //Pestaña de correcciones
+        this.applyCorrections(0,this.file.data.regsTp02.corrected);
+
         return;
       }
       setTimeout(() => {
@@ -417,6 +434,8 @@ namespace app.settlement {
               numberSequence = numberSequence + 1;
               // Si la respuesta es correcta se procesa la carga de los errores de los campos
               //obtiene los errores del registro actualiza
+              let corrects = this.file.data.regsTp02.corrected[numberSequence];
+              let oldErrors = this.file.data.regsTp02.errors[numberSequence];
               let errors = this.$filter("filter")(response.data.erroresRegistros, { linea: numberSequence + 1 }, true);
               if (errors.length > 0) {
                 // Se valida si existe el campo para almacenar los errores del registros
@@ -426,7 +445,7 @@ namespace app.settlement {
                 // Si esisten errores se indican en los registros de las tablas convirtiendo
                 // La estructura de array en objetos para que se pueda utilizar en la tabla
                 this.file.data.regsTp02.errors[numberSequence] = this.arrayErrorsToObject(errors);
-                this.file.data.regsTp02.corrected[numberSequence] = this.arrayErrorsToObject(errors);
+                //this.file.data.regsTp02.corrected[numberSequence] = this.arrayErrorsToObject(errors);
 
                 //Aplica las correcciones
                 let currentRow = this.file.data.regsTp02[numberSequence];
@@ -436,21 +455,44 @@ namespace app.settlement {
                   let currentCol = cols[positionCol];
                   let currentError = this.file.data.regsTp02.errors[numberSequence][currentCol];
                   // Se valida si existen sugerencias y si cuenta con la opción de autocorreción activa.
-                  if (currentError.autocorregible && currentError.sugerencias.length > 0) {
+                  /*if (currentError.autocorregible && currentError.sugerencias.length > 0) {
+
                     this.file.data.regsTp02.corrected[numberSequence][currentCol].currentValue = this.file.data.regsTp02.registers[numberSequence - 1][`regs${currentCol - 1}`];
                     this.file.data.regsTp02.registers[numberSequence - 1][`regs${currentCol - 1}`] = currentError.sugerencias[0];
                     // Se elimina la información de la columna del error para evitar que se resalte la celda en la tabla.
                     delete this.file.data.regsTp02.errors[numberSequence][currentCol];
-                  } else {
+                  } else {*/
                     currentError.currentValue = this.file.data.regsTp02.registers[numberSequence - 1][`regs${currentCol - 1}`];
-                  }
+                  //}
                 }
                 if (Object.keys(this.file.data.regsTp02.errors[numberSequence]).length === 0) {
                   delete this.file.data.regsTp02.errors[numberSequence];
                 }
+                //marca corregidos manualmente los errores que desaparecen al realizar el cambio
+                for ( let i=0;i<Object.keys(oldErrors).length;i++ ){
+                  let currReg = oldErrors[Object.keys(oldErrors)[i]];
+                  let existeError = errors.find(function(element){
+                    return element.campo === currReg.campo;
+                  });
+                  if ( !existeError ){
+                    currReg.corregido = true;
+                    currReg.autocorregible = true;
+                    currReg.correccion = this.$filter("translate")("ERROR.CONTRIBUTORS.TYPE_MANU");
+                    corrects[Object.keys(oldErrors)[i]]=currReg;
+                  }
+                }
                 this.updateTotals();
                 this.updateInfoPanel();
               } else {
+                //marca corregidos manualmente los errores que desaparecen al realizar el cambio
+                for ( let i=0;i<Object.keys(oldErrors).length;i++ ){
+                  let currReg = oldErrors[Object.keys(oldErrors)[i]];
+                  currReg.corregido = true;
+                  currReg.autocorregible = true;
+                  currReg.correccion = this.$filter("translate")("ERROR.CONTRIBUTORS.TYPE_MANU");
+                  corrects[Object.keys(oldErrors)[i]]=currReg;
+                }
+
                 delete this.file.data.regsTp02.errors[numberSequence];
                 // Se actualiza la información del panel en el campo de errores.
                 this.updateTotals();
@@ -515,8 +557,7 @@ namespace app.settlement {
     * @description
     * Aplica las correcciones automaticas de los registros.
     */
-    private applyCorrections(positionRow: number = 0): void {
-      let errors = this.file.data.regsTp02.errors;
+    private applyCorrections(positionRow: number = 0, errors): void {
       let rows: any = Object.keys(errors);
       if (positionRow >= rows.length) {
         setTimeout(() => {
@@ -547,9 +588,33 @@ namespace app.settlement {
             delete errors[currentRow];
             positionRow = positionRow - 1;
         }
-        this.applyCorrections(positionRow + 1);
+        this.applyCorrections(positionRow + 1, errors);
       });
     }
+
+
+    private applyIndividualCorrections(linea,positionCol): void {
+      let corrects = this.file.data.regsTp02.corrected;
+      let errors = this.file.data.regsTp02.errors;
+      let rows: any = Object.keys(corrects);
+      let currentRow = this.file.data.regsTp02.corrected[linea-1];
+
+      let currentError = currentRow[positionCol];
+      //this.file.data.regsTp02.corrected[currentRow][positionCol].currentValue = this.file.data.regsTp02.registers[currentRow - 1][`regs${positionCol-1}`];
+      this.file.data.regsTp02.registers[linea - 2][`regs${positionCol-1}`] = currentError.sugerencias[0];
+        // Se elimina la información de la columna del error para evitar que se resalte la celda en la tabla.
+      delete errors[linea-1][positionCol];
+      if (Object.keys(errors[linea-1]).length === 0) {
+          delete errors[linea-1];
+      }
+      this.updateTotals();
+      this.updateInfoPanel();
+      //}
+      //}
+
+    }
+
+
 
     public savePlanilla ( idTmpPlanilla ){
       let result = this.swat.putPayroll(idTmpPlanilla);

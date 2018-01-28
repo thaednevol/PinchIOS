@@ -157,7 +157,8 @@
       "RIESGO": "Aportes del período para Riesgos Laborales",
       "PARAFISCAL": "Aportes del período para Parafiscales",
       "GRAN_TOTAL": "Total a pagar durante el período",
-      "ERRORS": "Errores del Cotizante",
+      "ERRORS": "Errores Encabezado y del Cotizante",
+      "CORRECTED_AUT": "Correcciones Sugeridas",
       "CORRECTED": "Correcciones Realizadas",
       "NO_REGISTER": "No existen registros para la consulta.",
       "REPLACE_FOR": "Reemplazar por:",
@@ -175,7 +176,8 @@
     },
     "ACTIONS": {
       "EXPORT_CSV": "Exportar archivo CSV",
-      "CLOSE": "Cerrar"
+      "CLOSE": "Cerrar",
+      "CORRECTED": "Corregir"
     },
     "CONFIRMATION": {
       "SETTLEMENT_CREATED_TITLE": "Planilla Cargada",
@@ -204,7 +206,16 @@
   "ERROR": {
     "CONTRIBUTORS": {
       "ERROR": " Total errores del cotizante:",
-      "CORRECTED": " Total errores corregidos:"
+      "CORRECTED": " Total correcciones sugeridas:",
+      "NOT_CORRECTED": " Total errores corregidos:",
+      "TYPE_AUTOM": "Automática",
+      "TYPE_MANU": "Manual",
+      "MESSAGE_CORRECTED_WARN": "Debe seleccionar al menos un registro para corregir.",
+      "MESSAGE_CORRECTED_WARN_TIT": "Correcciones Automáticas",
+      "MESSAGE_CORRECTED_CONF": "Se corregiran los registros seleccionados.",
+      "MESSAGE_CORRECTED_CONF_TIT": "Correcciones Automaticas",
+      "MESSAGE_CORRECTED_CONF_1": "Se ha aplicado correctamente la corrección a los errores calculados por el sistema",
+      "MESSAGE_CORRECTED_CONF_1_TIT": "Confirmación"
     }
   },
 

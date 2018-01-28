@@ -1,0 +1,67 @@
+
+//- Tabla de registros no corregidos
+.error__table
+  .error__table-head
+    span(ng-if="$ctrl.styleError" ng-bind="'ERROR.CONTRIBUTORS.ERROR' | translate")
+    span(ng-if="!$ctrl.styleError" ng-bind="'ERROR.CONTRIBUTORS.NOT_CORRECTED' | translate")
+    span(ng-bind="($ctrl.data.data | filter:$ctrl.objectFilter | filter:$ctrl.errorsFilter ).length || 0")
+  .error__table-container
+    table
+      thead
+        tr
+          th
+            .table__fixed-order.span(ng-show="('linea' === sortType) && !sortReverse" class="fa fa-sort-desc" ng-click="$ctrl.$scope.sortType = 'linea'; $ctrl.$scope.sortReverse = !sortReverse")
+            .table__fixed-order.span(ng-show="('linea' === sortType) && sortReverse" class="fa fa-sort-asc" ng-click="$ctrl.$scope.sortType = 'linea'; $ctrl.$scope.sortReverse = !sortReverse")
+            .table__fixed-order.span(ng-show="('linea' !== sortType) && (($ctrl.data.data | filter:$ctrl.objectFilter:true).length > -1)" class="fa fa-sort" ng-click="$ctrl.$scope.sortType = 'linea'; $ctrl.$scope.sortReverse = !sortReverse")
+            span(ng-bind="'Línea'")
+          th
+            .table__fixed-order.span(ng-show="('tipoIdentificacion' === sortType) && !sortReverse" class="fa fa-sort-desc" ng-click="$ctrl.$scope.sortType = 'tipoIdentificacion'; $ctrl.$scope.sortReverse = !sortReverse")
+            .table__fixed-order.span(ng-show="('tipoIdentificacion' === sortType) && sortReverse" class="fa fa-sort-asc" ng-click="$ctrl.$scope.sortType = 'tipoIdentificacion'; $ctrl.$scope.sortReverse = !sortReverse")
+            .table__fixed-order.span(ng-show="('tipoIdentificacion' !== sortType) && (($ctrl.data.data | filter:$ctrl.objectFilter:true).length > -1)" class="fa fa-sort" ng-click="$ctrl.$scope.sortType = 'tipoIdentificacion'; $ctrl.$scope.sortReverse = !sortReverse")
+            span(ng-bind="'Tipo Documento'" ng-if="$ctrl.data.data[0].tipoIdentificacion")
+          th
+            .table__fixed-order.span(ng-show="('nroIdentificacion' === sortType) && !sortReverse" class="fa fa-sort-desc" ng-click="$ctrl.$scope.sortType = 'nroIdentificacion'; $ctrl.$scope.sortReverse = !sortReverse")
+            .table__fixed-order.span(ng-show="('nroIdentificacion' === sortType) && sortReverse" class="fa fa-sort-asc" ng-click="$ctrl.$scope.sortType = 'nroIdentificacion'; $ctrl.$scope.sortReverse = !sortReverse")
+            .table__fixed-order.span(ng-show="('nroIdentificacion' !== sortType) && (($ctrl.data.data | filter:$ctrl.objectFilter:true).length > -1)" class="fa fa-sort" ng-click="$ctrl.$scope.sortType = 'nroIdentificacion'; $ctrl.$scope.sortReverse = !sortReverse")
+            span(ng-bind="'Identificación Cotizante'" ng-if="$ctrl.data.data[0].nroIdentificacion")
+          th
+            .table__fixed-order.span(ng-show="('error' === sortType) && !sortReverse" class="fa fa-sort-desc" ng-click="$ctrl.$scope.sortType = 'error'; $ctrl.$scope.sortReverse = !sortReverse")
+            .table__fixed-order.span(ng-show="('error' === sortType) && sortReverse" class="fa fa-sort-asc" ng-click="$ctrl.$scope.sortType = 'error'; $ctrl.$scope.sortReverse = !sortReverse")
+            .table__fixed-order.span(ng-show="('error' !== sortType) && (($ctrl.data.data | filter:$ctrl.objectFilter:true).length > -1)" class="fa fa-sort" ng-click="$ctrl.$scope.sortType = 'error'; $ctrl.$scope.sortReverse = !sortReverse")
+            span(ng-bind="'Error'")
+          th
+            .table__fixed-order.span(ng-show="('sugerencias' === sortType) && !sortReverse" class="fa fa-sort-desc" ng-click="$ctrl.$scope.sortType = 'sugerencias'; $ctrl.$scope.sortReverse = !sortReverse")
+            .table__fixed-order.span(ng-show="('sugerencias' === sortType) && sortReverse" class="fa fa-sort-asc" ng-click="$ctrl.$scope.sortType = 'sugerencias'; $ctrl.$scope.sortReverse = !sortReverse")
+            .table__fixed-order.span(ng-show="('sugerencias' !== sortType) && (($ctrl.data.data | filter:$ctrl.objectFilter:true).length > -1)" class="fa fa-sort" ng-click="$ctrl.$scope.sortType = 'sugerencias'; $ctrl.$scope.sortReverse = !sortReverse")
+            span(ng-bind="'Esperado'")
+          th
+            .table__fixed-order.span(ng-show="('currentValue' === sortType) && !sortReverse" class="fa fa-sort-desc" ng-click="$ctrl.$scope.sortType = 'currentValue'; $ctrl.$scope.sortReverse = !sortReverse")
+            .table__fixed-order.span(ng-show="('currentValue' === sortType) && sortReverse" class="fa fa-sort-asc" ng-click="$ctrl.$scope.sortType = 'currentValue'; $ctrl.$scope.sortReverse = !sortReverse")
+            .table__fixed-order.span(ng-show="('currentValue' !== sortType) && (($ctrl.data.data | filter:$ctrl.objectFilter:true).length > -1)" class="fa fa-sort" ng-click="$ctrl.$scope.sortType = 'currentValue'; $ctrl.$scope.sortReverse = !sortReverse")
+            span(ng-bind="'Encontrado'")
+          th
+            .table__fixed-order.span(ng-show="('currentValue' === sortType) && !sortReverse" class="fa fa-sort-desc" ng-click="$ctrl.$scope.sortType = 'currentValue'; $ctrl.$scope.sortReverse = !sortReverse")
+            .table__fixed-order.span(ng-show="('currentValue' === sortType) && sortReverse" class="fa fa-sort-asc" ng-click="$ctrl.$scope.sortType = 'currentValue'; $ctrl.$scope.sortReverse = !sortReverse")
+            .table__fixed-order.span(ng-show="('currentValue' !== sortType) && (($ctrl.data.data | filter:$ctrl.objectFilter:true).length > -1)" class="fa fa-sort" ng-click="$ctrl.$scope.sortType = 'currentValue'; $ctrl.$scope.sortReverse = !sortReverse")
+            span(ng-bind="'Corrección'")
+
+      tbody
+        tr(ng-repeat="register in $ctrl.data.data | orderBy:sortType:sortReverse:customComparator | filter:$ctrl.objectFilter | filter:$ctrl.errorsFilter | limitTo:$ctrl.limitRegister:$ctrl.startLimit track by $index" ng-init="$last && $ctrl.changeLimitRegister()" ng-class="{'error__table--priority': register.enfasis}")
+          td(ng-bind="register.linea")
+          td(ng-bind="register.tipoIdentificacion" ng-if="register.tipoIdentificacion")
+          td(ng-bind="register.nroIdentificacion" ng-if="register.nroIdentificacion")
+          td.error__table--error(ng-if="$ctrl.styleError")
+            i.mdi.mdi-alert
+            span(ng-bind="register.error")
+          td(ng-if="!$ctrl.styleError" ng-bind="register.error")
+          td(ng-bind="register.sugerencias ? register.sugerencias.join(';') : '-'")
+          td(ng-bind="register.currentValue")
+          td(ng-bind="register.correccion")
+
+  //- Paginación de las tablas de registro tipo 2
+  .table__nav
+    a(ng-click="$ctrl.actionChangePage('prev')")
+      i.fa.fa-chevron-circle-left
+    a(ng-click="$ctrl.actionChangePage('next')")
+      i.fa.fa-chevron-circle-right
+    span(ng-bind="($ctrl.startLimit + 1) + ' a ' + $ctrl.currentNumberRegisterLoad  + ' Total registros: ' + ($ctrl.data.data | filter:$ctrl.objectFilter | filter:$ctrl.errorsFilter ).length")  

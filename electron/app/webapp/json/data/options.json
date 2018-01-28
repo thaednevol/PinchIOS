@@ -96,7 +96,7 @@
   },
 
   "TABLES": {
-    "ROW_LIMIT_BY_PAGE": 200,
+    "ROW_LIMIT_BY_PAGE": 50,
     "ROW_LOAD_BY_PAGE": 50,
     "TIMER": {
       "HIDE_SUB_MENU": 0.5,

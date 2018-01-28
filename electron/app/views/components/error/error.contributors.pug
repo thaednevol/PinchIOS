@@ -11,6 +11,7 @@
           th(ng-bind="'Tipo Documento'" ng-if="$ctrl.data.data[0].tipoIdentificacion")
           th(ng-bind="'Identificación Cotizante'" ng-if="$ctrl.data.data[0].nroIdentificacion")
           th(ng-bind="'Error'")
+          th(ng-bind="'Correción'")
           th(ng-bind="'Esperado'")
           th(ng-bind="'Encontrado'")
       tbody
@@ -21,6 +22,7 @@
           td.error__table--error(ng-if="$ctrl.styleError")
             i.mdi.mdi-alert
             span(ng-bind="register.error")
+          td(ng-if="!$ctrl.styleError" ng-bind="register.error")
           td(ng-if="!$ctrl.styleError" ng-bind="register.error")
           td(ng-bind="register.sugerencias ? register.sugerencias.join(';') : '-'")
           td(ng-bind="register.currentValue")

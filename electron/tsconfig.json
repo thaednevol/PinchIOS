@@ -26,6 +26,8 @@
     "app/webapp/ts/app/dashboard/dashboard.tables.component.ts",
     "app/webapp/ts/app/native/native.debug.service.ts",
     "app/webapp/ts/app/error/error.contributors.component.ts",
+    "app/webapp/ts/app/error/error.contributors.aut.component.ts",
+    "app/webapp/ts/app/error/error.contributors.sug.component.ts",
     "app/webapp/ts/app/error/error.convert.component.ts",
     "app/webapp/ts/app/history/history.service.ts",
     "app/webapp/ts/app/loading/loading.component.ts",

@@ -121,6 +121,10 @@ public class LiquidacionRestController {
 
 	        gsonWriter=new GsonBuilder().setPrettyPrinting().create();
             erroresLiq = liquidacion.validarRegsTp02Archivo2388(archivoEnProceso, validacionPlanillaDd, pathArchivo2388);
+            for ( int i=0;i<erroresLiq.length;i++ ){
+            	erroresLiq[i].setSecuenciaError(i);
+            }
+
             gsonWriter.toJson(erroresLiq, bw);
             
             resultado.setError("");

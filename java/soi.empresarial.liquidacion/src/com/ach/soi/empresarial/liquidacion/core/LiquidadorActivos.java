@@ -2,7 +2,6 @@ package com.ach.soi.empresarial.liquidacion.core;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -241,6 +240,7 @@ public class LiquidadorActivos {
 			int nroLinea = 0;
 			int oks = 0;
 			int regsError = 0;
+			long secuencia = 0;
 			PlanillaRegT02 bean02 = null;
 			do{
 				line=reader.readLine();
@@ -253,6 +253,10 @@ public class LiquidadorActivos {
 						try{
 							mn.inicializarMio(line);
 							bean02 = (PlanillaRegT02)mn.getNextRecord();
+							secuencia++;
+							bean02.getSecuencia2().setValorCrudo(""+secuencia);
+							bean02.getSecuencia2().setValorNumerico(secuencia);
+							bean02.getSecuencia2().setValorDecimal(BigDecimal.valueOf(secuencia));
 							if ( bean02.getExcepcion()!=null ){
 								throw bean02.getExcepcion();
 							}

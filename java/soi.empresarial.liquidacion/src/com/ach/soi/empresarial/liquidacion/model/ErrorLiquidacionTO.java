@@ -8,6 +8,7 @@ public class ErrorLiquidacionTO {
 	private boolean errorRegistro;
 	private int linea;
 	private boolean autocorregible;
+	private boolean corregido = false; //Se usa en la interfaz de usuario para indicar las correcciones ya realizadas
 	private String nombreCampo;
 	private String error;
 	private String[] sugerencias;
@@ -16,6 +17,10 @@ public class ErrorLiquidacionTO {
 	private String nroIdentificacion = "N/A";
 	private boolean enfasis = false;
 	private boolean aplicarSegundaValidacion = false;
+	private String correccion;
+	private int secuenciaError;
+	private boolean seleccionado;
+
 	public int getLinea() {
 		return linea;
 	}
@@ -84,6 +89,34 @@ public class ErrorLiquidacionTO {
 	public void setAplicarSegundaValidacion(boolean aplicarSegundaValidacion) {
 		this.aplicarSegundaValidacion = aplicarSegundaValidacion;
 	}
+	public boolean isCorregido() {
+		return corregido;
+	}
+	public void setCorregido(boolean corregido) {
+		this.corregido = corregido;
+	}
+	
+	public String getCorreccion() {
+		return correccion;
+	}
+	public void setCorreccion(String correccion) {
+		this.correccion = correccion;
+	}
+	
+	public int getSecuenciaError() {
+		return secuenciaError;
+	}
+	public void setSecuenciaError(int secuenciaError) {
+		this.secuenciaError = secuenciaError;
+	}
+	
+	public boolean isSeleccionado() {
+		return seleccionado;
+	}
+	public void setSeleccionado(boolean seleccionado) {
+		this.seleccionado = seleccionado;
+	}
+
 	@Override
 	public String toString() {
 		return "ErrorLiquidacionTO [errorRegistro=" + errorRegistro

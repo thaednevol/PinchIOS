@@ -54,6 +54,7 @@ public class Validator2388 {
             in	= factory.createReader("PILA-2388", new InputStreamReader(new FileInputStream(filePath), Constants.GENERAL_ENCODING));
 	        CommonBean bean = null;
 	        int regsNoIdentificados = 0;
+	        int secuencia = 1;
 	        do{	
 	        	try{
 	        		bean = (CommonBean)in.read();	
@@ -63,6 +64,7 @@ public class Validator2388 {
 		        	}
 		        	else if ( bean instanceof Reg2388ReadTp02 ){	        		
 		        		regTp02 = (Reg2388ReadTp02)bean;
+		        		regTp02.setSecuencia(secuencia++);
 		        		regsTp2.add(regTp02);
 		        	}
 		        	else if ( bean instanceof Reg2388ReadTp03 ){
