@@ -574,15 +574,7 @@ namespace app.settlement {
         for (let positionCol = 0; positionCol < cols.length; positionCol++) {
           let currentCol = cols[positionCol];
           let currentError = errors[currentRow][currentCol];
-          // Se valida si existen sugerencias y si cuenta con la opción de autocorreción activa.
-          if (currentError.autocorregible && currentError.sugerencias.length > 0) {
-            this.file.data.regsTp02.corrected[currentRow][currentCol].currentValue = this.file.data.regsTp02.registers[currentRow - 1][`regs${currentCol - 1}`];
-            this.file.data.regsTp02.registers[currentRow - 1][`regs${currentCol - 1}`] = currentError.sugerencias[0];
-            // Se elimina la información de la columna del error para evitar que se resalte la celda en la tabla.
-            delete errors[currentRow][currentCol];
-          } else {
-            currentError.currentValue = this.file.data.regsTp02.registers[currentRow - 1][`regs${currentCol - 1}`];
-          }
+          currentError.currentValue = this.file.data.regsTp02.registers[currentRow - 1][`regs${currentCol - 1}`];
         }
         if (Object.keys(errors[currentRow]).length === 0) {
             delete errors[currentRow];

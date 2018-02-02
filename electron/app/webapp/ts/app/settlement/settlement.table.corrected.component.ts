@@ -56,7 +56,7 @@ namespace app.settlement {
       this.$rootScope = $rootScope;
       this.$filter = $filter;
       this.filterCorregidos = function ( item ){
-        return item.corregido;
+        return item.autocorregible && item.corregido;
       };
 
       this.filterSugeridos = function ( item ){

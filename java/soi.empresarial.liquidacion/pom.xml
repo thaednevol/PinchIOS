@@ -23,7 +23,7 @@
 		        <version>3.0.1</version>
 		        <configuration>
 		              <includes>**/*.*</includes>		              		             
-		              <excludes>**/resource/email-config.xml,**/resource/jee-config.xml</excludes>
+		              <excludes>**/resource/email-config.xml,**/resource/jee-config.xml,**/META-INF/MANIFEST.MF,**/META-INF/*.RSA",**/META-INF/*.SF,**/META-INF/*.DSA</excludes>
 		              
 		              <outputDirectory>${project.build.directory}/classes</outputDirectory>
 		              <overWriteReleases>true</overWriteReleases>

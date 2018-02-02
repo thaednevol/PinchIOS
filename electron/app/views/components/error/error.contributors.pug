@@ -12,7 +12,6 @@
           th(ng-bind="'Identificación Cotizante'" ng-if="$ctrl.data.data[0].nroIdentificacion")
           th(ng-bind="'Error'")
           th(ng-bind="'Correción'")
-          th(ng-bind="'Esperado'")
           th(ng-bind="'Encontrado'")
       tbody
         tr(ng-repeat="register in $ctrl.data.data | filter:$ctrl.objectFilter:true | limitTo:$ctrl.limitRegister:$ctrl.startLimit track by $index" ng-init="$last && $ctrl.changeLimitRegister()" ng-class="{'error__table--priority': register.enfasis}")
@@ -21,8 +20,7 @@
           td(ng-bind="register.nroIdentificacion" ng-if="register.nroIdentificacion")
           td.error__table--error(ng-if="$ctrl.styleError")
             i.mdi.mdi-alert
-            span(ng-bind="register.error")
-          td(ng-if="!$ctrl.styleError" ng-bind="register.error")
+            span(ng-bind="register.error")          
           td(ng-if="!$ctrl.styleError" ng-bind="register.error")
           td(ng-bind="register.sugerencias ? register.sugerencias.join(';') : '-'")
           td(ng-bind="register.currentValue")

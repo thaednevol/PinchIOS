@@ -1,0 +1,49 @@
+
+//- Tabla de registros no corregidos
+.error__table
+  .error__table-head
+    span(ng-if="$ctrl.styleError" ng-bind="'ERROR.CONTRIBUTORS.ERROR' | translate")
+    span(ng-if="!$ctrl.styleError" ng-bind="'ERROR.CONTRIBUTORS.NOT_CORRECTED' | translate")
+    span(ng-bind="($ctrl.data.data | filter:$ctrl.objectFilter | filter:$ctrl.errorsFilter ).length || 0")
+  .error__table-container
+    table
+      thead
+        tr          
+          th
+            span(ng-bind="'Línea'")
+          th        
+            span(ng-bind="'Tipo Documento'" ng-if="$ctrl.data.data[0].tipoIdentificacion")
+          th
+            span(ng-bind="'Identificación Cotizante'" ng-if="$ctrl.data.data[0].nroIdentificacion")
+          th            
+            span(ng-bind="'Error'")
+          th
+            span(ng-bind="'Corrección'")
+          th
+            span(ng-bind="'Encontrado'")
+          th
+            span(ng-bind="'Corrección'")
+          th            
+            span(ng-bind="'Temp'")
+
+      tbody
+        tr(ng-repeat="register in $ctrl.data.data | orderBy:sortType:sortReverse:customComparator | filter:$ctrl.objectFilter | filter:$ctrl.errorsFilter | limitTo:$ctrl.limitRegister:$ctrl.startLimit track by $index" ng-init="$last && $ctrl.changeLimitRegister()" ng-class="{'error__table--priority': register.enfasis}")          
+          td(ng-bind="register.linea")
+          td(ng-bind="register.tipoIdentificacion" ng-if="register.tipoIdentificacion")
+          td(ng-bind="register.nroIdentificacion" ng-if="register.nroIdentificacion")
+          td.error__table--error(ng-if="$ctrl.styleError")
+            i.mdi.mdi-alert
+            span(ng-bind="register.error")
+          td(ng-if="!$ctrl.styleError" ng-bind="register.error")
+          td(ng-bind="register.sugerencias ? register.sugerencias.join(';') : '-'")
+          td(ng-bind="register.currentValue")
+          td(ng-bind="register.correccion")
+          td(ng-bind="register.corregido")
+
+  //- Paginación de las tablas de registro tipo 2
+  .table__nav
+    a(ng-click="$ctrl.actionChangePage('prev')")
+      i.fa.fa-chevron-circle-left
+    a(ng-click="$ctrl.actionChangePage('next')")
+      i.fa.fa-chevron-circle-right
+    span(ng-bind="($ctrl.startLimit + 1) + ' a ' + $ctrl.currentNumberRegisterLoad  + ' Total registros: ' + ($ctrl.data.data | filter:$ctrl.objectFilter | filter:$ctrl.errorsFilter ).length")  
