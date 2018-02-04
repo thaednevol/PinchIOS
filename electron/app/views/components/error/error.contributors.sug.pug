@@ -3,7 +3,7 @@
 .error__table
   .error__table-head
     span(ng-if="$ctrl.styleError" ng-bind="'ERROR.CONTRIBUTORS.ERROR' | translate")
-    span(ng-if="!$ctrl.styleError" ng-bind="'ERROR.CONTRIBUTORS.NOT_CORRECTED' | translate")
+    span(ng-if="!$ctrl.styleError" ng-bind="'ERROR.CONTRIBUTORS.CORRECTED' | translate")
     span(ng-bind="($ctrl.data.data | filter:$ctrl.objectFilter | filter:$ctrl.errorsFilter ).length || 0")
   .error__table-container
     table
@@ -18,13 +18,11 @@
           th            
             span(ng-bind="'Error'")
           th
-            span(ng-bind="'Corrección'")
+            span(ng-bind="'Esperado'")
           th
             span(ng-bind="'Encontrado'")
           th
             span(ng-bind="'Corrección'")
-          th            
-            span(ng-bind="'Temp'")
 
       tbody
         tr(ng-repeat="register in $ctrl.data.data | orderBy:sortType:sortReverse:customComparator | filter:$ctrl.objectFilter | filter:$ctrl.errorsFilter | limitTo:$ctrl.limitRegister:$ctrl.startLimit track by $index" ng-init="$last && $ctrl.changeLimitRegister()" ng-class="{'error__table--priority': register.enfasis}")          
@@ -38,7 +36,6 @@
           td(ng-bind="register.sugerencias ? register.sugerencias.join(';') : '-'")
           td(ng-bind="register.currentValue")
           td(ng-bind="register.correccion")
-          td(ng-bind="register.corregido")
 
   //- Paginación de las tablas de registro tipo 2
   .table__nav

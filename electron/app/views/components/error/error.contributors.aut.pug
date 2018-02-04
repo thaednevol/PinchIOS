@@ -26,7 +26,7 @@
       tbody
         tr(ng-repeat="register in $ctrl.data.data | orderBy:sortType:sortReverse:customComparator | filter:$ctrl.objectFilter | filter:$ctrl.errorsFilter | limitTo:$ctrl.limitRegister:$ctrl.startLimit track by $index" ng-init="$last && $ctrl.changeLimitRegister()" ng-class="{'error__table--priority': register.enfasis}")
           td()
-            input(type="checkbox" ng-model="$ctrl.selectedItemAut[register.secuenciaError]")
+            input(type="checkbox" ng-change="$ctrl.actionChangeCheckbox(register.secuenciaError)" ng-model="$ctrl.selectedItemAut[register.secuenciaError]")
           td(ng-bind="register.linea")
           td(ng-bind="register.tipoIdentificacion" ng-if="register.tipoIdentificacion")
           td(ng-bind="register.nroIdentificacion" ng-if="register.nroIdentificacion")
