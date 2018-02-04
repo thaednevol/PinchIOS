@@ -11,6 +11,13 @@ namespace app.settlement {
   class SettTableCorrectedController {
 
     /**
+    * @type {Boolean} showLoading - Indica si debe mostrar la imagen de loading
+    * y bloquear la pantalla hasta que espere el usuario que termine la carga
+    * del login.
+    */
+    public showLoading: Boolean = false;
+
+    /**
     * @type {NativeNotificationService} notificationService - Servicio que
     * permite mostrar notificaciones de forma nativa en el SO.
     * @see app.native.NativeNotificationService
@@ -108,17 +115,21 @@ namespace app.settlement {
       });
     }
 
+
     public validateSelected(): void {
       let message = `Se eliminará ${Object.keys(this.selectedItem).length} registro.`;
       if (Object.keys(this.selectedItem).length === 0) {
         this.serviceDialog.showDialogError(this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_WARN_TIT"), this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_WARN"));
-      } else {;
+      } else {
+        this.showLoading = true;
         this.serviceDialog.showDialogConfirm(
           this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_CONF_TIT"),
           this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_CONF"),
           (option) => {
             this.dialogIsOpen = false;
             this.correctError(option);
+            this.notificationService.show(this.$filter("translate")("MESSAGES.TITLES.INFO"), this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_CONF_1"));
+            this.showLoading = true;
           }
         );
       }
@@ -159,7 +170,8 @@ namespace app.settlement {
   let app: any = angular.module("PILA");
   app.component("settTableCorrected", {
     bindings: {
-      listErrorsContributors: "="
+      listErrorsContributors: "=",
+      showLoading: "="
     },
     controller: SettTableCorrectedController,
     templateUrl: "./components/settlement/settlement.table.corrected.html"

@@ -22,6 +22,6 @@
         sett-contributors(ng-show="$ctrl.currentTab === 'contributors'" file="$ctrl.file" list-errors-contributors="$ctrl.listErrorsContributors" validation-result="$ctrl.validationResult" info="$ctrl.info")
         sett-totals(ng-show="$ctrl.currentTab === 'totals'" file="$ctrl.file")
         sett-table-errors(ng-if="$ctrl.currentTab === 'errors' && $ctrl.listErrorsContributors" list-errors-contributors="$ctrl.listErrorsContributors")
-        sett-table-corrected(ng-if="$ctrl.currentTab === 'corrected' && $ctrl.listErrorsContributors" list-errors-contributors="$ctrl.listErrorsCorrected")
+        sett-table-corrected(ng-if="$ctrl.currentTab === 'corrected' && $ctrl.listErrorsContributors" list-errors-contributors="$ctrl.listErrorsCorrected" show-loading="$ctrl.showLoading")
     
     include settlement.popup.errors.pug

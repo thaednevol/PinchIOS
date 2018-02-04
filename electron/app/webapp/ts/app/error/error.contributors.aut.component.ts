@@ -112,6 +112,12 @@ namespace app.error {
       });
     }
 
+    public actionChangeCheckbox (idSelected) {
+      if ( !this.selectedItemAut[idSelected] ){
+        delete this.selectedItemAut[idSelected]
+      }
+    }
+
   }
 
   // Se agrega el componente al modulo principal
