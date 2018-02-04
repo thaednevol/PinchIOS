@@ -128,8 +128,6 @@ namespace app.settlement {
           (option) => {
             this.dialogIsOpen = false;
             this.correctError(option);
-            this.notificationService.show(this.$filter("translate")("MESSAGES.TITLES.INFO"), this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_CONF_1"));
-            this.showLoading = true;
           }
         );
       }
@@ -157,9 +155,11 @@ namespace app.settlement {
             return item.autocorregible && !item.corregido;
           };
 
-          this.selectedItem = [];
-          this.$scope.$apply();
+          this.notificationService.show(this.$filter("translate")("MESSAGES.TITLES.INFO"), this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_CONF_1"));
       }
+      this.showLoading = false;
+      this.selectedItem = [];
+      this.$scope.$apply();
     }
 
 
