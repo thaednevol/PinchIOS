@@ -371,6 +371,8 @@ namespace app.settlement {
         //Pestaña de correcciones
         this.applyCorrections(0,this.file.data.regsTp02.corrected);
 
+        this.$rootScope.$broadcast("rebuild-table");
+
         return;
       }
       setTimeout(() => {
