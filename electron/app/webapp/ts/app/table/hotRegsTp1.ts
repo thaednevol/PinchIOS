@@ -8,11 +8,11 @@ namespace app.table {
   * Clase encargada de cargar una tabla con las opciones de edición
   * paginado y filtro de contenido de las tablas basado en handsontable.
   */
-  export class HotRegsTp1 implements IHotComponents {
-    private hotComponent : any;
+  export class HotRegsTp1 extends HotDefault {
 
     constructor(hotComponent) {
-      this.hotComponent=hotComponent;
+      super(hotComponent);
+      this.hotComponent = hotComponent;
     }
 
     public getData(){
