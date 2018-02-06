@@ -16,7 +16,7 @@ namespace app.table {
     constructor (hotComponent: any) {
       this.hotComponent=hotComponent;
 
-       if (this.hotComponent.idTable==="regTp01"){
+       if (this.hotComponent.idTable==="regsTp01"){
          this.iHotcomponent=new HotRegsTp1(hotComponent);
        }
 

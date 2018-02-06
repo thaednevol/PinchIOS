@@ -16,7 +16,7 @@ namespace app.table {
     }
 
     public getData(){
-      return this.hotComponent.data.registers;
+      return this.hotComponent.data;
     }
 
     public getColumnSorting(){
@@ -28,27 +28,15 @@ namespace app.table {
     }
 
     public getColumnDef(){
-      var columnas=[
-        { data: "regs0", readOnly: true, type: 'text' },
-        { data: "regs1", readOnly: true, type:'checkbox' },
-        { data: "regs2", readOnly: true, type: 'numeric' }
-      ];
-      if (this.hotComponent.data.registers[0]) {
-
-        for(let i of Object.keys(this.hotComponent.data.registers[0])) {
-          /*
-          Según la HU, en la NEC005-002 en los escenarios del 1 al 11, no se
-          contempla que los campos Tipo Registro, Modalidad y Secuencia puedan ser
-          editables, pero como se aprecia en el video de la evidencia, al pegar
-          datos en estos campos la aplicación lo permite.
-          */
-          if (i !== "regs0" &&  i !== "regs1" && i !== "regs2" && i !== "selected") {
+      var columnas=[];
+      if (this.hotComponent.data[0]) {
+        for(let i of Object.keys(this.hotComponent.data[0])) {
             columnas.push({data: i, readOnly:false, type: 'text'});
-          }
         }
       }
       return columnas;
     }
+
     public getVarFixedColumns(){
       return 0;
       }
@@ -84,28 +72,28 @@ namespace app.table {
       public getCells(){
         var ctrl=this;
         return function (row, col, prop) {
-                var cellProperties = {};
-                if (row!=null){
+            var cellProperties = {};
+            if (row!=null){
 
-                  if (row != undefined && row === 0){
-                    var myCell=ctrl.hotComponent.hotTable.getCell(row,col);
-                    if (ctrl.hotComponent.data.errors != undefined) {
-                      var currentRegister = ctrl.hotComponent.data.registers[row];
-                      if (currentRegister !== undefined) {
-                              //Revisa si el registro error
-                          if (ctrl.hotComponent.data.errors.hasOwnProperty(currentRegister.regs1)) {
-                              cellProperties['renderer'] = "errorRenderer"; // uses lookup map
-                          } else {
-                              cellProperties['renderer'] = "successRenderer";
-                          }
+              if (row != undefined && row === 0){
+                var myCell=ctrl.hotComponent.hotTable.getCell(row,col);
+                if (ctrl.hotComponent.data.errors != undefined) {
+                  var currentRegister = ctrl.hotComponent.data.registers[row];
+                  if (currentRegister !== undefined) {
+                          //Revisa si el registro error
+                      if (ctrl.hotComponent.data.errors.hasOwnProperty(currentRegister.regs1)) {
+                          cellProperties['renderer'] = "errorRenderer"; // uses lookup map
+                      } else {
+                          cellProperties['renderer'] = "successRenderer";
                       }
-                    }
                   }
+                }
               }
-
-
-              return cellProperties;
           }
+
+
+          return cellProperties;
+        }
       }
 
       public afterColumnSort(){
