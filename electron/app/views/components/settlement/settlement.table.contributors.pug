@@ -9,15 +9,15 @@
       .sett-contributor__messagetitle
         i.mdi.mdi-bell-outline
         span(ng-bind="'SETTLEMENT.TABLES.CONFIRMATION' | translate")
-      .sett-contributor__messages        
+      .sett-contributor__messages
         p(ng-bind="$ctrl.validationResult.resultMessage")
-                
+
     //Advertencias
     .sy-table__container(ng-if="$ctrl.validationResult.ruafOrBdua")
       .sett-contributor__messagetitle
         i.mdi.mdi-bell-outline
         span(ng-bind="'SETTLEMENT.TABLES.WARNINGS' | translate")
-      .sett-contributor__messages        
+      .sett-contributor__messages
         p(ng-bind="'SETTLEMENT.TABLES.MSG_BDUA' | translate")
       .sett-contributor__messageopts
         .sett-contributor__messageopts__opt
@@ -34,11 +34,12 @@
             i.mdi.mdi-content-save
               span(ng-bind="'SETTLEMENT.LOAD.ACTIONS.ACCEPT' | translate")
         .sett-contributor__messageopts__opt
-    
+
     //- Registro tipo 1
     .sy-table__container
       .sy__title-table(ng-bind="'SETTLEMENT.TABLES.REGTP01' | translate")
-      table-edit(data="[$ctrl.file.data.regTp01]" labels="$ctrl.file.data.labelsTp01" id-table="'regTp01'" cell-no-edit="$ctrl.cellNoEditType1")
+      //table-edit(data="[$ctrl.file.data.regTp01]" labels="$ctrl.file.data.labelsTp01" id-table="'regTp01'" cell-no-edit="$ctrl.cellNoEditType1")
+      hands-on-table(data="$ctrl.file.data.regsTp01" labels="$ctrl.file.data.labelsTp01" id-table="'regsTp01'" cell-no-edit="$ctrl.cellNoEditType1")
 
     //- Registro tipo 2
     .sy-table__container.sett-contributor__table-edit
@@ -60,8 +61,8 @@
               span Eliminar cotizante
             i.mdi.mdi-table-row-plus-after(ng-click="$ctrl.actionAddRegister()" ng-mouseover="$ctrl.actionShowTooltip($event)" ng-mouseleave="$ctrl.actionHideTooltip($event)")
               span Agregar cotizante
-          .sett-contributor__menu-item 
-            i.mdi.mdi-format-list-bulleted              
+          .sett-contributor__menu-item
+            i.mdi.mdi-format-list-bulleted
 
       //- Tabla de datos del registro tipo 2
       table-edit(data="$ctrl.file.data.regsTp02" labels="$ctrl.file.data.labelsTp02" id-table="'regsTp02'" active-filter="true" fixed-columns="true" selected-item="$ctrl.selectedItem" cell-no-edit="$ctrl.cellNoEditType2" active-sub-menu="true" object-filter="$ctrl.objectFilter" only-errors-filter="$ctrl.onlyErrorsFilter" replace-active="true")
