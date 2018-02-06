@@ -24,3 +24,13 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 node_modules/
+
+electron/package-lock\.json
+
+java/pila-business/target/
+
+java/pila-util/target/
+
+java/soi\.empresarial\.converters/target/
+
+soi\.empresarial\.servidorTokens/package-lock\.json

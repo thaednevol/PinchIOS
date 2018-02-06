@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Servidor utilizado para realizar creación y consulta de tokens de usuarios",
   "scripts": {
-    "start":"node app.js"
+    "start": "node app.js"
   },
   "author": "Luis Felipe Zapata - lzapata@swat-it.co",
   "dependencies": {
