@@ -64,6 +64,11 @@
     "app/webapp/ts/app/table/tableEdit.component.ts",
     "app/webapp/ts/configs/configs.angular.ts",
     "app/webapp/ts/configs/configs.router.ts",
-    "app/webapp/ts/configs/configs.run.ts"
+    "app/webapp/ts/configs/configs.run.ts",
+    "app/webapp/ts/app/table/handsOnTable.component.ts",
+    "app/webapp/ts/app/table/hotConfigs.ts",
+		"app/webapp/ts/app/table/iHotComponents.ts",
+		"app/webapp/ts/app/table/hotDefault.ts",
+		"app/webapp/ts/app/table/hotRegsTp1.ts"
   ]
 }
