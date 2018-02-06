@@ -1,0 +1,30 @@
+
+//- Tablas normales
+//div(id="{{$ctrl.idTable}}")
+div(id="diag-replace-{{$ctrl.idTable}}" class='dialog' title='Reemplazar' style='display:none')
+  div
+    textarea(id='ta-replace-{{$ctrl.idTable}}' rows='4' cols='50' placeholder="Ingrese lo que va a buscar. Para vac\u00EDos ingrese un espacio. Para m\u00FAltiples registros, debe ser uno por l\u00EDnea")
+    div
+      table(border='0')
+        tr
+          td
+            input(id='in-replace-{{$ctrl.idTable}}' placeholder="Ingrese el reemplazo")
+          td
+            p Reemplazar por vacíos:
+          td
+            input(id='vacios-{{$ctrl.idTable}}' type='checkbox')
+
+    div(id="diag-replace-message-{{$ctrl.idTable}}"  style='display:none')
+      p(style='color:#f35a5d !important') Debe ingresar el valor a buscar y el valor a reemplazar para poder ejecutar la acción.
+
+    div
+      button(id='btn-replace-{{$ctrl.idTable}}' type='button') Reemplazar
+
+div(id="hot-{{$ctrl.idTable}}" style="width: 99.6%;" ng-init="$ctrl.init()")
+
+.table__nav(ng-if="$ctrl.data && $ctrl.activeFilter")
+  a(ng-click="$ctrl.actionChangePage('prev')")
+    i.fa.fa-chevron-circle-left
+  a(ng-click="$ctrl.actionChangePage('next')")
+    i.fa.fa-chevron-circle-right
+  span(ng-bind="($ctrl.startLimit + 1) + ' a ' + $ctrl.currentNumberRegisterLoad  + ' Total registros: ' + $ctrl.numRegisters")
