@@ -1,4 +1,3 @@
-/// <reference path="../../dt/Promise.d.ts"/>
 
 namespace app.native {
 

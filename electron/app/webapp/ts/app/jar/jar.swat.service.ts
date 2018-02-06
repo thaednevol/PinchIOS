@@ -1,4 +1,3 @@
-/// <reference path="../../dt/angular.d.ts"/>
 
 namespace app.jar {
 

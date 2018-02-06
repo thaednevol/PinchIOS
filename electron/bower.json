@@ -9,7 +9,11 @@
     "angular-translate": "2.13.1",
     "angular-translate-loader-static-files": "2.13.1",
     "angular-ui-router": "1.0.0-rc.1",
-    "ngLocale": "*"
+    "ngLocale": "*",
+    "ngHandsontable": "*",
+    "handsontable-pro": "*" ,
+    "jquery":"*",
+    "jquery-ui":"*"
   },
   "resolutions": {
     "angular": "1.6.2"

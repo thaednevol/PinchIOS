@@ -1,4 +1,3 @@
-/// <reference path="../../dt/angular.d.ts"/>
 
 namespace app.settlement {
 
@@ -329,7 +328,7 @@ namespace app.settlement {
           // Integrarlos con las tablas.
 
           return this.processResponseError(data, newListError, 0);
-          for (let i = 0; i < this.file.data.regsTp02.registers.length; i++) {
+          /*for (let i = 0; i < this.file.data.regsTp02.registers.length; i++) {
             let currentSequence: number = this.file.data.regsTp02.registers[i].regs1;
             // let newObject = this.$filter("filter")(data, { linea: Number(currentSequence) + 1 }, true);
             // if (newObject.length > 0) {
@@ -345,7 +344,7 @@ namespace app.settlement {
           //Pestaña de errores
           this.applyCorrections(0,this.file.data.regsTp02.errors);
           //Pestaña de correcciones
-          this.applyCorrections(0,this.file.data.regsTp02.corrected);
+          this.applyCorrections(0,this.file.data.regsTp02.corrected);*/
 
         });
       }, (response) => {

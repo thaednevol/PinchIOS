@@ -2,7 +2,7 @@
   "compilerOptions": {
     "removeComments": true,
     "outFile": "public/js/main.js",
-    "target": "es5"
+    "target": "es6"
   },
   "filesGlob": [
     "**/*.ts",

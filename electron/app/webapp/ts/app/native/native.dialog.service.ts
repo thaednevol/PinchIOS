@@ -1,5 +1,3 @@
-/// <reference path="../../dt/angular.d.ts"/>
-/// <reference path="../../dt/Promise.d.ts"/>
 /// <reference path="../../dt/node.d.ts"/>
 
 namespace app.native {
@@ -144,7 +142,7 @@ namespace app.native {
       this.ipcMain.removeAllListeners("open-error-dialog");
     }
 
-  
+
     /**
     * @description
     * Entrega una ventana donde se solicita una confirmación de una acción,

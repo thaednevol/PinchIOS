@@ -1,4 +1,3 @@
-/// <reference path="./dt/angular.d.ts"/>
 
 /**
 * @class Application

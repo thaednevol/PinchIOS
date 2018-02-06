@@ -1,4 +1,3 @@
-/// <reference path="../../dt/angular.d.ts"/>
 
 namespace app.settlement {
 
@@ -17,11 +16,14 @@ namespace app.settlement {
     */
     public showLoading: Boolean = false;
 
+    public dialogIsOpen: Boolean = true;
+
     /**
     * @type {NativeNotificationService} notificationService - Servicio que
     * permite mostrar notificaciones de forma nativa en el SO.
     * @see app.native.NativeNotificationService
     */
+    public  notificationService: any;
 
     /**
     * @type {Array} listErrorsContributors - Lista con datos a mostrar en la

@@ -81,6 +81,9 @@ gulp.task("copy", ["typeScript"], () => {
     .pipe(gulp.dest("./public/css/lib"));
   gulp.src("./app/webapp/js/lib/**/*.js")
     .pipe(gulp.dest("./public/js/lib"));
+  gulp.src("./app/webapp/js/es-CO.js").pipe(gulp.dest("./public/js/lib/handsontable-pro/languages/"));
+  gulp.src("./app/webapp/js/lib/jquery-ui/themes/cupertino/*.css").pipe(gulp.dest("./public/css/lib"));
+  gulp.src("./app/webapp/js/lib/jquery-ui/themes/cupertino/images/**/*").pipe(gulp.dest("./public/css/lib/images/"));
 });
 
 /*
