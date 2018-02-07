@@ -1,11 +1,13 @@
 package com.ach.soi.empresarial.converters.utils;
 
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 
+import com.ach.soi.empresarial.converters.utils.Constants;
 import com.ach.soi.empresarial.converters.core.DatosComplementarios1747Reader;
 import com.ach.soi.empresarial.converters.model.CommonBean;
 import com.ach.soi.empresarial.converters.model.beans1747.DatosComplementarios1747;
@@ -25,6 +27,21 @@ public class ParsersUtil {
 	public ParsersUtil ( ){
 		
 	}
+	
+	
+	public static String replaceCharsNotUTF8 ( String original ){
+		if ( original!=null ){
+			try {
+				if ( original.contains("ï¿½") ){
+					return original.replaceAll("ï¿½",new String("Ã‘".getBytes(Constants.GENERAL_ENCODING)));
+				}				
+			} catch (UnsupportedEncodingException e) {
+				return original;
+			}
+		}
+		return original;
+	}
+	
 	
 	public static boolean tieneNovedadesAusentismo ( Reg2388ReadTp02 regTp2 ){
 		if ( regTp2.getIge()!=null && regTp2.getIge().equals("X") ){
@@ -47,7 +64,7 @@ public class ParsersUtil {
 	
 	
 	public static String getPrimerDiaMes ( CommonBean regTp01 ){
-		//R06 - Si se reporta una novedad de ING (campo 15 con ÒX) se deber‡ completar el campo con el primer d’a del mes del periodo otros sistemas (campo 15 registro tipo 1).
+		//R06 - Si se reporta una novedad de ING (campo 15 con ï¿½X) se deberï¿½ completar el campo con el primer dï¿½a del mes del periodo otros sistemas (campo 15 registro tipo 1).
 		Date periodoOtros = new Date();
 		Calendar periodoOtrosCal = Calendar.getInstance();
 		SimpleDateFormat fmtPeriodo = new SimpleDateFormat("yyyy-MM");
@@ -625,14 +642,14 @@ public class ParsersUtil {
 	public static void completarConvertirTp02 ( Reg2388ReadTp01 regTp01, Reg2388ReadTp02 regTp02 ){
 		
 		
-		regTp02.setPrimerNombre(regTp02.getPrimerNombre().replace("Ñ", "N"));
-		regTp02.setPrimerApellido(regTp02.getPrimerApellido().replace("Ñ", "N"));
+		regTp02.setPrimerNombre(regTp02.getPrimerNombre().replace("ï¿½", "N"));
+		regTp02.setPrimerApellido(regTp02.getPrimerApellido().replace("ï¿½", "N"));
 		if ( regTp02.getSegundoApellido()!=null ){
-			regTp02.setSegundoApellido(regTp02.getSegundoApellido().replace("Ñ", "N"));
+			regTp02.setSegundoApellido(regTp02.getSegundoApellido().replace("ï¿½", "N"));
 		}
 		
 		if ( regTp02.getSegundoNombre()!=null ){
-			regTp02.setSegundoNombre(regTp02.getSegundoNombre().replace("Ñ", "N"));
+			regTp02.setSegundoNombre(regTp02.getSegundoNombre().replace("ï¿½", "N"));
 		}
 		
 		String primerDiaMes = getPrimerDiaMes(regTp01); 
@@ -651,7 +668,7 @@ public class ParsersUtil {
 			regTp02.setNumeroDocCotizantePpal("");
 		}
 		
-		//R02 - Cuando el valor del campo 43 Ð IBC Salud sea superior a 10 SMLMV este campo debe ser N
+		//R02 - Cuando el valor del campo 43 ï¿½ IBC Salud sea superior a 10 SMLMV este campo debe ser N
 		Long smmlv10 = Long.valueOf("700000");
 		Long valueIbcSalud = 0l;
 		try{
@@ -669,7 +686,7 @@ public class ParsersUtil {
 		}
 		
 		//R03 - Lo suministra el aportante.
-		//Para el caso de cotizantes diferente al cotizante 3 Ð independiente, se debe registrar el valor ingresado en el campo 14 del registro tipo 1 del archivo tipo 2.
+		//Para el caso de cotizantes diferente al cotizante 3 ï¿½ independiente, se debe registrar el valor ingresado en el campo 14 del registro tipo 1 del archivo tipo 2.
 		//Se deja en blanco cuando no sea obligatorio para el cotizante estar afiliado a una administradora de Riesgo Laborales
 		if ( isNull(regTp02.getCodigoArlAfiliado()) && regTp02.getTipoCotizante()!=null && !regTp02.getTipoCotizante().equals("3") && regTp01!=null){
 			regTp02.setCodigoArlAfiliado(regTp01.getCodigoArl());

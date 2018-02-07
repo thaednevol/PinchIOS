@@ -36,6 +36,7 @@ import com.ach.soi.empresarial.converters.core.Converter1747to2388;
 import com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadTp01;
 import com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadTp02;
 import com.ach.soi.empresarial.converters.utils.Constants;
+import com.ach.soi.empresarial.converters.utils.ParsersUtil;
 import com.ach.soi.empresarial.liquidacion.core.LiquidadorActivos;
 import com.ach.soi.empresarial.liquidacion.core.TotalizadorActivos;
 import com.ach.soi.empresarial.liquidacion.model.ErrorLiquidacionTO;

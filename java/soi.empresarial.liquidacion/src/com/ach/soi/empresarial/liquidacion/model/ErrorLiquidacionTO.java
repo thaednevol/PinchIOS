@@ -96,6 +96,7 @@ public class ErrorLiquidacionTO {
 	public void setAplicarSegundaValidacion(boolean aplicarSegundaValidacion) {
 		this.aplicarSegundaValidacion = aplicarSegundaValidacion;
 	}
+	
 	public boolean isCorregido() {
 		return corregido;
 	}
@@ -123,7 +124,6 @@ public class ErrorLiquidacionTO {
 	public void setSeleccionado(boolean seleccionado) {
 		this.seleccionado = seleccionado;
 	}
-
 	@Override
 	public String toString() {
 		return "ErrorLiquidacionTO [errorRegistro=" + errorRegistro
