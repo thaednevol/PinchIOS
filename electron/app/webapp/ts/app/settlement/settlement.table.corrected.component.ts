@@ -28,6 +28,8 @@ namespace app.settlement {
     */
     public selectedItem: any = {};
 
+    public dialogIsOpen: Boolean = true;
+
     /**
     * @type {Class} serviceFile - Servicio que ejecuta el llamado a metodos
     * nativos de Nodejs para la manipulación de archivos.

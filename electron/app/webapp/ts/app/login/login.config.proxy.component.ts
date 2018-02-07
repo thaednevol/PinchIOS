@@ -52,13 +52,6 @@ namespace app.login {
     private nativeNotification: any;
 
     /**
-    * @type {NativeEmailService} email - Clase con funciones de validación
-    * de configuración de email.
-    * @see app.native.NativeEmailService()
-    */
-    private email: any;
-
-    /**
     * @type {Object} OPTIONS - Equivale al archivo de opciones del sistema.
     * @see app/webapp/json/data/options.json
     */

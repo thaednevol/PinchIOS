@@ -487,7 +487,7 @@ namespace app.settlement {
     * Ejecuta la validación de un registro tipo 1 usando servicios rest
     * del JAR.
     */
-    public validateRegisterTp01() {
+    public validateRegisterTp01(numberRegister) {
       let reg01ForValidate = this.soiService.lineRegisterType1ToSeparatedString(this.file.data);
       let params = {
         regt01: reg01ForValidate
@@ -758,35 +758,6 @@ namespace app.settlement {
       this.showLoading = false;
       this.$rootScope.$broadcast("rebuild-table");
     }
-
-
-    private applyIndividualCorrections(linea,positionCol): void {
-      let corrects = this.file.data.regsTp02.corrected;
-      let errors = this.file.data.regsTp02.errors;
-      let rows: any = Object.keys(corrects);
-      let currentRow = this.file.data.regsTp02.corrected[linea-1];
-      let currentError = currentRow[positionCol];
-      if ( linea===1 ){
-        this.file.data.regTp01.registers[linea - 1][`regs${positionCol}`] = currentError.sugerencias[0];
-      }
-      else{
-        this.file.data.regsTp02.registers[linea - 2][`regs${positionCol-1}`] = currentError.sugerencias[0];
-      }
-      // Se elimina la información de la columna del error para evitar que se resalte la celda en la tabla.
-      delete errors[linea-1][positionCol];
-      if (Object.keys(errors[linea-1]).length === 0) {
-          delete errors[linea-1];
-      }
-      if ( linea===1 ){
-        this.$rootScope.$broadcast("show-loading");
-      }
-      this.updateTotals();
-      this.updateInfoPanel();
-      //}
-      //}
-
-    }
-
 
 
     /**
