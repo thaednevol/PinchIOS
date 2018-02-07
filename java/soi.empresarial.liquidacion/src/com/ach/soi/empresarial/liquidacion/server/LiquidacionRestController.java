@@ -123,7 +123,7 @@ public class LiquidacionRestController {
 		        gsonWriter=new GsonBuilder().setPrettyPrinting().create();	        
 				erroresLiq = liquidacion.validarRegsTp02Archivo2388(archivoEnProceso, validacionPlanillaDd, pathArchivo2388);
 				erroresUnion.addAll(Arrays.asList(erroresLiq));
-			}
+			} 
 						
 			erroresLiq = erroresUnion.toArray(new ErrorLiquidacionTO[0]);
 			erroresUnion = null;
@@ -207,6 +207,10 @@ public class LiquidacionRestController {
 			String regT01Str = converter.getRegT01FromBean(regT01Bean);
 			
 			erroresTp1 = liquidacion.completarPlanillaAportanteDTO(validacionPlanillaDd.getPlanillaApteDto(), regT01Str, archivoEnProceso,validacionPlanillaDd);
+			for ( int i=0;i<erroresTp1.length;i++ ){
+				secuenciaError++;
+				erroresTp1[i].setSecuenciaError(secuenciaError);
+            }
 			resultado.setErroresRegistros(erroresTp1);
 			resultado.setEstadoSolicitud("OK");
 		} catch (Exception e) {
@@ -226,15 +230,26 @@ public class LiquidacionRestController {
 		LOGGER.info("Registro: "+regTp02); 
 		LiquidadorActivos liquidador = new LiquidadorActivos();
 		ResultadoValidacionCotizanteDTO resultado = new ResultadoValidacionCotizanteDTO();
-		Collection<String> regsValidacion = new ArrayList<String>();
+		ArrayList<String> regsValidacion = new ArrayList<String>();
 		try{			
 			for ( String reg:regTp02 ){
 				Reg2388ReadTp02 regT02Bean = Reg2388ReadTp02.buildRecordFromStringArray(reg.split("\\|"));
 				Converter1747to2388 converter = new Converter1747to2388();
 				String regT02Str = converter.getRegT02FromBean(regT02Bean);
 				regsValidacion.add(regT02Str);
-			}						
-			resultado.setErroresRegistros(liquidador.validarRegistroTp02(regsValidacion, archivoEnProceso, validacionPlanillaDd, nroLinea));
+			}					
+			ErrorLiquidacionTO[] erroresLiq = null;
+			if ( nroLinea>0 ){
+				erroresLiq = liquidador.validarRegistroTp02(regsValidacion, archivoEnProceso, validacionPlanillaDd, nroLinea);
+			}			
+			else{
+				erroresLiq = liquidador.validarRegsTp02Archivo2388(archivoEnProceso, validacionPlanillaDd, regsValidacion);
+			}
+			for ( int i=0;i<erroresLiq.length;i++ ){
+				secuenciaError++;
+            	erroresLiq[i].setSecuenciaError(secuenciaError);
+            }
+			resultado.setErroresRegistros(erroresLiq);
 			resultado.setEstadoSolicitud("OK");
 		}catch ( Exception e ){
 			LOGGER.error("Error no controlado",e);
@@ -291,7 +306,7 @@ public class LiquidacionRestController {
 	@RequestMapping(value="/getversion",method={RequestMethod.GET})
 	@ResponseBody	
     public String getVersion(  ) {
-		return "2.6.1 (2017-12-13)";
+		return "2.6.1 (2017-12-18)";
 	}
 	
 	@RequestMapping(value="/generarsoportes",method={RequestMethod.POST})

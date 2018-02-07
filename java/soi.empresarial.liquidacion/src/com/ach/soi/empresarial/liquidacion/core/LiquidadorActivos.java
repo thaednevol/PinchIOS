@@ -100,7 +100,7 @@ public class LiquidadorActivos {
 				}
 				this.completarPlanillaAportanteDTODePlanillaRegT01(bean01, planillaApteDto);
 				this.validarRegistroTp01(bean01, planillaApteDto, archivoEnProcesoDTO,validacionArchivoDataSource);
-								
+				validacionArchivoDataSource.setPlanillaApteDto(planillaApteDto);				
 				
 			}catch ( ApplicationException app ){
 				camposBeanT01 = bean01.getCampos();
@@ -279,6 +279,7 @@ public class LiquidadorActivos {
 		if ( !exceptionSet.isEmpty() ){
 			throw new ApplicationException(exceptionSet);
 		}
+		
 	}
 	
 	private com.ach.pla.biz.type.PeriodoType calcularPeriodoNoSalud(
@@ -363,25 +364,49 @@ public class LiquidadorActivos {
 		return errores.toArray(new ErrorLiquidacionTO[0]);
 	}
 	
+	public ErrorLiquidacionTO[] validarRegsTp02Archivo2388 (ArchivoEnProcesoDTO archivoDto, 
+			ValidacionArchivoDataSource datasourceValidacion,
+			ArrayList<String> regsTp02) throws Exception{
+		return this.validarRegsTp02Archivo2388(archivoDto, datasourceValidacion, null, regsTp02);
+	}
+	
 	
 	public ErrorLiquidacionTO[] validarRegsTp02Archivo2388 (ArchivoEnProcesoDTO archivoDto, 
+			ValidacionArchivoDataSource datasourceValidacion,
+			String pathArchivo2388) throws Exception{
+		return this.validarRegsTp02Archivo2388(archivoDto, datasourceValidacion, pathArchivo2388, null);
+	}
+	
+	private ErrorLiquidacionTO[] validarRegsTp02Archivo2388 (ArchivoEnProcesoDTO archivoDto, 
 															ValidacionArchivoDataSource datasourceValidacion,
-															String pathArchivo2388) throws Exception{
+															String pathArchivo2388,
+															ArrayList<String> regsTp02) throws Exception{
 		Collection<ErrorLiquidacionTO> erroresLiquidacion = new ArrayList<ErrorLiquidacionTO>();
 		BufferedReader reader = null;
 		Collection<ErrorLiquidacionTO> errorRegs = new ArrayList<ErrorLiquidacionTO>();
 		Collection<PlanillaRegT02> registrosT02Agrupados = new ArrayList<PlanillaRegT02>();
+		boolean modoArchivo = pathArchivo2388!=null;
 		LOGGER.info("inicio: validarRegsTp02Archivo2388()");
 		try{
-			reader = new BufferedReader( new InputStreamReader(new FileInputStream(pathArchivo2388), Constants.GENERAL_ENCODING) );
+			int nroLinea = 1;
+			if ( modoArchivo ){
+				reader = new BufferedReader( new InputStreamReader(new FileInputStream(pathArchivo2388), Constants.GENERAL_ENCODING) );
+				nroLinea = 0;
+			}
 			String line = null;
-			int nroLinea = 0;
+			
+			long secuencia = 0;
 			int oks = 0;
 			int regsError = 0;
 			long secuencia = 0;
 			PlanillaRegT02 bean02 = null;
 			do{
-				line=reader.readLine();
+				if ( modoArchivo ){
+					line=reader.readLine();
+				}
+				else {
+					line = regsTp02.get(nroLinea);
+				}
 				nroLinea++;
 				LOGGER.info("validarRegsTp02Archivo2388()->"+nroLinea);
 				if ( line==null || line!=null && line.startsWith("02") ){
@@ -430,7 +455,7 @@ public class LiquidadorActivos {
 						oks ++;
 					}
 				}				
-			}while ( line!=null );
+			}while ( (modoArchivo && line!=null) || (!modoArchivo && nroLinea<regsTp02.size()));
 			LOGGER.info("Registros OK: "+oks);
 			LOGGER.info("Registros Error: "+regsError);
 			LOGGER.info("fin: validarRegsTp02Archivo2388()");

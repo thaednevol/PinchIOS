@@ -258,7 +258,6 @@ namespace app.settlement {
       });
     }
 
-
     private prevalidateRegisterTp1 ( ){
       let tipoPlanilla = this.file.data.regTp01.registers[0]["regs7"];
       let formaPresentacion = this.file.data.regTp01.registers[0]["regs10"];
@@ -465,6 +464,14 @@ namespace app.settlement {
       return objectErrors;
     }
 
+
+    private saveSettlementFileTmp() {
+
+      this.file.data.regTp01[18] = this.file.data.regsTp02.registers.length;
+      let dataForSave: any = this.soiService.registerType2ToArray(this.file.data);
+      return this.serviceFile.createFileTemp(`${this.file.name}.json`, dataForSave, false);
+    }
+
     /**
     * @description
     * Ejecuta la validación de un registro tipo 1 usando servicios rest
@@ -487,11 +494,14 @@ namespace app.settlement {
               this.file.data.regTp01.errors["0"] = [];
               this.file.data.regTp01.errors["0"] = this.arrayErrorsToObject(errors);
               this.file.data.regsTp02.errors["0"] = this.arrayErrorsToObject(errors);
-              this.file.data.regsTp02.corrected["0"] = this.arrayErrorsToObject(errors);
+              //this.file.data.regsTp02.corrected["0"] = this.arrayErrorsToObject(errors);
             }
             else{
               this.file.data.regTp01.errors["0"] = [];
               this.file.data.regsTp02.errors["0"] = [];
+              //Manda a revalidar todos los registros del archivo
+              this.validateRegister(-1);
+
             }
 
             let cols: any = Object.keys(errors);
@@ -515,6 +525,17 @@ namespace app.settlement {
                 corrects[Object.keys(oldErrors)[i]]=currReg;
               }
             }
+
+            //Agrega los nuevos errores al arreglo de correcciones
+            for ( let i=0;i<Object.keys(errors).length;i++ ){
+              let currReg = errors[Object.keys(errors)[i]];
+              //si existe un error en el arreglo de correcciones que no se haya corregido
+              let existeError = corrects[currReg.campo];
+              if ( !existeError ){
+                corrects[currReg.campo]=currReg;
+              }
+            }
+
             this.updateTotals();
             this.updateInfoPanel();
 
@@ -529,11 +550,23 @@ namespace app.settlement {
     * del JAR.
     */
     public validateRegister(numberRegister) {
-      numberRegister = Number(numberRegister);
-      let identificationSelected = this.file.data.regsTp02.registers[numberRegister]["regs3"];
-      let tpIdentificationSelected = this.file.data.regsTp02.registers[numberRegister]["regs2"];
-      let selectedRegs = this.$filter("filter")(this.file.data.regsTp02.registers, { regs3: identificationSelected }, true);
-      let nroLinea0 = Number(selectedRegs[0]["regs1"])+1;
+
+      let selectedRegs = [];
+      let nroLinea0 = 0;
+      if ( numberRegister>=0 ){
+        numberRegister = Number(numberRegister);
+        let identificationSelected = this.file.data.regsTp02.registers[numberRegister]["regs3"];
+        let tpIdentificationSelected = this.file.data.regsTp02.registers[numberRegister]["regs2"];
+        selectedRegs = this.$filter("filter")(this.file.data.regsTp02.registers, { regs3: identificationSelected }, true);
+        nroLinea0 = Number(selectedRegs[0]["regs1"])+1;
+      }
+      else{
+        //se mandan a revalidar todos los registros de cotizante del archivo, por ejemplo si cambia el registro tipo 1
+        this.showLoading = true;
+        selectedRegs = this.file.data.regsTp02.registers;
+        nroLinea0 = 0;
+      }
+
       let regsForValidate = [];
       //Para enviar a validar los multiples registros de un solo cotizante
       for (let i = 0; i < selectedRegs.length; i++) {
@@ -545,6 +578,7 @@ namespace app.settlement {
         //regTp02: this.soiService.lineRegisterType2ToArray(this.file.data, numberRegister),
         nroLinea: nroLinea0
       };
+
       this.serviceSettlement.validateRegister(params).get().$promise.then((response) => {
 
         if (response.data.estadoSolicitud === "OK") {
@@ -587,19 +621,43 @@ namespace app.settlement {
                 if (Object.keys(this.file.data.regsTp02.errors[numberSequence]).length === 0) {
                   delete this.file.data.regsTp02.errors[numberSequence];
                 }
+
                 //marca corregidos manualmente los errores que desaparecen al realizar el cambio
-                for ( let i=0;i<Object.keys(oldErrors).length;i++ ){
-                  let currReg = oldErrors[Object.keys(oldErrors)[i]];
-                  let existeError = errors.find(function(element){
-                    return element.campo === currReg.campo;
-                  });
-                  if ( !existeError ){
-                    currReg.corregido = true;
-                    currReg.autocorregible = true;
-                    currReg.correccion = this.$filter("translate")("ERROR.CONTRIBUTORS.TYPE_MANU");
-                    corrects[Object.keys(oldErrors)[i]]=currReg;
+                if ( oldErrors!== undefined ){
+                  for ( let i=0;i<Object.keys(oldErrors).length;i++ ){
+                    let currReg = oldErrors[Object.keys(oldErrors)[i]];
+                    let existeError = errors.find(function(element){
+                      return element.campo === currReg.campo;
+                    });
+                    if ( !existeError ){
+                      currReg.corregido = true;
+                      currReg.autocorregible = true;
+                      currReg.correccion = this.$filter("translate")("ERROR.CONTRIBUTORS.TYPE_MANU");
+                      corrects[Object.keys(oldErrors)[i]]=currReg;
+                    }
                   }
                 }
+                //Bug 2417
+                //this.file.data.regsTp02.corrected = this.file.data.regsTp02.errors;
+                let arrayCorrected = [];
+                for (let key in this.file.data.regsTp02.errors) {
+                  let object: any = Object;
+                  if (this.file.data.regsTp02.corrected[key] !== undefined) {
+                    if (Object.keys(this.file.data.regsTp02.corrected[key]).length === 0) {
+                      this.file.data.regsTp02.corrected[key] = this.file.data.regsTp02.errors[key];
+                    } else {
+                      let array: any = object.values(this.file.data.regsTp02.errors[key]);
+                      for (let positionCol = 0; positionCol < array.length; positionCol++) {
+                        let currentCol = array[positionCol];
+                        currentCol.linea = parseInt(key) + 1;
+                        //currentCol.secuenciaError = parseInt(key);
+                        this.file.data.regsTp02.corrected[key][currentCol.campo] = currentCol;
+                        this.file.data.regsTp02.errors[key][currentCol.campo] = currentCol;
+                      }
+                    }
+                  }
+                }
+                this.showLoading = false;
                 this.updateTotals();
                 this.updateInfoPanel();
               } else {
@@ -609,7 +667,9 @@ namespace app.settlement {
                   currReg.corregido = true;
                   currReg.autocorregible = true;
                   currReg.correccion = this.$filter("translate")("ERROR.CONTRIBUTORS.TYPE_MANU");
-                  corrects[Object.keys(oldErrors)[i]]=currReg;
+                  if ( corrects!== undefined ){
+                    corrects[Object.keys(oldErrors)[i]]=currReg;
+                  }
                 }
 
                 delete this.file.data.regsTp02.errors[numberSequence];
@@ -690,7 +750,10 @@ namespace app.settlement {
       if (Object.keys(errors[linea-1]).length === 0) {
           delete errors[linea-1];
       }
-
+      if ( linea===1 ){
+        this.$rootScope.$broadcast("show-loading");
+        this.validateRegisterTp01();
+      }
       this.updateTotals();
       this.updateInfoPanel();
       //}
