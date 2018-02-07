@@ -78,7 +78,7 @@ namespace app.table {
       }
 
       public getCells(){
-
+        
       }
 
       public afterColumnSort(){

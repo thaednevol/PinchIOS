@@ -16,7 +16,7 @@ namespace app.table {
     }
 
     public getData(){
-      return this.hotComponent.data[0].registers[0];
+      return this.hotComponent.data.registers[0];
     }
 
     public getColumnSorting(){
@@ -29,14 +29,14 @@ namespace app.table {
 
     public getColumnDef(){
       var columnas=[];
-      if (this.hotComponent.data[0].registers[0]) {
-        for(let i of Object.keys(this.hotComponent.data[0].registers[0])) {
+      if (this.hotComponent.data.registers[0]) {
+        for(let i of Object.keys(this.hotComponent.data.registers[0])) {
             //columnas.push({data: i, readOnly:true, type: 'text'});
-          if (i !== "selected") {
+          if (i.includes("regs")) {
             if (i === "regs0" || i === "regs2") {
-              columnas.push({data: i, readOnly:true, type: 'text'});
+              columnas.push({data: i, readOnly:true, type: 'text', renderer: 'cellRenderer'});
             } else {
-              columnas.push({data: i, readOnly:false, type: 'text'});
+              columnas.push({data: i, readOnly:false, type: 'text', renderer: 'cellRenderer'});
             }
           }
         }
@@ -124,13 +124,54 @@ namespace app.table {
       public afterChange(){
         var ctrl=this;
         return function (changes, source) {
+          if (changes != null) {
+            for (var fil = 0; fil < changes.length; fil++) {
+              var rowThatHasBeenChanged = changes[fil][0],
+              columnThatHasBeenChanged = changes[fil][1],
+              previousValue = changes[fil][2],
+              newValue = changes[fil][3];
+
+              var sourceRow = ctrl.hotComponent.hotTable.getSourceDataAtRow(rowThatHasBeenChanged),
+              visualRow = ctrl.hotComponent.hotTable.getDataAtRow(rowThatHasBeenChanged);
+
+              var visualObjectRow = function(row) {
+                  var obj = {},key, name;
+                  for (var i = 0; i < ctrl.hotComponent.hotTable.countCols(); i++) {
+                      obj[ctrl.hotComponent.hotTable.colToProp(i)] = ctrl.hotComponent.hotTable.getDataAtCell(row, i);
+                    }
+                    return obj
+                  }
+
+
+
+                  // console.log('* the getSourceDataAtRow:');
+                  // console.log(sourceRow);
+                  // console.log('* the getDataAtRow:');
+                  // console.log(visualRow);
+                  // console.log('* the visualObjectRow function:');
+                  // console.log(visualObjectRow(rowThatHasBeenChanged));
+            }
+          }
 
           if (changes != null) {
             for (var fil = 0; fil < changes.length; fil++) {
               if (changes[fil][1] !== "selected") {
-                /*
-                Algunos registros vienen con espacios, entonces, si no se hace la comparacion, cambia los totales
-                */
+                if (changes[fil][2] !== changes[fil][3]) {
+                  ctrl.hotComponent.$rootScope.$broadcast("validate-register-table", changes[fil][0]);
+                }
+              }
+            }
+          }
+        }
+      }
+
+      /*public afterChange(){
+        var ctrl=this;
+        return function (changes, source) {
+
+          if (changes != null) {
+            for (var fil = 0; fil < changes.length; fil++) {
+              if (changes[fil][1] !== "selected") {
                 let c1=changes[fil][2].trim();
                 let c2=changes[fil][3].trim();
                 if (c1 !== c2) {
@@ -140,7 +181,7 @@ namespace app.table {
             }
           }
         }
-      }
+      }*/
 
       public registerHooks(){
 
@@ -149,10 +190,10 @@ namespace app.table {
       public registerRenderers(){
         var ctrl=this;
 
-        Handsontable.renderers.registerRenderer('errorRenderer', errorRenderer);
-        Handsontable.renderers.registerRenderer('successRenderer', successRenderer);
+        Handsontable.renderers.registerRenderer('cellRenderer', cellRenderer);
+        //Handsontable.renderers.registerRenderer('successRenderer', successRenderer);
 
-        function errorRenderer(instance, td, row, col, prop, value, cellProperties) {
+        function cellRenderer(instance, td, row, col, prop, value, cellProperties) {
           //solo aplicar a celds tipo texto
           if (row === 0) {
             Handsontable.renderers.TextRenderer.apply(this, arguments);
@@ -173,13 +214,15 @@ namespace app.table {
                   }
                 }
               }
+            } else {
+              td.innerHTML = value;
             }
           }
         }
 
-        function successRenderer(instance, td, row, col, prop, value, cellProperties) {
+        /*function successRenderer(instance, td, row, col, prop, value, cellProperties) {
           td.innerHTML = value;
-        }
+        }*/
       }
 
       public registerEvents(){
