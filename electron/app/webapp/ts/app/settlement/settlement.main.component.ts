@@ -260,7 +260,7 @@ namespace app.settlement {
 
     private prevalidateRegisterTp1 ( ){
       let tipoPlanilla = this.file.data.regTp01.registers[0]["regs7"];
-      let formaPresentacion = this.file.data.regTp01.registers[0]["regs10"];      
+      let formaPresentacion = this.file.data.regTp01.registers[0]["regs10"];
       let codSucursal = this.file.data.regTp01.registers[0]["regs11"];
       let nombreSucursal = this.file.data.regTp01.registers[0]["regs12"];
       let tiposPlanillaValidos: string[] = ['E','Y','A','I'];
@@ -687,13 +687,15 @@ namespace app.settlement {
                 this.updateInfoPanel();
               } else {
                 //marca corregidos manualmente los errores que desaparecen al realizar el cambio
-                for ( let i=0;i<Object.keys(oldErrors).length;i++ ){
-                  let currReg = oldErrors[Object.keys(oldErrors)[i]];
-                  currReg.corregido = true;
-                  currReg.autocorregible = true;
-                  currReg.correccion = this.$filter("translate")("ERROR.CONTRIBUTORS.TYPE_MANU");
-                  if ( corrects!== undefined ){
-                    corrects[Object.keys(oldErrors)[i]]=currReg;
+                if ( oldErrors!== undefined ){
+                  for ( let i=0;i<Object.keys(oldErrors).length;i++ ){
+                    let currReg = oldErrors[Object.keys(oldErrors)[i]];
+                    currReg.corregido = true;
+                    currReg.autocorregible = true;
+                    currReg.correccion = this.$filter("translate")("ERROR.CONTRIBUTORS.TYPE_MANU");
+                    if ( corrects!== undefined ){
+                      corrects[Object.keys(oldErrors)[i]]=currReg;
+                    }
                   }
                 }
 
