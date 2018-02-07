@@ -147,7 +147,7 @@ namespace app.settlement {
             register[0].correccion = this.$filter("translate")("ERROR.CONTRIBUTORS.TYPE_AUTOM");
             register[0].corregido = true;
             this.$rootScope.$broadcast("apply-corrections",register[0].linea,register[0].campo);
-            validarTipo1 = register[0].linea === 0;
+            validarTipo1 = register[0].linea === 1;
             //this.$filter("filter")(this.listErrorsContributors.data, { secuenciaError: this.selectedItem)[i] }).correccion = this.$filter("translate")("ERROR.CONTRIBUTORS.TYPE_AUTOM");
             //this.listErrorsContributors.data.filter(secuenciaError:Object.keys(this.selectedItem)[i]).corregido = true;
             //this.listErrorsContributors.data.filter(this.filterSugeridos)[Object.keys(this.selectedItem)[i]].correccion = this.$filter("translate")("ERROR.CONTRIBUTORS.TYPE_AUTOM");

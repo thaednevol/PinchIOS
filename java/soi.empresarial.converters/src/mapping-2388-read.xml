@@ -36,7 +36,7 @@
 			<field length="7"  minOccurs="0"  name="periodoPagoSistemaSalud" type="string"  position="311" justify="left" padding=" " setter="setPeriodoPagoSalud" getter="getPeriodoPagoSalud" nillable="true"  default="2000-00"/>
 			<field length="10"  minOccurs="0"  name="numeroRadicacionPlanilla" type="string" position="318" justify="left" padding=" " setter="setNumeroPlanilla" getter="getNumeroPlanilla" nillable="true"  default="00000000"/>
 			<field length="10"  minOccurs="0"  name="fechaPago" type="string" position="328" justify="right" padding=" " setter="setFechaPago" getter="getFechaPago" nillable="true"  default="2000-00-00"/>
-			<field length="5"   minOccurs="0"  name="numeroTotalEmpleados" type="string" position="338" justify="right" padding="0" setter="setNumeroTotalEmpleados" getter="getNumeroTotalEmpleados" nillable="true"  default="1"/>
+			<field length="5"   minOccurs="0"  name="numeroTotalEmpleados" type="string" position="338" justify="right" padding="0" setter="setNumeroTotalEmpleados" getter="getNumeroTotalEmpleados" nillable="true"  default="0"/>
 			<field length="12"  minOccurs="0"  name="valorTotalNomina" type="string" position="343" justify="right" padding="0" setter="setValorTotalNomina" getter="getValorTotalNomina" nillable="true"  default="0"/>
 			<field length="2"  minOccurs="0"  name="tipoAportante" type="string" position="355" justify="right" padding="0" setter="setTipoAportante" getter="getTipoAportante" nillable="true"  default="1"/>
 			<field length="2"  minOccurs="0"  name="codigoOperadorInformacion" type="string" position="356" justify="right" padding="0" setter="setCodigoOperador" getter="getCodigoOperador" nillable="true"  default="00"/>

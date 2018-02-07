@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Map;
 
@@ -28,7 +29,9 @@ import com.ach.arc.biz.validatorcfgs.PlanillaAportanteValidatorCfg;
 import com.ach.cfg.biz.cache.AdministradorasSingleton;
 import com.ach.cfg.biz.model.AdministradoraVO;
 import com.ach.cfg.biz.transfer.AdministradoraTarifaDTO;
+import com.ach.cfg.biz.type.TipoAportantesType;
 import com.ach.cfg.biz.type.TipoFormasPresentacionType;
+import com.ach.pla.biz.exception.PlanillaValidadorExceptionCodes;
 import com.ach.pla.biz.mngr.totalizador.TotalizadorPlanillaMngr;
 import com.ach.pla.biz.reglas.NSOIRNCotizante;
 import com.ach.pla.biz.reglas.NSOIRNPlanillaTipoEBiz;
@@ -40,9 +43,9 @@ import com.ach.pla.biz.type.TipoPlanillaType;
 import com.ach.soi.empresarial.converters.utils.Constants;
 import com.ach.soi.empresarial.liquidacion.exceptions.DesktopExceptionMngr;
 import com.ach.soi.empresarial.liquidacion.model.ErrorLiquidacionTO;
-import com.ach.soi.empresarial.liquidacion.model.ErrorRegistroTO;
 import com.blackbear.flatworm.ConfigurationReader;
 import com.blackbear.flatworm.FileFormat;
+import com.lucasian.common.validator.ValidadorExceptionCodesConstants;
 import com.lucasian.common.validator.ValidadorUtil;
 import com.lucasian.exception.ApplicationException;
 import com.lucasian.exception.ExceptionMessage;
@@ -87,23 +90,36 @@ public class LiquidadorActivos {
 			}
 		}
 		if ( errores.isEmpty() ){
-			try{
-				if ( TipoPlanillaType.getTipoPlanillaXCodigo(bean01.getTipoPlanillaType())==null ){
-					LOGGER.debug("Tipo planilla invalido, se cambia por planilla E");
-					bean01.getTipoPlanilla().setValorCrudo(TipoPlanillaType.E_EMPLEADOS_EMPRESAS.getCodTpPlanilla());
-					bean01.getTipoPlanilla().setValorAlfanumerico(TipoPlanillaType.E_EMPLEADOS_EMPRESAS.getCodTpPlanilla());
-				}
-				if ( TipoFormasPresentacionType.getTipoFormasPresentacionXCod(bean01.getFmaPresentacionType())==null ){
-					LOGGER.debug("Tipo planilla invalido, se cambia por planilla E");
-					bean01.getFmaPresentacion().setValorCrudo(TipoFormasPresentacionType.UNICO.getCodigo());
-					bean01.getFmaPresentacion().setValorAlfanumerico(TipoFormasPresentacionType.UNICO.getCodigo());
-				}
-				this.completarPlanillaAportanteDTODePlanillaRegT01(bean01, planillaApteDto);
+			camposBeanT01 = bean01.getCampos();
+			if ( TipoPlanillaType.getTipoPlanillaXCodigo(bean01.getTipoPlanillaType())==null ){
+				
+				ApplicationException exc = new ApplicationException(PlanillaValidadorExceptionCodes.REG01_TIPO_PLANILLA_NO_ENCONTRADO);
+				Object[] reemplazo = new Object[2];
+				reemplazo[0] = bean01.getTipoPlanilla();
+				reemplazo[1] = bean01.getTipoPlanillaType();
+				exc.setParametrosReemplazo(reemplazo);
+				this.manejarExcepcionesSemanticas(errores, bean01, exc, 1);
+				
+				LOGGER.debug("Tipo planilla invalido, se cambia por planilla E");
+				bean01.getTipoPlanilla().setValorCrudo(TipoPlanillaType.E_EMPLEADOS_EMPRESAS.getCodTpPlanilla());
+				bean01.getTipoPlanilla().setValorAlfanumerico(TipoPlanillaType.E_EMPLEADOS_EMPRESAS.getCodTpPlanilla());
+			}
+			if ( TipoFormasPresentacionType.getTipoFormasPresentacionXCod(bean01.getFmaPresentacionType())==null ){
+				LOGGER.debug("Tipo planilla invalido, se cambia por planilla E");
+				bean01.getFmaPresentacion().setValorCrudo(TipoFormasPresentacionType.UNICO.getCodigo());
+				bean01.getFmaPresentacion().setValorAlfanumerico(TipoFormasPresentacionType.UNICO.getCodigo());
+			}
+			try{				
+				this.completarPlanillaAportanteDTODePlanillaRegT01(bean01, planillaApteDto);				
+			}catch ( ApplicationException app ){				
+				LOGGER.error("validarRegsTp02Archivo2388() -> Errores semanticos validacion registro tipo uno (completarPlanillaAportanteDTODePlanillaRegT01): ",app);
+				this.manejarExcepcionesSemanticas(errores, bean01, app, 1);				
+			}
+			try{				
 				this.validarRegistroTp01(bean01, planillaApteDto, archivoEnProcesoDTO,validacionArchivoDataSource);
 				validacionArchivoDataSource.setPlanillaApteDto(planillaApteDto);				
 				
 			}catch ( ApplicationException app ){
-				camposBeanT01 = bean01.getCampos();
 				LOGGER.error("validarRegsTp02Archivo2388() -> Errores semanticos validacion registro tipo uno: ",app);
 				this.manejarExcepcionesSemanticas(errores, bean01, app, 1);
 			}
@@ -177,8 +193,19 @@ public class LiquidadorActivos {
 		archivoNotificacionDTO.setEsPlanillaTipoU(archivoEnProcesoDTO.isEsPlanillaTipoU());
 		archivoNotificacionDTO.setProcesoEdicion(false);
 		archivoNotificacionDTO.setPlanillaSoiClick(true);
+				
 		Collection<ApplicationException> appExcSet = new ArrayList<ApplicationException>();
 		try{
+			//Ocurre cuando por ejemplo el periodo tiene un formato no valido
+			if ( bean01.getPeriodoSaludType()==null ){
+				Object[] reemplazo = new Object[2];
+				ApplicationException appExc = new ApplicationException(PlanillaValidadorExceptionCodes.REG01_PERIODO_SALUD_OBLIGATORIO);
+				reemplazo[0] = bean01.getPeriodoSalud();
+				reemplazo[1] = bean01.getPeriodoSaludType();
+				appExc.setParametrosReemplazo(reemplazo);
+				appExcSet.add(appExc);
+				bean01.getPeriodoSalud().setValorFecha(Calendar.getInstance());
+			}
 			planillaArcPreValidador.aplicarRNBasicasParaTodosLosArchivos(planillaApteDto.getInformacionAportantePlanillaDTO(), bean01, archivoNotificacionDTO);
 		}catch ( ApplicationException appExc ){
 			if ( appExc.getAppExceptionSet()!=null && !appExc.getAppExceptionSet().isEmpty() ){
@@ -196,19 +223,61 @@ public class LiquidadorActivos {
 		PeriodoType periodoOtros = planillaApteDto.getPeriodoLiquidacionNoSalud();
 		try{
 			if ( !planillaApteDto.getCodigoSoiTpPlanilla().equals(TipoPlanillaType.I_INDEPENDIENTES.getCodTpPlanilla())&&
-					!planillaApteDto.getCodigoSoiTpPlanilla().equals(TipoPlanillaType.H_MADRES_COMUNITARIAS.getCodTpPlanilla())){					
+					!planillaApteDto.getCodigoSoiTpPlanilla().equals(TipoPlanillaType.H_MADRES_COMUNITARIAS.getCodTpPlanilla())){
+				
+				if ( periodoSalud==null ){
+					periodoSalud = new PeriodoType(Calendar.getInstance());					
+				}
+				if ( periodoOtros==null ){
+					periodoOtros = new PeriodoType((byte)(periodoSalud.getMes()-1),periodoSalud.getAno());
+				}
+				
 				nSOIRNPlanillaTipoEBiz.valirdarRN05PeriodoDeLiquidacionSaludMesAdelanteQueOtrosPeriodos(periodoSalud,periodoOtros);			
 			}
 			else{
+				if ( periodoSalud==null ){
+					periodoSalud = new PeriodoType(Calendar.getInstance());					
+				}
+				if ( periodoOtros==null ){
+					periodoOtros = new PeriodoType(Calendar.getInstance());
+				}
 				nSOIRNPlanillaTipoEBiz.validarRN05PeriodosIgualesH(planillaApteDto);
 			}
+									
 		}catch ( ApplicationException appExc ){
 			Object[] reemplazo = new Object[2];
 			reemplazo[0] = bean01.getPeriodoNoSalud();
 			reemplazo[1] = bean01.getPeriodoNoSaludType();
 			appExc.setParametrosReemplazo(reemplazo);
 			appExcSet.add(appExc);			
-		}						
+		}	
+		//ValidarTipo Aportante
+		Integer idTipoAportante = bean01.getTpAportanteType()!=null?bean01.getTpAportanteType().intValue():0;
+		TipoAportantesType tpAportante = TipoAportantesType.getTipoAportantesXId(idTipoAportante);
+		if (tpAportante==null) {
+			ApplicationException appExc = new ApplicationException(PlanillaValidadorExceptionCodes.REG01_TIPO_APORTANTE_DIFERENTE_APORTANTE);
+			Object[] reemplazo = new Object[2];
+			if ( validacionArchivoDataSource.getPlanillaApteDto()!= null && validacionArchivoDataSource.getPlanillaApteDto().getInformacionAportantePlanillaDTO()!=null  ){
+				bean01.getTpAportante().setValorEsperado(validacionArchivoDataSource.getPlanillaApteDto().getInformacionAportantePlanillaDTO().getIdSoiTpAportante()+"");
+			}
+			reemplazo[0] = bean01.getTpAportante();
+			reemplazo[1] = bean01.getTpAportanteType();
+			appExc.setParametrosReemplazo(reemplazo);
+			appExcSet.add(appExc);			
+		}
+		
+		//Validar codigo operador
+		String codOperador = bean01.getCodOperador().getValorCrudo();
+		try{
+			Integer.valueOf(codOperador);
+		}catch ( Exception e ){
+			ApplicationException appExc = new ApplicationException(ValidadorExceptionCodesConstants.ERROR_FORMATO);
+			Object[] reemplazo = new Object[2];			
+			reemplazo[0] = bean01.getCodOperador();
+			reemplazo[1] = bean01.getCodOperadorType();
+			appExc.setParametrosReemplazo(reemplazo);
+			appExcSet.add(appExc);
+		}
 		
 		if ( !appExcSet.isEmpty() ){
 			throw new ApplicationException(appExcSet);
@@ -401,13 +470,13 @@ public class LiquidadorActivos {
 			long secuencia = 0;
 			PlanillaRegT02 bean02 = null;
 			do{
+				nroLinea++;
 				if ( modoArchivo ){
 					line=reader.readLine();
 				}
 				else {
-					line = regsTp02.get(nroLinea);
-				}
-				nroLinea++;
+					line = regsTp02.get(nroLinea-2);
+				}				
 				LOGGER.info("validarRegsTp02Archivo2388()->"+nroLinea);
 				if ( line==null || line!=null && line.startsWith("02") ){
 					//errorRegs = this.validarRegistroTp02(line, archivoDto, datasourceValidacion, nroLinea);
@@ -455,7 +524,24 @@ public class LiquidadorActivos {
 						oks ++;
 					}
 				}				
-			}while ( (modoArchivo && line!=null) || (!modoArchivo && nroLinea<regsTp02.size()));
+			}while ( (modoArchivo && line!=null) || (!modoArchivo && nroLinea<=regsTp02.size()));
+			
+			if ( !registrosT02Agrupados.isEmpty() ){						
+				GrupoCotizantesDTO grupoCotizantes = this.agruparCotizantesAplicarValidacionesPrevias(registrosT02Agrupados,errorRegs);				
+				if ( errorRegs.isEmpty() ){
+					 this.procesarGrupoCotizantesTp2Desconectado(grupoCotizantes, archivoDto, datasourceValidacion,errorRegs);
+				}																																				
+				registrosT02Agrupados.clear();				
+			}							
+			if ( !errorRegs.isEmpty() ){
+				regsError++;
+				erroresLiquidacion.addAll(errorRegs);
+				errorRegs.clear();
+			}
+			else{
+				oks ++;
+			}
+			
 			LOGGER.info("Registros OK: "+oks);
 			LOGGER.info("Registros Error: "+regsError);
 			LOGGER.info("fin: validarRegsTp02Archivo2388()");
@@ -1105,19 +1191,19 @@ public class LiquidadorActivos {
 		return false;
 	}
 	
-	public boolean tieneErrorArl ( ErrorLiquidacionTO[] erroresTp1  ) throws Exception{
-		boolean errorCampoArl = false;
+	public boolean tieneErrorNoValidacionTipo2 ( ErrorLiquidacionTO[] erroresTp1  ) throws Exception{
+		boolean errorCampoDetieneValidacion = false;
 		for ( ErrorLiquidacionTO error:erroresTp1 ){
 			if ( error.getCampo()==null ){
 				continue;
 			}				
-			CampoLeido1747 campo = camposBeanT01.get(error.getCampo().toString());
-			if (campo!=null && campo.getNombreCampo().contains("Cod ARP")){
-				errorCampoArl = true;
+			//Campos tipo aportante, ARL o tipo planilla
+			if (error.getCampo().equals(7) || error.getCampo().equals(13) || error.getCampo().equals(20)){
+				errorCampoDetieneValidacion = true;
 				break;
 			}
 		}
-		return errorCampoArl;
+		return errorCampoDetieneValidacion;
 	}
 	
 	

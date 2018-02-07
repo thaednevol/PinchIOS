@@ -118,7 +118,7 @@ public class LiquidacionRestController {
 			os = new FileOutputStream(new File(pathResultado.toString()),true);
 	        bw = new BufferedWriter(new OutputStreamWriter(os,"UTF-8"));
 			
-			if ( !liquidacion.tieneErrorArl(erroresTp1) ){
+			if ( !liquidacion.tieneErrorNoValidacionTipo2(erroresTp1) ){
 				
 		        gsonWriter=new GsonBuilder().setPrettyPrinting().create();	        
 				erroresLiq = liquidacion.validarRegsTp02Archivo2388(archivoEnProceso, validacionPlanillaDd, pathArchivo2388);
@@ -306,7 +306,7 @@ public class LiquidacionRestController {
 	@RequestMapping(value="/getversion",method={RequestMethod.GET})
 	@ResponseBody	
     public String getVersion(  ) {
-		return "2.6.1 (2017-12-18)";
+		return "2.6.1 (2017-12-21-v2)";
 	}
 	
 	@RequestMapping(value="/generarsoportes",method={RequestMethod.POST})

@@ -427,7 +427,7 @@ namespace app.settlement {
       if (numberRegister === 1) {
         this.file.data.regTp01.errors = newListError;
       }
-      if (numberRegister >= this.file.data.regsTp02.registers.length) {
+      if (numberRegister >= this.file.data.regsTp02.registers.length+1) {
         this.file.data.regsTp02.errors = newListError;
         this.file.data.regsTp02.corrected = [];
         angular.copy(newListError, this.file.data.regsTp02.corrected);
@@ -495,8 +495,14 @@ namespace app.settlement {
         if (response.data.estadoSolicitud === "OK") {
             let errors = response.data.erroresRegistros;
 
+            if ( this.file.data.regsTp02.corrected[0]===undefined ){
+              this.file.data.regsTp02.corrected[0] = [];
+            }
             let corrects = this.file.data.regsTp02.corrected[0];
-            let oldErrors = this.file.data.regsTp02.errors[0];
+            let oldErrors = [];
+            if ( this.file.data.regsTp02.errors[0] ){
+              oldErrors = this.file.data.regsTp02.errors[0];
+            }
 
             if (errors.length > 0) {
               this.file.data.regTp01.errors["0"] = [];
@@ -507,11 +513,15 @@ namespace app.settlement {
             else{
               this.file.data.regTp01.errors["0"] = [];
               this.file.data.regsTp02.errors["0"] = [];
-              //Manda a revalidar todos los registros del archivo
-              this.validateRegister(-1);
-
             }
 
+            //Manda a revalidar todos los registros del archivo cuando no tiene errores
+            //en los campos tipo planilla, tipo aportante y codigo arl
+            if (  this.file.data.regTp01.errors["0"][7]=== undefined &&
+                  this.file.data.regTp01.errors["0"][13]=== undefined &&
+                  this.file.data.regTp01.errors["0"][20]=== undefined){
+                this.validateRegister(-1);
+            }
             let cols: any = Object.keys(errors);
             // Recorre cada columna de la fila para realizar la corrección.
             for (let positionCol = 0; positionCol < cols.length; positionCol++) {
@@ -607,6 +617,10 @@ namespace app.settlement {
                 // Si esisten errores se indican en los registros de las tablas convirtiendo
                 // La estructura de array en objetos para que se pueda utilizar en la tabla
                 this.file.data.regsTp02.errors[numberSequence] = this.arrayErrorsToObject(errors);
+                //Solo cuando se modifico el registro 1 y se mando a revalidar el archivo
+                if ( numberRegister===0 ){
+                  this.file.data.regsTp02.corrected[numberSequence] = this.arrayErrorsToObject(errors);
+                }
                 //this.file.data.regsTp02.corrected[numberSequence] = this.arrayErrorsToObject(errors);
 
                 //Aplica las correcciones
