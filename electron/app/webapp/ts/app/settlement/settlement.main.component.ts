@@ -53,6 +53,10 @@ namespace app.settlement {
     */
     private nativeNotification: any;
 
+    private tipoPlanillaInvalido: Boolean = false;
+    private formaPresentacionInvalida: Boolean = false;
+    private sucursalInvalida: Boolean = false;
+
     /**
     * @type {Object<name,path,data,origin>} file - Contiene la información del archivo
     * que se carga.
@@ -254,6 +258,26 @@ namespace app.settlement {
       });
     }
 
+
+    private prevalidateRegisterTp1 ( ){
+      let tipoPlanilla = this.file.data.regTp01.registers[0]["regs7"];
+      let formaPresentacion = this.file.data.regTp01.registers[0]["regs10"];
+      let tiposPlanillaValidos: string[] = ['E','Y','A','I'];
+      let formasPresentacionValidas: string[] = ['U','C','S','D'];
+      if ( tiposPlanillaValidos.indexOf(tipoPlanilla)<0 ){
+        this.tipoPlanillaInvalido = true;
+        this.file.data.regTp01.registers[0]["regs7"] = 'E';
+        this.file.data.regTp1Txt = this.file.data.regTp1Txt.substring(0,226)+'E'
+                                    +this.file.data.regTp1Txt.substring(227,this.file.data.regTp1Txt.length);
+      }
+      if ( formasPresentacionValidas.indexOf(formaPresentacion)<0 ){
+        this.formaPresentacionInvalida = true;
+        this.file.data.regTp01.registers[0]["regs10"] = 'U';
+        this.file.data.regTp1Txt = this.file.data.regTp1Txt.substring(0,247)+'U'
+                                    +this.file.data.regTp1Txt.substring(248,this.file.data.regTp1Txt.length);
+      }
+
+    }
     /**
     * @private
     * @description
@@ -268,6 +292,8 @@ namespace app.settlement {
       //   this.initializeSettlement();
       //   return;
       // }
+      this.prevalidateRegisterTp1();
+
       let params: any = {
         regTp01: this.file.data.regTp1Txt,
         idSoiAportante: this.$localStorage.soiContributorIdNumber,
@@ -377,7 +403,9 @@ namespace app.settlement {
         this.applyCorrections(0,this.file.data.regsTp02.errors);
         //Pestaña de correcciones
         this.applyCorrections(0,this.file.data.regsTp02.corrected);
-
+        let message = this.$filter("translate")("SETTLEMENT.CONFIRMATION.SETTLEMENT_TP_PLANILLA_MODIFICADA");
+        let title = this.$filter("translate")("MESSAGES.TITLES.INFO");
+        this.nativeNotification.show(title, message);
         return;
       }
       setTimeout(() => {

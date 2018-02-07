@@ -195,6 +195,7 @@ namespace app.jar {
       return newArray;
     }
 
+
     /**
     * @description
     * Convierte una linea del registro de formato Object a una cadena separada por pipe.

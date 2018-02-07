@@ -221,8 +221,8 @@ namespace app.table {
             currentKey = Object.keys(this.data.registers[0])[currentKey];
             if (currentKey !== undefined) {
               //Solo se revalida cuando realmente cambia el valor
-              if ( this.data.registers[positionInArray][currentKey] != value ){
-                this.data.registers[positionInArray][currentKey] = value;
+              if ( this.data.registers[0][currentKey] != value ){
+                this.data.registers[0][currentKey] = value;
                 this.$rootScope.$broadcast("validate-register-tp01");
               }
             }

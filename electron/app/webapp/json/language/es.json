@@ -181,7 +181,8 @@
     },
     "CONFIRMATION": {
       "SETTLEMENT_CREATED_TITLE": "Planilla Cargada",
-      "SETTLEMENT_CREATED": "Planilla creada en Nuevo SOI con el número: "
+      "SETTLEMENT_CREATED": "Planilla creada en Nuevo SOI con el número: ",
+      "SETTLEMENT_TP_PLANILLA_MODIFICADA": "Señor aportante el tipo de planilla, código de sucursal, nombre de sucursal y/o tipo de presentación pudieron ser ajustados si no correspondían a valores permitidos para el aportante, por favor validar la información de estos campos"
     },
     "ERRORS": {
       "VALIDATE_FILE": "Ocurrio error generando número de planilla en NSOI, comuníquese con el administrador. Codigo de error: "

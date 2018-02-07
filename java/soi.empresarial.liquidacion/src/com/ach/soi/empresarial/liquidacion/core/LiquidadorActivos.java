@@ -28,6 +28,7 @@ import com.ach.arc.biz.validatorcfgs.PlanillaAportanteValidatorCfg;
 import com.ach.cfg.biz.cache.AdministradorasSingleton;
 import com.ach.cfg.biz.model.AdministradoraVO;
 import com.ach.cfg.biz.transfer.AdministradoraTarifaDTO;
+import com.ach.cfg.biz.type.TipoFormasPresentacionType;
 import com.ach.pla.biz.mngr.totalizador.TotalizadorPlanillaMngr;
 import com.ach.pla.biz.reglas.NSOIRNCotizante;
 import com.ach.pla.biz.transfer.PlanillaAportanteDTO;
@@ -37,6 +38,7 @@ import com.ach.pla.biz.type.TipoPlanillaType;
 import com.ach.soi.empresarial.converters.utils.Constants;
 import com.ach.soi.empresarial.liquidacion.exceptions.DesktopExceptionMngr;
 import com.ach.soi.empresarial.liquidacion.model.ErrorLiquidacionTO;
+import com.ach.soi.empresarial.liquidacion.model.ErrorRegistroTO;
 import com.blackbear.flatworm.ConfigurationReader;
 import com.blackbear.flatworm.FileFormat;
 import com.lucasian.common.validator.ValidadorUtil;
@@ -84,6 +86,16 @@ public class LiquidadorActivos {
 		}
 		if ( errores.isEmpty() ){
 			try{
+				if ( TipoPlanillaType.getTipoPlanillaXCodigo(bean01.getTipoPlanillaType())==null ){
+					LOGGER.debug("Tipo planilla invalido, se cambia por planilla E");
+					bean01.getTipoPlanilla().setValorCrudo(TipoPlanillaType.E_EMPLEADOS_EMPRESAS.getCodTpPlanilla());
+					bean01.getTipoPlanilla().setValorAlfanumerico(TipoPlanillaType.E_EMPLEADOS_EMPRESAS.getCodTpPlanilla());
+				}
+				if ( TipoFormasPresentacionType.getTipoFormasPresentacionXCod(bean01.getFmaPresentacionType())==null ){
+					LOGGER.debug("Tipo planilla invalido, se cambia por planilla E");
+					bean01.getFmaPresentacion().setValorCrudo(TipoFormasPresentacionType.UNICO.getCodigo());
+					bean01.getFmaPresentacion().setValorAlfanumerico(TipoFormasPresentacionType.UNICO.getCodigo());
+				}
 				this.completarPlanillaAportanteDTODePlanillaRegT01(bean01, planillaApteDto);
 				this.validarRegistroTp01(bean01, planillaApteDto, archivoEnProcesoDTO,validacionArchivoDataSource);
 			}catch ( ApplicationException app ){
@@ -969,6 +981,21 @@ public class LiquidadorActivos {
 		}
 		
 		return false;
+	}
+	
+	public boolean tieneErrorArl ( ErrorLiquidacionTO[] erroresTp1  ) throws Exception{
+		boolean errorCampoArl = false;
+		for ( ErrorLiquidacionTO error:erroresTp1 ){
+			if ( error.getCampo()==null ){
+				continue;
+			}				
+			CampoLeido1747 campo = camposBeanT01.get(error.getCampo().toString());
+			if (campo!=null && campo.getNombreCampo().contains("Cod ARP")){
+				errorCampoArl = true;
+				break;
+			}
+		}
+		return errorCampoArl;
 	}
 	
 	

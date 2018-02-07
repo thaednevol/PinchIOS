@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import co.swatit.pilautil.dto.out.ValidacionArchivoDataSourceDTO;
 import co.swatit.pilautil.generics.Validation;
 
+import com.ach.arc.biz.r1747.model.CampoLeido1747;
 import com.ach.arc.biz.r1747.util.ValidacionArchivoDataSource;
 import com.ach.arc.biz.transfer.ArchivoEnProcesoDTO;
 import com.ach.soi.empresarial.converters.core.Converter1747to2388;
@@ -67,7 +68,7 @@ public class LiquidacionRestController {
     															String pathArchivo2388, 
     															String pathRespuestaJson, 
     															boolean reformaTributaria ) {
-		LOGGER.info("incializarLiquidacion!!!!");
+		LOGGER.info("incializarLiquidacion!!!! Version 2.6.1");
 		ResultadoValidacionArchivoTO resultado = new ResultadoValidacionArchivoTO();
 		BufferedReader lineReader =null;
 		ErrorLiquidacionTO[] erroresLiq = new ErrorLiquidacionTO[0];
@@ -108,16 +109,21 @@ public class LiquidacionRestController {
 				lineReader.close();
 			}
             
-			regT01 = ParsersUtil.replaceCharsNotUTF8(regT01);
+			regT01 = ParsersUtil.replaceCharsNotUTF8(regT01);			
 			
 			erroresTp1 = liquidacion.completarPlanillaAportanteDTO(validacionPlanillaDd.getPlanillaApteDto(), regT01, archivoEnProceso,validacionPlanillaDd);
-			erroresUnion.addAll(Arrays.asList(erroresTp1));			
+					
+			erroresUnion.addAll(Arrays.asList(erroresTp1));
 			os = new FileOutputStream(new File(pathResultado.toString()),true);
 	        bw = new BufferedWriter(new OutputStreamWriter(os,"UTF-8"));
-
-	        gsonWriter=new GsonBuilder().setPrettyPrinting().create();	        
-			erroresLiq = liquidacion.validarRegsTp02Archivo2388(archivoEnProceso, validacionPlanillaDd, pathArchivo2388);
-			erroresUnion.addAll(Arrays.asList(erroresLiq));
+			
+			if ( !liquidacion.tieneErrorArl(erroresTp1) ){
+				
+		        gsonWriter=new GsonBuilder().setPrettyPrinting().create();	        
+				erroresLiq = liquidacion.validarRegsTp02Archivo2388(archivoEnProceso, validacionPlanillaDd, pathArchivo2388);
+				erroresUnion.addAll(Arrays.asList(erroresLiq));
+			}
+						
 			erroresLiq = erroresUnion.toArray(new ErrorLiquidacionTO[0]);
 			erroresUnion = null;
             
