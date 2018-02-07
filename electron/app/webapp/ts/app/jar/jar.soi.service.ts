@@ -216,6 +216,23 @@ namespace app.jar {
 
     /**
     * @description
+    * Convierte los datos del registro tipo 1 a cadena
+    *
+    * @param {Object} data - Datos que actuales para el cambio.
+    * objeto a array.
+    * @return {String} Cadena separada por pipe.
+    */
+    public lineRegisterType1ToSeparatedString(data) {
+      if (!data) return data;
+      let newLine = '';
+      for (let i = 0; i < Object.keys(data.regTp01.registers[0]).length-3; i++) {
+        newLine = newLine+data.regTp01.registers[0][`regs${i}`];
+      }
+      return newLine;
+    }
+
+    /**
+    * @description
     * Recorre la información de los registros y cambia el valor del numero de
     * secuencia, indicando el registro del cual se tomara referencia para el
     * consecutivo.

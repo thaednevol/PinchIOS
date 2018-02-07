@@ -198,6 +198,7 @@ public class LiquidacionRestController {
 			resultado.setErroresRegistros(erroresTp1);
 			resultado.setEstadoSolicitud("OK");
 		} catch (Exception e) {
+			e.printStackTrace();
 			LOGGER.error("Error no controlado",e);
 			resultado.setEstadoSolicitud("ERROR");
 			resultado.setErrorSolicitud(e.getMessage());

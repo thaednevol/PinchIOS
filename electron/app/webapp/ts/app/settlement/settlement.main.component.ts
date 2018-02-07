@@ -416,8 +416,9 @@ namespace app.settlement {
     * del JAR.
     */
     public validateRegisterTp01() {
+      let reg01ForValidate = this.soiService.lineRegisterType1ToSeparatedString(this.file.data);
       let params = {
-        regt01: this.file.data.regTp1Txt
+        regt01: reg01ForValidate
       };
       this.serviceSettlement.validateRegisterT01(params).get().$promise.then((response) => {
 
