@@ -60,6 +60,9 @@ import co.swatit.pilawebservices.factory.NotificationFactory;
 import co.swatit.pilawebservices.interfaces.INotificationLoader;
 import co.swatit.pilawebservices.soi.ApplicationConfiguration;
 
+import com.ach.apt.biz.AportanteConsultaSvc;
+import com.ach.apt.biz.delegate.AportanteConsultaDG;
+import com.ach.apt.biz.transfer.AportanteFilialDTO;
 import com.ach.arc.biz.AdminProcesarCargaArchivosSvc;
 import com.ach.arc.biz.PlanillaRegistroConsultaTempArchivosSvc;
 import com.ach.arc.biz.r1747.model.bean.PlanillaRegT01;
@@ -266,10 +269,25 @@ public final class PilaBO {
 					Constants.GLOBAL_PROP, "CONNECTION_CLASS"));
 			// Se autentica ante SOI
 			UsuarioAutenticadoDTO usuarioAuthDTO = security.autenticarUsuario(loginBeforeSoiDTO);
+			
+			Long idAportante = usuarioAuthDTO.getInfoAportanteDTO().getIdSoiAportante();
+			AportanteConsultaSvc aportanteConsultaSvc = new AportanteConsultaDG();
+			Collection<AportanteFilialDTO> sucursales = aportanteConsultaSvc.consultarSucursalesPorAportante(idAportante);
+			String[] sucursalesStr = new String[sucursales.size()];
+			int index = 0;
+			for ( AportanteFilialDTO suc:sucursales ){
+				sucursalesStr[index] = suc.getIdSoiFilial() + ";" + suc.getCodigo()+";"+suc.getNombre();
+			}
+			
+			
+			
 			List<RecursoVO> resources = (List<RecursoVO>) usuarioAuthDTO.getRecursosAutorizacion();
 			if (!Validation.isNullOrEmpty(resources)) {
 				// Preparación del objeto de transporte de respuesta
 				LoginOutDTO outDTO = new LoginOutDTO();
+				
+				outDTO.setSucursalesApte(sucursalesStr);
+				
 				outDTO.setAuthenticatedUserDTO(Converter.convertAuthenticatedUser(usuarioAuthDTO));
 				outDTO.setCompanyName(usuarioAuthDTO.getInfoAportanteDTO().getNombre());
 				UsuarioVO userVO = usuarioAuthDTO.getUsuarioVO();

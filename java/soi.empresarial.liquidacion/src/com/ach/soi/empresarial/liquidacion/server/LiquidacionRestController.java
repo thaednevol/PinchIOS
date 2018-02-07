@@ -288,6 +288,12 @@ public class LiquidacionRestController {
 		LOGGER.info("Fin Validacion Cotizante eliminado!!!!");
     }
 	
+	@RequestMapping(value="/getversion",method={RequestMethod.GET})
+	@ResponseBody	
+    public String getVersion(  ) {
+		return "2.6.1 (2017-12-13)";
+	}
+	
 	@RequestMapping(value="/generarsoportes",method={RequestMethod.POST})
 	@ResponseBody	
     public String generarSoportes( @RequestBody RequestGeneracionSoportesTO requestSoportes ) {

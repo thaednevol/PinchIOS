@@ -65,6 +65,8 @@ public class LoginOutDTO extends ResponseDTO {
 	 * Información obtenida del objeto {@link UsuarioAutenticadoDTO}
 	 */
 	private AuthenticatedUserDTO authenticatedUserDTO;
+	
+	private String sucursalesApte[];
 
 	/**
 	 * Método getter del atributo permisosUsuario de la clase LoginOutDTO
@@ -191,5 +193,15 @@ public class LoginOutDTO extends ResponseDTO {
 	public void setAuthenticatedUserDTO(AuthenticatedUserDTO authenticatedUserDTO) {
 		this.authenticatedUserDTO = authenticatedUserDTO;
 	}
+
+	public String[] getSucursalesApte() {
+		return sucursalesApte;
+	}
+
+	public void setSucursalesApte(String[] sucursalesApte) {
+		this.sucursalesApte = sucursalesApte;
+	}
+	
+	
 
 }

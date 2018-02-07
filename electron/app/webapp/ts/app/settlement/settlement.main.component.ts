@@ -459,6 +459,8 @@ namespace app.settlement {
             if (errors.length > 0) {
               this.file.data.regTp01.errors["0"] = [];
               this.file.data.regTp01.errors["0"] = this.arrayErrorsToObject(errors);
+              this.file.data.regsTp02.errors["0"] = this.arrayErrorsToObject(errors);
+              this.file.data.regsTp02.corrected["0"] = this.arrayErrorsToObject(errors);
             }
 
             let cols: any = Object.keys(errors);
@@ -638,6 +640,34 @@ namespace app.settlement {
       this.showLoading = false;
       this.$rootScope.$broadcast("rebuild-table");
     }
+
+
+    private applyIndividualCorrections(linea,positionCol): void {
+      let corrects = this.file.data.regsTp02.corrected;
+      let errors = this.file.data.regsTp02.errors;
+      let rows: any = Object.keys(corrects);
+      let currentRow = this.file.data.regsTp02.corrected[linea-1];
+      let currentError = currentRow[positionCol];
+      if ( linea===1 ){
+        this.file.data.regTp01.registers[linea - 1][`regs${positionCol}`] = currentError.sugerencias[0];
+      }
+      else{
+        this.file.data.regsTp02.registers[linea - 2][`regs${positionCol-1}`] = currentError.sugerencias[0];
+      }
+      // Se elimina la información de la columna del error para evitar que se resalte la celda en la tabla.
+      delete errors[linea-1][positionCol];
+      if (Object.keys(errors[linea-1]).length === 0) {
+          delete errors[linea-1];
+      }
+
+      this.updateTotals();
+      this.updateInfoPanel();
+      //}
+      //}
+
+    }
+
+
 
     /**
     * @private

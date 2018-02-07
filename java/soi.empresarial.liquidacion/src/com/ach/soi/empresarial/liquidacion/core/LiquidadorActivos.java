@@ -853,6 +853,10 @@ public class LiquidadorActivos {
 		if ( campo!=null && campo.getValorEsperado()!=null && !campo.getValorEsperado().trim().equals("") ){
 			if ( campo.getValorEsperado().contains(";") ){
 				err.setSugerencias(campo.getValorEsperado().split(";"));
+			}			
+			//Se aplica esta validacion porque el campo nombre puede traer como valor esperado una cadena que incluye espacios
+			else if ( reg!=null && reg instanceof PlanillaRegT01 && campo.getNombreCampo().equals("nombre") ){
+				err.setSugerencias(new String[]{campo.getValorEsperado()});
 			}
 			else{
 				err.setSugerencias(campo.getValorEsperado().split("\\s+"));
