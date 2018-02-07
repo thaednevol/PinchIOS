@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 
@@ -68,6 +69,8 @@ public class LiquidacionRestController {
 		ResultadoValidacionArchivoTO resultado = new ResultadoValidacionArchivoTO();
 		BufferedReader lineReader =null;
 		ErrorLiquidacionTO[] erroresLiq = new ErrorLiquidacionTO[0];
+		ErrorLiquidacionTO[] erroresTp1 = new ErrorLiquidacionTO[0];
+		Collection<ErrorLiquidacionTO> erroresUnion = new ArrayList<ErrorLiquidacionTO>();
 		FileOutputStream os = null;
         BufferedWriter bw = null;
 
@@ -102,29 +105,23 @@ public class LiquidacionRestController {
 			if ( (regT01=lineReader.readLine())!=null ){		
 				lineReader.close();
 			}
-            			
-			erroresLiq = liquidacion.completarPlanillaAportanteDTO(validacionPlanillaDd.getPlanillaApteDto(), regT01, archivoEnProceso,validacionPlanillaDd);
-			if ( erroresLiq!=null && erroresLiq.length>0 ){
-				LOGGER.error("Fin: Error en el registro tipo 1.");
-				String errores = "";
-				for(int i = 0;i<erroresLiq.length ; i++) {
-					errores  = errores+erroresLiq[i].getError()+"\n"; 
-				}
-				resultado.setError(errores);
-				resultado.setEstado("ERROR");
-				resultado.setPathResultadoJson("");
-				return resultado;
-			}
+            
+			regT01 = ParsersUtil.replaceCharsNotUTF8(regT01);
 			
+			erroresTp1 = liquidacion.completarPlanillaAportanteDTO(validacionPlanillaDd.getPlanillaApteDto(), regT01, archivoEnProceso,validacionPlanillaDd);
+			erroresUnion.addAll(Arrays.asList(erroresTp1));			
 			os = new FileOutputStream(new File(pathResultado.toString()),true);
 	        bw = new BufferedWriter(new OutputStreamWriter(os,"UTF-8"));
 
-	        gsonWriter=new GsonBuilder().setPrettyPrinting().create();
-            erroresLiq = liquidacion.validarRegsTp02Archivo2388(archivoEnProceso, validacionPlanillaDd, pathArchivo2388);
+	        gsonWriter=new GsonBuilder().setPrettyPrinting().create();	        
+			erroresLiq = liquidacion.validarRegsTp02Archivo2388(archivoEnProceso, validacionPlanillaDd, pathArchivo2388);
+			erroresUnion.addAll(Arrays.asList(erroresLiq));
+			erroresLiq = erroresUnion.toArray(new ErrorLiquidacionTO[0]);
+			erroresUnion = null;
+            
             for ( int i=0;i<erroresLiq.length;i++ ){
             	erroresLiq[i].setSecuenciaError(i);
             }
-
             gsonWriter.toJson(erroresLiq, bw);
             
             resultado.setError("");

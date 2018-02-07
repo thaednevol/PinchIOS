@@ -98,8 +98,19 @@ namespace app.jar {
         }
         data.regsTp02[i] = objectRegister;
       }
+      let objectRegister1 = {};
+      for (let j = 0; j < data.regTp01.length; j++) {
+        objectRegister1[`regs${j}`] = data.regTp01[j];
+      }
+      objectRegister1['selected'] = false;
+      data.regTp01 = [];
+      data.regTp01[0] = objectRegister1;
       data.regsTp02 = {
         registers: data.regsTp02,
+        errors: {}
+      }
+      data.regTp01 = {
+        registers: data.regTp01,
         errors: {}
       };
       return data;

@@ -50,6 +50,7 @@ public class LiquidadorActivos {
 	private static ArchivoEntradaParser mn = null;
 	
 	private static Map<String, CampoLeido1747> camposBeanT02 = null;
+	private static Map<String, CampoLeido1747> camposBeanT01 = null;
 	
 	private static final Logger LOGGER = Logger.getLogger(LiquidadorActivos.class.getName());
 	
@@ -74,13 +75,21 @@ public class LiquidadorActivos {
 		ErrorLiquidacionTO err;
 		try{			
 			mn.inicializarMio(regT01);
-			bean01 = (PlanillaRegT01)mn.getNextRecord();
-			this.completarPlanillaAportanteDTODePlanillaRegT01(bean01, planillaApteDto);
-			this.validarRegistroTp01(bean01, planillaApteDto, archivoEnProcesoDTO,validacionArchivoDataSource);
+			bean01 = (PlanillaRegT01)mn.getNextRecord();			
 		}catch ( ApplicationException e ){
 			for(ApplicationException exc : e.getAppExceptionSet()) {
 				err = crearRegistroErrorLexicoSintacticoRegistro(exc,null, 1 ,1);				
 				errores.add(err);							
+			}
+		}
+		if ( errores.isEmpty() ){
+			try{
+				this.completarPlanillaAportanteDTODePlanillaRegT01(bean01, planillaApteDto);
+				this.validarRegistroTp01(bean01, planillaApteDto, archivoEnProcesoDTO,validacionArchivoDataSource);
+			}catch ( ApplicationException app ){
+				camposBeanT01 = bean01.getCampos();
+				LOGGER.error("validarRegsTp02Archivo2388() -> Errores semanticos validacion registro tipo uno: ",app);
+				this.manejarExcepcionesSemanticas(errores, bean01, app, 1);
 			}
 		}
 		return errores.toArray(new ErrorLiquidacionTO[0]);				
@@ -817,10 +826,19 @@ public class LiquidadorActivos {
 		}
 		
 		if (campo!=null){
-			for ( Map.Entry<String,CampoLeido1747> e:camposBeanT02.entrySet() ){
-				if ( e.getValue().getNombreCampo().equals(campo.getNombreCampo()) ){					
-					err.setCampo(Integer.valueOf(e.getKey()));
-					break;
+			if ( reg instanceof PlanillaRegT02){
+				for ( Map.Entry<String,CampoLeido1747> e:camposBeanT02.entrySet() ){
+					if ( e.getValue().getNombreCampo().equals(campo.getNombreCampo()) ){					
+						err.setCampo(Integer.valueOf(e.getKey()));
+						break;
+					}
+				}
+			}else{
+				for ( Map.Entry<String,CampoLeido1747> e:camposBeanT01.entrySet() ){
+					if ( e.getValue().getNombreCampo().equals(campo.getNombreCampo()) ){					
+						err.setCampo(Integer.valueOf(e.getKey()));
+						break;
+					}
 				}
 			}
 		}

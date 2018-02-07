@@ -1,4 +1,5 @@
 
+
 namespace app.settlement {
 
   /**
@@ -357,6 +358,9 @@ namespace app.settlement {
     }
 
     private processResponseError(data: any, newListError: any, numberRegister: number): void {
+      if (numberRegister === 1) {
+        this.file.data.regTp01.errors = newListError;
+      }
       if (numberRegister >= this.file.data.regsTp02.registers.length) {
         this.file.data.regsTp02.errors = newListError;
         this.file.data.regsTp02.corrected = [];
@@ -375,7 +379,7 @@ namespace app.settlement {
       }
       setTimeout(() => {
         //let currentSequence: number = this.file.data.regsTp02.registers[numberRegister].regs1;
-        let currentSequence: number = numberRegister+1;
+        let currentSequence: number = numberRegister;
         if ( data.length>0 ){
           let newObject = this.$filter("filter")(data, { linea: Number(currentSequence) + 1 }, true);
 
@@ -575,6 +579,18 @@ namespace app.settlement {
           let currentCol = cols[positionCol];
           let currentError = errors[currentRow][currentCol];
           currentError.currentValue = this.file.data.regsTp02.registers[currentRow - 1][`regs${currentCol - 1}`];
+        if ( currentRow>0 ){
+          let cols: any = Object.keys(errors[currentRow]);
+          // Recorre cada columna de la fila para realizar la corrección.
+          for (let positionCol = 0; positionCol < cols.length; positionCol++) {
+            let currentCol = cols[positionCol];
+            let currentError = errors[currentRow][currentCol];
+            currentError.currentValue = this.file.data.regsTp02.registers[currentRow - 1][`regs${currentCol - 1}`];
+          }
+          if (Object.keys(errors[currentRow]).length === 0) {
+              delete errors[currentRow];
+              positionRow = positionRow - 1;
+          }
         }
         if (Object.keys(errors[currentRow]).length === 0) {
             delete errors[currentRow];
