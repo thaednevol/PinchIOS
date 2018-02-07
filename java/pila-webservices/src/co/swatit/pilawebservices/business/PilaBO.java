@@ -271,7 +271,7 @@ public final class PilaBO {
 			UsuarioAutenticadoDTO usuarioAuthDTO = security.autenticarUsuario(loginBeforeSoiDTO);
 			
 			Long idAportante = usuarioAuthDTO.getInfoAportanteDTO().getIdSoiAportante();
-			AportanteConsultaSvc aportanteConsultaSvc = new AportanteConsultaDG();
+			AportanteConsultaSvc aportanteConsultaSvc = (AportanteConsultaSvc) connection.lookup(PropertyLoader.INSTANCE.getProperty(Constants.GLOBAL_PROP, "APTE_CONSULTA_CONNECTION_CLASS"));
 			Collection<AportanteFilialDTO> sucursales = aportanteConsultaSvc.consultarSucursalesPorAportante(idAportante);
 			String[] sucursalesStr = new String[sucursales.size()];
 			int index = 0;

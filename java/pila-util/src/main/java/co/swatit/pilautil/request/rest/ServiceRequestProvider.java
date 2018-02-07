@@ -101,6 +101,7 @@ public final class ServiceRequestProvider {
 			// Se invoca el recurso web y se valida el response.
 			return getResponseFromService(invokeWebResource(request, mediaType, getWebResource(url, operation)));
 		} catch (ClientHandlerException ex) {
+			LOGGER.error("Error invocacion: ",ex);
 			throw new InvokeException(CodeErrorEnum.GETRESPONSECLIENTERROR, ex);
 		} catch (UniformInterfaceException ex) {
 			throw new InvokeException(CodeErrorEnum.WSCLIENTERROR, ex);

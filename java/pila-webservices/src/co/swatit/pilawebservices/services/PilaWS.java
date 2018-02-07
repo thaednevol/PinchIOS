@@ -92,6 +92,7 @@ public class PilaWS {
 			response = PilaBO.checkAuthorizationFromSOI(loginInDTO, context.getRemoteAddr());
 		} catch (BusinessException ex) {
 			Utilities.buildResponse(response, CodeErrorEnum.ERROR, ex);
+			LOGGER.error("Error en el servicio: checkAuthorizationFromSOI",ex);
 		}
 		LOGGER.info(Constants.LOG_WS_INVOKED);
 		return response;
