@@ -10,20 +10,11 @@ namespace app.settlement {
   class SettTableCorrectedController {
 
     /**
-    * @type {Boolean} showLoading - Indica si debe mostrar la imagen de loading
-    * y bloquear la pantalla hasta que espere el usuario que termine la carga
-    * del login.
-    */
-    public showLoading: Boolean = false;
-
-    public dialogIsOpen: Boolean = true;
-
-    /**
     * @type {NativeNotificationService} notificationService - Servicio que
     * permite mostrar notificaciones de forma nativa en el SO.
     * @see app.native.NativeNotificationService
     */
-    public  notificationService: any;
+    public notificationService: any;
 
     /**
     * @type {Array} listErrorsContributors - Lista con datos a mostrar en la
@@ -55,24 +46,23 @@ namespace app.settlement {
     private $filter: any;
     private $scope: any;
     private $rootScope: any;
+    static $inject = ["native.file.service", "native.dialog.service","$scope","$rootScope", "$filter"];
 
-    static $inject = ["native.notification.service","native.file.service", "native.dialog.service","$scope","$rootScope", "$filter"];
-    constructor(notificationService,serviceFile, serviceDialog, $scope,$rootScope,$filter) {
+    constructor(notificationService, serviceFile, serviceDialog, $scope,$rootScope, $filter) {
       this.notificationService = notificationService;
       this.serviceFile = serviceFile;
+      this.$scope = $scope;
+      this.$rootScope = $rootScope;
       this.serviceDialog = serviceDialog;
       this.$scope = $scope;
       this.$rootScope = $rootScope;
       this.$filter = $filter;
       this.filterCorregidos = function ( item ){
-        return item.autocorregible && item.corregido;
+        return item.corregido;
       };
-
       this.filterSugeridos = function ( item ){
         return item.autocorregible && !item.corregido;
       };
-
-
     }
 
     /**

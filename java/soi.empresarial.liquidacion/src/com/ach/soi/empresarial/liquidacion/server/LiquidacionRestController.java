@@ -59,6 +59,7 @@ public class LiquidacionRestController {
 	
 	private static ValidacionArchivoDataSource validacionPlanillaDd;
 	private static ArchivoEnProcesoDTO archivoEnProceso;
+	private static int secuenciaError = 0;
 	
 	private static final Logger LOGGER = getLogger();
 	

@@ -39,6 +39,12 @@ namespace app.login {
     private file: any;
 
     /**
+    * @type {NativeEmailService} email - Escribe el email
+    * @see app.native.NativeEmailService()
+    */
+    private email: any;
+
+    /**
     * @type {NativeNotificationService} nativeNotification - Clase que se encarga
     * de mostrar notificaciones por medio de alerts nativos.
     * @see app.native.NativeNotificationService()
