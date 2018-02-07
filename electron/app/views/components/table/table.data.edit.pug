@@ -26,7 +26,7 @@
 
 //Tabla para registros tipo 1
 .table__scroll.table__data--filtert1(id="scroll-{{$ctrl.idTable}}" ng-if="$ctrl.idTable==='regTp01'")
-  .table__fixed-container
+  .table__fixed-containertp1
     //- Tabla con cabeceras fijas
     table.table__fixed(border="1" id="fix-{{$ctrl.idTable}}")
       //- Cabecera de la tabla
@@ -44,12 +44,8 @@
         th(ng-repeat="textHead in $ctrl.labels track by $index")
           span(ng-bind="::textHead")
     //- Contenido de la tabla
-    tbody
-      tr(ng-repeat="register in $ctrl.data.registers " ng-class="{'table__data--error':$ctrl.data.errors.hasOwnProperty(0)}" id="row-{{$index}}")
-        td(ng-repeat="(key, textRegister) in register track by $index" ng-bind="textRegister || ' '" ng-click="$ctrl.actionClickCell(this, $event)" ng-dblclick="$ctrl.actionSelectCell(this, $event)" ng-mousedown="$ctrl.actionContextMenuCell(this, $event)" ng-class="{'table__data-field--error': $ctrl.data.errors['0'].hasOwnProperty($index), 'table__data--block-cell':$ctrl.cellNoEdit.indexOf($index) !== -1 && $ctrl.cellNoEdit.length > 0}" ng-if="key != 'selected'")
-          i.fa.fa-times-circle-o(ng-if="$ctrl.data.errors.hasOwnProperty(0)")
-      tr(ng-if="($ctrl.data.registers | filter:$ctrl.objectFilter).length === 0")
-        td.table__data--no-data(colspan="{{$ctrl.labels.length}}")
-          span(ng-bind="'SETTLEMENT.TABLES.NO_REGISTER' | translate")
+    tbody   
+      tr(ng-repeat="register in $ctrl.data.registers " ng-class="{'table__data--error':$ctrl.data.errors.hasOwnProperty(0)}" id="row-{{$index}}")        
+        td(ng-repeat="(key, textRegister) in register track by $index" ng-bind="textRegister || ' '" ng-dblclick="$ctrl.actionSelectCell(this, $event)" ng-class="{'table__data-field--error': $ctrl.data.errors['0'].hasOwnProperty($index), 'table__data--block-cell':$ctrl.cellNoEdit.indexOf($index) !== -1 && $ctrl.cellNoEdit.length > 0}")      
   
   

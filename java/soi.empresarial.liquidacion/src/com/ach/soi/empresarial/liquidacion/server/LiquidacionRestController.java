@@ -48,6 +48,7 @@ import com.ach.sop.utility.biz.util.ServiciosUtilitarios;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
+import com.lucasian.exception.ApplicationException;
 
 @Controller
 @EnableAutoConfiguration
@@ -185,6 +186,24 @@ public class LiquidacionRestController {
         return regArray;
     }
 	
+	
+	@RequestMapping(value="/validarregistro1",method={RequestMethod.POST})
+	@ResponseBody
+    public ResultadoValidacionCotizanteDTO validarRegistro1( String regt01 ) {
+		LiquidadorActivos liquidacion = new LiquidadorActivos();
+		ResultadoValidacionCotizanteDTO resultado = new ResultadoValidacionCotizanteDTO();
+		ErrorLiquidacionTO[] erroresTp1;
+		try {
+			erroresTp1 = liquidacion.completarPlanillaAportanteDTO(validacionPlanillaDd.getPlanillaApteDto(), regt01, archivoEnProceso,validacionPlanillaDd);
+			resultado.setErroresRegistros(erroresTp1);
+			resultado.setEstadoSolicitud("OK");
+		} catch (Exception e) {
+			LOGGER.error("Error no controlado",e);
+			resultado.setEstadoSolicitud("ERROR");
+			resultado.setErrorSolicitud(e.getMessage());
+		}
+		return resultado;
+	}
 	
 	
 	@RequestMapping(value="/validarcotizante",method={RequestMethod.POST})

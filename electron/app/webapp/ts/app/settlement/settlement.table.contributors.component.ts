@@ -37,7 +37,7 @@ namespace app.settlement {
     * @type {Arra} cellNoEditType1 - Son valores fijos que indican que celdas no
     * se les permite la edición.
     */
-    public cellNoEditType1: any = [0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 16, 17, 18, 19, 20, 21];
+    public cellNoEditType1: any = [0, 2];
     public cellNoEditType2: any = [0, 1];
 
     /**
