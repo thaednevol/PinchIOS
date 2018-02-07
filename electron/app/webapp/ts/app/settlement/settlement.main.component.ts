@@ -298,6 +298,14 @@ namespace app.settlement {
                                                             +this.file.data.regTp1Txt.substring(258+nomSucursalLength,this.file.data.regTp1Txt.length);
         this.sucursalInvalida = true;
       }
+      else{
+        this.file.data.regTp01.registers[0]["regs11"] = "";
+        this.file.data.regTp01.registers[0]["regs12"] = "";
+        this.file.data.regTp1Txt = this.file.data.regTp1Txt.substring(0,248)+""
+                                  +this.file.data.regTp1Txt.substring(249,this.file.data.regTp1Txt.length);
+                                  this.file.data.regTp1Txt = this.file.data.regTp1Txt.substring(0,258)+""
+                                                            +this.file.data.regTp1Txt.substring(259,this.file.data.regTp1Txt.length);
+      }
 
     }
     /**
@@ -516,7 +524,7 @@ namespace app.settlement {
             for ( let i=0;i<Object.keys(oldErrors).length;i++ ){
               let currReg = oldErrors[Object.keys(oldErrors)[i]];
               let existeError = errors.find(function(element){
-                return element.campo === currReg.campo;
+                return element.campo === currReg.campo && !element.corregido;
               });
               if ( !existeError ){
                 currReg.corregido = true;
@@ -530,10 +538,10 @@ namespace app.settlement {
             for ( let i=0;i<Object.keys(errors).length;i++ ){
               let currReg = errors[Object.keys(errors)[i]];
               //si existe un error en el arreglo de correcciones que no se haya corregido
-              let existeError = corrects[currReg.campo];
-              if ( !existeError ){
+              //let existeError = corrects[currReg.campo];
+              //if ( !existeError && existeError.corregido ){
                 corrects[currReg.campo]=currReg;
-              }
+              //}
             }
 
             this.updateTotals();
@@ -752,7 +760,6 @@ namespace app.settlement {
       }
       if ( linea===1 ){
         this.$rootScope.$broadcast("show-loading");
-        this.validateRegisterTp01();
       }
       this.updateTotals();
       this.updateInfoPanel();

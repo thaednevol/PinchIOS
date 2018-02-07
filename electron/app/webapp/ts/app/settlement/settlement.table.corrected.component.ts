@@ -117,19 +117,20 @@ namespace app.settlement {
       });
     }
 
-
     public validateSelected(): void {
       let message = `Se eliminará ${Object.keys(this.selectedItem).length} registro.`;
       if (Object.keys(this.selectedItem).length === 0) {
         this.serviceDialog.showDialogError(this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_WARN_TIT"), this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_WARN"));
-      } else {
-        this.showLoading = true;
+      } else {;
         this.serviceDialog.showDialogConfirm(
           this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_CONF_TIT"),
           this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_CONF"),
           (option) => {
-            this.dialogIsOpen = false;
-            this.correctError(option);
+            if (option === 1) {
+              this.dialogIsOpen = false;
+              this.correctError(option);
+              this.notificationService.show(this.$filter("translate")("MESSAGES.TITLES.INFO"), this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_CONF_1"));
+            }
           }
         );
       }
@@ -140,14 +141,19 @@ namespace app.settlement {
       let message = `Opcion seleccionada> ${option}`;
       //si acepta la correccion automatica
       if (option === 1){
-        for (var i = 0; i < Object.keys(this.selectedItem).length; i++) {
+          let validarTipo1 = false;
+          for (var i = 0; i < Object.keys(this.selectedItem).length; i++) {
             let register = this.$filter("filter")(this.listErrorsContributors.data, { secuenciaError: Number(Object.keys(this.selectedItem)[i]) },true);
             register[0].correccion = this.$filter("translate")("ERROR.CONTRIBUTORS.TYPE_AUTOM");
             register[0].corregido = true;
             this.$rootScope.$broadcast("apply-corrections",register[0].linea,register[0].campo);
+            validarTipo1 = register[0].linea === 0;
             //this.$filter("filter")(this.listErrorsContributors.data, { secuenciaError: this.selectedItem)[i] }).correccion = this.$filter("translate")("ERROR.CONTRIBUTORS.TYPE_AUTOM");
             //this.listErrorsContributors.data.filter(secuenciaError:Object.keys(this.selectedItem)[i]).corregido = true;
             //this.listErrorsContributors.data.filter(this.filterSugeridos)[Object.keys(this.selectedItem)[i]].correccion = this.$filter("translate")("ERROR.CONTRIBUTORS.TYPE_AUTOM");
+          }
+          if ( validarTipo1 ){
+            this.$rootScope.$broadcast("validate-register-tp01");
           }
           this.filterCorregidos = function ( item ){
             return item.autocorregible && item.corregido;
@@ -157,14 +163,10 @@ namespace app.settlement {
             return item.autocorregible && !item.corregido;
           };
 
-          this.notificationService.show(this.$filter("translate")("MESSAGES.TITLES.INFO"), this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_CONF_1"));
+          this.selectedItem = [];
+          this.$scope.$apply();
       }
-      this.showLoading = false;
-      this.selectedItem = [];
-      this.$scope.$apply();
     }
-
-
 
   }
 
