@@ -94,7 +94,7 @@ public class LiquidadorActivos {
 			if ( TipoPlanillaType.getTipoPlanillaXCodigo(bean01.getTipoPlanillaType())==null ){
 				
 				ApplicationException exc = new ApplicationException(PlanillaValidadorExceptionCodes.REG01_TIPO_PLANILLA_NO_ENCONTRADO);
-				Object[] reemplazo = new Object[2];
+				Object[] reemplazo = new Object[2];				
 				reemplazo[0] = bean01.getTipoPlanilla();
 				reemplazo[1] = bean01.getTipoPlanillaType();
 				exc.setParametrosReemplazo(reemplazo);
@@ -104,8 +104,24 @@ public class LiquidadorActivos {
 				bean01.getTipoPlanilla().setValorCrudo(TipoPlanillaType.E_EMPLEADOS_EMPRESAS.getCodTpPlanilla());
 				bean01.getTipoPlanilla().setValorAlfanumerico(TipoPlanillaType.E_EMPLEADOS_EMPRESAS.getCodTpPlanilla());
 			}
+			if ( bean01.getNombreType()==null ){
+				bean01.getNombre().setValorCrudo(" ");
+				bean01.getNombre().setValorAlfanumerico(" ");
+			}
+			if ( bean01.getNroDocType()==null ){
+				bean01.getNroDoc().setValorCrudo("0");
+				bean01.getNroDoc().setValorAlfanumerico("0");
+			}
 			if ( TipoFormasPresentacionType.getTipoFormasPresentacionXCod(bean01.getFmaPresentacionType())==null ){
-				LOGGER.debug("Tipo planilla invalido, se cambia por planilla E");
+				ApplicationException appExc = new ApplicationException(PlanillaValidadorExceptionCodes.REG01_FORMA_PRESENTACION_DIFERENTE_APORTANTE);
+				Object[] reemplazo = new Object[2];
+				if ( validacionArchivoDataSource.getPlanillaApteDto()!= null && validacionArchivoDataSource.getPlanillaApteDto().getInformacionAportantePlanillaDTO()!=null  ){
+					bean01.getFmaPresentacion().setValorEsperado(validacionArchivoDataSource.getPlanillaApteDto().getInformacionAportantePlanillaDTO().getCodigoFormaPresentacion());
+				}
+				reemplazo[0] = bean01.getFmaPresentacion();
+				reemplazo[1] = bean01.getFmaPresentacionType();
+				appExc.setParametrosReemplazo(reemplazo);
+				this.manejarExcepcionesSemanticas(errores, bean01, appExc, 1);
 				bean01.getFmaPresentacion().setValorCrudo(TipoFormasPresentacionType.UNICO.getCodigo());
 				bean01.getFmaPresentacion().setValorAlfanumerico(TipoFormasPresentacionType.UNICO.getCodigo());
 			}

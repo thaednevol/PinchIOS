@@ -306,7 +306,7 @@ public class LiquidacionRestController {
 	@RequestMapping(value="/getversion",method={RequestMethod.GET})
 	@ResponseBody	
     public String getVersion(  ) {
-		return "2.6.1 (2017-12-21-v2)";
+		return "2.6.1 (2017-12-22-v1)";
 	}
 	
 	@RequestMapping(value="/generarsoportes",method={RequestMethod.POST})

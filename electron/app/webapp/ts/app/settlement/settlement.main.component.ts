@@ -260,7 +260,7 @@ namespace app.settlement {
 
     private prevalidateRegisterTp1 ( ){
       let tipoPlanilla = this.file.data.regTp01.registers[0]["regs7"];
-      let formaPresentacion = this.file.data.regTp01.registers[0]["regs10"];
+      let formaPresentacion = this.file.data.regTp01.registers[0]["regs10"];      
       let codSucursal = this.file.data.regTp01.registers[0]["regs11"];
       let nombreSucursal = this.file.data.regTp01.registers[0]["regs12"];
       let tiposPlanillaValidos: string[] = ['E','Y','A','I'];
@@ -286,6 +286,8 @@ namespace app.settlement {
           break;
         }
       }
+
+
       if ( (formaPresentacion==='S' || formaPresentacion==='D') && !sucursalOk && sucursales.length>0 ){
         let currSucursal = sucursales[0].split(";");
         let codSucursalLength = currSucursal[1].length;
