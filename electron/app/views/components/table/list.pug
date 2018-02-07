@@ -7,8 +7,8 @@
     //- Lista de tablas del archivo
     .list-tables__scroll
         //- Registro tipo 1
-        .sy-table__container.sy-table__container--padding(ng-if="$ctrl.data.regTp01.length > 0")
-          table-edit(data="[$ctrl.data.regTp01]" labels="$ctrl.data.labelsTp01" id-table="'regTp01'")
+        .sy-table__container.sy-table__container--padding
+          table-edit(data="$ctrl.data.regTp01" labels="$ctrl.data.labelsTp01" id-table="'regTp01'")
         //- Registro tipo 2
         .sy-table__container.sy-table__container--padding
           table-edit(data="$ctrl.data.regsTp02" labels="$ctrl.data.labelsTp02" id-table="'regsTp02'" active-filter="true" object-filter="{}")
