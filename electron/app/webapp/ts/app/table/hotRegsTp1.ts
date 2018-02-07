@@ -31,7 +31,7 @@ namespace app.table {
       var columnas=[];
       if (this.hotComponent.data[0]) {
         for(let i of Object.keys(this.hotComponent.data[0])) {
-            columnas.push({data: i, readOnly:false, type: 'text'});
+            columnas.push({data: i, readOnly:true, type: 'text'});
         }
       }
       return columnas;
@@ -181,7 +181,8 @@ namespace app.table {
 
       public updateSettings(){
         this.hotComponent.hotTable.updateSettings({
-          fillHandle: false
+          fillHandle: false,
+          colWidths: [10, 150, 100, 150, 150, 150, 150, 150, 50, 50, 50, 50, 50, 50, 50, 50]
         });
       }
 

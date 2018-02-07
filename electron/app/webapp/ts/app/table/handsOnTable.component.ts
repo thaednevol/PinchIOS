@@ -237,7 +237,6 @@ namespace app.table {
                 manualRowMove: true,
                 manualColumnMove: true,
                 autoRowSize: {syncLimit: 200},
-                colWidths: [50, 150, 45],
                 renderAllRows: false,
                 filters: this.activeFilter,
                 scrollToSelection: true,
