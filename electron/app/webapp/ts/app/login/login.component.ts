@@ -239,6 +239,7 @@ namespace app.login {
       this.$localStorage.soiContributorIdNumber = resultLogin.soiContributorIdNumber;
       this.$localStorage.authenticatedUserDTO = resultLogin.authenticatedUserDTO;
       this.$localStorage.soiAccountIdNumber = resultLogin.soiAccountIdNumber;
+      this.$localStorage.sucursalesApte = resultLogin.sucursalesApte;
       // Valida si activo la opción para almacenar la información de la sesión
       if (this.form.saveSession) {
         this.$localStorage.login = this.form;

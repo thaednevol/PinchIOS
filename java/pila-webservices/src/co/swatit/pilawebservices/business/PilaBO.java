@@ -272,12 +272,7 @@ public final class PilaBO {
 			
 			Long idAportante = usuarioAuthDTO.getInfoAportanteDTO().getIdSoiAportante();
 			AportanteConsultaSvc aportanteConsultaSvc = (AportanteConsultaSvc) connection.lookup(PropertyLoader.INSTANCE.getProperty(Constants.GLOBAL_PROP, "APTE_CONSULTA_CONNECTION_CLASS"));
-			Collection<AportanteFilialDTO> sucursales = aportanteConsultaSvc.consultarSucursalesPorAportante(idAportante);
-			String[] sucursalesStr = new String[sucursales.size()];
-			int index = 0;
-			for ( AportanteFilialDTO suc:sucursales ){
-				sucursalesStr[index] = suc.getIdSoiFilial() + ";" + suc.getCodigo()+";"+suc.getNombre();
-			}
+			Collection<AportanteFilialDTO> sucursales = aportanteConsultaSvc.consultarSucursalesPorAportante(idAportante);			
 			
 			
 			
@@ -285,9 +280,7 @@ public final class PilaBO {
 			if (!Validation.isNullOrEmpty(resources)) {
 				// Preparación del objeto de transporte de respuesta
 				LoginOutDTO outDTO = new LoginOutDTO();
-				
-				outDTO.setSucursalesApte(sucursalesStr);
-				
+												
 				outDTO.setAuthenticatedUserDTO(Converter.convertAuthenticatedUser(usuarioAuthDTO));
 				outDTO.setCompanyName(usuarioAuthDTO.getInfoAportanteDTO().getNombre());
 				UsuarioVO userVO = usuarioAuthDTO.getUsuarioVO();
@@ -305,6 +298,15 @@ public final class PilaBO {
 						getPermissionsByRole(resources.get(NumberConstants.ZERO).getIdSegAplicacion()));
 				GenerateTokenOutDTO tokenDTO = generateToken(loginInDTO.getContributorIdNumber());
 				if (CodeErrorEnum.SUCCESSFULL.getCode().equals(tokenDTO.getCode())) {
+					
+					String[] sucursalesStr = new String[sucursales.size()];
+					int index = 0;
+					for ( AportanteFilialDTO suc:sucursales ){
+						sucursalesStr[index] = suc.getIdSoiFilial() + ";" + suc.getCodigo()+";"+suc.getNombre();
+						index++;
+					}
+					outDTO.setSucursalesApte(sucursalesStr);
+					
 					outDTO.setSoiAccountIdNumber(Long.toString(usuarioAuthDTO.getUsuarioVO().getIdSegUsuario()));
 					outDTO.setSoiContributorIdNumber(Long.toString(usuarioAuthDTO.getInfoAportanteDTO()
 							.getIdSoiAportante()));

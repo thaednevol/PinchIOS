@@ -262,8 +262,11 @@ namespace app.settlement {
     private prevalidateRegisterTp1 ( ){
       let tipoPlanilla = this.file.data.regTp01.registers[0]["regs7"];
       let formaPresentacion = this.file.data.regTp01.registers[0]["regs10"];
+      let codSucursal = this.file.data.regTp01.registers[0]["regs11"];
+      let nombreSucursal = this.file.data.regTp01.registers[0]["regs12"];
       let tiposPlanillaValidos: string[] = ['E','Y','A','I'];
       let formasPresentacionValidas: string[] = ['U','C','S','D'];
+      let sucursales = this.$localStorage.sucursalesApte;
       if ( tiposPlanillaValidos.indexOf(tipoPlanilla)<0 ){
         this.tipoPlanillaInvalido = true;
         this.file.data.regTp01.registers[0]["regs7"] = 'E';
@@ -275,6 +278,26 @@ namespace app.settlement {
         this.file.data.regTp01.registers[0]["regs10"] = 'U';
         this.file.data.regTp1Txt = this.file.data.regTp1Txt.substring(0,247)+'U'
                                     +this.file.data.regTp1Txt.substring(248,this.file.data.regTp1Txt.length);
+      }
+      let sucursalOk = false;
+      for ( let i=0;i<sucursales.length;i++ ) {
+        let currSucursal = sucursales[i].split(";");
+        if ( currSucursal[1]===codSucursal &&currSucursal[2]===nombreSucursal  ){
+          sucursalOk = true;
+          break;
+        }
+      }
+      if ( (formaPresentacion==='S' || formaPresentacion==='D') && !sucursalOk ){
+        let currSucursal = sucursales[0].split(";");
+        let codSucursalLength = currSucursal[1].length;
+        this.file.data.regTp01.registers[0]["regs11"] = currSucursal[1];
+        this.file.data.regTp01.registers[0]["regs12"] = currSucursal[2];
+        let nomSucursalLength = currSucursal[2].length;
+        this.file.data.regTp1Txt = this.file.data.regTp1Txt.substring(0,248)+currSucursal[1]
+                                  +this.file.data.regTp1Txt.substring(248+codSucursalLength,this.file.data.regTp1Txt.length);
+                                  this.file.data.regTp1Txt = this.file.data.regTp1Txt.substring(0,258)+currSucursal[2]
+                                                            +this.file.data.regTp1Txt.substring(258+nomSucursalLength,this.file.data.regTp1Txt.length);
+        this.sucursalInvalida = true;
       }
 
     }
@@ -351,6 +374,13 @@ namespace app.settlement {
         }
         let result = this.serviceFile.getContentFileJson(response.data.pathResultadoJson);
         result.then((contentFile) => {
+
+          if ( this.sucursalInvalida || this.formaPresentacionInvalida || this.tipoPlanillaInvalido ){
+            let message = this.$filter("translate")("SETTLEMENT.CONFIRMATION.SETTLEMENT_TP_PLANILLA_MODIFICADA");
+            let title = this.$filter("translate")("MESSAGES.TITLES.INFO");
+            this.nativeNotification.show(title, message);
+          }
+
           let data = contentFile;
           // Si es correcto el proceso de descarga de los archivos de configuración
           let newListError = {};
@@ -403,9 +433,6 @@ namespace app.settlement {
         this.applyCorrections(0,this.file.data.regsTp02.errors);
         //Pestaña de correcciones
         this.applyCorrections(0,this.file.data.regsTp02.corrected);
-        let message = this.$filter("translate")("SETTLEMENT.CONFIRMATION.SETTLEMENT_TP_PLANILLA_MODIFICADA");
-        let title = this.$filter("translate")("MESSAGES.TITLES.INFO");
-        this.nativeNotification.show(title, message);
         return;
       }
       setTimeout(() => {
@@ -461,6 +488,10 @@ namespace app.settlement {
               this.file.data.regTp01.errors["0"] = this.arrayErrorsToObject(errors);
               this.file.data.regsTp02.errors["0"] = this.arrayErrorsToObject(errors);
               this.file.data.regsTp02.corrected["0"] = this.arrayErrorsToObject(errors);
+            }
+            else{
+              this.file.data.regTp01.errors["0"] = [];
+              this.file.data.regsTp02.errors["0"] = [];
             }
 
             let cols: any = Object.keys(errors);

@@ -31,9 +31,11 @@ import com.ach.cfg.biz.transfer.AdministradoraTarifaDTO;
 import com.ach.cfg.biz.type.TipoFormasPresentacionType;
 import com.ach.pla.biz.mngr.totalizador.TotalizadorPlanillaMngr;
 import com.ach.pla.biz.reglas.NSOIRNCotizante;
+import com.ach.pla.biz.reglas.NSOIRNPlanillaTipoEBiz;
 import com.ach.pla.biz.transfer.PlanillaAportanteDTO;
 import com.ach.pla.biz.transfer.PlanillaCotizanteDTO;
 import com.ach.pla.biz.transfer.PlanillaTotalesDTO;
+import com.ach.pla.biz.type.PeriodoType;
 import com.ach.pla.biz.type.TipoPlanillaType;
 import com.ach.soi.empresarial.converters.utils.Constants;
 import com.ach.soi.empresarial.liquidacion.exceptions.DesktopExceptionMngr;
@@ -98,10 +100,66 @@ public class LiquidadorActivos {
 				}
 				this.completarPlanillaAportanteDTODePlanillaRegT01(bean01, planillaApteDto);
 				this.validarRegistroTp01(bean01, planillaApteDto, archivoEnProcesoDTO,validacionArchivoDataSource);
+								
+				
 			}catch ( ApplicationException app ){
 				camposBeanT01 = bean01.getCampos();
 				LOGGER.error("validarRegsTp02Archivo2388() -> Errores semanticos validacion registro tipo uno: ",app);
 				this.manejarExcepcionesSemanticas(errores, bean01, app, 1);
+			}
+			String valorNominaCrudo = bean01.getVlrTotalNomina().getValorCrudo();
+			boolean exceptionNomina = false;
+			try{
+				Integer valorNomina = Integer.valueOf(valorNominaCrudo);
+				if ( valorNomina<=0 ){
+					exceptionNomina = true;
+				}
+			}catch ( Exception e ){
+				exceptionNomina = true;				
+			}
+			if ( exceptionNomina ){
+				ErrorLiquidacionTO error = new ErrorLiquidacionTO();
+				error.setAplicarSegundaValidacion(false);
+				error.setAutocorregible(false);
+				for ( Map.Entry<String,CampoLeido1747> cp:camposBeanT01.entrySet() ){
+					if ( bean01.getVlrTotalNomina().getNombreCampo().equals(cp.getValue().getNombreCampo()) ){
+						error.setTipoRegistro(1);
+						error.setCampo(Integer.valueOf(cp.getKey()));
+						error.setNombreCampo(bean01.getVlrTotalNomina().getNombreCampo());
+						break;
+					}
+				}
+				error.setError("Valor no valido en el campo valor nomina");
+				error.setLinea(1);
+				error.setSecuenciaError(1);
+				errores.add(error);
+			}
+			String nroEmpleados = bean01.getNroEmpleados().getValorCrudo();
+			boolean exception = false;
+			try{
+				Integer nroEmpleadosInt = Integer.valueOf(nroEmpleados);
+				if ( nroEmpleadosInt<=0 ){
+					exception = true;
+				}
+			}catch ( Exception e ){
+				exception = true;
+			}
+			if ( exception ){
+				ErrorLiquidacionTO error = new ErrorLiquidacionTO();
+				error.setAplicarSegundaValidacion(false);
+				error.setAutocorregible(false);
+				for ( Map.Entry<String,CampoLeido1747> cp:camposBeanT01.entrySet() ){
+					if ( bean01.getNroEmpleados().getNombreCampo().equals(cp.getValue().getNombreCampo()) ){
+						error.setTipoRegistro(1);
+						error.setCampo(Integer.valueOf(cp.getKey()));
+						error.setNombreCampo(bean01.getNroEmpleados().getNombreCampo());
+						break;
+					}
+				}
+				error.setError("Valor no valido en el campo nro empleados");
+				error.setLinea(1);
+				error.setSecuenciaError(1);
+				errores.add(error);
 			}
 		}
 		return errores.toArray(new ErrorLiquidacionTO[0]);				
@@ -119,7 +177,42 @@ public class LiquidadorActivos {
 		archivoNotificacionDTO.setEsPlanillaTipoU(archivoEnProcesoDTO.isEsPlanillaTipoU());
 		archivoNotificacionDTO.setProcesoEdicion(false);
 		archivoNotificacionDTO.setPlanillaSoiClick(true);
-		planillaArcPreValidador.aplicarRNBasicasParaTodosLosArchivos(planillaApteDto.getInformacionAportantePlanillaDTO(), bean01, archivoNotificacionDTO);
+		Collection<ApplicationException> appExcSet = new ArrayList<ApplicationException>();
+		try{
+			planillaArcPreValidador.aplicarRNBasicasParaTodosLosArchivos(planillaApteDto.getInformacionAportantePlanillaDTO(), bean01, archivoNotificacionDTO);
+		}catch ( ApplicationException appExc ){
+			if ( appExc.getAppExceptionSet()!=null && !appExc.getAppExceptionSet().isEmpty() ){
+				appExcSet.addAll(appExc.getAppExceptionSet());
+			}
+			else{
+				appExcSet.add(appExc);
+			}
+			
+		}
+		
+		//Validar periodos
+		NSOIRNPlanillaTipoEBiz nSOIRNPlanillaTipoEBiz = new NSOIRNPlanillaTipoEBiz();
+		PeriodoType periodoSalud = planillaApteDto.getPeriodoLiquidacionSalud();
+		PeriodoType periodoOtros = planillaApteDto.getPeriodoLiquidacionNoSalud();
+		try{
+			if ( !planillaApteDto.getCodigoSoiTpPlanilla().equals(TipoPlanillaType.I_INDEPENDIENTES.getCodTpPlanilla())&&
+					!planillaApteDto.getCodigoSoiTpPlanilla().equals(TipoPlanillaType.H_MADRES_COMUNITARIAS.getCodTpPlanilla())){					
+				nSOIRNPlanillaTipoEBiz.valirdarRN05PeriodoDeLiquidacionSaludMesAdelanteQueOtrosPeriodos(periodoSalud,periodoOtros);			
+			}
+			else{
+				nSOIRNPlanillaTipoEBiz.validarRN05PeriodosIgualesH(planillaApteDto);
+			}
+		}catch ( ApplicationException appExc ){
+			Object[] reemplazo = new Object[2];
+			reemplazo[0] = bean01.getPeriodoNoSalud();
+			reemplazo[1] = bean01.getPeriodoNoSaludType();
+			appExc.setParametrosReemplazo(reemplazo);
+			appExcSet.add(appExc);			
+		}						
+		
+		if ( !appExcSet.isEmpty() ){
+			throw new ApplicationException(appExcSet);
+		}
 		
 	}
 
