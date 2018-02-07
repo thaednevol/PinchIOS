@@ -483,7 +483,6 @@ public class LiquidadorActivos {
 			long secuencia = 0;
 			int oks = 0;
 			int regsError = 0;
-			long secuencia = 0;
 			PlanillaRegT02 bean02 = null;
 			do{
 				nroLinea++;
