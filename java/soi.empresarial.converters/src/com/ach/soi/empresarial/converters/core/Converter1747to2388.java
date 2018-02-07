@@ -71,6 +71,15 @@ public class Converter1747to2388 extends CommonConverter{
 		}
 	}
 	
+	public String getRegT01FromBean ( Reg2388ReadTp01 regT01 ) throws Exception{
+		StreamFactory factory = StreamFactory.newInstance();
+	    factory.loadResource("mapping-1747-to-5858-write.xml");
+	    StringWriter strWriter = new StringWriter();
+	    BeanWriter writer = factory.createWriter("PILA-2388", strWriter);
+	    writer.write(regT01);
+	    return strWriter.toString();
+	}
+	
 	public String getRegT02FromBean ( Reg2388ReadTp02 regT02 ) throws Exception{
 		StreamFactory factory = StreamFactory.newInstance();
 	    factory.loadResource("mapping-1747-to-5858-write.xml");

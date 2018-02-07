@@ -30,6 +30,7 @@ namespace app.error {
     * iconos de que los registros presentan error.
     */
     public styleError: boolean = true;
+    public titleError: boolean = true;
 
     /**
     * @type {Number} limitRegister - limita la cantidad de registros que se
@@ -111,6 +112,7 @@ namespace app.error {
     bindings: {
       data: "=", // Datos utilizados para mostrar las tabla con errores.
       objectFilter: "=",  // Datos del filtro para mostrar solo los errores de un registro.
+      titleError: "=", // Indica si se muestra titulo de errores o de correcciones
       styleError: "=" // Indica si se aplica un estilo css para resaltar los campos como error
     },
     controller: ErrorContributorsController,

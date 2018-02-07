@@ -32,6 +32,7 @@ import co.swatit.pilautil.generics.Validation;
 import com.ach.arc.biz.r1747.util.ValidacionArchivoDataSource;
 import com.ach.arc.biz.transfer.ArchivoEnProcesoDTO;
 import com.ach.soi.empresarial.converters.core.Converter1747to2388;
+import com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadTp01;
 import com.ach.soi.empresarial.converters.model.beans2388.read.Reg2388ReadTp02;
 import com.ach.soi.empresarial.converters.utils.Constants;
 import com.ach.soi.empresarial.liquidacion.core.LiquidadorActivos;
@@ -194,7 +195,11 @@ public class LiquidacionRestController {
 		ResultadoValidacionCotizanteDTO resultado = new ResultadoValidacionCotizanteDTO();
 		ErrorLiquidacionTO[] erroresTp1;
 		try {
-			erroresTp1 = liquidacion.completarPlanillaAportanteDTO(validacionPlanillaDd.getPlanillaApteDto(), regt01, archivoEnProceso,validacionPlanillaDd);
+			Reg2388ReadTp01 regT01Bean = Reg2388ReadTp01.buildRecordFromStringArray(regt01.split("\\|"));
+			Converter1747to2388 converter = new Converter1747to2388();
+			String regT01Str = converter.getRegT01FromBean(regT01Bean);
+			
+			erroresTp1 = liquidacion.completarPlanillaAportanteDTO(validacionPlanillaDd.getPlanillaApteDto(), regT01Str, archivoEnProceso,validacionPlanillaDd);
 			resultado.setErroresRegistros(erroresTp1);
 			resultado.setEstadoSolicitud("OK");
 		} catch (Exception e) {

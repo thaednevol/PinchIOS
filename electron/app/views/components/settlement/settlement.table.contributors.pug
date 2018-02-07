@@ -70,4 +70,4 @@
     //- Tabla para mostrar errores de registros
     .sy-table__container.sett-contributor__error
       .sy__title-table(ng-bind="'SETTLEMENT.TABLES.ERRORS' | translate")
-      error-contributors(data="$ctrl.listErrorsContributors" object-filter="$ctrl.filterError" style-error="false")
+      error-contributors(column-Filter="false" data="$ctrl.listErrorsContributors" object-filter="$ctrl.filterError" title-error="true")

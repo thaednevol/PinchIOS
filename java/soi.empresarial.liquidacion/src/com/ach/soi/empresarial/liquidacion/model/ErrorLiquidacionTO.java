@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 public class ErrorLiquidacionTO {
 
-	
+	private int tipoRegistro;
 	private boolean errorRegistro;
 	private int linea;
 	private boolean autocorregible;
@@ -20,7 +20,14 @@ public class ErrorLiquidacionTO {
 	private String correccion;
 	private int secuenciaError;
 	private boolean seleccionado;
-
+	
+	
+	public int getTipoRegistro() {
+		return tipoRegistro;
+	}
+	public void setTipoRegistro(int tipoRegistro) {
+		this.tipoRegistro = tipoRegistro;
+	}
 	public int getLinea() {
 		return linea;
 	}

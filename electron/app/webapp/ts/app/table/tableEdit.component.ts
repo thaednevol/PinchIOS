@@ -292,8 +292,12 @@ namespace app.table {
       this.inputEditField.addEventListener("focusout", () => {
         this.$rootScope.$broadcast("clear-inputs-table-edit");
       });
-      this.$rootScope.$broadcast("line-table-edit-select", linePosition);
-      this.setSuggestions(Number(linePosition) + 1, Number(cellPosition) + 1);
+      if (this.idTable === "regsTp02") {
+        this.$rootScope.$broadcast("line-table-edit-select", linePosition);
+        this.setSuggestions(Number(linePosition) + 1, Number(cellPosition) + 1);
+      }else{
+        this.$rootScope.$broadcast("line-table-edit-select", -1);
+      }
     }
 
     /**

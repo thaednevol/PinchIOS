@@ -120,16 +120,37 @@ public class LiquidadorActivos {
 		planillaAportanteDTO.setNumeroTotalEmpleados(planillaRegT01.getNroEmpleadosType());
 		planillaAportanteDTO.setCodigoSucursal(planillaRegT01.getCodSucursalType());
 		
+		Collection<ApplicationException> exceptionSet = new ArrayList<ApplicationException>();
+		
 		planillaAportanteDTO.setNombreSucursal(planillaRegT01.getNmSucursalType());
-		com.ach.pla.biz.type.PeriodoType periodoNoSalud = new com.ach.pla.biz.type.PeriodoType(planillaRegT01.getPeriodoNoSaludType());
+		com.ach.pla.biz.type.PeriodoType periodoNoSalud = null;
+		try{
+			periodoNoSalud = new com.ach.pla.biz.type.PeriodoType(planillaRegT01.getPeriodoNoSaludType());
+		}catch ( ApplicationException a ){
+			Object[] reemplazo = new Object[2];
+			reemplazo[0] = planillaRegT01.getPeriodoNoSalud();
+			reemplazo[1] = planillaRegT01.getPeriodoNoSalud().getNombreCampo();
+			a.setParametrosReemplazo(reemplazo);
+			exceptionSet.add(a);
+		}
 		com.ach.pla.biz.type.PeriodoType periodoSalud =null;
-		
-		periodoNoSalud = calcularPeriodoNoSalud(periodoNoSalud, periodoSalud, codTipoPlanilla);
-		
+		if (periodoNoSalud!=null){
+			periodoNoSalud = calcularPeriodoNoSalud(periodoNoSalud, periodoSalud, codTipoPlanilla);
+		}
+						
 		if(planillaRegT01.getTipoPlanillaType().equals(TipoPlanillaType.K_ESTUDIANTES.getCodTpPlanilla())){
 			periodoSalud=periodoNoSalud;
 		}else{
-			periodoSalud = new com.ach.pla.biz.type.PeriodoType(planillaRegT01.getPeriodoSaludType());
+			try{
+				
+				periodoSalud = new com.ach.pla.biz.type.PeriodoType(planillaRegT01.getPeriodoSaludType());
+			}catch ( ApplicationException a ){
+				Object[] reemplazo = new Object[2];
+				reemplazo[0] = planillaRegT01.getPeriodoSalud();
+				reemplazo[1] = planillaRegT01.getPeriodoSalud().getNombreCampo();
+				a.setParametrosReemplazo(reemplazo);
+				exceptionSet.add(a);
+			}			
 		}
 
 		planillaAportanteDTO.setPeriodoLiquidacionNoSalud(periodoNoSalud);
@@ -148,8 +169,11 @@ public class LiquidadorActivos {
 			ValidadorUtil.validarObjeto(planillaAportanteDTO, planillaAportanteValidatorCfg);
 		}catch ( ApplicationException e ){
 			LOGGER.error("error completarPlanillaAportanteDTODePlanillaRegT01()", e);
+			exceptionSet.add(e);
 		}
-
+		if ( !exceptionSet.isEmpty() ){
+			throw new ApplicationException(exceptionSet);
+		}
 	}
 	
 	private com.ach.pla.biz.type.PeriodoType calcularPeriodoNoSalud(
@@ -518,6 +542,7 @@ public class LiquidadorActivos {
 			LOGGER.fatal("procesarGrupoCotizantesTp2Desconectado() -> Errores inesperado",e);
 			errorTo.setAutocorregible(false);
 			errorTo.setCampo(0);
+			errorTo.setTipoRegistro(2);
 			errorTo.setErrorRegistro(true);
 			errorTo.setLinea(nroLinea);
 			errorTo.setError("Error no identificado");
@@ -658,7 +683,8 @@ public class LiquidadorActivos {
 		
 		if (campo!=null){
 			for ( Map.Entry<String,CampoLeido1747> e:camposBeanT02.entrySet() ){
-				if ( e.getValue().getNombreCampo().equals(campo.getNombreCampo()) ){					
+				if ( e.getValue().getNombreCampo().equals(campo.getNombreCampo()) ){
+					err.setTipoRegistro(2);
 					err.setCampo(Integer.valueOf(e.getKey()));
 					break;
 				}
@@ -810,7 +836,7 @@ public class LiquidadorActivos {
 		if ( reg!=null && reg instanceof PlanillaRegT02 ){
 			PlanillaRegT02 reg2 = (PlanillaRegT02)reg;
 			err.setTipoIdentificacion(reg2.getTpDocumentoCotizante3Type());
-			err.setNroIdentificacion(reg2.getNumeroIdentificacionCotizante4Type());
+			err.setNroIdentificacion(reg2.getNumeroIdentificacionCotizante4Type());			
 		}		
 		if ( campo!=null && campo.getValorEsperado()!=null && !campo.getValorEsperado().trim().equals("") ){
 			if ( campo.getValorEsperado().contains(";") ){
@@ -830,6 +856,7 @@ public class LiquidadorActivos {
 				for ( Map.Entry<String,CampoLeido1747> e:camposBeanT02.entrySet() ){
 					if ( e.getValue().getNombreCampo().equals(campo.getNombreCampo()) ){					
 						err.setCampo(Integer.valueOf(e.getKey()));
+						err.setTipoRegistro(2);
 						break;
 					}
 				}
@@ -837,6 +864,7 @@ public class LiquidadorActivos {
 				for ( Map.Entry<String,CampoLeido1747> e:camposBeanT01.entrySet() ){
 					if ( e.getValue().getNombreCampo().equals(campo.getNombreCampo()) ){					
 						err.setCampo(Integer.valueOf(e.getKey()));
+						err.setTipoRegistro(1);
 						break;
 					}
 				}

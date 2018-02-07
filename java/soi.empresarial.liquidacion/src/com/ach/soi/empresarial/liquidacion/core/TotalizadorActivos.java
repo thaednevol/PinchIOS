@@ -207,6 +207,10 @@ public class TotalizadorActivos {
 				
 		TotalesTO resultado = new TotalesTO();
 		
+		if (this.ds.getPlanillaApteDto().getPeriodoLiquidacionNoSalud()==null || this.ds.getPlanillaApteDto().getPeriodoLiquidacionSalud()==null){
+			return resultado;
+		}
+		
 		resultado.setPeriodoNoSalud(this.ds.getPlanillaApteDto().getPeriodoLiquidacionNoSalud().getAno()+"-"+
 										this.ds.getPlanillaApteDto().getPeriodoLiquidacionNoSalud().getMes());
 		resultado.setPeriodoSalud(this.ds.getPlanillaApteDto().getPeriodoLiquidacionSalud().getAno()+"-"+

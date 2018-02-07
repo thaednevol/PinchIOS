@@ -225,8 +225,8 @@ namespace app.jar {
     public lineRegisterType1ToSeparatedString(data) {
       if (!data) return data;
       let newLine = '';
-      for (let i = 0; i < Object.keys(data.regTp01.registers[0]).length-3; i++) {
-        newLine = newLine+data.regTp01.registers[0][`regs${i}`];
+      for (let i = 0; i < Object.keys(data.regTp01.registers[0]).length-1; i++) {
+        newLine = newLine+data.regTp01.registers[0][`regs${i}`]+'|';
       }
       return newLine;
     }

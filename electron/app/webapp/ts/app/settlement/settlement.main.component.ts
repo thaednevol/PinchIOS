@@ -423,7 +423,37 @@ namespace app.settlement {
       this.serviceSettlement.validateRegisterT01(params).get().$promise.then((response) => {
 
         if (response.data.estadoSolicitud === "OK") {
+            let errors = response.data.erroresRegistros;
 
+            let corrects = this.file.data.regsTp02.corrected[0];
+            let oldErrors = this.file.data.regsTp02.errors[0];
+
+            if (errors.length > 0) {
+              this.file.data.regTp01.errors["0"] = [];
+              this.file.data.regTp01.errors["0"] = this.arrayErrorsToObject(errors);
+            }
+
+            let cols: any = Object.keys(errors);
+            // Recorre cada columna de la fila para realizar la corrección.
+            for (let positionCol = 0; positionCol < cols.length; positionCol++) {
+              let currentCol = cols[positionCol];
+              let currentError = errors[currentCol];
+              currentError.currentValue = this.file.data.regTp01.registers[0][`regs${currentError.campo}`];
+            }
+
+            //marca corregidos manualmente los errores que desaparecen al realizar el cambio
+            for ( let i=0;i<Object.keys(oldErrors).length;i++ ){
+              let currReg = oldErrors[Object.keys(oldErrors)[i]];
+              let existeError = errors.find(function(element){
+                return element.campo === currReg.campo;
+              });
+              if ( !existeError ){
+                currReg.corregido = true;
+                currReg.autocorregible = true;
+                currReg.correccion = this.$filter("translate")("ERROR.CONTRIBUTORS.TYPE_MANU");
+                corrects[Object.keys(oldErrors)[i]]=currReg;
+              }
+            }
             this.updateTotals();
             this.updateInfoPanel();
 
@@ -598,13 +628,15 @@ namespace app.settlement {
       setTimeout(() => {
         // Recorre las filas de los registros de la tabla con error.
         let currentRow = rows[positionRow];
-        let cols: any = Object.keys(errors[currentRow]);
-        // Recorre cada columna de la fila para realizar la corrección.
-        for (let positionCol = 0; positionCol < cols.length; positionCol++) {
-          let currentCol = cols[positionCol];
-          let currentError = errors[currentRow][currentCol];
-          currentError.currentValue = this.file.data.regsTp02.registers[currentRow - 1][`regs${currentCol - 1}`];
-        if ( currentRow>0 ){
+        if ( currentRow==="0" ){
+          let cols: any = Object.keys(errors[currentRow]);
+          // Recorre cada columna de la fila para realizar la corrección.
+          for (let positionCol = 0; positionCol < cols.length; positionCol++) {
+            let currentCol = cols[positionCol];
+            let currentError = errors[0][currentCol];
+            currentError.currentValue = this.file.data.regTp01.registers[0][`regs${currentCol}`];
+          }
+        }else if ( currentRow>0 ){
           let cols: any = Object.keys(errors[currentRow]);
           // Recorre cada columna de la fila para realizar la corrección.
           for (let positionCol = 0; positionCol < cols.length; positionCol++) {
