@@ -16,7 +16,7 @@ namespace app.table {
     }
 
     public getData(){
-      return this.hotComponent.data;
+      return this.hotComponent.data[0].registers[0];
     }
 
     public getColumnSorting(){
@@ -29,9 +29,16 @@ namespace app.table {
 
     public getColumnDef(){
       var columnas=[];
-      if (this.hotComponent.data[0]) {
-        for(let i of Object.keys(this.hotComponent.data[0])) {
-            columnas.push({data: i, readOnly:true, type: 'text'});
+      if (this.hotComponent.data[0].registers[0]) {
+        for(let i of Object.keys(this.hotComponent.data[0].registers[0])) {
+            //columnas.push({data: i, readOnly:true, type: 'text'});
+          if (i !== "selected") {
+            if (i === "regs0" || i === "regs2") {
+              columnas.push({data: i, readOnly:true, type: 'text'});
+            } else {
+              columnas.push({data: i, readOnly:false, type: 'text'});
+            }
+          }
         }
       }
       return columnas;
