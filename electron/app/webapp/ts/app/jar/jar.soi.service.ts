@@ -173,8 +173,10 @@ namespace app.jar {
       for (let i = 0; i < data.regsTp02.registers.length; i++) {
         dataInArray.regsTp02[i] = this.lineRegisterType2ToArray(data, i);
       }
+      dataInArray.regTp01 = this.lineRegisterType1ToArray(data);
       return dataInArray;
     }
+
 
     /**
     * @description
@@ -191,6 +193,15 @@ namespace app.jar {
       let newArray = [];
       for (let i = 0; i < Object.keys(data.regsTp02.registers[position]).length; i++) {
         newArray[i] = data.regsTp02.registers[position][`regs${i}`];
+      }
+      return newArray;
+    }
+
+    public lineRegisterType1ToArray(data) {
+      if (!data) return data;
+      let newArray = [];
+      for (let i = 0; i < Object.keys(data.regTp01.registers[0]).length; i++) {
+        newArray[i] = data.regTp01.registers[0][`regs${i}`];
       }
       return newArray;
     }

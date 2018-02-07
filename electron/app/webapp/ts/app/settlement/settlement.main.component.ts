@@ -286,7 +286,7 @@ namespace app.settlement {
           break;
         }
       }
-      if ( (formaPresentacion==='S' || formaPresentacion==='D') && !sucursalOk ){
+      if ( (formaPresentacion==='S' || formaPresentacion==='D') && !sucursalOk && sucursales.length>0 ){
         let currSucursal = sucursales[0].split(";");
         let codSucursalLength = currSucursal[1].length;
         this.file.data.regTp01.registers[0]["regs11"] = currSucursal[1];
@@ -301,9 +301,9 @@ namespace app.settlement {
       else{
         this.file.data.regTp01.registers[0]["regs11"] = "";
         this.file.data.regTp01.registers[0]["regs12"] = "";
-        this.file.data.regTp1Txt = this.file.data.regTp1Txt.substring(0,248)+""
+        this.file.data.regTp1Txt = this.file.data.regTp1Txt.substring(0,248)+" "
                                   +this.file.data.regTp1Txt.substring(249,this.file.data.regTp1Txt.length);
-                                  this.file.data.regTp1Txt = this.file.data.regTp1Txt.substring(0,258)+""
+                                  this.file.data.regTp1Txt = this.file.data.regTp1Txt.substring(0,258)+" "
                                                             +this.file.data.regTp1Txt.substring(259,this.file.data.regTp1Txt.length);
       }
 
@@ -573,6 +573,7 @@ namespace app.settlement {
         this.showLoading = true;
         selectedRegs = this.file.data.regsTp02.registers;
         nroLinea0 = 0;
+        numberRegister = 0;
       }
 
       let regsForValidate = [];

@@ -231,6 +231,7 @@ namespace app.settlement {
     public actionGenerate2388() {
       if (this.isFileWithErrors()) return;
       this.showLoading = true;
+
       let result = this.serviceFile.createFileTemp(`${this.file.name}temp2388.txt`, {}, false);
       result.then((path) => {
         if (!path) {
@@ -321,6 +322,7 @@ namespace app.settlement {
       this.$rootScope.$broadcast("clear-inputs-table-edit");
       this.file.data.regTp01[18] = this.file.data.regsTp02.registers.length;
       let dataForSave: any = this.soiService.registerType2ToArray(this.file.data);
+      dataForSave.regTp01[18] = this.file.data.regsTp02.registers.length;
       return this.serviceFile.createFileTemp(`${this.file.name}.json`, dataForSave, false);
     }
 
