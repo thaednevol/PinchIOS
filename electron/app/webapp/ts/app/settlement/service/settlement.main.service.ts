@@ -85,6 +85,25 @@ namespace app.settlement {
 
     /**
     * @description
+    * Servicio REST para validar una fila de la tabla.
+    */
+    public validateRegisterT01(params) {
+      let service: string = "validarregistro1";
+      let server: string = `${this.routeserver}${service}`;
+      return this.$resource(server, params, {
+        get: {
+          method: "POST",
+          transformResponse: (data) => {
+            return {
+              data: JSON.parse(data)
+            };
+          }
+        }
+      });
+    }
+
+    /**
+    * @description
     * Servicio REST para consultar el total de la planilla de liquidación.
     */
     public getTotals() {

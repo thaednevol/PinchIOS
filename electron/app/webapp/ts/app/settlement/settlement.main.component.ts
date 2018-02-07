@@ -186,6 +186,9 @@ namespace app.settlement {
       this.$scope.$on("validate-register-table", (event, numberRegister) => {
         this.validateRegister(numberRegister);
       });
+      this.$scope.$on("validate-register-tp01", (event, numberRegister) => {
+        this.validateRegisterTp01(numberRegister);
+      });
       this.$scope.$on("update-info-panel", () => {
         this.updateInfoPanel();
       });
@@ -405,6 +408,27 @@ namespace app.settlement {
         objectErrors[field] = registersErrors[i];
       }
       return objectErrors;
+    }
+
+    /**
+    * @description
+    * Ejecuta la validación de un registro tipo 1 usando servicios rest
+    * del JAR.
+    */
+    public validateRegisterTp01() {
+      let params = {
+        regt01: this.file.data.regTp1Txt
+      };
+      this.serviceSettlement.validateRegisterT01(params).get().$promise.then((response) => {
+
+        if (response.data.estadoSolicitud === "OK") {
+
+            this.updateTotals();
+            this.updateInfoPanel();
+
+
+        }
+      });
     }
 
     /**
