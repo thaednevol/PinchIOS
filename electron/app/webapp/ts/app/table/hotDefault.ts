@@ -24,6 +24,10 @@ namespace app.table {
 
     }
 
+    public getPagination(){
+
+    }
+
     public getSortIndicator(){
 
     }
@@ -74,6 +78,7 @@ namespace app.table {
       }
 
       public getHeight(){
+       
         return (2*30)+this.hotComponent.hotTable.countRows()*24;
       }
 
