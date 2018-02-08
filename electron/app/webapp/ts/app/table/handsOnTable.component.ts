@@ -245,7 +245,8 @@ namespace app.table {
                 hiddenRows: this.hc.getHiddenRows(1),
                 afterFilter:this.hc.afterFilter(),
                 afterColumnSort: this.hc.afterColumnSort(),
-                afterOnCellMouseDown: this.hc.afterOnCellMouseDown()
+                afterOnCellMouseDown: this.hc.afterOnCellMouseDown(),
+                afterChange: this.hc.afterChange()
           };
 
           this.hotTable = new Handsontable(this.hotElement, hotSettings);

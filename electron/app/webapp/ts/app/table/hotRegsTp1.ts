@@ -124,54 +124,13 @@ namespace app.table {
       public afterChange(){
         var ctrl=this;
         return function (changes, source) {
-          if (changes != null) {
-            for (var fil = 0; fil < changes.length; fil++) {
-              var rowThatHasBeenChanged = changes[fil][0],
-              columnThatHasBeenChanged = changes[fil][1],
-              previousValue = changes[fil][2],
-              newValue = changes[fil][3];
-
-              var sourceRow = ctrl.hotComponent.hotTable.getSourceDataAtRow(rowThatHasBeenChanged),
-              visualRow = ctrl.hotComponent.hotTable.getDataAtRow(rowThatHasBeenChanged);
-
-              var visualObjectRow = function(row) {
-                  var obj = {},key, name;
-                  for (var i = 0; i < ctrl.hotComponent.hotTable.countCols(); i++) {
-                      obj[ctrl.hotComponent.hotTable.colToProp(i)] = ctrl.hotComponent.hotTable.getDataAtCell(row, i);
-                    }
-                    return obj
-                  }
-
-
-
-                  // console.log('* the getSourceDataAtRow:');
-                  // console.log(sourceRow);
-                  // console.log('* the getDataAtRow:');
-                  // console.log(visualRow);
-                  // console.log('* the visualObjectRow function:');
-                  // console.log(visualObjectRow(rowThatHasBeenChanged));
-            }
-          }
 
           if (changes != null) {
             for (var fil = 0; fil < changes.length; fil++) {
               if (changes[fil][1] !== "selected") {
-                if (changes[fil][2] !== changes[fil][3]) {
-                  ctrl.hotComponent.$rootScope.$broadcast("validate-register-table", changes[fil][0]);
-                }
-              }
-            }
-          }
-        }
-      }
-
-      /*public afterChange(){
-        var ctrl=this;
-        return function (changes, source) {
-
-          if (changes != null) {
-            for (var fil = 0; fil < changes.length; fil++) {
-              if (changes[fil][1] !== "selected") {
+                /*
+                Algunos registros vienen con espacios, entonces, si no se hace la comparacion, cambia los totales
+                */
                 let c1=changes[fil][2].trim();
                 let c2=changes[fil][3].trim();
                 if (c1 !== c2) {
@@ -181,7 +140,7 @@ namespace app.table {
             }
           }
         }
-      }*/
+      }
 
       public registerHooks(){
 
