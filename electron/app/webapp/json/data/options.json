@@ -96,12 +96,9 @@
   },
 
   "TABLES": {
-<<<<<<< HEAD
     "ROW_LIMIT_BY_PAGE": 50,
     "ROW_LIMIT_BY_PAGE_ERROR": 50,
-=======
     "ROW_LIMIT_BY_PAGE": 10,
->>>>>>> 8012f3f... Necesidad NEC006, integración handsontable en sección totales de planilla
     "ROW_LOAD_BY_PAGE": 50,
     "TIMER": {
       "HIDE_SUB_MENU": 0.5,

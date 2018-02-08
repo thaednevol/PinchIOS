@@ -190,9 +190,13 @@ namespace app.table {
 
       public updateSettings(){
         this.hotComponent.hotTable.updateSettings({
-          fillHandle: false,
-          colWidths: [10, 150, 100, 150, 150, 150, 150, 150, 50, 50, 50, 50, 50, 50, 50, 50]
+          fillHandle: false
         });
+      }
+
+      public colWidths(){
+
+        return [10, 150, 100, 150, 150, 150, 150, 150, 50, 50, 50, 50, 50, 50, 50, 50];
       }
 
       public getPagination(){

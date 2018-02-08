@@ -20,7 +20,6 @@ namespace app.table {
          this.iHotcomponent=new HotRegsTp1(hotComponent);
        }
 
-<<<<<<< HEAD
       //if (this.hotComponent.idTable==="regsTp02"){
         //this.iHotcomponent=new HotRegsTp2(hotComponent);
       //}
@@ -34,12 +33,11 @@ namespace app.table {
       //   this.iHotcomponent=new HotTotals(hotComponent);
       // }
       //
-=======
       if (this.hotComponent.idTable==="regsTp02"){
         this.iHotcomponent=new HotRegsTp2(hotComponent);
       }
 
-      
+
       if (this.hotComponent.idTable==="salud"
           || this.hotComponent.idTable==="fps"
             || this.hotComponent.idTable==="pension"
@@ -48,8 +46,7 @@ namespace app.table {
                   || this.hotComponent.idTable==="gran"){
         this.iHotcomponent=new HotTotals(hotComponent);
       }
-      
->>>>>>> 8012f3f... Necesidad NEC006, integración handsontable en sección totales de planilla
+
       // if (this.hotComponent.idTable==="error"){
       //   this.iHotcomponent=new HotErrors(hotComponent);
       // }

@@ -52,11 +52,8 @@
     "csvtojson": "^1.1.5",
     "electron-contextmenu-middleware": "^1.0.3",
     "electron-logger": "0.0.3",
-<<<<<<< HEAD
-=======
     "gaze": "^1.1.2",
     "handsontable-pro": "*",
->>>>>>> 8012f3f... Necesidad NEC006, integración handsontable en sección totales de planilla
     "json2csv": "^3.7.3",
     "node-notifier": "^5.1.2",
     "nodemailer": "^4.0.1",
@@ -64,7 +61,6 @@
     "winston": "^2.3.1",
     "@types/angular": "^1.6.42",
     "@types/jquery": "^3.3.0",
-    "@types/jqueryui": "^1.12.1",
-    "handsontable-pro": "*"
+    "@types/jqueryui": "^1.12.1"
   }
 }

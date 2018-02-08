@@ -69,12 +69,8 @@
     "app/webapp/ts/app/table/hotConfigs.ts",
 		"app/webapp/ts/app/table/iHotComponents.ts",
 		"app/webapp/ts/app/table/hotDefault.ts",
-<<<<<<< HEAD
 		"app/webapp/ts/app/table/hotRegsTp1.ts"
-=======
 		"app/webapp/ts/app/table/hotRegsTp2.ts",
 		"app/webapp/ts/app/table/hotTotals.ts"
-
->>>>>>> 8012f3f... Necesidad NEC006, integración handsontable en sección totales de planilla
   ]
 }
