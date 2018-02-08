@@ -5,24 +5,32 @@
 
       .sy-table__container(ng-if="$ctrl.file.totals.totalesPension")
         .sy__title-table(ng-bind="'SETTLEMENT.TABLES.PENSION' | translate")
-        table-edit(data="$ctrl.file.totals.totalesPension" labels="$ctrl.file.totals.totalesPensionLabels" id-table="'pension'" edit-table="false")
+        //-table-edit.sett__right-table-total(data="$ctrl.file.totals.totalesPension" labels="$ctrl.file.totals.totalesPensionLabels" id-table="'pension'" edit-table="false")
+        hands-on-table(id-table="'pension'" data="$ctrl.file.totals.totalesPension" labels="$ctrl.file.totals.totalesPensionLabels" edit-table="false")
+
 
       .sy-table__container(ng-if="$ctrl.file.totals.totalesFsp")
         .sy__title-table(ng-bind="'SETTLEMENT.TABLES.FSP' | translate")
-        table-edit.sett__right-table-total(data="$ctrl.file.totals.totalesFsp" labels="$ctrl.file.totals.totalesFspLabels" id-table="'fps'" edit-table="false")
+        //- table-edit.sett__right-table-total(data="$ctrl.file.totals.totalesFsp" labels="$ctrl.file.totals.totalesFspLabels" id-table="'fps'" edit-table="false")
+        hands-on-table(data="$ctrl.file.totals.totalesFsp" labels="$ctrl.file.totals.totalesFspLabels" id-table="'fps'" edit-table="false")
+  
 
       .sy-table__container(ng-if="$ctrl.file.totals.totalesSalud")
         .sy__title-table(ng-bind="'SETTLEMENT.TABLES.SALUD' | translate")
-        table-edit.sett__right-table-total(data="$ctrl.file.totals.totalesSalud" labels="$ctrl.file.totals.totalesSaludLabels" id-table="'salud'" edit-table="false")
+        //- table-edit.sett__right-table-total(data="$ctrl.file.totals.totalesSalud" labels="$ctrl.file.totals.totalesSaludLabels" id-table="'salud'" edit-table="false")
+        hands-on-table(data="$ctrl.file.totals.totalesSalud" labels="$ctrl.file.totals.totalesSaludLabels" id-table="'salud'" edit-table="false")
 
       .sy-table__container(ng-if="$ctrl.file.totals.totalesRiesgo")
         .sy__title-table(ng-bind="'SETTLEMENT.TABLES.RIESGO' | translate")
-        table-edit.sett__right-table-total(data="$ctrl.file.totals.totalesRiesgo" labels="$ctrl.file.totals.totalesRiesgoLabels" id-table="'riesgo'" edit-table="false")
-
+        //- table-edit.sett__right-table-total(data="$ctrl.file.totals.totalesRiesgo" labels="$ctrl.file.totals.totalesRiesgoLabels" id-table="'riesgo'" edit-table="false")
+        hands-on-table(data="$ctrl.file.totals.totalesRiesgo" labels="$ctrl.file.totals.totalesRiesgoLabels" id-table="'riesgo'" edit-table="false")
+  
       .sy-table__container(ng-if="$ctrl.file.totals.totalParafiscales")
         .sy__title-table(ng-bind="'SETTLEMENT.TABLES.PARAFISCAL' | translate")
-        table-edit.sett__right-table-total(data="$ctrl.file.totals.totalParafiscales" labels="$ctrl.file.totals.totalParafiscalesLabels" id-table="'parafiscales'" edit-table="false")
+        //-table-edit.sett__right-table-total(data="$ctrl.file.totals.totalParafiscales" labels="$ctrl.file.totals.totalParafiscalesLabels" id-table="'parafiscales'" edit-table="false")
+        hands-on-table(data="$ctrl.file.totals.totalParafiscales" labels="$ctrl.file.totals.totalParafiscalesLabels" id-table="'parafiscales'" edit-table="false")
 
       .sy-table__container(ng-if="$ctrl.file.totals.granTotal")
         .sy__title-table(ng-bind="'SETTLEMENT.TABLES.GRAN_TOTAL' | translate")
-        table-edit.sett__right-table-total(data="[$ctrl.file.totals.granTotal]" labels="$ctrl.file.totals.granTotalLabels" id-table="'gran'" edit-table="false")
+        //- table-edit.sett__right-table-total(data="[$ctrl.file.totals.granTotal]" labels="$ctrl.file.totals.granTotalLabels" id-table="'gran'" edit-table="false")
+        hands-on-table(data="[$ctrl.file.totals.granTotal]" labels="$ctrl.file.totals.granTotalLabels" id-table="'gran'" edit-table="false")

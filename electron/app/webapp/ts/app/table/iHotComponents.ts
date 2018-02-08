@@ -22,7 +22,7 @@ namespace app.table {
     getHiddenRows(clicked);
     getHeight();
     getCells();
-
+    getPagination();
     afterFilter();
     afterColumnSort();
     afterOnCellMouseDown();

@@ -227,6 +227,7 @@ namespace app.settlement {
     private updateTotals() {
       this.serviceSettlement.getTotals().get().$promise.then((response) => {
         let data = response.data;
+        
         if (data.error) {
           let title = this.$filter("translate")("MESSAGES.TITLES.ERROR");
           this.nativeNotification.show(title, data.message);
@@ -255,6 +256,8 @@ namespace app.settlement {
       this.currentTab = tabForChange;
       setTimeout(() => {
         this.$rootScope.$broadcast("clear-inputs-table-edit");
+        this.$rootScope.$broadcast("refresh-table");
+        this.$rootScope.$broadcast("rebuild-table");
       });
     }
 

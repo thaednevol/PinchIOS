@@ -25,6 +25,11 @@ namespace app.table {
     public idTable: any;
 
     /**
+      * @type {number} startLimit - Limite inferior de registros mostrados
+      */
+      private startLimit:number = 0;
+
+    /**
     * @type {Boolean} activeFilter - Indica si habilita la tabla con filtro de celdas
     */
     public activeFilter: boolean = false;
@@ -139,12 +144,10 @@ namespace app.table {
         this.notificationService=notificationService;
 
         this.$scope.$on("rebuild-table", () => {
-          console.log("rebuild-table");
           this.rebuildTable();
         });
 
         this.$scope.$on("refresh-table", () => {
-          console.log("refresh-table");
           if (this.hotTable !== undefined) {
             this.hotTable.render();
           }
@@ -183,30 +186,83 @@ namespace app.table {
   * @description
   * Realiza el cambio de la pagina de la tabla.
   */
+  // private actionChangePage(orientation) {
+  //   console.log("actionChangePage");
+  //   var ctrl=this;
+
+  //   var maxPage=Math.ceil(this.data.registers.length/this.OPTIONS.TABLES.ROW_LIMIT_BY_PAGE);
+  //   if ((this.page>0) && (this.page<=maxPage)){
+  //     if (orientation === "next"  && this.page<maxPage){
+  //         this.page++;
+  //     }
+  //     if (orientation === "prev"  && this.page>1){
+  //         this.page--;
+  //     }
+
+  //     var clicked=ctrl.page;
+  //     this.hotTable.updateSettings({
+  //       hiddenRows: this.hc.getHiddenRows(clicked)
+  //     });
+  //     this.$rootScope.$broadcast("action-change-page");
+  //   }
+  // }
+
+
+ 
+  /**
+  * @description
+  * Realiza el cambio de la pagina de la tabla.
+  */
   private actionChangePage(orientation) {
-    console.log("actionChangePage");
-    var ctrl=this;
+    
+      let pagination=this.hc.getPagination();
+      let ctrl=this;
+      if (ctrl){
+        if (pagination.enablePag){
+          if (pagination.numReg) {
+            let maxPage=Math.ceil(pagination.numReg/pagination.limitShown);
+            if ((ctrl.page>0) && (ctrl.page<=maxPage)){
+              if (orientation === "next"  && ctrl.page<maxPage){
+                  ctrl.page++;
+              }
+              if (orientation === "prev"  && ctrl.page>1){
+                  ctrl.page--;
+              }
 
-    var maxPage=Math.ceil(this.data.registers.length/this.OPTIONS.TABLES.ROW_LIMIT_BY_PAGE);
-    if ((this.page>0) && (this.page<=maxPage)){
-      if (orientation === "next"  && this.page<maxPage){
-          this.page++;
-      }
-      if (orientation === "prev"  && this.page>1){
-          this.page--;
+              if (orientation!==""){
+                if (ctrl.hotTable && ctrl.hc){
+                  let clicked=ctrl.page;
+                  let ht=ctrl.hotTable;
+                  if (pagination.pageByPage !== undefined && pagination.pageByPage) {
+                    console.log("paginacion por pagina habilitada");
+                    let borrame = pagination.dataTmp;
+                    if (this.hotTable) {
+                      this.hotTable.updateSettings({
+                        data: pagination.dataTmp
+                      });
+                    }
+                  }
+                  ctrl.hotTable.render();
+                }
+              }
+              ctrl.currentNumberRegisterLoad = ctrl.page * pagination.limitShown;
+              ctrl.startLimit = (ctrl.page-1)*pagination.limitShown;
+              ctrl.numRegisters = pagination.numReg;
+            }
+          }
+        }
       }
 
-      var clicked=ctrl.page;
-      this.hotTable.updateSettings({
-        hiddenRows: this.hc.getHiddenRows(clicked)
-      });
-      this.$rootScope.$broadcast("action-change-page");
+      let phase = this.$rootScope.$$phase;
+      if(phase != '$apply' && phase != '$digest') {
+          this.$scope.$apply();
+      }
+
+      this.$rootScope.$broadcast("action-change-page",orientation);
     }
-  }
 
 
       private fillTable(){
-        console.log("fillTable");
         var ctrl = this;
         var myData = this.data;
         var myRootScope = this.$rootScope;
@@ -215,7 +271,7 @@ namespace app.table {
         this.hc.registerValidators();
         //this.hc.registerHooks();
         //this.hc.registerEvents();
-        //this.updateSettings(ctrl);
+       
 
         var hotSettings = {
                 tableId:this.idTable,
@@ -237,24 +293,32 @@ namespace app.table {
                 manualRowMove: true,
                 manualColumnMove: true,
                 autoRowSize: {syncLimit: 200},
+<<<<<<< HEAD
+=======
+                colWidths: this.hc.colWidths(),
+>>>>>>> 8012f3f... Necesidad NEC006, integración handsontable en sección totales de planilla
                 renderAllRows: false,
                 filters: this.activeFilter,
                 scrollToSelection: true,
                 height: this.hc.getHeight(),
-                licenseKey: '05ea7-d0139-2af62-34f15-ce322',
-                hiddenRows: this.hc.getHiddenRows(1),
-                afterFilter:this.hc.afterFilter(),
-                afterColumnSort: this.hc.afterColumnSort(),
-                afterOnCellMouseDown: this.hc.afterOnCellMouseDown()
+                licenseKey: '05ea7-d0139-2af62-34f15-ce322'
+                // hiddenRows: this.hc.getHiddenRows(1),
+                // afterFilter:this.hc.afterFilter(),
+                // afterColumnSort: this.hc.afterColumnSort(),
+                // afterOnCellMouseDown: this.hc.afterOnCellMouseDown()
           };
 
           this.hotTable = new Handsontable(this.hotElement, hotSettings);
           this.hotTable.validateCells(function(valid) {});
           $("#hot-display-license-info").hide();
+
+         
       }
+      
+
+
 
     public rebuildTable() {
-      console.log("rebuildTable");
       var hotId='#hot-'+this.idTable;
       this.hotElement=document.querySelector(hotId);
       if (this.hotElement){
@@ -264,6 +328,7 @@ namespace app.table {
         }
       }
     }
+    
 
     /**
     * @description

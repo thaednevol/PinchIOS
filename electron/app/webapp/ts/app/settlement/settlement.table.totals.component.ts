@@ -21,8 +21,13 @@ namespace app.settlement {
       origin: []
     };
 
+
+
     constructor() {
+
+  
     }
+
 
   }
 
