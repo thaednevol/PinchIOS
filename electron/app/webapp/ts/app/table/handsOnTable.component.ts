@@ -208,13 +208,13 @@ namespace app.table {
   // }
 
 
- 
+
   /**
   * @description
   * Realiza el cambio de la pagina de la tabla.
   */
   private actionChangePage(orientation) {
-    
+
       let pagination=this.hc.getPagination();
       let ctrl=this;
       if (ctrl){
@@ -271,7 +271,7 @@ namespace app.table {
         this.hc.registerValidators();
         //this.hc.registerHooks();
         //this.hc.registerEvents();
-       
+
 
         var hotSettings = {
                 tableId:this.idTable,
@@ -293,10 +293,7 @@ namespace app.table {
                 manualRowMove: true,
                 manualColumnMove: true,
                 autoRowSize: {syncLimit: 200},
-<<<<<<< HEAD
-=======
                 colWidths: this.hc.colWidths(),
->>>>>>> 8012f3f... Necesidad NEC006, integración handsontable en sección totales de planilla
                 renderAllRows: false,
                 filters: this.activeFilter,
                 scrollToSelection: true,
@@ -313,9 +310,9 @@ namespace app.table {
           this.hotTable.validateCells(function(valid) {});
           $("#hot-display-license-info").hide();
 
-         
+
       }
-      
+
 
 
 
@@ -329,7 +326,7 @@ namespace app.table {
         }
       }
     }
-    
+
 
     /**
     * @description
