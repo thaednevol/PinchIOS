@@ -27,6 +27,7 @@ namespace app.table {
         return false;
     }
 
+
     public getColumnDef(){
       var columnas=[];
       if (this.hotComponent.data.registers[0]) {
@@ -107,6 +108,7 @@ namespace app.table {
 
       }
 
+
       public afterOnCellMouseDown(){
         var ctrl=this;
         return function (event,pos,cell) {
@@ -114,12 +116,12 @@ namespace app.table {
           if (linePosition){
               let cellPosition=pos.col;
               if (cellPosition){
-                //ctrl.hotComponent.$rootScope.$broadcast("line-table-edit-select", -1);
-                  //ctrl.hotComponent.$rootScope.$broadcast("validate-register-table", -1);
+                ctrl.hotComponent.$rootScope.$broadcast("refresh-contributors-table", linePosition);
               }
             }
           };
       }
+
 
       public afterChange(){
         var ctrl=this;

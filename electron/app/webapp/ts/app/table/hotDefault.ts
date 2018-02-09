@@ -24,6 +24,41 @@ namespace app.table {
 
     }
 
+    public getHotSettings() {
+      var hotSettings = {
+              tableId:this.hotComponent.idTable,
+              data: this.getData(),
+              language:"es-CO",
+              stretchH: 'all',
+              autoWrapRow: true,
+              columnSorting: this.getColumnSorting(),
+              sortIndicator: this.getSortIndicator(),
+              fixedColumnsLeft: this.getVarFixedColumns(),
+              dropdownMenu:this.getDropDownMenu(),
+              contextMenu:this.getContextMenu(),
+              rowHeaders: false,
+              colHeaders: this.getLabelsDef(),
+              fillHandle: {autoInsertRow: false},
+              columns: this.getColumnDef(),
+              manualRowResize: true,
+              manualColumnResize: true,
+              manualRowMove: true,
+              manualColumnMove: true,
+              autoRowSize: {syncLimit: 200},
+              renderAllRows: false,
+              filters: this.hotComponent.activeFilter,
+              scrollToSelection: true,
+              height: this.getHeight(),
+              licenseKey: '05ea7-d0139-2af62-34f15-ce322',
+              hiddenRows: this.getHiddenRows(1),
+              afterFilter:this.afterFilter(),
+              afterColumnSort: this.afterColumnSort(),
+              afterOnCellMouseDown: this.afterOnCellMouseDown(),
+              afterChange: this.afterChange()
+        };
+        return hotSettings;
+    }
+
     public getPagination(){
 
     }
@@ -78,12 +113,12 @@ namespace app.table {
       }
 
       public getHeight(){
-       
+
         return (2*30)+this.hotComponent.hotTable.countRows()*24;
       }
 
       public getCells(){
-        
+
       }
 
       public afterColumnSort(){

@@ -271,40 +271,7 @@ namespace app.table {
         this.hc.registerValidators();
         //this.hc.registerHooks();
         //this.hc.registerEvents();
-
-
-        var hotSettings = {
-                tableId:this.idTable,
-                data: this.hc.getData(),
-                language:"es-CO",
-                stretchH: 'all',
-                autoWrapRow: true,
-                columnSorting: this.hc.getColumnSorting(),
-                sortIndicator: this.hc.getSortIndicator(),
-                fixedColumnsLeft: this.hc.getVarFixedColumns(),
-                dropdownMenu:this.hc.getDropDownMenu(),
-                contextMenu:this.hc.getContextMenu(),
-                rowHeaders: false,
-                colHeaders: this.hc.getLabelsDef(),
-                fillHandle: {autoInsertRow: false},
-                columns: this.hc.getColumnDef(),
-                manualRowResize: true,
-                manualColumnResize: true,
-                manualRowMove: true,
-                manualColumnMove: true,
-                autoRowSize: {syncLimit: 200},
-                colWidths: this.hc.colWidths(),
-                renderAllRows: false,
-                filters: this.activeFilter,
-                scrollToSelection: true,
-                height: this.hc.getHeight(),
-                licenseKey: '05ea7-d0139-2af62-34f15-ce322',
-                hiddenRows: this.hc.getHiddenRows(1),
-                afterFilter:this.hc.afterFilter(),
-                afterColumnSort: this.hc.afterColumnSort(),
-                afterOnCellMouseDown: this.hc.afterOnCellMouseDown(),
-                afterChange: this.hc.afterChange()
-          };
+        let hotSettings:any= this.hc.getHotSettings();
 
           this.hotTable = new Handsontable(this.hotElement, hotSettings);
           this.hotTable.validateCells(function(valid) {});

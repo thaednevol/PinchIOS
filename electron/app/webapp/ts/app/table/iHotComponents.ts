@@ -27,6 +27,7 @@ namespace app.table {
     afterColumnSort();
     afterOnCellMouseDown();
     afterChange();
+    getHotSettings();
 
 
     registerHooks();

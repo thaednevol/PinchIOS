@@ -47,9 +47,17 @@ namespace app.table {
         this.iHotcomponent=new HotTotals(hotComponent);
       }
 
+      if (this.hotComponent.idTable==="contributors"){
+        this.iHotcomponent=new HotContributors(hotComponent);
+      }
+
       // if (this.hotComponent.idTable==="error"){
       //   this.iHotcomponent=new HotErrors(hotComponent);
       // }
+    }
+
+    public getHotSettings() {
+      return this.iHotcomponent.getHotSettings();
     }
 
     public getData(){
