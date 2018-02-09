@@ -74,6 +74,7 @@
 		"app/webapp/ts/app/table/hotTotals.ts",
     "app/webapp/ts/app/table/hotContributors.ts",
     "app/webapp/ts/app/table/hotErrorContributorsSug.ts",
-    "app/webapp/ts/app/table/hotErrorContributorsAut.ts"
+    "app/webapp/ts/app/table/hotErrorContributorsAut.ts",
+    "app/webapp/ts/app/table/hotErrors.ts"
   ]
 }

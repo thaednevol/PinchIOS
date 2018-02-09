@@ -1,7 +1,12 @@
 .sy-table__container(ng-if="$ctrl.listErrorsContributors")
   .sy__title-table(ng-bind="'SETTLEMENT.TABLES.ERRORS' | translate")
-  error-contributors(column-Filter="true" data="$ctrl.listErrorsContributors" object-filter="{autocorregible:false}" style-error="true" title-error="false")
-  hands-on-table(active-filter="true" data="$ctrl.listErrorsContributors.data" object-filter="{autocorregible:false}" id-table="'error'")
+  //error-contributors(column-Filter="true" data="$ctrl.listErrorsContributors" object-filter="{autocorregible:false}" style-error="true" title-error="false")
+  error__table
+    .error__table-head
+      span(ng-if="$ctrl.titleError || $ctrl.titleError" ng-bind="'ERROR.CONTRIBUTORS.ERROR' | translate")
+      span(ng-if="!$ctrl.titleError" ng-bind="'ERROR.CONTRIBUTORS.NOT_CORRECTED' | translate")
+      span(ng-bind="$ctrl.totalErrores || 0")
+    hands-on-table(active-filter="true" data="$ctrl.listErrorsContributors.data" object-filter="{autocorregible:false}" id-table="'error'")
   .sy__button-container.sett__buttons
     div
       .sy__button--blue(ng-class="{}" ng-click="$ctrl.actionExportToCsv()")
