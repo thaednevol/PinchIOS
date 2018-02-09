@@ -195,8 +195,7 @@ namespace app.table {
       }
 
       public colWidths(){
-
-        return [10, 150, 100, 150, 150, 150, 150, 150, 50, 50, 50, 50, 50, 50, 50, 50];
+        return [150, 150, 100, 150, 150, 150, 150, 150, 50, 50, 50, 50, 50, 50, 50, 50];
       }
 
       public getPagination(){
