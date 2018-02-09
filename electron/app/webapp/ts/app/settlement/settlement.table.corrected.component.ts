@@ -10,6 +10,13 @@ namespace app.settlement {
   class SettTableCorrectedController {
 
     /**
+    * @type {Boolean} showLoading - Indica si debe mostrar la imagen de loading
+    * y bloquear la pantalla hasta que espere el usuario que termine la carga
+    * del login.
+    */
+    public showLoading: Boolean = false;
+
+    /**
     * @type {NativeNotificationService} notificationService - Servicio que
     * permite mostrar notificaciones de forma nativa en el SO.
     * @see app.native.NativeNotificationService
@@ -48,7 +55,7 @@ namespace app.settlement {
     private $filter: any;
     private $scope: any;
     private $rootScope: any;
-    static $inject = ["native.file.service", "native.dialog.service","$scope","$rootScope", "$filter"];
+    static $inject = ["native.notification.service", "native.file.service", "native.dialog.service","$scope","$rootScope", "$filter"];
 
     constructor(notificationService, serviceFile, serviceDialog, $scope,$rootScope, $filter) {
       this.notificationService = notificationService;
@@ -60,7 +67,7 @@ namespace app.settlement {
       this.$rootScope = $rootScope;
       this.$filter = $filter;
       this.filterCorregidos = function ( item ){
-        return item.corregido;
+        return item.autocorregible && item.corregido;
       };
       this.filterSugeridos = function ( item ){
         return item.autocorregible && !item.corregido;
@@ -113,16 +120,14 @@ namespace app.settlement {
       let message = `Se eliminará ${Object.keys(this.selectedItem).length} registro.`;
       if (Object.keys(this.selectedItem).length === 0) {
         this.serviceDialog.showDialogError(this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_WARN_TIT"), this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_WARN"));
-      } else {;
+      } else {
+        this.showLoading = true;
         this.serviceDialog.showDialogConfirm(
           this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_CONF_TIT"),
           this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_CONF"),
           (option) => {
-            if (option === 1) {
-              this.dialogIsOpen = false;
-              this.correctError(option);
-              this.notificationService.show(this.$filter("translate")("MESSAGES.TITLES.INFO"), this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_CONF_1"));
-            }
+            this.dialogIsOpen = false;
+            this.correctError(option);
           }
         );
       }
@@ -155,9 +160,11 @@ namespace app.settlement {
             return item.autocorregible && !item.corregido;
           };
 
-          this.selectedItem = [];
-          this.$scope.$apply();
+          this.notificationService.show(this.$filter("translate")("MESSAGES.TITLES.INFO"), this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_CONF_1"));
       }
+      this.showLoading = false;
+      this.selectedItem = [];
+      this.$scope.$apply();
     }
 
   }

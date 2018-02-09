@@ -208,7 +208,15 @@
     "CONTRIBUTORS": {
       "ERROR": " Total errores del cotizante:",
       "CORRECTED": " Total errores corregidos:",
-      "NOT_CORRECTED": " Total errores corregidos:"
+      "NOT_CORRECTED": " Total errores corregidos:",
+      "TYPE_AUTOM": "Automática",
+      "TYPE_MANU": "Manual",
+      "MESSAGE_CORRECTED_WARN": "Debe seleccionar al menos un registro para corregir.",
+      "MESSAGE_CORRECTED_WARN_TIT": "Correcciones Automáticas",
+      "MESSAGE_CORRECTED_CONF": "Se corregiran los registros seleccionados.",
+      "MESSAGE_CORRECTED_CONF_TIT": "Correcciones Automaticas",
+      "MESSAGE_CORRECTED_CONF_1": "Se ha aplicado correctamente la corrección a los errores calculados por el sistema",
+      "MESSAGE_CORRECTED_CONF_1_TIT": "Confirmación"
     }
   },
 
