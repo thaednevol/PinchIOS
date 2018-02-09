@@ -105,7 +105,7 @@ namespace app.table {
     }
 
     public colWidths(){
-      return [70, 50, 120, 180, 1000, 150, 150];
+      return [70, 50, 120, 180, 1300, 150, 150];
     }
 
     }

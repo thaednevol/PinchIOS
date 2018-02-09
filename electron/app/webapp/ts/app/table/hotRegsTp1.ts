@@ -110,7 +110,7 @@ namespace app.table {
 
 
       public afterOnCellMouseDown(){
-        var ctrl=this;
+        /*var ctrl=this;
         return function (event,pos,cell) {
           let linePosition=ctrl.hotComponent.hotTable.getDataAtCell(pos.row,0);
           if (linePosition){
@@ -119,7 +119,7 @@ namespace app.table {
                 ctrl.hotComponent.$rootScope.$broadcast("refresh-contributors-table", linePosition);
               }
             }
-          };
+          };*/
       }
 
 
