@@ -16,6 +16,12 @@ namespace app.settlement {
         public listErrorsContributors: any;
 
         /**
+        * @type {Array} listErrors - Lista con datos a mostrar en la
+        * tabla de errores.
+        */
+        public totalErrores: any;
+
+        /**
         * @type {Class} serviceFile - Servicio que ejecuta el llamado a metodos
         * nativos de Nodejs para la manipulación de archivos.
         */
@@ -64,7 +70,8 @@ namespace app.settlement {
   let app: any = angular.module("PILA");
   app.component("settTableErrors", {
     bindings: {
-      listErrorsContributors: "="
+      listErrorsContributors: "=",
+      totalErrores: "="
     },
     controller: SettErrorsController,
     templateUrl: "./components/settlement/settlement.table.errors.html"

@@ -57,6 +57,8 @@ namespace app.settlement {
     private formaPresentacionInvalida: Boolean = false;
     private sucursalInvalida: Boolean = false;
 
+    public totalRealErrores = 0;
+
     /**
     * @type {Object<name,path,data,origin>} file - Contiene la información del archivo
     * que se carga.
@@ -227,7 +229,7 @@ namespace app.settlement {
     private updateTotals() {
       this.serviceSettlement.getTotals().get().$promise.then((response) => {
         let data = response.data;
-        
+
         if (data.error) {
           let title = this.$filter("translate")("MESSAGES.TITLES.ERROR");
           this.nativeNotification.show(title, data.message);
@@ -724,6 +726,7 @@ namespace app.settlement {
       let arrayErrors = [];
       let arrayCorrected = [];
       this.info.totalErrorContributor = 0;
+      this.totalRealErrores = 0;
       // Prepara datos con errores para msotrar en la tabla de errores
       for (let key in this.file.data.regsTp02.errors) {
         let object: any = Object;
@@ -735,6 +738,11 @@ namespace app.settlement {
         let object: any = Object;
         let arrayObject: any = object.values(this.file.data.regsTp02.corrected[key]);
         arrayCorrected = arrayCorrected.concat(arrayObject);
+      }
+      for (let i = 0; i < arrayCorrected.length; i++) {
+        if (arrayCorrected[i].autocorregible === false) {
+          this.totalRealErrores++;
+        }
       }
       for (let i = 0; i < this.file.data.regsTp02.registers.length; i++) {
         let filterError = {

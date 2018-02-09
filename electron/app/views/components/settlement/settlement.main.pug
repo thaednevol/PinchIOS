@@ -15,13 +15,13 @@
       //- Lista de valores informativos del archivo
       sett-info(info="$ctrl.info" ng-if="$ctrl.showPanel")
 
-    .sett__right      
+    .sett__right
       .sett__menu
         include settlement.tabs.pug
       .sett__right-content(ng-if="$ctrl.file.data" ng-class="{'sett__right-content--without-panel': !$ctrl.showPanel}")
         sett-contributors(ng-show="$ctrl.currentTab === 'contributors'" file="$ctrl.file" list-errors-contributors="$ctrl.listErrorsContributors" validation-result="$ctrl.validationResult" info="$ctrl.info")
         sett-totals(ng-show="$ctrl.currentTab === 'totals'" file="$ctrl.file")
-        sett-table-errors(ng-if="$ctrl.currentTab === 'errors' && $ctrl.listErrorsContributors" list-errors-contributors="$ctrl.listErrorsContributors")
+        sett-table-errors(ng-if="$ctrl.currentTab === 'errors' && $ctrl.listErrorsContributors" list-errors-contributors="$ctrl.listErrorsContributors" total-errores="$ctrl.totalRealErrores")
         sett-table-corrected(ng-if="$ctrl.currentTab === 'corrected' && $ctrl.listErrorsContributors" list-errors-contributors="$ctrl.listErrorsCorrected" show-loading="$ctrl.showLoading")
-    
+
     include settlement.popup.errors.pug
