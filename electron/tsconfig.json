@@ -72,6 +72,7 @@
 		"app/webapp/ts/app/table/hotRegsTp1.ts"
 		"app/webapp/ts/app/table/hotRegsTp2.ts",
 		"app/webapp/ts/app/table/hotTotals.ts",
-    "app/webapp/ts/app/table/hotContributors.ts"
+    "app/webapp/ts/app/table/hotContributors.ts",
+    "app/webapp/ts/app/table/hotErrors.ts"
   ]
 }
