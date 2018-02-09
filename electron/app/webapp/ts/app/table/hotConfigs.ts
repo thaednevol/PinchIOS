@@ -51,9 +51,17 @@ namespace app.table {
         this.iHotcomponent=new HotContributors(hotComponent);
       }
 
-      if (this.hotComponent.idTable==="error"){
-        this.iHotcomponent=new HotErrors(hotComponent);
+      if (this.hotComponent.idTable==="errorConAut"){
+        this.iHotcomponent=new HotContributors(hotComponent);
       }
+
+      if (this.hotComponent.idTable==="errorContributors"){
+        this.iHotcomponent=new HotContributors(hotComponent);
+      }
+
+      // if (this.hotComponent.idTable==="error"){
+      //   this.iHotcomponent=new HotErrors(hotComponent);
+      // }
     }
 
     public getHotSettings() {

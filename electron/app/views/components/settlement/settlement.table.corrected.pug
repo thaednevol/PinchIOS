@@ -1,6 +1,12 @@
 .sy-table__container(ng-if="$ctrl.listErrorsContributors")
   .sy__title-table(ng-bind="'SETTLEMENT.TABLES.CORRECTED_AUT' | translate")
-  error-contributors-aut(selected-item-aut="$ctrl.selectedItem" errors-filter="$ctrl.filterSugeridos" data="$ctrl.listErrorsContributors" object-filter="{autocorregible:true}" style-error="false")
+  .error__table-head
+    span(ng-if="$ctrl.styleError" ng-bind="'ERROR.CONTRIBUTORS.ERROR' | translate")
+    span(ng-if="!$ctrl.styleError" ng-bind="'ERROR.CONTRIBUTORS.CORRECTED' | translate")
+    //span(ng-bind="($ctrl.data.data | filter:$ctrl.objectFilter:true | filter:$ctrl.errorsFilter).length || 0")
+    span(ng-bind="$ctrl.totalCorrecciones || 0")
+  hands-on-table(active-filter="true" data="$ctrl.listErrorsContributors.data" object-filter="{autocorregible:true}" id-table="'errorConAut'")
+  //error-contributors-aut(id-table="error-contributors-aut" column-Filter="true" selected-item-aut="$ctrl.selectedItem" errors-filter="$ctrl.filterSugeridos" data="$ctrl.listErrorsContributors" object-filter="{autocorregible:true}" style-error="false")
   .sy__button-container.sett__buttons
     div
       .sy__button--blue(ng-class="{}" ng-click="$ctrl.validateSelected()")
@@ -10,9 +16,16 @@
       .sy__button--blue(ng-class="{}" ng-click="$ctrl.actionExportToCsvSug()")
         i.mdi.mdi-content-save
         span(ng-bind="'SETTLEMENT.ACTIONS.EXPORT_CSV' | translate")
+
 .sy-table__container(ng-if="$ctrl.listErrorsContributors")
   .sy__title-table(ng-bind="'SETTLEMENT.TABLES.CORRECTED' | translate")
-  error-contributors-sug(data="$ctrl.listErrorsContributors" errors-filter="$ctrl.filterCorregidos" object-filter="{autocorregible:true}" style-error="false")
+  .error__table
+    .error__table-head
+      span(ng-if="$ctrl.styleError" ng-bind="'ERROR.CONTRIBUTORS.ERROR' | translate")
+      span(ng-if="!$ctrl.styleError" ng-bind="'ERROR.CONTRIBUTORS.NOT_CORRECTED' | translate")
+      span(ng-bind="$ctrl.totalCorrRealizadas")
+  hands-on-table(active-filter="true" data="$ctrl.listErrorsContributors.data" object-filter="{autocorregible:false}" id-table="'errorContributors'")
+  //error-contributors-sug(id-table="error-contributors-sug" column-Filter="true" data="$ctrl.listErrorsContributors" errors-filter="$ctrl.filterCorregidos" object-filter="{autocorregible:true}" style-error="false")
   .sy__button-container.sett__buttons
     div
       .sy__button--blue(ng-class="{}" ng-click="$ctrl.actionExportToCsvCorr()")
