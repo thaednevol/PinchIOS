@@ -108,13 +108,22 @@ namespace app.settlement {
     */
     private OPTIONS: any;
 
+    /**
+    * @type {NativeNotificationService} nativeNotification - Clase que se encarga
+    * de mostrar notificaciones por medio de alerts nativos.
+    * @see app.native.NativeNotificationService
+    */
+    private nativeNotification: any;
+
+
     private $scope: any;
     private $rootScope: any;
     private $filter: any;
     private $localStorage: any;
-    static $inject = ["jar.swat.service", "jar.soi.service", "native.file.service", "native.jar.service", "native.dialog.service", "OPTIONS", "$scope", "$rootScope", "$filter", "$localStorage"];
+    static $inject = ["jar.swat.service", "jar.soi.service", "native.file.service", "native.jar.service", "native.dialog.service", "OPTIONS", "$scope", "$rootScope", "$filter", "$localStorage","native.notification.service"];
 
-    constructor(swat, soiService, serviceFile, serviceJar, serviceDialog, OPTIONS, $scope, $rootScope, $filter, $localStorage) {
+
+    constructor(swat, soiService, serviceFile, serviceJar, serviceDialog, OPTIONS, $scope, $rootScope, $filter, $localStorage, nativeNotification) {
       this.swat = swat;
       this.soiService = soiService;
       this.serviceFile = serviceFile;
@@ -125,6 +134,7 @@ namespace app.settlement {
       this.$rootScope = $rootScope;
       this.$filter = $filter;
       this.$localStorage = $localStorage;
+      this.nativeNotification = nativeNotification;
       this.loadListenerDrag();
       this.$scope.$on("load-file-settlement", (event, data) => {
         this.file.path = data;
@@ -229,17 +239,24 @@ namespace app.settlement {
     * de generar planilla.
     */
     public actionGenerate2388() {
-      if (this.isFileWithErrors()) return;
-      this.showLoading = true;
+      if (this.file.data){
+        if (this.isFileWithErrors()) return;
+        this.showLoading = true;
 
-      let result = this.serviceFile.createFileTemp(`${this.file.name}temp2388.txt`, {}, false);
-      result.then((path) => {
-        if (!path) {
-          this.showLoading = false;
-          return;
-        }
-        this.generate2388(path);
-      });
+        let result = this.serviceFile.createFileTemp(`${this.file.name}temp2388.txt`, {}, false);
+        result.then((path) => {
+          if (!path) {
+            this.showLoading = false;
+            return;
+          }
+          this.generate2388(path);
+        });
+      }
+      else {
+        let title = this.$filter("translate")("MESSAGES.TITLES.INFO");
+        let message = this.$filter("translate")("SETTLEMENT.LOAD.MESSAGES.NO_FILE");
+        this.nativeNotification.show(title, message);
+      }
     }
 
     /**
