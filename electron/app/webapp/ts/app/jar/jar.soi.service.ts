@@ -1,4 +1,3 @@
-
 namespace app.jar {
 
   /**
@@ -96,6 +95,8 @@ namespace app.jar {
         for (let j = 0; j < data.regsTp02[i].length; j++) {
           objectRegister[`regs${j}`] = data.regsTp02[i][j];
         }
+        objectRegister['selected'] = false;
+        objectRegister['line'] = Number(objectRegister["regs1"]) + 1;
         data.regsTp02[i] = objectRegister;
       }
       let objectRegister1 = {};
@@ -259,6 +260,7 @@ namespace app.jar {
       positionReference = positionReference || 0;
       for (let i = positionReference; i < data.regsTp02.registers.length; i++) {
         data.regsTp02.registers[i].regs1 = i + 1;
+        data.regsTp02.registers[i].line = data.regsTp02.registers[i].regs1 + 1;
       }
       return data;
     }

@@ -1,4 +1,3 @@
-
 namespace app.settlement {
 
   /**
@@ -9,13 +8,6 @@ namespace app.settlement {
   */
   class SettTableCorrectedController {
 
-
-    /**
-    * @type {Boolean} showLoading - Indica si debe mostrar la imagen de loading
-    * y bloquear la pantalla hasta que espere el usuario que termine la carga
-    * del login.
-    */
-    public showLoading: Boolean = false;
 
     /**
     * @type {NativeNotificationService} notificationService - Servicio que
@@ -74,7 +66,7 @@ namespace app.settlement {
       this.serviceDialog = serviceDialog;
       this.$filter = $filter;
       this.filterCorregidos = function ( item ){
-        return item.autocorregible && item.corregido;
+        return item.corregido;
       };
 
       this.filterSugeridos = function ( item ){
@@ -226,8 +218,7 @@ namespace app.settlement {
       let message = `Se eliminará ${Object.keys(this.selectedItem).length} registro.`;
       if (Object.keys(this.selectedItem).length === 0) {
         this.serviceDialog.showDialogError(this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_WARN_TIT"), this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_WARN"));
-      } else {
-        this.showLoading = true;
+      } else {;
         this.serviceDialog.showDialogConfirm(
           this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_CONF_TIT"),
           this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_CONF"),
@@ -270,15 +261,11 @@ namespace app.settlement {
             return item.autocorregible && !item.corregido;
           };
 
-          this.notificationService.show(this.$filter("translate")("MESSAGES.TITLES.INFO"), this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_CONF_1"));
           this.selectedItem = [];
           this.$scope.$apply();
           this.$rootScope.$broadcast("refresh-contributors");
           this.$rootScope.$broadcast("refresh-contributors-aut");
       }
-      this.showLoading = false;
-      this.selectedItem = [];
-      this.$scope.$apply();
     }
 
   }

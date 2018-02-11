@@ -78,6 +78,8 @@ namespace app.table {
     public objectFilter: any = {};
     public onlyErrorsFilter: any = {};
 
+    public firstElement: any =  null;
+
     /**
     * @type {Boolean} replaceActive - Indica si se debe hacer visible la opción
     * de reemplazar el contenido de todas las celdas.
@@ -104,6 +106,11 @@ namespace app.table {
       * @type {Object} hotData - Guarda los datos de la tabla
       */
       private hotData:any;
+
+      /**
+      * @type {number} startLimit - Limite inferior de registros mostrados
+      */
+      private startLimit:number = 0;
 
       /**
       * @type {number} numRegisters - Número de registros actuales
@@ -154,67 +161,101 @@ namespace app.table {
         } );
 
         this.$scope.$on("refresh-table-duplicate", () => {
-          console.log("refresh-table-duplicate");
-          this.hotTable.render();
-          this.hotTable.updateSettings({
-            data: this.hc.getData()
-          });
+          if (this.hotTable) {
+            this.hotTable.render();
+          }
+          try {
+            this.hotTable.updateSettings({
+              data: this.hc.getData()
+            });
+          } catch (error) {
+          }
         });
 
         this.$scope.$on("refresh-table-delete", () => {
-          console.log("refresh-table-delete");
-          this.hotTable.render();
-          /*
-          Se comenta por error Invalid attempt to destructure non-iterable instance[object Object] handsontable
-          this.hotTable.updateSettings({
-            data: this.getData()
-          });
-          */
+          //Se comenta por error Invalid attempt to destructure non-iterable instance[object Object] handsontable
+          try {
+            this.hotTable.updateSettings({
+              data: this.hc.getData()
+            });
+          } catch(err) {
+
+          if (this.hotTable) {
+            this.hotTable.render();
+          }
+
+          if (this.idTable === "regsTp02" ) {
+            var filter = this.hotTable.getPlugin('filters');
+            filter.filter();
+            var dataQue = this.hotTable.getData();
+            var longitud = this.hotTable.getData().length;
+            if (longitud === 0) {
+              filter.clearConditions();
+              filter.filter();
+            }
+
+          }
+
+        }
+
+
         });
 
-        this.$scope.$on("hide-loading", () => {
-          console.log("HIDE-LOADING");
-          this.rebuildTable();
+        this.$scope.$on("refresh-table-corrected", () => {
+          //Se comenta por error Invalid attempt to destructure non-iterable instance[object Object] handsontable
+
+          if(this.idTable === "errorConAut"  ){
+            this.page=1;
+
+            try {
+            this.hotTable.updateSettings({
+
+              data: this.hc.getData()
+            });
+          } catch(err) {
+            if (this.hotTable) {
+              this.hotTable.render();
+            }
+          }
+
+          var valo= this.hotTable.getData().length;
+          if(valo === 0){
+             this.currentNumberRegisterLoad=0;
+             this.numRegisters=0;
+             this.startLimit=0;
+            }
+          }
+
         });
 
-        console.log("JQUERY");
-        console.log($('#'+this.idTable));
-        console.log(this.idTable);
-      }
+        this.$scope.$on("refresh-first-element", () => {
+          if(this.idTable === "regsTp02"  ){
+            this.firstElement=null;
+            this.firstElement=this.hc.getFirstElement();
+            if (this.hotTable) {
+              this.hotTable.render();
+            }
 
-  /**
-  * @description
-  * Realiza el cambio de la pagina de la tabla.
-  */
-  // private actionChangePage(orientation) {
-  //   console.log("actionChangePage");
-  //   var ctrl=this;
+            try {
+              this.hotTable.updateSettings({
+                firstElement: this.hc.getFirstElement()
+              });
+            } catch (error) {
+            }
+          }
+        });
 
-  //   var maxPage=Math.ceil(this.data.registers.length/this.OPTIONS.TABLES.ROW_LIMIT_BY_PAGE);
-  //   if ((this.page>0) && (this.page<=maxPage)){
-  //     if (orientation === "next"  && this.page<maxPage){
-  //         this.page++;
-  //     }
-  //     if (orientation === "prev"  && this.page>1){
-  //         this.page--;
-  //     }
+    }
 
-  //     var clicked=ctrl.page;
-  //     this.hotTable.updateSettings({
-  //       hiddenRows: this.hc.getHiddenRows(clicked)
-  //     });
-  //     this.$rootScope.$broadcast("action-change-page");
-  //   }
-  // }
+  $onInit() {
 
-
+  }
 
   /**
   * @description
   * Realiza el cambio de la pagina de la tabla.
   */
   private actionChangePage(orientation) {
-
       let pagination=this.hc.getPagination();
       let ctrl=this;
       if (ctrl){
@@ -242,6 +283,9 @@ namespace app.table {
                       });
                     }
                   }
+                  this.hotTable.updateSettings({
+                    hiddenRows: ctrl.hc.getHiddenRows(clicked)
+                  });
                   ctrl.hotTable.render();
                 }
               }
@@ -318,6 +362,8 @@ namespace app.table {
               editTable: "<", // Indica si la tabla se le permite editar la información.
               fixedColumns: "<", // Indica si se insertan dos columnas fijas, de seleccion y linea.
               selectedItem: "=", // Lista para indicar que inputs se seleccionan
+              selectAll: "=", // Para indicar que si se seleccionaron todos los registros
+              firstElement: "=?", // Para indicar el primer elemento del arreglo
               cellNoEdit: "<", // Indica que celdas de la tabla no se pueden editar.
               activeSubMenu: "<", // Indica si se debe activar la opción del submenu en la tabla
               objectFilter: "=", // Almacena la información de los registros visualizados en el filtro.

@@ -1,5 +1,3 @@
-
-
 namespace app.settlement {
 
   /**
@@ -58,6 +56,8 @@ namespace app.settlement {
     private sucursalInvalida: Boolean = false;
 
     public totalRealErrores = 0;
+    public totalRealCorrecciones = 0;
+    public totalCorrRealizadas = 0;
 
     /**
     * @type {Object<name,path,data,origin>} file - Contiene la información del archivo
@@ -193,7 +193,7 @@ namespace app.settlement {
         this.validateRegister(numberRegister);
       });
       this.$scope.$on("validate-register-tp01", (event, numberRegister) => {
-        this.validateRegisterTp01(numberRegister);
+        this.validateRegisterTp01();
       });
       this.$scope.$on("update-info-panel", () => {
         this.updateInfoPanel();
@@ -204,7 +204,6 @@ namespace app.settlement {
       this.$scope.$on("apply-corrections", (event, linea, col) => {
         this.applyIndividualCorrections(linea,col);
       });
-
       this.$scope.$on("hide-loading", () => {
         this.showLoading = false;
         setTimeout(() => {
@@ -229,7 +228,6 @@ namespace app.settlement {
     private updateTotals() {
       this.serviceSettlement.getTotals().get().$promise.then((response) => {
         let data = response.data;
-
         if (data.error) {
           let title = this.$filter("translate")("MESSAGES.TITLES.ERROR");
           this.nativeNotification.show(title, data.message);
@@ -260,6 +258,8 @@ namespace app.settlement {
         this.$rootScope.$broadcast("clear-inputs-table-edit");
         this.$rootScope.$broadcast("refresh-table");
         this.$rootScope.$broadcast("rebuild-table");
+        this.$rootScope.$broadcast("action-change-page");
+        this.$rootScope.$broadcast("refresh-num-corr", this.listErrorsContributors.data.length);
       });
     }
 
@@ -402,7 +402,8 @@ namespace app.settlement {
           // Integrarlos con las tablas.
 
           return this.processResponseError(data, newListError, 0);
-          /*for (let i = 0; i < this.file.data.regsTp02.registers.length; i++) {
+          /*
+          for (let i = 0; i < this.file.data.regsTp02.registers.length; i++) {
             let currentSequence: number = this.file.data.regsTp02.registers[i].regs1;
             // let newObject = this.$filter("filter")(data, { linea: Number(currentSequence) + 1 }, true);
             // if (newObject.length > 0) {
@@ -418,8 +419,8 @@ namespace app.settlement {
           //Pestaña de errores
           this.applyCorrections(0,this.file.data.regsTp02.errors);
           //Pestaña de correcciones
-          this.applyCorrections(0,this.file.data.regsTp02.corrected);*/
-
+          this.applyCorrections(0,this.file.data.regsTp02.corrected);
+          */
         });
       }, (response) => {
           let title = this.$filter("translate")("MESSAGES.TITLES.ERROR");
@@ -447,6 +448,7 @@ namespace app.settlement {
         this.applyCorrections(0,this.file.data.regsTp02.errors);
         //Pestaña de correcciones
         this.applyCorrections(0,this.file.data.regsTp02.corrected);
+        this.$rootScope.$broadcast("rebuild-table");
         return;
       }
       setTimeout(() => {
@@ -492,7 +494,7 @@ namespace app.settlement {
     * Ejecuta la validación de un registro tipo 1 usando servicios rest
     * del JAR.
     */
-    public validateRegisterTp01(numberRegister) {
+    public validateRegisterTp01() {
       let reg01ForValidate = this.soiService.lineRegisterType1ToSeparatedString(this.file.data);
       let params = {
         regt01: reg01ForValidate
@@ -630,6 +632,16 @@ namespace app.settlement {
                 }
                 //this.file.data.regsTp02.corrected[numberSequence] = this.arrayErrorsToObject(errors);
 
+                //Bug 2417
+                //Se mueve a java conservar la secuencia de errores para evitar duplicados
+                /*let anteriorError = this.file.data.regsTp02.errors[numberSequence -1];
+                let nuevaSecuenciaError = 0;
+                if (anteriorError !== undefined) {
+                  let colsAnterior: any = Object.keys(this.file.data.regsTp02.errors[numberSequence -1]);
+                  nuevaSecuenciaError = this.file.data.regsTp02.errors[numberSequence-1][colsAnterior[0]].secuenciaError + 1;
+                }*/
+
+
                 //Aplica las correcciones
                 let currentRow = this.file.data.regsTp02[numberSequence];
                 let cols: any = Object.keys(this.file.data.regsTp02.errors[numberSequence]);
@@ -639,13 +651,12 @@ namespace app.settlement {
                   let currentError = this.file.data.regsTp02.errors[numberSequence][currentCol];
                   // Se valida si existen sugerencias y si cuenta con la opción de autocorreción activa.
                   /*if (currentError.autocorregible && currentError.sugerencias.length > 0) {
-
                     this.file.data.regsTp02.corrected[numberSequence][currentCol].currentValue = this.file.data.regsTp02.registers[numberSequence - 1][`regs${currentCol - 1}`];
                     this.file.data.regsTp02.registers[numberSequence - 1][`regs${currentCol - 1}`] = currentError.sugerencias[0];
                     // Se elimina la información de la columna del error para evitar que se resalte la celda en la tabla.
                     delete this.file.data.regsTp02.errors[numberSequence][currentCol];
                   } else {*/
-                    currentError.currentValue = this.file.data.regsTp02.registers[numberSequence - 1][`regs${currentCol - 1}`];
+                  currentError.currentValue = this.file.data.regsTp02.registers[numberSequence - 1][`regs${currentCol - 1}`];
                   //}
                 }
                 if (Object.keys(this.file.data.regsTp02.errors[numberSequence]).length === 0) {
@@ -714,6 +725,10 @@ namespace app.settlement {
 
         }
       });
+      setTimeout(() => {
+        this.$rootScope.$broadcast("action-change-page");
+      });
+
     }
 
     /**
@@ -727,23 +742,35 @@ namespace app.settlement {
       let arrayCorrected = [];
       this.info.totalErrorContributor = 0;
       this.totalRealErrores = 0;
+      this.totalRealCorrecciones = 0;
+      this.totalCorrRealizadas = 0;
       // Prepara datos con errores para msotrar en la tabla de errores
+      let i = 0;
       for (let key in this.file.data.regsTp02.errors) {
         let object: any = Object;
         let arrayObject: any = object.values(this.file.data.regsTp02.errors[key]);
         arrayErrors = arrayErrors.concat(arrayObject);
       }
       // Prepara datos para mostrar en la tabla de correcciones
+      let j = 0;
       for (let key in this.file.data.regsTp02.corrected) {
         let object: any = Object;
         let arrayObject: any = object.values(this.file.data.regsTp02.corrected[key]);
         arrayCorrected = arrayCorrected.concat(arrayObject);
       }
+
       for (let i = 0; i < arrayCorrected.length; i++) {
+        if (arrayCorrected[i].autocorregible === true && arrayCorrected[i].corregido === false) {
+          this.totalRealCorrecciones++;
+        }
         if (arrayCorrected[i].autocorregible === false) {
           this.totalRealErrores++;
         }
+        if (arrayCorrected[i].autocorregible === true && arrayCorrected[i].corregido === true) {
+          this.totalCorrRealizadas++;
+        }
       }
+
       for (let i = 0; i < this.file.data.regsTp02.registers.length; i++) {
         let filterError = {
           linea: i + 1
@@ -767,9 +794,38 @@ namespace app.settlement {
         this.info.periodPension = this.file.totals.periodoNoSalud;
       }
       this.showLoading = false;
-      this.$rootScope.$broadcast("rebuild-table");
       this.$rootScope.$broadcast("setnumRegisters",this.info.totalFilterRegister);
     }
+
+
+    private applyIndividualCorrections(linea,positionCol): void {
+      let corrects = this.file.data.regsTp02.corrected;
+      let errors = this.file.data.regsTp02.errors;
+      let rows: any = Object.keys(corrects);
+      let currentRow = this.file.data.regsTp02.corrected[linea-1];
+      let currentError = currentRow[positionCol];
+      if ( linea===1 ){
+        this.file.data.regTp01.registers[linea - 1][`regs${positionCol}`] = currentError.sugerencias[0];
+      }
+      else{
+        this.file.data.regsTp02.registers[linea - 2][`regs${positionCol-1}`] = currentError.sugerencias[0];
+      }
+      // Se elimina la información de la columna del error para evitar que se resalte la celda en la tabla.
+      delete errors[linea-1][positionCol];
+      if (Object.keys(errors[linea-1]).length === 0) {
+          delete errors[linea-1];
+      }
+      if ( linea===1 ){
+        this.$rootScope.$broadcast("show-loading");
+      }
+      this.updateTotals();
+      this.updateInfoPanel();
+      //this.$rootScope.$broadcast("refresh-table");
+      //}
+      //}
+
+    }
+
 
 
     /**
@@ -810,37 +866,10 @@ namespace app.settlement {
               positionRow = positionRow - 1;
           }
         }
-        if (Object.keys(errors[currentRow]).length === 0) {
-            delete errors[currentRow];
-            positionRow = positionRow - 1;
-        }
         this.applyCorrections(positionRow + 1, errors);
       });
-    }
-
-
-    private applyIndividualCorrections(linea,positionCol): void {
-      let corrects = this.file.data.regsTp02.corrected;
-      let errors = this.file.data.regsTp02.errors;
-      let rows: any = Object.keys(corrects);
-      let currentRow = this.file.data.regsTp02.corrected[linea-1];
-
-      let currentError = currentRow[positionCol];
-      //this.file.data.regsTp02.corrected[currentRow][positionCol].currentValue = this.file.data.regsTp02.registers[currentRow - 1][`regs${positionCol-1}`];
-      this.file.data.regsTp02.registers[linea - 2][`regs${positionCol-1}`] = currentError.sugerencias[0];
-        // Se elimina la información de la columna del error para evitar que se resalte la celda en la tabla.
-      delete errors[linea-1][positionCol];
-      if (Object.keys(errors[linea-1]).length === 0) {
-          delete errors[linea-1];
-      }
-      this.updateTotals();
-      this.updateInfoPanel();
-      //}
-      //}
 
     }
-
-
 
     public savePlanilla ( idTmpPlanilla ){
       let result = this.swat.putPayroll(idTmpPlanilla);
