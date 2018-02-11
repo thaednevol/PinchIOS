@@ -108,11 +108,6 @@ namespace app.table {
       private hotData:any;
 
       /**
-      * @type {number} startLimit - Limite inferior de registros mostrados
-      */
-      private startLimit:number = 0;
-
-      /**
       * @type {number} numRegisters - Número de registros actuales
       */
       private numRegisters:number = 0;
