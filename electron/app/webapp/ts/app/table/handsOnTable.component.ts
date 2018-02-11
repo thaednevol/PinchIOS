@@ -24,11 +24,6 @@ namespace app.table {
     public idTable: any;
 
     /**
-      * @type {number} startLimit - Limite inferior de registros mostrados
-      */
-      private startLimit:number = 0;
-
-    /**
     * @type {Boolean} activeFilter - Indica si habilita la tabla con filtro de celdas
     */
     public activeFilter: boolean = false;
@@ -77,6 +72,8 @@ namespace app.table {
     public objectFilter: any = {};
     public onlyErrorsFilter: any = {};
 
+    public firstElement: any =  null;
+
     /**
     * @type {Boolean} replaceActive - Indica si se debe hacer visible la opción
     * de reemplazar el contenido de todas las celdas.
@@ -105,6 +102,11 @@ namespace app.table {
       private hotData:any;
 
       /**
+      * @type {number} startLimit - Limite inferior de registros mostrados
+      */
+      private startLimit:number = 0;
+
+      /**
       * @type {number} numRegisters - Número de registros actuales
       */
       private numRegisters:number = 0;
@@ -121,7 +123,6 @@ namespace app.table {
     */
 
     private notificationService:any;
-
 
       /**
       * @type {Object} OPTIONS - Guarda las opciones de la aplicación
@@ -143,6 +144,7 @@ namespace app.table {
         this.notificationService=notificationService;
 
         this.$scope.$on("rebuild-table", () => {
+          this.hc=new HotConfigs(this);
           this.rebuildTable();
         });
 
@@ -153,67 +155,101 @@ namespace app.table {
         } );
 
         this.$scope.$on("refresh-table-duplicate", () => {
-          console.log("refresh-table-duplicate");
-          this.hotTable.render();
-          this.hotTable.updateSettings({
-            data: this.hc.getData()
-          });
+          if (this.hotTable) {
+            this.hotTable.render();
+          }
+          try {
+            this.hotTable.updateSettings({
+              data: this.hc.getData()
+            });
+          } catch (error) {
+          }
         });
 
         this.$scope.$on("refresh-table-delete", () => {
-          console.log("refresh-table-delete");
-          this.hotTable.render();
-          /*
-          Se comenta por error Invalid attempt to destructure non-iterable instance[object Object] handsontable
-          this.hotTable.updateSettings({
-            data: this.getData()
-          });
-          */
+          //Se comenta por error Invalid attempt to destructure non-iterable instance[object Object] handsontable
+          try {
+            this.hotTable.updateSettings({
+              data: this.hc.getData()
+            });
+          } catch(err) {
+
+          if (this.hotTable) {
+            this.hotTable.render();
+          }
+
+          if (this.idTable === "regsTp02" ) {
+            var filter = this.hotTable.getPlugin('filters');
+            filter.filter();
+            var dataQue = this.hotTable.getData();
+            var longitud = this.hotTable.getData().length;
+            if (longitud === 0) {
+              filter.clearConditions();
+              filter.filter();
+            }
+
+          }
+
+        }
+
+
         });
 
-        this.$scope.$on("hide-loading", () => {
-          console.log("HIDE-LOADING");
-          this.rebuildTable();
+        this.$scope.$on("refresh-table-corrected", () => {
+          //Se comenta por error Invalid attempt to destructure non-iterable instance[object Object] handsontable
+
+          if(this.idTable === "errorConAut"  ){
+            this.page=1;
+
+            try {
+            this.hotTable.updateSettings({
+
+              data: this.hc.getData()
+            });
+          } catch(err) {
+            if (this.hotTable) {
+              this.hotTable.render();
+            }
+          }
+
+          var valo= this.hotTable.getData().length;
+          if(valo === 0){
+             this.currentNumberRegisterLoad=0;
+             this.numRegisters=0;
+             this.startLimit=0;
+            }
+          }
+
         });
 
-        console.log("JQUERY");
-        console.log($('#'+this.idTable));
-        console.log(this.idTable);
-      }
+        this.$scope.$on("refresh-first-element", () => {
+          if(this.idTable === "regsTp02"  ){
+            this.firstElement=null;
+            this.firstElement=this.hc.getFirstElement();
+            if (this.hotTable) {
+              this.hotTable.render();
+            }
 
-  /**
-  * @description
-  * Realiza el cambio de la pagina de la tabla.
-  */
-  // private actionChangePage(orientation) {
-  //   console.log("actionChangePage");
-  //   var ctrl=this;
+            try {
+              this.hotTable.updateSettings({
+                firstElement: this.hc.getFirstElement()
+              });
+            } catch (error) {
+            }
+          }
+        });
 
-  //   var maxPage=Math.ceil(this.data.registers.length/this.OPTIONS.TABLES.ROW_LIMIT_BY_PAGE);
-  //   if ((this.page>0) && (this.page<=maxPage)){
-  //     if (orientation === "next"  && this.page<maxPage){
-  //         this.page++;
-  //     }
-  //     if (orientation === "prev"  && this.page>1){
-  //         this.page--;
-  //     }
+    }
 
-  //     var clicked=ctrl.page;
-  //     this.hotTable.updateSettings({
-  //       hiddenRows: this.hc.getHiddenRows(clicked)
-  //     });
-  //     this.$rootScope.$broadcast("action-change-page");
-  //   }
-  // }
+  $onInit() {
 
-
+  }
 
   /**
   * @description
   * Realiza el cambio de la pagina de la tabla.
   */
   private actionChangePage(orientation) {
-
       let pagination=this.hc.getPagination();
       let ctrl=this;
       if (ctrl){
@@ -232,15 +268,9 @@ namespace app.table {
                 if (ctrl.hotTable && ctrl.hc){
                   let clicked=ctrl.page;
                   let ht=ctrl.hotTable;
-                  if (pagination.pageByPage !== undefined && pagination.pageByPage) {
-                    console.log("paginacion por pagina habilitada");
-                    let borrame = pagination.dataTmp;
-                    if (this.hotTable) {
-                      this.hotTable.updateSettings({
-                        data: pagination.dataTmp
-                      });
-                    }
-                  }
+                  this.hotTable.updateSettings({
+                    hiddenRows: ctrl.hc.getHiddenRows(clicked)
+                  });
                   ctrl.hotTable.render();
                 }
               }
@@ -260,39 +290,121 @@ namespace app.table {
       this.$rootScope.$broadcast("action-change-page",orientation);
     }
 
+    private fillTable(){
+      var ctrl = this;
+      var myData = this.data;
+      var myRootScope = this.$rootScope;
 
-      private fillTable(){
-        var ctrl = this;
-        var myData = this.data;
-        var myRootScope = this.$rootScope;
+      this.hc.registerRenderers();
+      this.hc.registerValidators();
+      //this.hc.registerHooks();
+      //this.hc.registerEvents();
+      let hotSettings:any= this.hc.getHotSettings();
 
-        this.hc.registerRenderers();
-        this.hc.registerValidators();
-        //this.hc.registerHooks();
-        //this.hc.registerEvents();
-        let hotSettings:any= this.hc.getHotSettings();
+        this.hotTable = new Handsontable(this.hotElement, hotSettings);
+        this.hotTable.validateCells(function(valid) {});
+        $("#hot-display-license-info").hide();
+        if(hotSettings.tableId === "errorConAut" || hotSettings.tableId ===  "errorContributors") {
+          this.fillTableCorrected();
+        }
+    }
 
-          this.hotTable = new Handsontable(this.hotElement, hotSettings);
-          this.hotTable.validateCells(function(valid) {});
-          $("#hot-display-license-info").hide();
+    private fillTableCorrected(){
+      var ctrl = this;
+      var myData = this.data;
+      var myRootScope = this.$rootScope;
 
+      var varFixedColumns:any=this.hc.getVarFixedColumns();
+      let columnDef:any=this.hc.getColumnDef();
+      let labelsDef:any=this.hc.getLabelsDef();
 
+      var hotSettings = {
+              tableId:this.idTable,
+              data: this.hc.getData(),
+              language:"es-CO",
+              stretchH: 'all',
+              autoWrapRow: true,
+              fixedColumnsLeft: varFixedColumns,
+              rowHeaders: false,
+              colHeaders: labelsDef,
+              fillHandle: {
+                autoInsertRow: false
+              },
+              afterGetColHeader: function (col, TH) {
+              },
+              columns: columnDef,
+              manualRowResize: true,
+              manualColumnResize: true,
+              manualRowMove: true,
+              manualColumnMove: true,
+              renderAllRows: true,
+              contextMenu: true,
+              filters: this.activeFilter,
+              scrollToSelection: true,
+              licenseKey: '05ea7-d0139-2af62-34f15-ce322'
+        };
+
+      this.hotTable = new Handsontable(this.hotElement, hotSettings);
+
+      this.hc.registerHooks();
+      this.hc.registerRenderers();
+      this.hc.registerEvents();
+
+      this.updateSettings(ctrl);
+
+    }
+
+      private updateSettings(ctrl){
+        this.hotTable.updateSettings({
+            columnSorting: this.hc.getColumnSorting(),
+            sortIndicator: this.hc.getSortIndicator(),
+            height: this.hc.getHeight(),
+            dropdownMenu:this.hc.getDropDownMenu(),
+            contextMenu:this.hc.getContextMenu(),
+            hiddenRows: this.hc.getHiddenRows(1),
+            afterFilter:this.hc.afterFilter(),
+            afterColumnSort: this.hc.afterColumnSort(),
+            beforeChange:function(changes, source) {
+                if (source === 'Autofill.fill' && (typeof changes[0][2]  === "boolean")) {
+                    if ( !(typeof changes[0][3]  === "boolean") ){
+                        return false;
+                    }
+                }
+                // Para que no se puedan copiar y pegar valores en la columna
+                // Selección, que contiene valores Booleanos.
+                if (source === 'CopyPaste.paste' && (typeof changes[0][2] === "boolean")) {
+                  if (!(typeof changes[0][3] === "boolean")) {
+                    return false;
+                  }
+                }
+                // Valida que cuando se copia y pega al final de la tabla
+                // no se creen registros nuevos.
+                if (source === 'CopyPaste.paste') {
+                  if (changes[changes.length - 1][2] === null) {
+                    return false;
+                  }
+                }
+            },
+            afterChange: this.hc.afterChange(),
+            afterOnCellMouseDown: this.hc.afterOnCellMouseDown(),
+            cells: this.hc.getCells()
+        });
+
+        this.hc.updateSettings();
+
+        ctrl.hotTable.render();
       }
 
-
-
-
     public rebuildTable() {
-      var hotId='#hot-'+this.idTable;
+      let hotId='#hot-'+this.idTable;
       this.hotElement=document.querySelector(hotId);
       if (this.hotElement){
-        if (!this.hc){
-          this.hc=new HotConfigs(this);
+        if (!this.renderedTable){
+          this.renderedTable=true;
           this.fillTable();
         }
       }
     }
-
 
     /**
     * @description
@@ -317,6 +429,8 @@ namespace app.table {
               editTable: "<", // Indica si la tabla se le permite editar la información.
               fixedColumns: "<", // Indica si se insertan dos columnas fijas, de seleccion y linea.
               selectedItem: "=", // Lista para indicar que inputs se seleccionan
+              selectAll: "=", // Para indicar que si se seleccionaron todos los registros
+              firstElement: "=?", // Para indicar el primer elemento del arreglo
               cellNoEdit: "<", // Indica que celdas de la tabla no se pueden editar.
               activeSubMenu: "<", // Indica si se debe activar la opción del submenu en la tabla
               objectFilter: "=", // Almacena la información de los registros visualizados en el filtro.
