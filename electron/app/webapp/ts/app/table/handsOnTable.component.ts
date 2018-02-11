@@ -1,4 +1,3 @@
-
 namespace app.table {
 
   /**
@@ -23,11 +22,6 @@ namespace app.table {
     * @type {string} idTable - Nombre con el que se identifica la tabla de las otras.
     */
     public idTable: any;
-
-    /**
-      * @type {number} startLimit - Limite inferior de registros mostrados
-      */
-      private startLimit:number = 0;
 
     /**
     * @type {Boolean} activeFilter - Indica si habilita la tabla con filtro de celdas
@@ -108,6 +102,11 @@ namespace app.table {
       private hotData:any;
 
       /**
+      * @type {number} startLimit - Limite inferior de registros mostrados
+      */
+      private startLimit:number = 0;
+
+      /**
       * @type {number} numRegisters - Número de registros actuales
       */
       private numRegisters:number = 0;
@@ -124,7 +123,6 @@ namespace app.table {
     */
 
     private notificationService:any;
-
 
       /**
       * @type {Object} OPTIONS - Guarda las opciones de la aplicación
@@ -146,6 +144,7 @@ namespace app.table {
         this.notificationService=notificationService;
 
         this.$scope.$on("rebuild-table", () => {
+          this.hc=new HotConfigs(this);
           this.rebuildTable();
         });
 
@@ -269,15 +268,6 @@ namespace app.table {
                 if (ctrl.hotTable && ctrl.hc){
                   let clicked=ctrl.page;
                   let ht=ctrl.hotTable;
-                  if (pagination.pageByPage !== undefined && pagination.pageByPage) {
-                    console.log("paginacion por pagina habilitada");
-                    let borrame = pagination.dataTmp;
-                    if (this.hotTable) {
-                      this.hotTable.updateSettings({
-                        data: pagination.dataTmp
-                      });
-                    }
-                  }
                   this.hotTable.updateSettings({
                     hiddenRows: ctrl.hc.getHiddenRows(clicked)
                   });
@@ -300,39 +290,103 @@ namespace app.table {
       this.$rootScope.$broadcast("action-change-page",orientation);
     }
 
-
       private fillTable(){
+        console.log("fillTable");
         var ctrl = this;
         var myData = this.data;
         var myRootScope = this.$rootScope;
 
+        var varFixedColumns:any=this.hc.getVarFixedColumns();
+        let columnDef:any=this.hc.getColumnDef();
+        let labelsDef:any=this.hc.getLabelsDef();
+
+        var hotSettings = {
+                tableId:this.idTable,
+                data: this.hc.getData(),
+                language:"es-CO",
+                stretchH: 'all',
+                autoWrapRow: true,
+                fixedColumnsLeft: varFixedColumns,
+                rowHeaders: false,
+                colHeaders: labelsDef,
+                fillHandle: {
+                  autoInsertRow: false
+                },
+                afterGetColHeader: function (col, TH) {
+                },
+                columns: columnDef,
+                manualRowResize: true,
+                manualColumnResize: true,
+                manualRowMove: true,
+                manualColumnMove: true,
+                renderAllRows: true,
+                contextMenu: true,
+                filters: this.activeFilter,
+                scrollToSelection: true,
+                licenseKey: '05ea7-d0139-2af62-34f15-ce322'
+          };
+
+        this.hotTable = new Handsontable(this.hotElement, hotSettings);
+
+        this.hc.registerHooks();
         this.hc.registerRenderers();
-        this.hc.registerValidators();
-        //this.hc.registerHooks();
-        //this.hc.registerEvents();
-        let hotSettings:any= this.hc.getHotSettings();
+        this.hc.registerEvents();
 
-          this.hotTable = new Handsontable(this.hotElement, hotSettings);
-          this.hotTable.validateCells(function(valid) {});
-          $("#hot-display-license-info").hide();
-
+        this.updateSettings(ctrl);
 
       }
 
+      private updateSettings(ctrl){
+        this.hotTable.updateSettings({
+            columnSorting: this.hc.getColumnSorting(),
+            sortIndicator: this.hc.getSortIndicator(),
+            height: this.hc.getHeight(),
+            dropdownMenu:this.hc.getDropDownMenu(),
+            contextMenu:this.hc.getContextMenu(),
+            hiddenRows: this.hc.getHiddenRows(1),
+            afterFilter:this.hc.afterFilter(),
+            afterColumnSort: this.hc.afterColumnSort(),
+            beforeChange:function(changes, source) {
+                if (source === 'Autofill.fill' && (typeof changes[0][2]  === "boolean")) {
+                    if ( !(typeof changes[0][3]  === "boolean") ){
+                        return false;
+                    }
+                }
+                // Para que no se puedan copiar y pegar valores en la columna
+                // Selección, que contiene valores Booleanos.
+                if (source === 'CopyPaste.paste' && (typeof changes[0][2] === "boolean")) {
+                  if (!(typeof changes[0][3] === "boolean")) {
+                    return false;
+                  }
+                }
+                // Valida que cuando se copia y pega al final de la tabla
+                // no se creen registros nuevos.
+                if (source === 'CopyPaste.paste') {
+                  if (changes[changes.length - 1][2] === null) {
+                    return false;
+                  }
+                }
+            },
+            afterChange: this.hc.afterChange(),
+            afterOnCellMouseDown: this.hc.afterOnCellMouseDown(),
+            cells: this.hc.getCells()
+        });
 
+        this.hc.updateSettings();
 
+        ctrl.hotTable.render();
+      }
 
     public rebuildTable() {
-      var hotId='#hot-'+this.idTable;
+      let hotId='#hot-'+this.idTable;
       this.hotElement=document.querySelector(hotId);
       if (this.hotElement){
-        if (!this.hc){
-          this.hc=new HotConfigs(this);
+        if (!this.renderedTable){
+          this.renderedTable=true;
           this.fillTable();
         }
       }
     }
-
 
     /**
     * @description
