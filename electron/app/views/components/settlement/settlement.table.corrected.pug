@@ -24,7 +24,7 @@
       span(ng-if="$ctrl.styleError" ng-bind="'ERROR.CONTRIBUTORS.ERROR' | translate")
       span(ng-if="!$ctrl.styleError" ng-bind="'ERROR.CONTRIBUTORS.NOT_CORRECTED' | translate")
       span(ng-bind="$ctrl.totalCorrRealizadas")
-  hands-on-table(active-filter="true" data="$ctrl.listErrorsContributors.data" object-filter="{autocorregible:false}" id-table="'errorContributors'")
+    hands-on-table(active-filter="true" data="$ctrl.listErrorsContributors.data" object-filter="{autocorregible:true}" id-table="'errorContributors'")
   //error-contributors-sug(id-table="error-contributors-sug" column-Filter="true" data="$ctrl.listErrorsContributors" errors-filter="$ctrl.filterCorregidos" object-filter="{autocorregible:true}" style-error="false")
   .sy__button-container.sett__buttons
     div

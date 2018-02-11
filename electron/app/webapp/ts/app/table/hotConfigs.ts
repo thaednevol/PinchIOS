@@ -16,27 +16,13 @@ namespace app.table {
     constructor (hotComponent: any) {
       this.hotComponent=hotComponent;
 
-       if (this.hotComponent.idTable==="regsTp01"){
-         this.iHotcomponent=new HotRegsTp1(hotComponent);
-       }
+      if (this.hotComponent.idTable==="regTp01"){
+        this.iHotcomponent=new HotRegsTp1(hotComponent);
+      }
 
-      //if (this.hotComponent.idTable==="regsTp02"){
-        //this.iHotcomponent=new HotRegsTp2(hotComponent);
-      //}
-      //
-      // if (this.hotComponent.idTable==="salud"
-      //     || this.hotComponent.idTable==="fps"
-      //       || this.hotComponent.idTable==="pension"
-      //         || this.hotComponent.idTable==="riesgo"
-      //           || this.hotComponent.idTable==="parafiscales"
-      //             || this.hotComponent.idTable==="gran"){
-      //   this.iHotcomponent=new HotTotals(hotComponent);
-      // }
-      //
       if (this.hotComponent.idTable==="regsTp02"){
         this.iHotcomponent=new HotRegsTp2(hotComponent);
       }
-
 
       if (this.hotComponent.idTable==="salud"
           || this.hotComponent.idTable==="fps"
@@ -52,11 +38,11 @@ namespace app.table {
       }
 
       if (this.hotComponent.idTable==="errorConAut"){
-        this.iHotcomponent=new HotContributors(hotComponent);
+        this.iHotcomponent=new HotErrorContributorsAut(hotComponent);
       }
 
       if (this.hotComponent.idTable==="errorContributors"){
-        this.iHotcomponent=new HotContributors(hotComponent);
+        this.iHotcomponent=new HotErrorContributorsSug(hotComponent);
       }
 
       if (this.hotComponent.idTable==="error"){
@@ -160,6 +146,10 @@ namespace app.table {
 
     public registerValidators(){
       return this.iHotcomponent.registerValidators();
+    }
+
+    public getFirstElement(){
+      return this.iHotcomponent.getFirstElement();
     }
 
   }
