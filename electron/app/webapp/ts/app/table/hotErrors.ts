@@ -7,7 +7,7 @@ namespace app.table {
   * Clase encargada de cargar una tabla con las opciones de edición
   * paginado y filtro de contenido de las tablas basado en handsontable.
   */
-  export class HotErrors extends HotDefault  {
+  export class HotErrors extends HotDefault implements IHotComponents  {
 
     constructor(hotComponent) {
 		  super(hotComponent);
@@ -121,12 +121,17 @@ namespace app.table {
       return false;
     }
 
-    public getPagination(){
-        let ctrl=this;
-        let enablePag=true;
-        let numReg=this.getData().length;
-        let limitShown=ctrl.hotComponent.OPTIONS.TABLES.ROW_LIMIT_BY_PAGE;
-        return {"enablePag":enablePag,"numReg":numReg,"limitShown":limitShown,"ctrl":this.hotComponent};
-      }
+    public getPagination() {
+      let enablePag=true;
+      let numReg=this.getData().length;
+      let limitShown=this.hotComponent.OPTIONS.TABLES.ROW_LIMIT_BY_PAGE;
+      return {
+        "enablePag": enablePag,
+        "numReg": numReg,
+        "limitShown": limitShown,
+        "ctrl": this.hotComponent
+      };
+    }
+
     }
   }
