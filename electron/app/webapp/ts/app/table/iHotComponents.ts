@@ -14,6 +14,7 @@ namespace app.table {
     getColumnSorting();
     getSortIndicator();
     getColumnDef();
+    colWidths();
     getVarFixedColumns();
     getLabelsDef();
     getDropDownMenu();

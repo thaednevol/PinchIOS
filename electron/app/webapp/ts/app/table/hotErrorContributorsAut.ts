@@ -15,7 +15,6 @@ namespace app.table {
     }
 
     public refreshContributorsAut() {
-      this.hotComponent.hotTable.render();
       this.hotComponent.data = this.getData();
       try {
         this.hotComponent.hotTable.updateSettings({
@@ -52,6 +51,10 @@ namespace app.table {
       console.log("getColumnDef");
       console.log(columnDef);
       return columnDef;
+    }
+
+    public colWidths(){
+      return [5, 5, 5, 10, 10, 15, 10, 10];
     }
 
     public getLabelsDef() {
@@ -161,6 +164,18 @@ namespace app.table {
       };
     }
 
+    public getHotSettings(){
+      let hotSettings= super.getHotSettings();
+      //
+      //hotSettings['hiddenRows'] = this.getHiddenRows(1);
+      //hotSettings['afterFilter'] = this.afterFilter();
+      //hotSettings['afterColumnSort'] = this.afterColumnSort();
+      //hotSettings['afterOnCellMouseDown'] = this.afterOnCellMouseDown();
+      //hotSettings['afterChange'] = this.afterChange();
+      hotSettings['getData'] = this.getData();
+      //
+      return hotSettings;
+    }
 
   }
 }

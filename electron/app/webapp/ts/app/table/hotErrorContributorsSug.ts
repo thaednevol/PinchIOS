@@ -48,6 +48,10 @@ namespace app.table {
       return columnDef;
     }
 
+    public colWidths(){
+      return [5, 5, 5, 10, 15, 10, 10, 5];
+    }
+
     public getLabelsDef() {
       let columnLab=[];
 			columnLab = ["Registro", "L\u00EDnea", "Tipo Documento", "Identificaci\u00F3n Cotizante", "Error", "Esperado", "Encontrado", "Correci\u00F3n"];
@@ -149,6 +153,19 @@ namespace app.table {
       return {"enablePag":enablePag,"numReg":numReg,"limitShown":limitShown,"ctrl":this.hotComponent};
     }
 
-    
+    public getHotSettings(){
+      let hotSettings= super.getHotSettings();
+      //
+      //hotSettings['hiddenRows'] = this.getHiddenRows(1);
+      //hotSettings['afterFilter'] = this.afterFilter();
+      //hotSettings['afterColumnSort'] = this.afterColumnSort();
+      //hotSettings['afterOnCellMouseDown'] = this.afterOnCellMouseDown();
+      //hotSettings['afterChange'] = this.afterChange();
+      hotSettings['getData'] = this.getData();
+      //
+      return hotSettings;
+    }
+
+
   }
 }

@@ -305,7 +305,7 @@ namespace app.table {
         this.hotTable.validateCells(function(valid) {});
         $("#hot-display-license-info").hide();
         if(hotSettings.tableId === "errorConAut" || hotSettings.tableId ===  "errorContributors") {
-          this.fillTableCorrected();
+          //this.fillTableCorrected();
         }
     }
 

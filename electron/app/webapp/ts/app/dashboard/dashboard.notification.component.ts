@@ -134,20 +134,22 @@ namespace app.dashboard {
     * cumple con el tiempo se agrega al array, siempre que este no supere el
     * limite permitido de 10 notificaciones visibles.
     */
-    private validateTimeNotifications(notification: any) {
-      let arrayNotification: any = [];
-      let dateApp: any = new Date();
-      for (let currentNotification of notification) {
-        let arrayDate = currentNotification.maxDate.split("-");
-        let dateNotification = new Date(`${arrayDate[1]}/${arrayDate[0]}/${arrayDate[2]}`);
-        // Si la notificación es de alta prioridad se agrega asi la fecha no sea correcta.
-        if (dateApp.getTime() < dateNotification.getTime() || currentNotification.type === "HIGH-PRIORITY") {
-          arrayNotification.push(currentNotification);
+    private validateTimeNotifications(notification) {
+      if(notification && notification.length > 0) {
+        let arrayNotification: any = [];
+        let dateApp: any = new Date();
+        for (let currentNotification of notification) {
+          let arrayDate = currentNotification.maxDate.split("-");
+          let dateNotification = new Date(`${arrayDate[1]}/${arrayDate[0]}/${arrayDate[2]}`);
+          // Si la notificación es de alta prioridad se agrega asi la fecha no sea correcta.
+          if (dateApp.getTime() < dateNotification.getTime() || currentNotification.type === "HIGH-PRIORITY") {
+            arrayNotification.push(currentNotification);
+          }
         }
+        this.listNotifications = arrayNotification;
+        this.validateNotificationsLocal();
+        this.$scope.$digest();
       }
-      this.listNotifications = arrayNotification;
-      this.validateNotificationsLocal();
-      this.$scope.$digest();
     }
 
     /**
