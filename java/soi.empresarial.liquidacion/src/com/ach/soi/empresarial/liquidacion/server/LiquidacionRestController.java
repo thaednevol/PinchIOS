@@ -78,6 +78,7 @@ public class LiquidacionRestController {
 		Collection<ErrorLiquidacionTO> erroresUnion = new ArrayList<ErrorLiquidacionTO>();
 		FileOutputStream os = null;
         BufferedWriter bw = null;
+        secuenciaError = 0;
 
         Gson gsonWriter=new GsonBuilder().setPrettyPrinting().create();
         try {        	
@@ -130,7 +131,8 @@ public class LiquidacionRestController {
 			erroresUnion = null;
             
             for ( int i=0;i<erroresLiq.length;i++ ){
-            	erroresLiq[i].setSecuenciaError(i);
+            	secuenciaError++;
+            	erroresLiq[i].setSecuenciaError(secuenciaError);
             }
             gsonWriter.toJson(erroresLiq, bw);
             
@@ -188,6 +190,7 @@ public class LiquidacionRestController {
 		Converter1747to2388 converter = new Converter1747to2388();
 		String[] regArray = null;
 		try{
+			registroTp02 = ParsersUtil.replaceCharsNotUTF8(registroTp02);
 			regArray = converter.convertirRegTp02Individual(registroTp02);
 		}catch ( Exception e ){
 			e.printStackTrace();
@@ -234,6 +237,7 @@ public class LiquidacionRestController {
 		ArrayList<String> regsValidacion = new ArrayList<String>();
 		try{			
 			for ( String reg:regTp02 ){
+				reg = ParsersUtil.replaceCharsNotUTF8(reg);
 				Reg2388ReadTp02 regT02Bean = Reg2388ReadTp02.buildRecordFromStringArray(reg.split("\\|"));
 				Converter1747to2388 converter = new Converter1747to2388();
 				String regT02Str = converter.getRegT02FromBean(regT02Bean);

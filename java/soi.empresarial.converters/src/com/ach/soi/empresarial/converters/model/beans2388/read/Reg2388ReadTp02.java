@@ -205,7 +205,7 @@ public class Reg2388ReadTp02 extends CommonBean{
 
 
 	public void setPrimerApellido(String primerApellido) {
-		this.primerApellido = primerApellido;
+		this.primerApellido = super.replaceCharsNotUTF8(primerApellido);
 	}
 
 
@@ -217,7 +217,7 @@ public class Reg2388ReadTp02 extends CommonBean{
 
 
 	public void setSegundoApellido(String segundoApellido) {
-		this.segundoApellido = segundoApellido;
+		this.segundoApellido = super.replaceCharsNotUTF8(segundoApellido);
 	}
 
 
@@ -229,7 +229,7 @@ public class Reg2388ReadTp02 extends CommonBean{
 
 
 	public void setPrimerNombre(String primerNombre) {
-		this.primerNombre = primerNombre;
+		this.primerNombre = super.replaceCharsNotUTF8(primerNombre);
 	}
 
 
@@ -241,7 +241,7 @@ public class Reg2388ReadTp02 extends CommonBean{
 
 
 	public void setSegundoNombre(String segundoNombre) {
-		this.segundoNombre = segundoNombre;
+		this.segundoNombre = super.replaceCharsNotUTF8(segundoNombre);
 	}
 
 

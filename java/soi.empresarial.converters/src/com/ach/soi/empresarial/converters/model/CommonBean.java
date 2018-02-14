@@ -1,11 +1,13 @@
 package com.ach.soi.empresarial.converters.model;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
 
 import com.ach.soi.empresarial.converters.utils.Constants;
+import com.ach.soi.empresarial.converters.utils.ParsersUtil;
 
 
 public class CommonBean implements Serializable{
@@ -58,6 +60,13 @@ public class CommonBean implements Serializable{
 			}
 		}		
 		return result.toArray(new String[0]);
+	}
+	
+	protected String replaceCharsNotUTF8 ( String original ){
+		if ( original!=null ){
+			return ParsersUtil.replaceCharsNotUTF8(original);
+		}
+		return original;
 	}
 	
 	/*public static String getEncodingValue ( String unicodeVal ){

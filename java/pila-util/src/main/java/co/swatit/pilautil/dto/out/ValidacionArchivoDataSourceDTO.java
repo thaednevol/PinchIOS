@@ -75,6 +75,8 @@ public class ValidacionArchivoDataSourceDTO implements Serializable {
 	private Collection<AplicabilidadDTO> tiposPlanillaApte = null;
 	
 	private Collection<AportanteFilialDTO> sucursalesAportante 			= new ArrayList<AportanteFilialDTO>();
+	
+	private Collection<PorcentajeSubsitemaTpCzteDTO> porcentajesSusbsistemasTpCzte = new ArrayList<PorcentajeSubsitemaTpCzteDTO>();
 
 	/**
 	 * Método getter del atributo registrosAplicabilidadApte de la clase ValidacionArchivoDataSourceDTO
@@ -655,6 +657,14 @@ public class ValidacionArchivoDataSourceDTO implements Serializable {
 	public void setSucursalesAportante(
 			Collection<AportanteFilialDTO> sucursalesAportante) {
 		this.sucursalesAportante = sucursalesAportante;
+	}
+
+	public Collection<PorcentajeSubsitemaTpCzteDTO> getPorcentajesSusbsistemasTpCzte() {
+		return porcentajesSusbsistemasTpCzte;
+	}
+
+	public void setPorcentajesSusbsistemasTpCzte(Collection<PorcentajeSubsitemaTpCzteDTO> porcentajesSusbsistemasTpCzte) {
+		this.porcentajesSusbsistemasTpCzte = porcentajesSusbsistemasTpCzte;
 	}
 	
 

@@ -1,9 +1,6 @@
 package com.ach.soi.empresarial.converters.model.beans2388.read;
 
-import java.nio.charset.Charset;
-
 import com.ach.soi.empresarial.converters.model.CommonBean;
-import com.ach.soi.empresarial.converters.utils.Constants;
 
 public class Reg2388ReadTp01 extends CommonBean{
 
@@ -39,8 +36,8 @@ public class Reg2388ReadTp01 extends CommonBean{
 	public String getRazonSocialAportante() {
 		return razonSocialAportante;
 	}
-	public void setRazonSocialAportante(String razonSocialAportante) {
-		this.razonSocialAportante = razonSocialAportante;
+	public void setRazonSocialAportante(String razonSocialAportante) {		
+		this.razonSocialAportante = super.replaceCharsNotUTF8(razonSocialAportante);
 	}
 	public String getTipoDocumentoAportante() {
 		return tipoDocumentoAportante;
@@ -95,7 +92,7 @@ public class Reg2388ReadTp01 extends CommonBean{
 		return nombreSucursal;
 	}
 	public void setNombreSucursal(String nombreSucursal) {
-		this.nombreSucursal = nombreSucursal;
+		this.nombreSucursal = super.replaceCharsNotUTF8(nombreSucursal);
 	}
 	public String getCodigoArl() {
 		return codigoArl;

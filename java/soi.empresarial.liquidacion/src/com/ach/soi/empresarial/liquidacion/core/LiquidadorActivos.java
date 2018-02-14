@@ -41,6 +41,7 @@ import com.ach.pla.biz.transfer.PlanillaTotalesDTO;
 import com.ach.pla.biz.type.PeriodoType;
 import com.ach.pla.biz.type.TipoPlanillaType;
 import com.ach.soi.empresarial.converters.utils.Constants;
+import com.ach.soi.empresarial.converters.utils.ParsersUtil;
 import com.ach.soi.empresarial.liquidacion.exceptions.DesktopExceptionMngr;
 import com.ach.soi.empresarial.liquidacion.model.ErrorLiquidacionTO;
 import com.blackbear.flatworm.ConfigurationReader;
@@ -496,8 +497,9 @@ public class LiquidadorActivos {
 				if ( line==null || line!=null && line.startsWith("02") ){
 					//errorRegs = this.validarRegistroTp02(line, archivoDto, datasourceValidacion, nroLinea);
 					
-					if ( line!=null ){
+					if ( line!=null ){						
 						try{
+							line = ParsersUtil.replaceCharsNotUTF8(line);
 							mn.inicializarMio(line);
 							bean02 = (PlanillaRegT02)mn.getNextRecord();
 							secuencia++;

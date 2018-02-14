@@ -7,7 +7,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 
-import com.ach.soi.empresarial.converters.utils.Constants;
 import com.ach.soi.empresarial.converters.core.DatosComplementarios1747Reader;
 import com.ach.soi.empresarial.converters.model.CommonBean;
 import com.ach.soi.empresarial.converters.model.beans1747.DatosComplementarios1747;
@@ -27,21 +26,6 @@ public class ParsersUtil {
 	public ParsersUtil ( ){
 		
 	}
-	
-	
-	public static String replaceCharsNotUTF8 ( String original ){
-		if ( original!=null ){
-			try {
-				if ( original.contains("�") ){
-					return original.replaceAll("�",new String("Ñ".getBytes(Constants.GENERAL_ENCODING)));
-				}				
-			} catch (UnsupportedEncodingException e) {
-				return original;
-			}
-		}
-		return original;
-	}
-	
 	
 	public static boolean tieneNovedadesAusentismo ( Reg2388ReadTp02 regTp2 ){
 		if ( regTp2.getIge()!=null && regTp2.getIge().equals("X") ){
@@ -858,6 +842,20 @@ public class ParsersUtil {
 		
 		
 	}
+	
+	public static String replaceCharsNotUTF8 ( String original ){
+		if ( original!=null ){
+			try {
+				if ( original.contains("�") ){
+					return original.replaceAll("�",new String("Ñ".getBytes(Constants.GENERAL_ENCODING)));
+				}				
+			} catch (UnsupportedEncodingException e) {
+				return original;
+			}
+		}
+		return original;
+	}
+
 	
 	
 

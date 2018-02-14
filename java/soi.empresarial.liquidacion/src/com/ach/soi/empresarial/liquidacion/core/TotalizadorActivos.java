@@ -93,7 +93,7 @@ public class TotalizadorActivos {
 	}
 	
 	private void actualizarCotizante ( PlanillaCotizanteDTO cotizante, int nroLinea, String keyCotizante ) throws Exception{
-		this.removeCotizanteDelTotal(nroLinea,keyCotizante);
+		totalizador.restarCotizanteRepetido(cotizante);
 		this.agregarCotizanteAlTotal(cotizante, nroLinea,keyCotizante);		 
 	}
 	
@@ -264,6 +264,7 @@ public class TotalizadorActivos {
 		//Totales pension
 		index = 0;
 		Hashtable<String, Object> totalSubSistemaSal = totalesDto.getTotalesSubsistema().get(TipoSubSistemasType.SUBSISTEMA_SALUD);
+		totalesDto.getSubtotalSalud().setTotalAfiliadosNoRepetidosAdministradora(Long.valueOf(0));
 		if ( totalSubSistemaSal!=null ){
 			Collection<Object> valoresSalud = totalSubSistemaSal.values();
 			resultado.setTotalesSalud(new String[valoresSalud.size()+1][resultado.getTotalesSaludLabels().length]);
@@ -279,9 +280,10 @@ public class TotalizadorActivos {
 				values[5] = sal.getNumeroDiasMoraLiquidados()+"";
 				values[6] = FormatValues.formatLongvalueCurrency(sal.getTotalMora().longValue());
 				values[7] = FormatValues.formatLongvalueCurrency(sal.getVlrTotalPagarAdministradora().longValue());
-				values[8] = sal.getTotalAfiliadosAdministradora()+"";
+				values[8] = sal.getTotalAfiliadosNoRepetidosAdministradora()+"";
 				resultado.getTotalesSalud()[index]=values;
 				index++;
+				totalesDto.getSubtotalSalud().setTotalAfiliadosNoRepetidosAdministradora(totalesDto.getSubtotalSalud().getTotalAfiliadosNoRepetidosAdministradora()+sal.getTotalAfiliadosNoRepetidosAdministradora());
 			}
 			PlanillaTotalSaludDTO sal = totalesDto.getSubtotalSalud();
 			values = new String[resultado.getTotalesSaludLabels().length];
@@ -293,7 +295,7 @@ public class TotalizadorActivos {
 			values[5] = sal.getNumeroDiasMoraLiquidados()+"";
 			values[6] = FormatValues.formatLongvalueCurrency(sal.getTotalMora().longValue());
 			values[7] = FormatValues.formatLongvalueCurrency(sal.getVlrTotalPagarAdministradora().longValue());
-			values[8] = sal.getTotalAfiliadosAdministradora()+"";
+			values[8] = sal.getTotalAfiliadosNoRepetidosAdministradora()+"";
 			resultado.getTotalesSalud()[index]=values;
 		}
 		
@@ -354,7 +356,7 @@ public class TotalizadorActivos {
 				values[6] = ccf.getNumeroDiasMoraLiquidados()+"";
 				values[7] = FormatValues.formatLongvalueCurrency(ccf.getVlrInteresMora().longValue());
 				values[8] = FormatValues.formatLongvalueCurrency(ccf.getVlrTotalPagarCCF().longValue());
-				values[9] = ccf.getTotalAfiliadosCCF()+"";
+				values[9] = ccf.getTotalAfiliadosNoRepetidosAdministradora()+"";
 				parafiscales.add(values);
 				index++;
 			}
@@ -444,16 +446,17 @@ public class TotalizadorActivos {
 		}
 		
 		PlanillaTotalParafiscalesDTO parafiscalesDto = totalesDto.getSubTotalParafiscales();
+		PlanillaTotalCajaCompensacionDTO ccfDto = totalesDto.getSubtotalCajasCompensacion();
 		values = new String[resultado.getTotalParafiscalesLabels().length];
 		values[0] = "TOTAL";
 		values[1] = "-";
 		values[2] = "-";
 		values[3] = "-";
 		values[4] = "-";
-		values[5] = FormatValues.formatLongvalueCurrency(parafiscalesDto.getVlrPagar().longValue());
+		values[5] = FormatValues.formatLongvalueCurrency(parafiscalesDto.getVlrPagar().longValue()+ccfDto.getVlrAportesACCF().longValue());
 		values[6] = "-";
-		values[7] = FormatValues.formatLongvalueCurrency(parafiscalesDto.getVlrInteresMora().longValue());
-		values[8] = FormatValues.formatLongvalueCurrency(parafiscalesDto.getVlrTotalPagar().longValue());
+		values[7] = FormatValues.formatLongvalueCurrency(parafiscalesDto.getVlrInteresMora().longValue()+ccfDto.getVlrInteresMora().longValue());
+		values[8] = FormatValues.formatLongvalueCurrency(parafiscalesDto.getVlrTotalPagar().longValue()+ccfDto.getVlrTotalPagarCCF().longValue());
 		values[9] = "-";
 		parafiscales.add(values);
 		
