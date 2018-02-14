@@ -741,7 +741,19 @@ public class LiquidadorActivos {
 					}
 				}catch(ApplicationException exc) {
 					this.manejarExcepcionesSemanticas(errores,grupoCotizantes.getRegistros().get(0),exc, grupoCotizantes.getRegistros().get(0).getNumeroLineaArchivo());
-				}			
+					ocurrioExcepcion = true;
+				}	
+				
+				grupoCotizantes.setOcurrioExcepcion(ocurrioExcepcion);
+				
+				try{
+					if(!ocurrioExcepcion && grupoCotizantes.size()>1){
+						this.validarLimiteSuperiorDiasCztesAgrupados(grupoCotizantes);
+					}
+				}catch(ApplicationException exc) {
+					this.manejarExcepcionesSemanticas(errores,grupoCotizantes.getRegistros().get(0),exc, grupoCotizantes.getRegistros().get(0).getNumeroLineaArchivo());
+					ocurrioExcepcion = true;
+				}
 			}
 			boolean totalizar = false;
 			boolean tieneErroresNoCorregibles = false;
@@ -782,6 +794,71 @@ public class LiquidadorActivos {
 		}
 				
 		return grupoCotizantes;
+	}
+	
+	
+	/**
+	 * 
+	 * Cumple el mismo rol del PL PCK_ALMACENAMIENTO_ARCHIVOS en NSOI, valida que la cantidad de dias no supere 30 cuando se encuentran multiples
+	 * registros de un mismo cotizante
+	 * 
+	 * @param grupoCotizantes
+	 * @throws ApplicationException
+	 */
+	private void validarLimiteSuperiorDiasCztesAgrupados ( GrupoCotizantesDTO grupoCotizantes ) throws ApplicationException{
+		int diasAfp = 0;
+		int diasArp = 0;
+		int diasCcf = 0;
+		int diasEps = 0;;
+		
+		for ( PlanillaCotizanteDTO czte:grupoCotizantes.getCotizantes() ){
+			diasAfp += czte.getNroDiasPension()!=null?czte.getNroDiasPension():0;
+			diasArp += czte.getNroDiasRiesgo()!=null?czte.getNroDiasRiesgo():0;
+			diasCcf += czte.getNroDiasCCF()!=null?czte.getNroDiasCCF():0;
+			diasEps += czte.getNroDiasSalud()!=null?czte.getNroDiasSalud():0;			
+		}
+		Collection<ApplicationException> excepciones = new ArrayList<ApplicationException>();
+		PlanillaRegT02 reg02Bean = grupoCotizantes.getRegistro(0);
+		if ( diasAfp>30 ){
+			CampoLeido1747 campo = reg02Bean.getNumDiasCotizadosPension36();
+			campo.setValorNumerico((long)diasAfp);
+			campo.setValorCrudo(diasAfp+"");
+			campo.setValorEsperado("");
+			ApplicationException appExc = new ApplicationException(ClavesMensajesArchivoConstants.COTIZANTE_REPETIDO_NUMERO_DIAS_SUPERA_30,
+					new Object[] { campo,diasAfp });
+			excepciones.add(appExc);
+		}
+		if ( diasArp>30 ){
+			CampoLeido1747 campo = reg02Bean.getNumDiasARP38();
+			campo.setValorNumerico((long)diasArp);
+			campo.setValorCrudo(diasArp+"");
+			campo.setValorEsperado("");
+			ApplicationException appExc = new ApplicationException(ClavesMensajesArchivoConstants.COTIZANTE_REPETIDO_NUMERO_DIAS_SUPERA_30,
+					new Object[] { campo,diasArp });
+			excepciones.add(appExc);
+		}
+		if ( diasCcf>30 ){
+			CampoLeido1747 campo = reg02Bean.getNumDiasCCF39();
+			campo.setValorNumerico((long)diasCcf);
+			campo.setValorCrudo(diasCcf+"");
+			campo.setValorEsperado("");
+			ApplicationException appExc = new ApplicationException(ClavesMensajesArchivoConstants.COTIZANTE_REPETIDO_NUMERO_DIAS_SUPERA_30,
+					new Object[] { campo,diasCcf });
+			excepciones.add(appExc);
+		}
+		if ( diasEps>30 ){
+			CampoLeido1747 campo = reg02Bean.getNumDiasCotizadosEPS37();
+			campo.setValorNumerico((long)diasEps);
+			campo.setValorCrudo(diasEps+"");
+			campo.setValorEsperado("");
+			ApplicationException appExc = new ApplicationException(ClavesMensajesArchivoConstants.COTIZANTE_REPETIDO_NUMERO_DIAS_SUPERA_30,
+					new Object[] { campo,diasEps });
+			excepciones.add(appExc);
+		}
+		if ( !excepciones.isEmpty() ){
+			throw new ApplicationException(excepciones);
+		}
+		
 	}
 	
 
