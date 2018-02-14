@@ -30,6 +30,7 @@ import co.swatit.pilautil.dto.out.ObligatoriedadSubTipoCotizanteDTO;
 import co.swatit.pilautil.dto.out.ObligatoriedadTipoCotizanteDTO;
 import co.swatit.pilautil.dto.out.ParametroDTO;
 import co.swatit.pilautil.dto.out.PlanillaAportanteDTO;
+import co.swatit.pilautil.dto.out.PorcentajeSubsitemaTpCzteDTO;
 import co.swatit.pilautil.dto.out.RiesgoClaseDTO;
 import co.swatit.pilautil.dto.out.SeccionalFiscaliaDTO;
 import co.swatit.pilautil.dto.out.SubTipoCotizanteDTO;
@@ -297,6 +298,25 @@ public final class Converter {
 			retorno.setEsAdministrador(ejbObjectOutput.getEsAdministrador());
 			retorno.setCantPlanillaFilial(ejbObjectOutput.getCantPlanillaFilial());
 			//retorno.setEventoSucursal(EventoFilialApteType.valueOf(ejbObjectOutput.getEventoSucursal()));			
+		} else {
+			LOGGER.warn(Constants.LOG_NULL_PARAMETER + "ejbObjectOutput");
+		}
+		return retorno;
+	}
+	
+	private static com.ach.pla.biz.transfer.PorcentajeSubsitemaTpCzteDTO convertirPorcentaje(PorcentajeSubsitemaTpCzteDTO ejbObjectOutput) {
+		com.ach.pla.biz.transfer.PorcentajeSubsitemaTpCzteDTO retorno = new com.ach.pla.biz.transfer.PorcentajeSubsitemaTpCzteDTO();
+		if (Validation.isNotNull(ejbObjectOutput)) {
+			retorno.setIdSoiPorcSubsTpCot(ejbObjectOutput.getIdSoiPorcSubsTpCot());
+			retorno.setIdSoiTpCotizante(ejbObjectOutput.getIdSoiTpCotizante());
+			retorno.setIdSoiSubsistema(ejbObjectOutput.getIdSoiSubsistema());
+			retorno.setDiasCotizados(ejbObjectOutput.getDiasCotizados());
+			retorno.setPorcentaje(ejbObjectOutput.getPorcentaje());
+			retorno.setFechaInicioVigencia(convertStringToCalendar(ejbObjectOutput.getFechaInicioVigencia()));
+			retorno.setVigente(ejbObjectOutput.getVigente());
+			retorno.setFechaFinVigencia(convertStringToCalendar(ejbObjectOutput.getFechaFinVigencia()));
+			LOGGER.info(Constants.LOG_CLASS_METHOD_EXIT
+					+ "co.swatit.pilautil.converter.Converter.convertAportanteFilial");
 		} else {
 			LOGGER.warn(Constants.LOG_NULL_PARAMETER + "ejbObjectOutput");
 		}
@@ -1516,6 +1536,9 @@ public final class Converter {
 			for ( AportanteFilialDTO fil:ejbObjectOutput.getSucursalesAportante() ){
 				retorno.addFilialAportante(convertAportanteFilial(fil));
 			}
+			for(PorcentajeSubsitemaTpCzteDTO porcentaje: ejbObjectOutput.getPorcentajesSusbsistemasTpCzte()) {
+				retorno.getPorcentajesSusbsistemasTpCzte().add(convertirPorcentaje(porcentaje));
+			}
 			//retorno.addProperty("cods.tp.cztes.independientes", "3,16,33,34,35,36,42,43,52,53,56");
 		} else {
 			LOGGER.warn(Constants.LOG_NULL_PARAMETER + "ejbObjectOutput");
@@ -1524,6 +1547,7 @@ public final class Converter {
 				+ "co.swatit.pilautil.converter.Converter.convertValidacionArchivoDataSource");
 		return retorno;
 	}
+
 
 	/**
 	 * 

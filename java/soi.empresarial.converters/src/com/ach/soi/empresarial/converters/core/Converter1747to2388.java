@@ -117,7 +117,7 @@ public class Converter1747to2388 extends CommonConverter{
         
         try {
         	
-            //in	= factory.createReader("PILA-1747-to-2388", new File(filePath));
+//        in	= factory.createReader("PILA-1747-to-2388", new File(filePath));
         	in	= factory.createReader("PILA-1747-to-2388", new InputStreamReader(new FileInputStream(filePath), Constants.GENERAL_ENCODING));
             
             

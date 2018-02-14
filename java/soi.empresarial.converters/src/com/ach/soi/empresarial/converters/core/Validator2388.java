@@ -102,8 +102,7 @@ public class Validator2388 {
 		        		((Reg2388ReadTp12)bean).setTipoRegistro(12);
 		        		archivoResultado.setRegTp12(((Reg2388ReadTp12)bean).toStringArray());
 		        	}
-	        	
-	        	}catch (StringIndexOutOfBoundsException e1) {
+	        	} catch (StringIndexOutOfBoundsException e1) {
 	        		bean = (CommonBean)in.read(); 
 	        	}catch(Exception e){
 	        		regsNoIdentificados++;

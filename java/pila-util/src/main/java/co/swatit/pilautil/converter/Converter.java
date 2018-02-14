@@ -65,6 +65,7 @@ import co.swatit.pilautil.dto.out.PayrollContributorDTO;
 import co.swatit.pilautil.dto.out.PayrollDetailDTO;
 import co.swatit.pilautil.dto.out.PlanillaAportanteDTO;
 import co.swatit.pilautil.dto.out.PlanillaCotizanteDTO;
+import co.swatit.pilautil.dto.out.PorcentajeSubsitemaTpCzteDTO;
 import co.swatit.pilautil.dto.out.ResourceDTO;
 import co.swatit.pilautil.dto.out.ResourceDetailDTO;
 import co.swatit.pilautil.dto.out.ResultadoValidacionBduaDTO;
@@ -319,6 +320,28 @@ public final class Converter {
 		}
 		return retorno;
 	}
+	
+	private static PorcentajeSubsitemaTpCzteDTO convertirProcentaje(
+			com.ach.pla.biz.transfer.PorcentajeSubsitemaTpCzteDTO ejbObjectOutput) throws BusinessException {
+		LOGGER.info(Constants.LOG_CLASS_METHOD_NAME + "co.swatit.pilautil.converter.Converter.convertAportanteFilial");
+		PorcentajeSubsitemaTpCzteDTO retorno = new PorcentajeSubsitemaTpCzteDTO();
+		if (Validation.isNotNull(ejbObjectOutput)) {
+			retorno.setIdSoiPorcSubsTpCot(ejbObjectOutput.getIdSoiPorcSubsTpCot());
+			retorno.setIdSoiTpCotizante(ejbObjectOutput.getIdSoiTpCotizante());
+			retorno.setIdSoiSubsistema(ejbObjectOutput.getIdSoiSubsistema());
+			retorno.setDiasCotizados(ejbObjectOutput.getDiasCotizados());
+			retorno.setPorcentaje(ejbObjectOutput.getPorcentaje());
+			retorno.setFechaInicioVigencia(Utilities.convertCalendarToString(ejbObjectOutput.getFechaInicioVigencia()));
+			retorno.setVigente(ejbObjectOutput.getVigente());
+			retorno.setFechaFinVigencia(Utilities.convertCalendarToString(ejbObjectOutput.getFechaFinVigencia()));
+			LOGGER.info(Constants.LOG_CLASS_METHOD_EXIT
+					+ "co.swatit.pilautil.converter.Converter.convertAportanteFilial");
+		} else {
+			LOGGER.warn(Constants.LOG_NULL_PARAMETER + "ejbObjectOutput");
+		}
+		return retorno;
+	}
+
 	
 	/**
 	 * 
@@ -1508,6 +1531,11 @@ public final class Converter {
 			if ( ejbObjectOutput.getFilialesAportante()!=null ){
 				for ( com.ach.apt.biz.transfer.AportanteFilialDTO apt:ejbObjectOutput.getFilialesAportante() ){
 					retorno.getSucursalesAportante().add(convertAportanteFilial(apt));
+				}
+			}
+			if(ejbObjectOutput.getPorcentajesSusbsistemasTpCzte() != null) {
+				for (com.ach.pla.biz.transfer.PorcentajeSubsitemaTpCzteDTO porcentaje: ejbObjectOutput.getPorcentajesSusbsistemasTpCzte()) {
+					retorno.getPorcentajesSusbsistemasTpCzte().add(convertirProcentaje(porcentaje));
 				}
 			}
 			
