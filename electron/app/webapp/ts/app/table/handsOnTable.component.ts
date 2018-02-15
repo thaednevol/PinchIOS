@@ -337,7 +337,7 @@ namespace app.table {
               manualColumnResize: true,
               manualRowMove: true,
               manualColumnMove: true,
-              renderAllRows: true,
+              renderAllRows: false,
               contextMenu: true,
               filters: this.activeFilter,
               scrollToSelection: true,

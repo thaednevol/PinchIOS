@@ -1,0 +1,33 @@
+.handsontable
+    /*
+    Cambios para bug 2660
+    Según la Historias de Usuario (HU), cuando se ordena de manera ascendente
+    la flecha debe ser hacia abajo y cuando se ordena de manera descendente la
+    flecha debe ser hacia arriba, que es lo inverso al comportamiento por
+    defecto en el HT.
+    */
+    .columnSorting
+        position relative
+        margin-left 15px
+        &.ascending
+            &::before
+                //content '\25B2'
+                content '\25BC'
+                color #5f5f5f
+                position absolute
+                margin-left -14px
+            &::after
+                all initial
+        &.descending
+            &::before
+                //content '\25BC'
+                content '\25B2'
+                color #5f5f5f
+                position absolute
+                margin-left -14px
+            &::after
+                all initial
+
+.handsontable input, .handsontable textarea
+    min-height initial
+    vertical-align middle
