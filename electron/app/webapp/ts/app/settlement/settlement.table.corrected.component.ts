@@ -55,6 +55,13 @@ namespace app.settlement {
     private $scope: any;
     private $rootScope: any;
 
+    /**
+    * @type {Boolean} showLoading - Indica si debe mostrar la imagen de loading
+    * y bloquear la pantalla hasta que espere el usuario que termine la carga
+    * del login.
+    */
+    public showLoading: Boolean = false;
+
     private idTable:any;
 
     static $inject = ["native.notification.service","native.file.service", "native.dialog.service","$scope","$rootScope", "$filter"];
@@ -124,7 +131,6 @@ namespace app.settlement {
         }
       }
 
-      let message = `Se eliminará ${Object.keys(this.selectedItem).length} registro.`;
       if (Object.keys(this.selectedItem).length === 0) {
         this.serviceDialog.showDialogError(this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_WARN_TIT"), this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_WARN"));
       } else {;
@@ -141,6 +147,7 @@ namespace app.settlement {
           }
         );
       }
+      this.showLoading = false;
 
     }
 
@@ -148,6 +155,7 @@ namespace app.settlement {
       let message = `Opcion seleccionada> ${option}`;
       //si acepta la correccion automatica
       if (option === 1){
+          this.showLoading = true;
           let validarTipo1 = false;
           for (var i = 0; i < Object.keys(this.selectedItem).length; i++) {
             let register = this.$filter("filter")(this.listErrorsContributors.data, { secuenciaError: Number(Object.keys(this.selectedItem)[i]) },true);
@@ -185,7 +193,8 @@ namespace app.settlement {
     bindings: {
       listErrorsContributors: "=",
       totalCorrecciones: "=",
-      totalCorrRealizadas: "="
+      totalCorrRealizadas: "=",
+      showLoading: "="
     },
     controller: SettTableCorrectedController,
     templateUrl: "./components/settlement/settlement.table.corrected.html"
