@@ -122,27 +122,19 @@ namespace app.table {
           };*/
       }
 
+      public getHotSettings(){
+      let hotSettings= super.getHotSettings();
+      //
+      //hotSettings['hiddenRows'] = this.getHiddenRows(1);
+      //hotSettings['afterFilter'] = this.afterFilter();
+      //hotSettings['afterColumnSort'] = this.afterColumnSort();
+      //hotSettings['afterOnCellMouseDown'] = this.afterOnCellMouseDown();
+      hotSettings['afterChange'] = this.afterChange();
+      return hotSettings;
+    }
 
-      public afterChange(){
-        var ctrl=this;
-        return function (changes, source) {
 
-          if (changes != null) {
-            for (var fil = 0; fil < changes.length; fil++) {
-              if (changes[fil][1] !== "selected") {
-                /*
-                Algunos registros vienen con espacios, entonces, si no se hace la comparacion, cambia los totales
-                */
-                let c1=changes[fil][2].trim();
-                let c2=changes[fil][3].trim();
-                if (c1 !== c2) {
-                  ctrl.hotComponent.$rootScope.$broadcast("validate-register-tp01", changes[fil][0]);
-                }
-              }
-            }
-          }
-        }
-      }
+      
 
       public registerHooks(){
 
@@ -155,7 +147,7 @@ namespace app.table {
         //Handsontable.renderers.registerRenderer('successRenderer', successRenderer);
 
         function cellRenderer(instance, td, row, col, prop, value, cellProperties) {
-          //solo aplicar a celds tipo texto
+          // solo aplicar a celds tipo texto
           if (row === 0) {
             Handsontable.renderers.TextRenderer.apply(this, arguments);
             if (ctrl.hotComponent.data.errors != undefined) {
@@ -179,12 +171,94 @@ namespace app.table {
               td.innerHTML = value;
             }
           }
+          
         }
 
         /*function successRenderer(instance, td, row, col, prop, value, cellProperties) {
           td.innerHTML = value;
         }*/
       }
+
+      public afterChange(){
+        var ctrl=this;
+        return function (changes, source) {
+     
+           
+
+          // if (changes != null) {
+          //   // for (var fil = 0; fil < changes.length; fil++) {
+          //   //   if (changes[fil][1] !== "selected") {
+          //   //     /*
+          //   //     Algunos registros vienen con espacios, entonces, si no se hace la comparacion, cambia los totales
+          //   //     */
+          //   //     let c1=changes[fil][2].trim();
+          //   //     let c2=changes[fil][3].trim();
+          //   //     if (c1 !== c2) {
+          //   //       ctrl.hotComponent.$rootScope.$broadcast("validate-register-tp01", changes[fil][0]);
+          //   //     }
+          //   //   }
+          //   // }
+
+           if (changes != null) {
+
+            if((source == 'edit') || (source='UndoRedo.undo')){
+
+                ctrl.hotComponent.$rootScope.$broadcast("validate-register-tp01", changes[0][0]);
+
+                let removelistener =  ctrl.hotComponent.$rootScope.$on("response_error_server", (event,res) => {
+                 // var plugin = ctrl.hotComponent.hotTable.getPlugin('autoColumnSize');
+                  let datos = ctrl.hotComponent.hotTable.getDataAtRow(changes[0][0]);
+                  // let firstColumn = plugin.getFirstVisibleColumn();
+                  // let lastColumn = plugin.getLastVisibleColumn();
+                  // console.log(firstColumn)
+                  // console.log(lastColumn)
+                  for (let e = 0; e < datos.length; e++) {
+                    let  cell = ctrl.hotComponent.hotTable.getCell(0, e);
+                    if(cell != undefined){
+                      cell.className  = '';
+                    }
+                    
+                   
+                  }
+
+                  if(res.data.erroresRegistros.length > 0){
+                     
+                      var errores = res.data.erroresRegistros;
+
+                        for (let i = 0; i < errores.length; i++) {
+                          if(errores[i]['error'] != 'Error no identificado'){
+                             // ctrl.hotComponent.hotTable.setCellMeta(0, errores[i]['campo']+1, 'className', 'brian');
+                             let  cell = ctrl.hotComponent.hotTable.getCell(0, errores[i]['campo']);
+                             if(cell != undefined){
+                              cell.className  = 'table__data-field--error';
+                             }
+                             
+                          }
+     
+                        }   
+                    }
+
+                    // ctrl.hotComponent.hotTable.render();
+
+                    });
+
+                    
+                    setTimeout(() => {
+                      removelistener();
+                    }, 1000);
+
+
+
+
+                }
+
+          }
+
+        }
+
+
+      }
+
 
       public registerEvents(){
 

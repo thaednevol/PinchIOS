@@ -502,6 +502,7 @@ namespace app.settlement {
       this.serviceSettlement.validateRegisterT01(params).get().$promise.then((response) => {
 
         if (response.data.estadoSolicitud === "OK") {
+            this.$rootScope.$broadcast("response_error_server",response);
             let errors = response.data.erroresRegistros;
 
             if ( this.file.data.regsTp02.corrected[0]===undefined ){
