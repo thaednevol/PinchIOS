@@ -251,9 +251,9 @@ namespace app.support {
       if (this.dialogIsOpen) return;
       this.dialogIsOpen = true;
       // Se agerga el mensaje para la ventana de confirmación de eliminar.
-      let message = `Se eliminará ${Object.keys(this.selectedItem).length} registro.`;
+      let message = `Se eliminar\u00E1 ${Object.keys(this.selectedItem).length} registro.`;
       if (Object.keys(this.selectedItem).length > 1) {
-        message = `Se eliminarán ${Object.keys(this.selectedItem).length} registros.`;
+        message = `Se eliminar\u00E1n ${Object.keys(this.selectedItem).length} registros.`;
       }
       // Se muestra la ventana de dialog de confirmación de eliminar registros.
       this.dialog.showDialogConfirm(

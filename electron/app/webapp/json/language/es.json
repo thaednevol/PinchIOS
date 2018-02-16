@@ -6,15 +6,15 @@
     "FORM": {
       "COMPANY": "Empresa",
       "USER": "Usuario",
-      "PASSWORD": "Contraseña",
-      "DO_NOT_SING_OUT": "No cerrar sesión",
+      "PASSWORD": "Contrase\u00F1a",
+      "DO_NOT_SING_OUT": "No cerrar sesi\u00F3n",
       "LOGIN": "INGRESAR",
       "USAR_PROXY": "Usar Proxy",
       "SELECTS": {
         "TYPE_DOC": "Tipo Documento",
-        "CC": "Cédula de Ciudadanía",
-        "CD": "Carné Diplomático",
-        "CE": "Cédula de Extranjería",
+        "CC": "C\u00E9dula de Ciudadan\u00EDa",
+        "CD": "Carn\u00E9 Diplom\u00E1tico",
+        "CE": "C\u00E9dula de Extranjer\u00EDa",
         "PASSPORT": "Pasaporte",
         "RC": "Registro Civil",
         "TI": "Tarjeta de Identidad",
@@ -40,15 +40,15 @@
       },
       "SUB_MENU": {
         "HELP": "Ayuda",
-        "CONFIG": "Configuración",
-        "LOGOUT": "Cerrar sesión"
+        "CONFIG": "Configuraci\u00F3n",
+        "LOGOUT": "Cerrar sesi\u00F3n"
       }
     },
     "BUTTON": {
       "HOME": "Inicio",
       "DASHBOARD": "Dashboard",
-      "CONFIGUTATION": "Configuración",
-      "UPDATE": "Actualización",
+      "CONFIGUTATION": "Configuraci\u00F3n",
+      "UPDATE": "Actualizaci\u00F3n",
       "CONVERT": "Convertir Planilla",
       "SUPPORTS": "Soporte de Pago",
       "SETTLEMENT": "Liquidar Planilla"
@@ -68,13 +68,13 @@
       "TITLE": "Notificaciones",
       "NO_NOTIFICATIONS": "No hay notificaciones.",
       "ACTIONS": {
-        "OPEN_LINK": "Ver más"
+        "OPEN_LINK": "Ver m\u00E1s"
       }
     },
     "TABLE": {
       "TITLES": {
-        "SETTLEMENT": "Últimas Planillas Pagadas",
-        "LOCAL": "Planillas en Elaboración"
+        "SETTLEMENT": "\u00DAltimas Planillas Pagadas",
+        "LOCAL": "Planillas en Elaboraci\u00F3n"
       },
       "LABELS": {
         "SEARCH": "Buscar",
@@ -110,7 +110,7 @@
       "TITLE": "Historial de archivos",
       "TABLE": {
         "NAME": "Archivo",
-        "EDIT": "Edición"
+        "EDIT": "Edici\u00F3n"
       }
     }
   },
@@ -144,19 +144,19 @@
     },
     "TABLES": {
       "WARNINGS": "Advertencias",
-      "CONFIRMATION": "Confirmación",
+      "CONFIRMATION": "Confirmaci\u00F3n",
       "BDUA": "BDUA",
       "RUAF": "RUAF",
-      "MSG_BDUA": "Se presentaron errores de validacion de afiliación al administradoras de SALUD de acuerdo a la BDUA, descargue el excel para ver los detalles. Si desea guardar la planilla haga clic en Aceptar",
-      "MSG_RUAF": "Se presentaron errores de validacion de afiliación al administradoras de PENSION de acuerdo a la RUAF",
+      "MSG_BDUA": "Se presentaron errores de validaci\u00F3n de afiliaci\u00F3n al administradoras de SALUD de acuerdo a la BDUA, descargue el excel para ver los detalles. Si desea guardar la planilla haga clic en Aceptar",
+      "MSG_RUAF": "Se presentaron errores de validaci\u00F3n de afiliaci\u00F3n al administradoras de PENSI\u00D3N de acuerdo a la RUAF",
       "REGTP01": "Encabezado de la planilla",
       "REGSTP02": "Listado de cotizantes",
-      "PENSION": "Aportes del período para Pensiones",
-      "FSP": "Aportes del período al Fondo de Solidaridad Pensional",
-      "SALUD": "Aportes del período para Salud",
-      "RIESGO": "Aportes del período para Riesgos Laborales",
-      "PARAFISCAL": "Aportes del período para Parafiscales",
-      "GRAN_TOTAL": "Total a pagar durante el período",
+      "PENSION": "Aportes del per\u00EDodo para Pensiones",
+      "FSP": "Aportes del per\u00EDodo al Fondo de Solidaridad Pensional",
+      "SALUD": "Aportes del per\u00EDodo para Salud",
+      "RIESGO": "Aportes del per\u00EDodo para Riesgos Laborales",
+      "PARAFISCAL": "Aportes del per\u00EDodo para Parafiscales",
+      "GRAN_TOTAL": "Total a pagar durante el per\u00EDodo",
       "ERRORS": "Errores Encabezado y del Cotizante",
       "CORRECTED_AUT": "Correcciones Sugeridas",
       "CORRECTED": "Correcciones Realizadas",
@@ -166,7 +166,7 @@
     },
     "INFO": {
       "PERIOD_PENSION": "Periodo otros subsistemas:",
-      "PERIOD_HEALTH": "Periodo Liquidación Salud:",
+      "PERIOD_HEALTH": "Periodo Liquidaci\u00F3n Salud:",
       "TOTAL_CONTRIBUTOR": "Total Cotizantes:",
       "TOTAL_PAY": "Total a Pagar:",
       "TOTAL_ERROR": "Total Errores:",
@@ -181,18 +181,18 @@
     },
     "CONFIRMATION": {
       "SETTLEMENT_CREATED_TITLE": "Planilla Cargada",
-      "SETTLEMENT_CREATED": "Planilla creada en Nuevo SOI con el número: ",
-      "SETTLEMENT_TP_PLANILLA_MODIFICADA": "Señor aportante el tipo de planilla, código de sucursal, nombre de sucursal y/o tipo de presentación pudieron ser ajustados si no correspondían a valores permitidos para el aportante, por favor validar la información de estos campos"
+      "SETTLEMENT_CREATED": "Planilla creada en Nuevo SOI con el n\u00FAmero: ",
+      "SETTLEMENT_TP_PLANILLA_MODIFICADA": "Se\u00F1or aportante el tipo de planilla, c\u00F3digo de sucursal, nombre de sucursal y/o tipo de presentaci\u00F3n pudieron ser ajustados si no correspond\u00EDan a valores permitidos para el aportante, por favor validar la informaci\u00F3n de estos campos"
     },
     "ERRORS": {
-      "VALIDATE_FILE": "Ocurrio error generando número de planilla en NSOI, comuníquese con el administrador. Codigo de error: "
+      "VALIDATE_FILE": "Ocurri\u00F3 error generando n\u00FAmero de planilla en NSOI, comun\u00EDquese con el administrador. C\u00F3digo de error: "
     }
   },
 
 
   "VALIDATE": {
     "ACTIONS": {
-      "EDIT": "Ir a edición"
+      "EDIT": "Ir a edici\u00F3n"
     }
   },
 
@@ -209,29 +209,29 @@
       "ERROR": " Total errores del cotizante:",
       "CORRECTED": " Total errores corregidos:",
       "NOT_CORRECTED": " Total errores corregidos:",
-      "TYPE_AUTOM": "Automática",
+      "TYPE_AUTOM": "Autom\u00E1tica",
       "TYPE_MANU": "Manual",
       "MESSAGE_CORRECTED_WARN": "Debe seleccionar al menos un registro para corregir.",
-      "MESSAGE_CORRECTED_WARN_TIT": "Correcciones Automáticas",
-      "MESSAGE_CORRECTED_CONF": "Se corregiran los registros seleccionados.",
-      "MESSAGE_CORRECTED_CONF_TIT": "Correcciones Automaticas",
-      "MESSAGE_CORRECTED_CONF_1": "Se ha aplicado correctamente la corrección a los errores calculados por el sistema",
-      "MESSAGE_CORRECTED_CONF_1_TIT": "Confirmación"
+      "MESSAGE_CORRECTED_WARN_TIT": "Correcciones Autom\u00E1ticas",
+      "MESSAGE_CORRECTED_CONF": "Se corregir\u00E1n los registros seleccionados.",
+      "MESSAGE_CORRECTED_CONF_TIT": "Correcciones Autom\u00E1ticas",
+      "MESSAGE_CORRECTED_CONF_1": "Se ha aplicado correctamente la correcci\u00F3n a los errores calculados por el sistema",
+      "MESSAGE_CORRECTED_CONF_1_TIT": "Confirmaci\u00F3n"
     }
   },
 
 
   "MESSAGES": {
     "LOADING": "Cargando",
-    "ERROR_JAR": "Ha ocurrido un error inesperado, póngase en contacto con el administrador del sistema.",
-    "NO_INTERNET": "No se detecto una conexión a Internet estable",
+    "ERROR_JAR": "Ha ocurrido un error inesperado, p\u00F3ngase en contacto con el administrador del sistema.",
+    "NO_INTERNET": "No se detecto una conexi\u00F3n a Internet estable",
     "VALIDATE_ERROR": {
       "TITLE": "Archivo de entrada con errores",
-      "MESSAGE": "Se ha detectado errores de formato en su archivo de entrada, sin embargo, el sistema puede intentar convertir a formato 2388/5858 para que realice las correcciones en este formato.\n\nSi desea continuar con la conversión y corregirlos en el formato de destino, presione el botón Ir a edición."
+      "MESSAGE": "Se ha detectado errores de formato en su archivo de entrada, sin embargo, el sistema puede intentar convertir a formato 2388/5858 para que realice las correcciones en este formato.\n\nSi desea continuar con la conversi\u00F3n y corregirlos en el formato de destino, presione el bot\u00F3n Ir a edici\u00F3n."
     },
     "ERROR_NOTIFICATION_SERVER": "No es posible obtener las notificaciones del servidor.",
     "FORMAT_INVALID": "El archivo no tiene un formato adecuado.",
-    "FORMAT_INVALID_CSV": "El archivo no tiene un formato adecuado, la extensión debe ser .CSV.",
+    "FORMAT_INVALID_CSV": "El archivo no tiene un formato adecuado, la extensi\u00F3n debe ser .CSV.",
     "SAVED_FILE": "Archivo guardado",
     "SAVED_COUNT_MAIL": "Cuenta guardada",
     "EDIT_COUNT_MAIL": "Cuenta editada",
@@ -239,18 +239,18 @@
     "DELETE_COUNT_MAIL_LACK_ID": "Seleccione una cuenta a eliminar",
     "TITLES": {
       "ERROR": "Error",
-      "INFO": "Información"
+      "INFO": "Informaci\u00F3n"
     },
     "ERROR_500": "El servidor presenta una falla, intente nuevamente de si el error continua contacte al administrador.",
-    "ERROR_SETTLEMENT_INITIALIZE": "El servicio de 'incializarliquidacion' retorna vacio, el error afectara la validación de las celdas.",
-    "ERROR_SETTLEMENT_TOTALES": "El servicio de 'gettotales' retorna vacio, no se visualizara los totales de la planilla.",
-    "EMAIL_USER_PASSWORD_BAD": "El nombre de usuario y contraseña no son aceptados.",
+    "ERROR_SETTLEMENT_INITIALIZE": "El servicio de 'incializarliquidacion' retorna vac\u00EDo, el error afectara la validaci\u00F3n de las celdas.",
+    "ERROR_SETTLEMENT_TOTALES": "El servicio de 'gettotales' retorna vac\u00EDo, no se visualizara los totales de la planilla.",
+    "EMAIL_USER_PASSWORD_BAD": "El nombre de usuario y contrase\u00F1a no son aceptados.",
     "EMAIL_SERVER_BAD": "El nombre y puertos asignados al servidor no son correctos.",
-    "EMAIL_SERVER_NO_CONNECT": "No se puede establecer conexión con el servidor de email.",
-    "EMAIL_GOOD": "La configuración del correo electrónico es correcta.",
-    "EMAIL_NOT_VALIDATE": "Debé probar la configuración antes de guardar, solo se almacena sí la configuración es correcta.",
-    "EMAIL_NO_CONTRIBUTORS": "No existen correos electronicos vinculados a los empleados para el envio de email, agregue los correos para iniciar el proceso.",
-    "EMAIL_CONFIG_BAD": "Ocurrió un error en la configuración para el envío de email, intente seleccionando otra cuenta de email, si el problema continua contacte al administrador.",
+    "EMAIL_SERVER_NO_CONNECT": "No se puede establecer conexi\u00F3n con el servidor de email.",
+    "EMAIL_GOOD": "La configuraci\u00F3n del correo electr\u00F3nico es correcta.",
+    "EMAIL_NOT_VALIDATE": "Deb\u00E9 probar la configuraci\u00F3n antes de guardar, solo se almacena s\u00ED la configuraci\u00F3n es correcta.",
+    "EMAIL_NO_CONTRIBUTORS": "No existen correos electr\u00F3nicos vinculados a los empleados para el env\u00EDo de email, agregue los correos para iniciar el proceso.",
+    "EMAIL_CONFIG_BAD": "Ocurri\u00F3 un error en la configuraci\u00F3n para el env\u00EDo de email, intente seleccionando otra cuenta de email, si el problema continua contacte al administrador.",
     "DIALOGS": {
       "ACTION_MESSAGE_BOX": {
         "YES": "Confirmar",
@@ -261,24 +261,24 @@
 
   "SUPPORT": {
     "TITLE": "Soporte de pago",
-    "CONTINUE_EMAIL_SENT": "Existe un punto de guardado, desea continuar el envio desde este punto.",
+    "CONTINUE_EMAIL_SENT": "Existe un punto de guardado, desea continuar el env\u00EDo desde este punto.",
     "PANEL": {
-      "TEMPLATE_NUMBER": "Número de Planilla",
+      "TEMPLATE_NUMBER": "N\u00FAmero de Planilla",
       "PAYMENT_DATE": "Fecha de Pago:",
       "TEMPLATE_TYPE": "Tipo de Planilla:",
       "EMPLOYEES": "Empleados:",
       "BRANCH_OFFICE": "Sucursal:",
-      "PERIOD_CLEARANCE_PENSIONS": "Periodo Liquidación Pensiones:",
-      "PERIOD_CLEARANCE_HEALTH": "Periodo Liquidación Salud:",
+      "PERIOD_CLEARANCE_PENSIONS": "Periodo Liquidaci\u00F3n Pensiones:",
+      "PERIOD_CLEARANCE_HEALTH": "Periodo Liquidaci\u00F3n Salud:",
       "UNDEFINED": "No definido"
     },
     "TABLE": {
       "DATA_EMPLOYED": "Datos Empleados",
-      "IDENTIFICATION_TYPE": "Tipo de Identificación",
-      "IDENTIFICATION_NUMBER": "Número de Identificación",
+      "IDENTIFICATION_TYPE": "Tipo de Identificaci\u00F3n",
+      "IDENTIFICATION_NUMBER": "N\u00FAmero de Identificaci\u00F3n",
       "FULL_NAME_EMPLOYEE": "Nombre Completo Empleado",
-      "MAIL": "Correo Electrónico",
-      "MAIL_NULL": "Ingrese correo electrónico"
+      "MAIL": "Correo Electr\u00F3nico",
+      "MAIL_NULL": "Ingrese correo electr\u00F3nico"
     },
     "ACCOUNT": {
       "ACCOUNT": "Cuenta Origen:",
@@ -290,22 +290,22 @@
       "SENDED_SUPPORTS": "Soportes Enviados:",
       "TIME_ELAPSED": "Tiempo Transcurrido:",
       "COMPLETED": "Completado",
-      "CANCEL_SHIPPING": "Cancelar Envío"
+      "CANCEL_SHIPPING": "Cancelar Env\u00EDo"
     },
     "ADMIN_COUNT": {
-      "TITLE": "Administración Cuenta Origen:",
+      "TITLE": "Administraci\u00F3n Cuenta Origen:",
       "NAME_COUNT": "Nombre Cuenta:",
-      "ADRESS_EMAIL": "Dirección de correo electrónico:",
-      "INFO_SERVER": "Información del servidor:",
+      "ADRESS_EMAIL": "Direcci\u00F3n de correo electr\u00F3nico:",
+      "INFO_SERVER": "Informaci\u00F3n del servidor:",
       "SERVER": "Servidor de correo:",
       "PORT": "Puerto:",
       "TLS": "TLS:",
       "SSL": "SSL:",
-      "INFO_START_SESSION": "Información de inicio de sesión:",
+      "INFO_START_SESSION": "Informaci\u00F3n de inicio de sesi\u00F3n:",
       "USER": "Nombre de usuario:",
-      "PASSWORD": "Contraseña:",
-      "CONFIG_COUNT": "Configuración de la cuenta:",
-      "TEST_CONFIG": "Probar Configuración",
+      "PASSWORD": "Contrase\u00F1a:",
+      "CONFIG_COUNT": "Configuraci\u00F3n de la cuenta:",
+      "TEST_CONFIG": "Probar Configuraci\u00F3n",
       "NEW": "Nuevo",
       "SAVE": "Guardar",
       "DELETE": "Eliminar"
