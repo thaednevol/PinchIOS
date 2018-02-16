@@ -117,8 +117,29 @@ namespace app.table {
       return 275;
     }
 
-    public getDropDownMenu(){
-      return false;
+    public getDropDownMenu() {
+      var ctrl=this;
+      return {
+        items: {
+          "filter_action_bar": {
+            disabled: function () {
+              return ctrl.hotComponent.hotTable.getSelected()[1] <= 1;
+            }
+          },
+          "filter_by_condition": {
+            name: "Filtrar por condicion",
+            disabled: function () {
+              return ctrl.hotComponent.hotTable.getSelected()[1] <= 1;
+            }
+          },
+          "filter_by_value": {
+            name: "Filtrar por valor",
+            disabled: function () {
+              return ctrl.hotComponent.hotTable.getSelected()[1] <= 1;
+              }
+          }
+        }
+      };
     }
 
     public getPagination() {
