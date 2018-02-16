@@ -139,7 +139,7 @@ namespace app.settlement {
           this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_CONF"),
           (option) => {
             if (option === 1) {
-              //this.dialogIsOpen = false;
+              this.showLoading = true;
               this.correctError(option);
               this.notificationService.show(this.$filter("translate")("MESSAGES.TITLES.INFO"), this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_CONF_1"));
               this.$rootScope.$broadcast("refresh-table-corrected");
@@ -155,7 +155,6 @@ namespace app.settlement {
       let message = `Opcion seleccionada> ${option}`;
       //si acepta la correccion automatica
       if (option === 1){
-          this.showLoading = true;
           let validarTipo1 = false;
           for (var i = 0; i < Object.keys(this.selectedItem).length; i++) {
             let register = this.$filter("filter")(this.listErrorsContributors.data, { secuenciaError: Number(Object.keys(this.selectedItem)[i]) },true);
