@@ -295,6 +295,7 @@ namespace app.table {
       if (this.idTable === "regsTp02") {
         this.$rootScope.$broadcast("line-table-edit-select", linePosition);
         this.setSuggestions(Number(linePosition) + 1, Number(cellPosition) + 1);
+        console.log("line-table-edit-select "+linePosition);
       }else{
         this.$rootScope.$broadcast("line-table-edit-select", -1);
       }

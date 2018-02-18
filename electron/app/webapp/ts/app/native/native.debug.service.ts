@@ -36,7 +36,7 @@ namespace app.native {
     */
     constructor(OPTIONS) {
       this.OPTIONS = OPTIONS;
-      this.logger.setLevel("info");
+      this.logger.setLevel("debug");
       this.logger.getLevel();
       this.logger.open();
       let logPath = process.env.LOG_PILA_ELECTRON;

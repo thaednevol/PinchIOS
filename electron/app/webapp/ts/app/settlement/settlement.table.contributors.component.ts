@@ -162,6 +162,8 @@ namespace app.settlement {
     * Metodo que permite filtrar unicamente registros con error
     */
     public actionOnlyErrors() {
+      //Llama a todos los que escuchen este evento para el filtrado
+      this.$rootScope.$broadcast("only-errors");
       if ( this.onlyErrors==="N" ){
         this.onlyErrors = "S";
         this.onlyErrorsFilter = (item,index) => {

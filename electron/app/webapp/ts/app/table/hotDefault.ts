@@ -50,11 +50,6 @@ namespace app.table {
               scrollToSelection: true,
               height: this.getHeight(),
               licenseKey: '05ea7-d0139-2af62-34f15-ce322'
-              //hiddenRows: this.getHiddenRows(1),
-              //afterFilter:this.afterFilter(),
-              //afterColumnSort: this.afterColumnSort(),
-              //afterOnCellMouseDown: this.afterOnCellMouseDown(),
-              //afterChange: this.afterChange()
         };
         return hotSettings;
     }

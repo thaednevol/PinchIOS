@@ -8,9 +8,15 @@ namespace app.table {
   * paginado y filtro de contenido de las tablas basado en handsontable.
   */
   export class HotRegsTp2 extends HotDefault{
-
+    /**
+    * @type {string} onlyErrors: Permite identificar si está filtrado por errores
+    */
     private onlyErrors: string = "N";
 
+    /**
+    * @type {array} errors: Guarda los errores
+    */
+    private errors:any=new Array();
 
     /**
     * @type {number} numeroErrores - Guarda el número de errores encontrados
@@ -38,6 +44,16 @@ namespace app.table {
       });
     }
 
+    public getHotSettings(){
+      let ctrl=this;
+      let hotsettings = super.getHotSettings();
+      hotsettings['afterChange'] = this.afterChange();
+      hotsettings['afterRender'] = this.afterRender();
+      hotsettings['colWidths']=this.colWidths();
+      hotsettings['afterBeginEditing']=this.afterBeginEditing();
+      return hotsettings;
+    }
+
     public getData(){
       return this.hotComponent.data.registers;
     }
@@ -54,15 +70,10 @@ namespace app.table {
       return 275;
     }
 
-    public colWidths(){
-
-      return [50, 150, 50];
-    }
-
     public getColumnDef(){
       var columnDef=[];
       columnDef = [
-        {data: "line", type:"numeric", readOnly: true,renderer:'lineRenderer'},
+        {data: "line", type:"numeric", readOnly: true,validator:'registerValidator', invalidCellClassName:'fa fa-times-circle-o line-error'},
         {data: "selected", type: 'checkbox', className: "htCenter"}
       ];
 
@@ -70,18 +81,12 @@ namespace app.table {
         for(let i of Object.keys(this.hotComponent.data.registers[0])) {
           if (i.startsWith("regs")) {
             columnDef.push({data: i, type: 'text',validator:'registerValidator', invalidCellClassName:'table__data-field--error'});
-            //TODO: Cambiar las columnas  con datos especial por su tipo correcto
           }
-          // if (i.startsWith("selected")) {
-          //   columnDef.push({data: i, type: 'checkbox'});
-          //   //TODO: Cambiar las columnas  con datos especial por su tipo correcto
-          // }
+        }
       }
-
-      }
-      // console.log('columndef')
       return columnDef;
     }
+
     public getVarFixedColumns(){
       if (this.hotComponent.fixedColumns)
         return 2;
@@ -108,12 +113,16 @@ namespace app.table {
             var opt={"col":ctrl.hotComponent.hotTable.getSelected()[1]};
             ctrl.createDialog(opt,ctrl.hotComponent);
           }
+          if (key==='filter_by_error'){
+            ctrl.actionOnlyErrors();
+          }
           ctrl.hotComponent.$rootScope.$broadcast("cargado_menu");
         },
         items: {
           'filter_action_bar':{},
           "filter_by_condition":{},
           "filter_by_value":{},
+          "filter_by_error":{name:"Mostrar errores"},
           '---------':{},
           "replace":{name:"Reemplazar"},
           "toggle_all":{name:"Sel/Des todos",disabled: function () {
@@ -275,6 +284,7 @@ namespace app.table {
     public afterOnCellMouseDown(){
       var ctrl=this;
       return function (event,pos,cell) {
+
         let linePosition=ctrl.hotComponent.hotTable.getDataAtCell(pos.row,0);
         if (linePosition){
             let cellPosition=pos.col;
@@ -286,43 +296,29 @@ namespace app.table {
         };
     }
 
-    public afterChange(){
-      var ctrl=this;
-      return function (changes, source) {
-        if (changes != null) {
-          for (var fil = 0; fil < changes.length; fil++) {
-            var rowThatHasBeenChanged = changes[fil][0],
-            columnThatHasBeenChanged = changes[fil][1],
-            previousValue = changes[fil][2],
-            newValue = changes[fil][3];
-
-            var sourceRow = ctrl.hotComponent.hotTable.getSourceDataAtRow(rowThatHasBeenChanged),
-            visualRow = ctrl.hotComponent.hotTable.getDataAtRow(rowThatHasBeenChanged);
-
-            var visualObjectRow = function(row) {
-                var obj = {},key, name;
-                for (var i = 0; i < ctrl.hotComponent.hotTable.countCols(); i++) {
-                    obj[ctrl.hotComponent.hotTable.colToProp(i)] = ctrl.hotComponent.hotTable.getDataAtCell(row, i);
-                  }
-                  return obj
-                }
-
-
-
-                // console.log('* the getSourceDataAtRow:');
-                // console.log(sourceRow);
-                // console.log('* the getDataAtRow:');
-                // console.log(visualRow);
-                // console.log('* the visualObjectRow function:');
-                // console.log(visualObjectRow(rowThatHasBeenChanged));
+    public afterBeginEditing(){
+            let ctrl=this;
+            return function(row,col){
+              let cs=ctrl.hotComponent.hotTable.getCellMeta(row, col);
+              let linePosition=cs.visualRow;
+              ctrl.hotComponent.$rootScope.$broadcast("line-table-edit-select", Number(linePosition));
+              ctrl.hotComponent.$rootScope.$broadcast("validate-register-table", Number(linePosition));
+            }
           }
-        }
 
+    public afterChange(){
+      let ctrl=this;
+      return function (changes, source) {
         if (changes != null) {
           for (var fil = 0; fil < changes.length; fil++) {
             if (changes[fil][1] !== "selected") {
               if (changes[fil][2] !== changes[fil][3]) {
-                ctrl.hotComponent.$rootScope.$broadcast("validate-register-table", changes[fil][0]);
+                let row=changes[fil][0];
+                ctrl.hotComponent.$rootScope.$broadcast("validate-register-table", row);
+                let deregisterListener=ctrl.hotComponent.$scope.$on("rebuild-table", () => {
+                  ctrl.hotComponent.hotTable.validateRows([row], function(valid) {});
+                  deregisterListener();
+                  });
               }
             }
           }
@@ -338,7 +334,6 @@ namespace app.table {
     }
 
     private refreshPaging() {
-
       this.hotComponent.hotTable.updateSettings({
         hiddenRows: this.getArray(1),
       });
@@ -407,9 +402,7 @@ namespace app.table {
                 let line = target.getAttribute("line");
                 this.trSelected = Number(line) + 1;
                 this.scrollTableTo(Number(line));
-
               });
-
               barError.appendChild(item);
             }
             i++;
@@ -424,71 +417,62 @@ namespace app.table {
     */
     public actionOnlyErrors() {
       console.log("actionOnlyErrors");
+      let ctrl=this;
+      const filtersPlugin = ctrl.hotComponent.hotTable.getPlugin('filters');
+      const arrayEach = Handsontable.helper.arrayEach;
+      filtersPlugin.removeConditions(0);
 
-      let regs = this.hotComponent.data.registers;
-      let regsData = this.hotComponent.hotTable.getData();
-      var newRegs = [];
-      for (let i = 0; i < regsData.length; i++) {
-        for (let j = 0; j < regs.length; j++) {
-          if (regsData[i][3] === regs[j].regs1) {
-            newRegs.push(regs[j]);
-            break;
-          }
-        }
-      }
-
-      regs = newRegs;
-
-      //buscar solo los regs que esten en regsData
-
-      let array = [];
       if ( this.onlyErrors === "N" ) {
-        this.tmpRegs = this.hotComponent.data.registers;
         this.onlyErrors = "S";
-        this.hotComponent.onlyErrorsFilter = (item,index) => {
-            let linea = Number(item["regs1"]);
-            let respuesta = this.hotComponent.data.errors.hasOwnProperty(linea);
-            return respuesta;
-        };
+        let conditions=new Array();
+        filtersPlugin.addCondition(0, 'by_value', [ctrl.errors]);
+        $("#onlyErrorsIcon").css("color", "rgb(117, 129, 140)");
       } else {
-        this.hotComponent.data.registers = this.tmpRegs;
-        regs = this.tmpRegs;
-
-        this.hotComponent.onlyErrorsFilter = function(item) {
-          return true;
-        };
+        $("#onlyErrorsIcon").css("color", "rgb(255, 66, 66)");
         this.onlyErrors = "N";
       }
-
-      regs = this.hotComponent.$filter("filter")(regs, this.hotComponent.onlyErrorsFilter);
-
-      this.hotComponent.data.registers = regs;
-      /*
-      this.hotComponent.hotTable.updateSettings({
-          data: regs
-      });
-      */
-
-      regs = this.getArrayErrors(regs);
-
-      let tempArray = [];
-      for (var i = 0; i < regs.length; i++) {
-        tempArray.push(i);
-      }
-
-        var clicked=this.hotComponent.page;
-
-        this.hotComponent.hotTable.updateSettings({
-          hiddenRows: this.hotComponent.hc.getArray(clicked)
-        });
-
+      filtersPlugin.filter();
       this.addItemBarError();
-      if (this.onlyErrors === "S") {
-        $("#onlyErrorsIcon").css("color", "rgb(255, 66, 66)");
-      } else {
-        $("#onlyErrorsIcon").css("color", "rgb(117, 129, 140)");
+    }
+
+    private rowsValidated= new Array();
+
+    private validate(){
+      let ctrl=this;
+      if (ctrl.rowsValidated.length==0){
+        function validar(inf,sup):Promise<any> {
+            return new Promise<any>(resolve => {
+                for(let i=inf; i<sup;i++){
+                  ctrl.rowsValidated.indexOf(Number(i)) === -1 ? ctrl.rowsValidated.push(Number(i)) : null;
+                }
+                ctrl.hotComponent.hotTable.validateRows(ctrl.rowsValidated, function(valid) {});
+
+              resolve();
+            })
+          }
+          async function validarLote(): Promise<void> {
+            let plugin=ctrl.hotComponent.hotTable.getPlugin('autoRowSize');
+            let inf=plugin.getFirstVisibleRow();
+            let sup=plugin.getLastVisibleRow();
+            if (inf!=-1 && sup!=-1){
+              await validar(inf,sup);
+              inf=plugin.getLastVisibleRow();
+              sup=ctrl.hotComponent.hotTable.countRows();
+              await validar(inf,sup);
+            }
+          }
+          validarLote();
       }
     }
+
+    public afterRender(){
+          let ctrl=this;
+          return function(forced){
+            if (this.countVisibleRows()!= -1){
+              ctrl.validate();
+            }
+          }
+        }
 
         /**
         * @description
@@ -601,21 +585,42 @@ namespace app.table {
 
         public registerValidators(){
           let ctrl=this;
-          let registerValidator = function (value, callback, something) {
-            var colDef=this;
+          let registerValidatorAsync = function (value, callback, regVal) {
+            var colDef=regVal;
             setTimeout(function(){
-                let r=colDef.row+1;
+              let r=colDef.row+1;
+
                   if (ctrl.hotComponent.data.errors.hasOwnProperty(r)){
                     let filaErrorSeleccionado=ctrl.hotComponent.data.errors[r];
                     let c=colDef.col-1;
 
-                    if (filaErrorSeleccionado.hasOwnProperty(c)){
-                      let errorSeleccionado=filaErrorSeleccionado[c];
+                    if (colDef.col==0){
+                      ctrl.errors.indexOf(Number(value)) === -1 ? ctrl.errors.push(Number(value)) : null;
                       callback(false);
                     }
+                    else{
+                      if (filaErrorSeleccionado.hasOwnProperty(c)){
+                        let errorSeleccionado=filaErrorSeleccionado[c];
+                        callback(false);
+                      }
+                      else {
+                        callback(true);
+                      }
+                    }
+                  }
+                  else {
+                    if (colDef.col==0){
+                      //ctrl.noErrors.indexOf(Number(value)) === -1 ? ctrl.noErrors.push(Number(value)) : null;
+                    }
+                      callback(true);
                   }
                 }, 250);
+
               };
+              async function registerValidator(value, callback){
+                let regVal=this;
+                await registerValidatorAsync(value, callback, regVal);
+              }
 
               Handsontable.validators.registerValidator('registerValidator', registerValidator);
         }
@@ -712,13 +717,10 @@ namespace app.table {
                 var plugin = ctrl.hotComponent.hotTable.getPlugin('trimRows');
                 plugin.untrimAll();
                 ctrl.hotComponent.hotTable.render();
-
               }
-
             },
             //Función que se ejecuta antes de hacer el ordenamiento
             beforeColumnSort: function (){
-
               //Si hay datos temporales, los cargo y hago el ordamiento
               let datos_temporales = JSON.parse(localStorage.getItem('array_tmp'));
               if(datos_temporales!=undefined){
@@ -730,6 +732,111 @@ namespace app.table {
             }
 
           });
+        }
+
+        public colWidths(){
+          // LAS COSAS QUE UNO HACE POR LA OPTIMIZACION
+          return [
+            79,	// Línea
+            102,	// Selección
+            122,	// Tipo registro
+            106,	// Secuencia
+            144,	// Tipo documento
+            142,	// Nro Documento
+            131,	// Tipo cotizante
+            151,	// Subtipo cotizante
+            109,	// Extranjero
+            202,	// Colombiano en el exterior
+            177,	// Código departamento
+            150,	// Código municipio
+            138,	// Primer apellido
+            149,	// Segundo apellido
+            138,	// Primer nombre
+            148,	// Segundo nombre
+            120,	// ING: Ingreso
+            111,	// RET: Retiro
+            189,	// TDE: Traslado desde EPS
+            161,	// TAE: Traslado a EPS
+            192,	// TDP: Traslado desde AFP
+            163,	// TAP: Traslado a AFP
+            270,	// VSP: Variación permanente de salario
+            124,	// Correcciones
+            264,	// VST: Variación transitoria del salario
+            199,	// SLN: Suspensón temporal
+            203,	// IGE: Incapacidad temporal
+            219,	// LMA: Licencia de Maternidad
+            143,	// VAC: Vacaciones
+            183,	// AVP: Aporte voluntario
+            245,	// VCT: Variación centros de trabajo
+            266,	// IRL: Incapacidad enfermedad laboral
+            112,	// Código AFP
+            167,	// Código AFP Traslado
+            111,	// Código EPS
+            166,	// Código EPS Traslado
+            112,	// Código CCF
+            98,	// Días AFP
+            96,	// Días EPS
+            98,	// Días ARL
+            97,	// Días CCF
+            129,	// Salario básico
+            138,	// Salario integral
+            92,	// IBC AFP
+            102,	// IBC salud
+            92,	// IBC ARL
+            91,	// IBC CCF
+            107,	// Tarifa AFP
+            134,	// Cotización AFP
+            249,	// Aporte voluntario del afiliado AFP
+            264,	// Aporte voluntario del aportante AFP
+            172,	// Cotización Pensiones
+            184,	// Aporte AFP-solidaridad
+            191,	// Aporte AFP-subsistencia
+            198,	// Valor No Ret. Voluntarios
+            106,	// Tarifa EPS
+            133,	// Cotización EPS
+            128,	// UPC adicional
+            170,	// Nro autorización IGE
+            100,	// Valor IGE
+            177,	// Nro autorización LMA
+            107,	// Valor LMA
+            108,	// Tarifa ARL
+            152,	// Centro de trabajo
+            135,	// Cotización ARL
+            107,	// Tarifa CCF
+            112,	// Aporte CCF
+            116,	// Tarifa SENA
+            112,	// Valor SENA
+            111,	// Tarifa ICBF
+            107,	// Valor ICBF
+            114,	// Tarifa ESAP
+            110,	// Valor ESAP
+            113,	// Tarifa MEN
+            109,	// Valor MEN
+            176,	// Tp Doc Cotizante Ppal
+            184,	// Nro Doc Cotizante Ppal
+            165,	// Exonerado Ley 1607
+            113,	// Código ARL
+            118,	// Clase riesgo
+            197,	// Tarifa especial pensiones
+            147,	// Fecha de ingreso
+            137,	// Fecha de retiro
+            142,	// Fecha Inicio VSP
+            144,	// Fecha Inicio SLN
+            127,	// Fecha fin SLN
+            139,	// Fecha inicio IGE
+            123,	// Fecha fin IGE
+            146,	// Fecha inicio LMA
+            130,	// Fecha fin LMA
+            144,	// Fecha inicio VAC
+            128,	// Fecha fin VAC
+            142,	// Fecha inicio VCT
+            126,	// Fecha fin VCT
+            139,	// Fecha inicio IRL
+            122,	// Fecha fin IRL
+            118,	// IBC otros PF
+            144,	// Horas laboradas
+            143	// Fec Rad Exterior
+          ];
         }
   }
 }

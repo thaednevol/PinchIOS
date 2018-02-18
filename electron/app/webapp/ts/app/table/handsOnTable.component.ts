@@ -158,6 +158,7 @@ namespace app.table {
           if (this.hotTable) {
             this.hotTable.render();
           }
+
           try {
             this.hotTable.updateSettings({
               data: this.hc.getData()
@@ -302,7 +303,7 @@ namespace app.table {
       let hotSettings:any= this.hc.getHotSettings();
 
         this.hotTable = new Handsontable(this.hotElement, hotSettings);
-        this.hotTable.validateCells(function(valid) {});
+        //this.hotTable.validateCells(function(valid) {});
         $("#hot-display-license-info").hide();
         if(hotSettings.tableId === "errorConAut" || hotSettings.tableId ===  "errorContributors") {
           //this.fillTableCorrected();

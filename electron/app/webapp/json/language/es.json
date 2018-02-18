@@ -162,7 +162,11 @@
       "CORRECTED": "Correcciones Realizadas",
       "NO_REGISTER": "No existen registros para la consulta.",
       "REPLACE_FOR": "Reemplazar por:",
-      "REPLACE_ACTION": "Reemplazar"
+      "REPLACE_ACTION": "Reemplazar",
+      "LABELS": {
+        "LINE": "Línea",
+        "SELECTION": "Selección"
+      }
     },
     "INFO": {
       "PERIOD_PENSION": "Periodo otros subsistemas:",
