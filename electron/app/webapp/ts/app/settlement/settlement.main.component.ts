@@ -305,13 +305,13 @@ namespace app.settlement {
                                                             +this.file.data.regTp1Txt.substring(258+nomSucursalLength,this.file.data.regTp1Txt.length);
         this.sucursalInvalida = true;
       }
-      else{
+      else if ( (formaPresentacion!='S' && formaPresentacion!='D') ){
         this.file.data.regTp01.registers[0]["regs11"] = "";
         this.file.data.regTp01.registers[0]["regs12"] = "";
-        this.file.data.regTp1Txt = this.file.data.regTp1Txt.substring(0,248)+" "
-                                  +this.file.data.regTp1Txt.substring(249,this.file.data.regTp1Txt.length);
-                                  this.file.data.regTp1Txt = this.file.data.regTp1Txt.substring(0,258)+" "
-                                                            +this.file.data.regTp1Txt.substring(259,this.file.data.regTp1Txt.length);
+        this.file.data.regTp1Txt = this.file.data.regTp1Txt.substring(0,248)+""
+                                  +this.file.data.regTp1Txt.substring(248,this.file.data.regTp1Txt.length);
+                                  this.file.data.regTp1Txt = this.file.data.regTp1Txt.substring(0,258)+""
+                                                            +this.file.data.regTp1Txt.substring(258,this.file.data.regTp1Txt.length);
       }
 
     }
