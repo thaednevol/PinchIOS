@@ -28,16 +28,16 @@ namespace app.settlement {
     private OPTIONS: any;
 
     /**
+    * @type {Boolean} selectAll - Indica si esta activo el check de seleccionar todos.
+    */
+    public selectAll: boolean = false;
+
+    /**
     * @type {Object} selectedItem - Almacena la información de la celdas que
     * se selecciona en el momento.
     */
 
     public selectedItem: any = {};
-
-    /*
-    * @type {Boolean} selectAll - Indica si esta activo el check de seleccionar todos.
-    */
-    public selectAll: boolean = false;
 
     /**
     * Primer elemento del arreglo despues de filtros y ordenamiento
@@ -293,7 +293,7 @@ namespace app.settlement {
         //this.$scope.$digest();
       });
     }
-    
+
 
     /**
     * @description
@@ -535,6 +535,7 @@ namespace app.settlement {
           this.$rootScope.$broadcast("update-info-panel");
           this.$rootScope.$broadcast("update-totals");
           this.$rootScope.$broadcast("refresh-table-delete");
+          this.$rootScope.$broadcast("action-change-page");
           //this.$scope.$digest();
 
 

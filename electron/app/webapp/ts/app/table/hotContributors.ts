@@ -104,6 +104,10 @@ namespace app.table {
 
     }
 
+    public getFirstElement(){
+      
+    }
+
     public colWidths(){
       return [70, 50, 120, 180, 1300, 150, 150];
     }

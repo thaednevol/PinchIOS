@@ -347,8 +347,8 @@ namespace app.table {
     * Inicia el proceso de carga de la barra de error de la tabla de liquidación.
     */
     public addItemBarError() {
-      if (this.hotComponent.hotTable !== undefined) {
-        var registersTmp = this.hotComponent.hotTable.getData();
+      if (this.hotComponent) {
+        var registersTmp = this.getData();
 
         let delta = 27;
         let table: any = document.getElementById("hot-regsTp02");
@@ -358,20 +358,15 @@ namespace app.table {
         barError.innerText = "";
 
         if (this.hotComponent.data.errors != undefined) {
-          //var limite = this.data.registers.length;
           var limite = registersTmp.length;
           let init = 0;
-          //let fin = this.data.registers.length;
           let fin = registersTmp.length;
 
-          //if (this.data.registers.length > this.OPTIONS.TABLES.ROW_LIMIT_BY_PAGE){
           if (registersTmp.length > this.hotComponent.OPTIONS.TABLES.ROW_LIMIT_BY_PAGE){
             limite = this.hotComponent.OPTIONS.TABLES.ROW_LIMIT_BY_PAGE;
             init = (this.hotComponent.page - 1) * this.hotComponent.OPTIONS.TABLES.ROW_LIMIT_BY_PAGE;
             fin = init + this.hotComponent.OPTIONS.TABLES.ROW_LIMIT_BY_PAGE;
-            //if (fin > this.data.registers.length) {
             if (fin > registersTmp.length) {
-              //fin = this.data.registers.length;
               fin = registersTmp.length;
             }
           }
@@ -382,37 +377,108 @@ namespace app.table {
           }
           var posicionLinea = 0;
           var i = 0;
+          let ctrl = this;
+          function crearItems(row: number): Promise<any> {
+              return new Promise<any>(resolve => {
+                var currentRegister = registersTmp[row];
+                if (ctrl.hotComponent.data.errors.hasOwnProperty(currentRegister['regs1'])) {
+                  ctrl.numeroErrores++;
+                  if ((fin - init) < 10 ) {
+                    posicionLinea = (i * 25) + delta;
+                  } else {
+                    posicionLinea = (i * positionInBar) + delta;
+                  }
 
-          for (var row = init; row < fin; row++ ) {
-            //var currentRegister = this.data.registers[row];
-            //var comparar = this.data.registers[row];
-            var currentRegister = registersTmp[row];
-            //if (this.data.errors.hasOwnProperty(currentRegister.regs1)) {
-            if (this.hotComponent.data.errors.hasOwnProperty(currentRegister[3])) {
-              if ((fin - init) < 10 ) {
-                posicionLinea = (i * 25) + delta;
-              } else {
-                posicionLinea = (i * positionInBar) + delta;
-              }
+                  let item = document.createElement("div");
+                  item.className = "table__scroll-error-item";
+                  item.setAttribute("line", String(row));
+                  item.style.top = `${posicionLinea}px`;
 
-              let item = document.createElement("div");
-              item.className = "table__scroll-error-item";
-              item.setAttribute("line", String(row));
-              item.style.top = `${posicionLinea}px`;
+                  item.addEventListener("click", (event) => {
+                    let target: any = event.target;
+                    let line = target.getAttribute("line");
+                    ctrl.trSelected = Number(line) + 1;
+                    ctrl.scrollTableTo(Number(line), posicionLinea);
+                    setTimeout(() => {
+                      ctrl.changeStyleErrorCells(ctrl.trSelected);
+                    }, 100);
+                  });
 
-              item.addEventListener("click", (event) => {
-                let target: any = event.target;
-                let line = target.getAttribute("line");
-                this.trSelected = Number(line) + 1;
-                this.scrollTableTo(Number(line));
+                  barError.appendChild(item);
+                }
+                i++;
+                resolve("");
               });
-              barError.appendChild(item);
-            }
-            i++;
           }
+
+          async function recorrerRegistros(): Promise<void> {
+              for (var row = init; row < fin; row++ ) {
+                await crearItems(row);
+              }
+              return;
+          }
+
+          recorrerRegistros();
         }
       }
     }
+
+
+    public changeStyleErrorCells(rowSelected) {
+      if (rowSelected !== -1) {
+        this.restoreRowClassError();
+        let htCore = this.hotComponent.hotElement.getElementsByClassName('htCore');
+        let firstHtCore = htCore[0];
+        let trs = firstHtCore.getElementsByTagName('tr');
+        let trsSeleccionado;
+        for (let i = 0; i < trs.length; i++) {
+          trsSeleccionado = trs[i];
+          if (trsSeleccionado !== undefined) {
+            let tdsBus = trsSeleccionado.getElementsByTagName('td');
+            if (tdsBus !== undefined && tdsBus.length > 0) {
+              let secuencia = tdsBus[3].innerText;
+              if (Number(secuencia) === rowSelected) {
+                break;
+              }
+            }
+          }
+        }
+
+        let tds = trsSeleccionado.getElementsByTagName('td');
+        for (let i = 0; i < tds.length; i++) {
+          tds[i].className += " table__row--error";
+        }
+      }
+    }
+
+
+    /** @description
+        * Elimina los estilos CSS de las clases que indican el error en las celdas.
+        */
+        private restoreRowClassError() {
+          let currenRow = this.hotComponent.hotElement;
+          let table = currenRow.getElementsByClassName('htCore');
+          let tableContent = table[0];
+          let trs = tableContent.getElementsByTagName('tr');
+          for (let row = 0; row < trs.length; row++) {
+            let tds = trs[row].getElementsByTagName('td');
+            for (let i = 0; i < tds.length; i++) {
+              tds[i].className = tds[i].className.replace(" table__row--error", "");
+            }
+          }
+
+          let tabla = document.getElementsByTagName("hands-on-table")[0];
+          let encabezado = tabla.getElementsByClassName('htCore');
+          let encabezadoContent = encabezado[0];
+          let trsEncabezado = encabezadoContent.getElementsByTagName('tr');
+          for (let row = 0; row < trsEncabezado.length; row++) {
+            let tds = trsEncabezado[row].getElementsByTagName('td');
+            for (let i = 0; i < tds.length; i++) {
+              tds[i].className = tds[i].className.replace(" table__row--error", "");
+            }
+          }
+        }
+
 
     /**
     * @description
@@ -469,6 +535,7 @@ namespace app.table {
     }
 
     public afterRender(){
+      this.addItemBarError();
           let ctrl=this;
           return function(forced){
             if (this.countVisibleRows()!= -1){
@@ -509,12 +576,15 @@ namespace app.table {
         * realice el scroll hasta la posición en la que se encuentra el registro del
         * error.
         */
-        private scrollTableTo(valueScroll: number = 0) {
+        private scrollTableTo(valueScroll: number = 0, posicionLinea) {
           let wtHolder: any = document.getElementsByClassName('wtHolder')[0];
-          let tamanoSroll = 280;
-          let heightScroll = wtHolder.scrollHeight - tamanoSroll;
-          let porcionesScroll = heightScroll / this.numeroErrores;
-          wtHolder.scrollTop = porcionesScroll * valueScroll;
+          let division = Math.ceil(valueScroll / 8);
+          if (division > 0) {
+            division = division - 1;
+          }
+          let top = division * 235;
+
+          wtHolder.scrollTop = top;
         }
 
 
@@ -549,9 +619,9 @@ namespace app.table {
 
 
         $doCheck() {
-          setTimeout(() => {
+          /*setTimeout(() => {
                   this.addItemBarError();
-                }, this.hotComponent.OPTIONS.TABLES.TIMER.WAIT);
+                }, this.hotComponent.OPTIONS.TABLES.TIMER.WAIT);*/
 
             }
 

@@ -58,6 +58,10 @@ namespace app.table {
       return this.iHotcomponent.getData();
     }
 
+    public afterRender() {
+      return this.iHotcomponent.afterRender();
+    }
+
     public getColumnSorting(){
       return this.iHotcomponent.getColumnSorting();
     }

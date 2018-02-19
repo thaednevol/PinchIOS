@@ -108,18 +108,13 @@ namespace app.table {
 
       }
 
-
-      public afterOnCellMouseDown(){
-        /*var ctrl=this;
-        return function (event,pos,cell) {
-          let linePosition=ctrl.hotComponent.hotTable.getDataAtCell(pos.row,0);
-          if (linePosition){
-              let cellPosition=pos.col;
-              if (cellPosition){
-                ctrl.hotComponent.$rootScope.$broadcast("refresh-contributors-table", linePosition);
-              }
-            }
-          };*/
+      public afterBeginEditing(){
+        let ctrl=this;
+        return function(row,col){
+          let cs=ctrl.hotComponent.hotTable.getCellMeta(row, col);
+          let linePosition=cs.visualRow;
+          ctrl.hotComponent.$rootScope.$broadcast("refresh-contributors-table", 1);
+        }
       }
 
       public getHotSettings(){
@@ -130,11 +125,12 @@ namespace app.table {
       //hotSettings['afterColumnSort'] = this.afterColumnSort();
       //hotSettings['afterOnCellMouseDown'] = this.afterOnCellMouseDown();
       hotSettings['afterChange'] = this.afterChange();
+      hotSettings['afterBeginEditing'] = this.afterBeginEditing();
       return hotSettings;
     }
 
 
-      
+
 
       public registerHooks(){
 
@@ -171,7 +167,7 @@ namespace app.table {
               td.innerHTML = value;
             }
           }
-          
+
         }
 
         /*function successRenderer(instance, td, row, col, prop, value, cellProperties) {
@@ -182,8 +178,8 @@ namespace app.table {
       public afterChange(){
         var ctrl=this;
         return function (changes, source) {
-     
-           
+
+
 
           // if (changes != null) {
           //   // for (var fil = 0; fil < changes.length; fil++) {
@@ -217,12 +213,12 @@ namespace app.table {
                     if(cell != undefined){
                       cell.className  = '';
                     }
-                    
-                   
+
+
                   }
 
                   if(res.data.erroresRegistros.length > 0){
-                     
+
                       var errores = res.data.erroresRegistros;
 
                         for (let i = 0; i < errores.length; i++) {
@@ -232,17 +228,17 @@ namespace app.table {
                              if(cell != undefined){
                               cell.className  = 'table__data-field--error';
                              }
-                             
+
                           }
-     
-                        }   
+
+                        }
                     }
 
                     // ctrl.hotComponent.hotTable.render();
 
                     });
 
-                    
+
                     setTimeout(() => {
                       removelistener();
                     }, 1000);
