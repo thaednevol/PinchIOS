@@ -430,7 +430,6 @@ namespace app.table {
               editTable: "<", // Indica si la tabla se le permite editar la información.
               fixedColumns: "<", // Indica si se insertan dos columnas fijas, de seleccion y linea.
               selectedItem: "=", // Lista para indicar que inputs se seleccionan
-              selectAll: "=", // Para indicar que si se seleccionaron todos los registros
               firstElement: "=?", // Para indicar el primer elemento del arreglo
               cellNoEdit: "<", // Indica que celdas de la tabla no se pueden editar.
               activeSubMenu: "<", // Indica si se debe activar la opción del submenu en la tabla
