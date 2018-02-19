@@ -39,11 +39,6 @@ namespace app.settlement {
 
     public selectedItem: any = {};
 
-    /*
-    * @type {Boolean} selectAll - Indica si esta activo el check de seleccionar todos.
-    */
-    public selectAll: boolean = false;
-
     /**
     * Primer elemento del arreglo despues de filtros y ordenamiento
     */

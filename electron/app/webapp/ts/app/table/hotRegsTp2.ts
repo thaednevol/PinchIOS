@@ -72,10 +72,6 @@ namespace app.table {
       return 275;
     }
 
-    public afterRender() {
-      this.addItemBarError();
-    }
-
     public getColumnDef(){
       var columnDef=[];
       columnDef = [
@@ -538,6 +534,7 @@ namespace app.table {
     }
 
     public afterRender(){
+      this.addItemBarError();
           let ctrl=this;
           return function(forced){
             if (this.countVisibleRows()!= -1){
