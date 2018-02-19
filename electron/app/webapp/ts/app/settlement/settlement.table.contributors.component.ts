@@ -28,6 +28,11 @@ namespace app.settlement {
     private OPTIONS: any;
 
     /**
+    * @type {Boolean} selectAll - Indica si esta activo el check de seleccionar todos.
+    */
+    public selectAll: boolean = false;
+
+    /**
     * @type {Object} selectedItem - Almacena la información de la celdas que
     * se selecciona en el momento.
     */
@@ -293,7 +298,7 @@ namespace app.settlement {
         //this.$scope.$digest();
       });
     }
-    
+
 
     /**
     * @description
