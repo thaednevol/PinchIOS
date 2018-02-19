@@ -228,6 +228,61 @@ namespace app.settlement {
       }, 100);
     }
 
+
+    /**
+    * @description
+    * Metodo que duplica los registros seleccionados en la tabla,
+    * los registros duplicados quedan seguidos del "original".
+    */
+    public actionDuplicateRegister() {
+      /** Arreglo de posiciones de registros a duplicar */
+      let positionToDuplicate = [];
+      /** Secuencia que se va duplicar */
+      let position: any = 0
+      /** Arreglo de registros a duplicar */
+      let newRegister: any = {};
+      let key: any;
+      for (let reg of this.file.data.regsTp02.registers) {
+        if (reg["selected"]) {
+          this.selectedItem[reg["regs1"]] = true;
+        }
+      }
+      // Se recorren los registros seleccionados y se agregan a la matriz total
+      for (let i = 0; i < Object.keys(this.selectedItem).length; i++) {
+        key = Object.keys(this.selectedItem)[i];
+        if (this.selectedItem[key]) {
+          position = parseInt(key);
+          positionToDuplicate.push(position);
+          // Vector que se va a duplicar
+          this.file.data.regsTp02.registers[position - 1 + i]['selected'] = false;
+          angular.copy(this.file.data.regsTp02.registers[position - 1 + i], newRegister);
+          this.file.data.regsTp02.registers.splice(position + i, 0, newRegister);
+          newRegister = {};
+        }
+      }
+      // Se desmarcan los registros seleccionados
+      this.selectedItem = {};
+      if (this.selectAll) {
+        this.selectAll = false;
+      }
+      // Se realiza el cambio en las secuencia de los registros
+      this.file.data = this.soiService.changeSequenceRegisterType2(this.file.data, positionToDuplicate[0]-1);
+      // Se realiza validacion de errores para los registros nuevos duplicados
+      for (let j = positionToDuplicate[0]-1; j < this.file.data.regsTp02.registers.length; j++) {
+          this.$rootScope.$broadcast("validate-register-table", j);
+      }
+      // Se asigna un timer para realizar el llamado para actualización de cantidad de archivos cargados.
+      setTimeout(() => {
+        let numberPage = Math.floor((this.file.data.regsTp02.registers.length - 1) / this.OPTIONS.TABLES.ROW_LIMIT_BY_PAGE);
+        this.$rootScope.$broadcast("change-page-table", "regsTp02", numberPage, true);
+        this.$rootScope.$broadcast("update-info-panel");
+        this.$rootScope.$broadcast("update-totals");
+        this.$rootScope.$broadcast("refresh-table-duplicate");
+        //this.$scope.$digest();
+      });
+    }
+    
+
     /**
     * @description
     * Acción de la vista que da la orden de eliminar los registros seleccionados
