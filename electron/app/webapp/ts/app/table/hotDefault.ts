@@ -153,5 +153,9 @@ namespace app.table {
 
       }
 
+      public getFirstElement(){
+
+      }
+
     }
   }
