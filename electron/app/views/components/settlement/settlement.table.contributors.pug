@@ -67,7 +67,7 @@
             i.mdi.mdi-format-list-bulleted
 
       //- Tabla de datos del registro tipo 2
-      //- table-edit(data="$ctrl.file.data.regsTp02" labels="$ctrl.file.data.labelsTp02" id-table="'regsTp02'" active-filter="true" fixed-columns="true" selected-item="$ctrl.selectedItem" cell-no-edit="$ctrl.cellNoEditType2" active-sub-menu="true" object-filter="$ctrl.objectFilter" only-errors-filter="$ctrl.onlyErrorsFilter" replace-active="true")
+      table-edit(data="$ctrl.file.data.regsTp02" labels="$ctrl.file.data.labelsTp02" id-table="'regsTp02'" active-filter="true" fixed-columns="true" selected-item="$ctrl.selectedItem" cell-no-edit="$ctrl.cellNoEditType2" active-sub-menu="true" object-filter="$ctrl.objectFilter" only-errors-filter="$ctrl.onlyErrorsFilter" replace-active="true")
       .table__left
         hands-on-table(data="$ctrl.file.data.regsTp02" labels="$ctrl.file.data.labelsTp02" id-table="'regsTp02'" active-filter="true" fixed-columns="true" selected-item="$ctrl.selectedItem" cell-no-edit="$ctrl.cellNoEditType2" active-sub-menu="true" object-filter="$ctrl.objectFilter" only-errors-filter="$ctrl.onlyErrorsFilter" replace-active="true")
         .table__scroll-error(id="barra-errores" style="height:{{$ctrl.height -30}}px;")
@@ -77,5 +77,5 @@
     //- Tabla para mostrar errores de registros
     .sy-table__container.sett-contributor__error
       .sy__title-table(ng-bind="'SETTLEMENT.TABLES.ERRORS' | translate")
-      error-contributors(column-Filter="false" data="$ctrl.listErrorsContributors" object-filter="$ctrl.filterError" title-error="true")
-      //- hands-on-table(data="$ctrl.listErrorsContributors.data" object-filter="$ctrl.filterError" id-table="'contributors'")
+      //- error-contributors(column-Filter="false" data="$ctrl.listErrorsContributors" object-filter="$ctrl.filterError" title-error="true")
+      hands-on-table(data="$ctrl.listErrorsContributors.data" object-filter="$ctrl.filterError" id-table="'contributors'")
