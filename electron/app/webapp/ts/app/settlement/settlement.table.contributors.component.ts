@@ -535,6 +535,7 @@ namespace app.settlement {
           this.$rootScope.$broadcast("update-info-panel");
           this.$rootScope.$broadcast("update-totals");
           this.$rootScope.$broadcast("refresh-table-delete");
+          this.$rootScope.$broadcast("action-change-page");
           //this.$scope.$digest();
 
 
