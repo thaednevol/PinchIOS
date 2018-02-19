@@ -13,6 +13,8 @@ namespace app.table {
     */
     private onlyErrors: string = "N";
 
+    public firstElement: any =  null;
+
     /**
     * @type {array} errors: Guarda los errores
     */
@@ -628,6 +630,12 @@ namespace app.table {
         public afterColumnSort(){
 
           var ctrl=this;
+
+          this.firstElement=null;
+
+          if(ctrl.hotComponent.hotTable.sortIndex !== undefined){
+            this.firstElement= this.hotComponent.hotTable.getData()[0];
+          }
           return function() {
           console.log('afterColumnSort');
            ctrl.refreshPaging();
@@ -733,6 +741,10 @@ namespace app.table {
 
           });
         }
+
+      public getFirstElement(){
+       return this.firstElement;
+      }
 
         public colWidths(){
           // LAS COSAS QUE UNO HACE POR LA OPTIMIZACION

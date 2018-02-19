@@ -31,8 +31,20 @@ namespace app.settlement {
     * @type {Object} selectedItem - Almacena la información de la celdas que
     * se selecciona en el momento.
     */
+
     public selectedItem: any = {};
 
+    /*
+    * @type {Boolean} selectAll - Indica si esta activo el check de seleccionar todos.
+    */
+    public selectAll: boolean = false;
+
+    /**
+    * Primer elemento del arreglo despues de filtros y ordenamiento
+    */
+    public firstElement: any;
+
+    /**
     /**
     * @type {Arra} cellNoEditType1 - Son valores fijos que indican que celdas no
     * se les permite la edición.
@@ -235,9 +247,15 @@ namespace app.settlement {
     * Se le resta 1 para que el registro coincida con la posición en el array.
     */
     public actionDeleteRegister() {
+      for (let reg of this.file.data.regsTp02.registers) {
+        if (reg["selected"]) {
+          this.selectedItem[reg["regs1"]] = true;
+        }
+      }
       if (this.dialogIsOpen) return;
       this.dialogIsOpen = true;
       if (Object.keys(this.selectedItem).length === 0) {
+        this.dialogIsOpen = false;
         return;
       }
       // Se agerga el mensaje para la ventana de confirmación de eliminar.
@@ -265,16 +283,208 @@ namespace app.settlement {
     private confirmDeleteRegister(option) {
       if (option === 1) {
         let positionDelete = [];
+
+        /*
+         * La aplicación debe validar que al realizar la eliminación de información,
+         * se conserve la información de al menos un (1) registro tipo 2.
+         * El total de registros del archivo se debe corregir de acuerdo a la
+         * eliminación de líneas.
+         */
+
+        this.$rootScope.$broadcast("refresh-first-element");
+
+        if (this.firstElement === undefined || this.firstElement === null) {
+          this.firstElement = this.file.data.regsTp02.registers[0];
+        } else {
+          for (let j = 0; j < this.file.data.regsTp02.registers.length; j++) {
+            let current = this.file.data.regsTp02.registers[j]["regs1"];
+            if (parseInt(current) === parseInt(this.firstElement["3"])) {
+              this.firstElement =this.file.data.regsTp02.registers[j];
+            }
+          }
+        }
+
+        let clearFilter = false;
+        if (this.file.data.regsTp02.registers.length === Object.keys(this.selectedItem).length) {
+          let sec = this.firstElement["regs1"];
+          let position = this.file.data.regsTp02.registers.indexOf(this.firstElement);
+          if (position !== -1) {
+            delete this.selectedItem[this.firstElement["regs1"]];
+            this.file.data.regsTp02.registers[position]["selected"] = false;
+          } else {
+            delete this.selectedItem[1];
+            this.file.data.regsTp02.registers[0]["selected"] = false;
+          }
+          clearFilter = true;
+        } else {
+          clearFilter = false;
+        }
+
+        let arraySeleccionado = [];
+        let indexSeleccionado = 0;
         // Se recorre el array de los registros que estan seleccionados para
         // su eliminación.
         for (let i = 0; i < Object.keys(this.selectedItem).length; i++) {
           let key = Object.keys(this.selectedItem)[i];
           if (this.selectedItem[key]) {
             positionDelete.push(parseInt(key) - 1);
+           for (let j = 0; j < this.file.data.regsTp02.registers.length; j++) {
+              let current = this.file.data.regsTp02.registers[j]["regs1"];
+              if (parseInt(current) === parseInt(key)) {
+                arraySeleccionado[indexSeleccionado] = this.file.data.regsTp02.registers[j];
+                indexSeleccionado++;
+              }
+            }
           }
         }
         this.selectedItem = {};
+
+         // Prepara datos para mostrar en la tabla de correcciones
+        let rowsCorrected: any = Object.keys(this.file.data.regsTp02.corrected);
+        let correctedDelete = 0;
+        let correccionesEliminadas = [];
+        for (let positionRow = 0; positionRow < rowsCorrected.length; positionRow++) {
+          let currentRow = rowsCorrected[positionRow];
+          let cols: any = Object.keys(this.file.data.regsTp02.corrected[currentRow]);
+          for (let positionCol = 0; positionCol < cols.length; positionCol++) {
+            let currentCol = cols[positionCol];
+            let currentError = this.file.data.regsTp02.corrected[currentRow][currentCol];
+            for (let i = 0; i < arraySeleccionado.length; i++) {
+              let currentArraySeleccionado = arraySeleccionado[i];
+              let linea = parseInt(currentArraySeleccionado.regs1) + 1;
+              if ( currentError.nroIdentificacion === currentArraySeleccionado.regs3 && currentError.tipoIdentificacion === currentArraySeleccionado.regs2 ) {
+                delete this.file.data.regsTp02.corrected[currentRow][currentCol];
+              }
+            }
+          }
+          if (Object.keys(this.file.data.regsTp02.corrected[currentRow]).length === 0) {
+            delete this.file.data.regsTp02.corrected[currentRow];
+            correccionesEliminadas[correctedDelete] = currentRow;
+            correctedDelete++;
+          }
+        }
+
+
+        let erroresDelete = 0;
+        let erroresEliminadas = [];
+        let rows: any = Object.keys(this.file.data.regsTp02.errors);
+        for (let positionRow = 0; positionRow < rows.length; positionRow++) {
+          let currentRow = rows[positionRow];860507669
+          let cols: any = Object.keys(this.file.data.regsTp02.errors[currentRow]);
+          for (let positionCol = 0; positionCol < cols.length; positionCol++) {
+            let currentCol = cols[positionCol];
+            let currentError = this.file.data.regsTp02.errors[currentRow][currentCol];
+            for (let i = 0; i < arraySeleccionado.length; i++) {
+              let currentArraySeleccionado = arraySeleccionado[i];
+              let linea = parseInt(currentArraySeleccionado.regs1) + 1;
+              if ( currentError.nroIdentificacion === currentArraySeleccionado.regs3 && currentError.tipoIdentificacion === currentArraySeleccionado.regs2 ) {
+                delete this.file.data.regsTp02.errors[currentRow][currentCol];
+              }
+            }
+          }
+          if (Object.keys(this.file.data.regsTp02.errors[currentRow]).length === 0) {
+            delete this.file.data.regsTp02.errors[currentRow];
+            erroresEliminadas[erroresDelete] = currentRow;
+            erroresDelete++;
+          }
+        }
         this.deleteItemsArray(positionDelete);
+
+        //Restablece  los check de selección
+        this.selectedItem = {};
+        if (this.selectAll) {
+          this.selectAll = false;
+        }
+
+        //Restablece los filtros
+        if (clearFilter) {
+          this.$rootScope.$broadcast("clear-filter");
+        }
+
+        this.$rootScope.$broadcast("clear-filter-multiple");
+
+        setTimeout(() => {
+          if (correccionesEliminadas.length > 0) {
+
+            let filasCorrected: any = Object.keys(this.file.data.regsTp02.corrected);
+            let newCorrected = [];
+            for (let positionRow = 0; positionRow < filasCorrected.length; positionRow++) {
+              let currentCorrected;
+              let currentRow = filasCorrected[positionRow];
+              if (currentRow !== undefined) {
+                let cols: any = Object.keys(this.file.data.regsTp02.corrected[currentRow]);
+                for (let positionCol = 0; positionCol < cols.length; positionCol++) {
+                  let currentCol = cols[positionCol];
+                  let currentError = this.file.data.regsTp02.corrected[currentRow][currentCol];
+                  for (let h = 0; h < this.file.data.regsTp02.registers.length; h++) {
+                    let current = this.file.data.regsTp02.registers[h];
+                    let linea = parseInt(current.regs1) + 1;
+                    if (currentError.nroIdentificacion === current.regs3 && currentError.tipoIdentificacion === current.regs2 ) {
+                      currentError.linea = linea;
+                      currentCorrected = parseInt(current.regs1);
+                      let existe = newCorrected[currentCorrected];
+                      if ( existe === undefined) {
+                        break;
+                      }
+                    }
+                  }
+                }
+              }
+              newCorrected[parseInt(currentCorrected)] = this.file.data.regsTp02.corrected[currentRow];
+            }
+
+            this.file.data.regsTp02.corrected = newCorrected;
+          }
+
+
+          let filasErrores: any = Object.keys(this.file.data.regsTp02.errors);
+          let newErrores = [];
+          for (let positionRow = 0; positionRow < filasErrores.length; positionRow++) {
+            let currentCorrected;
+            let currentRow = filasErrores[positionRow];
+            if (currentRow !== undefined) {
+              let cols: any = Object.keys(this.file.data.regsTp02.errors[currentRow]);
+              for (let positionCol = 0; positionCol < cols.length; positionCol++) {
+                let currentCol = cols[positionCol];
+                let currentError = this.file.data.regsTp02.errors[currentRow][currentCol];
+                for (let h = 0; h < this.file.data.regsTp02.registers.length; h++) {
+                  let current = this.file.data.regsTp02.registers[h];
+                  let linea = parseInt(current.regs1) + 1;
+                  if (currentError.nroIdentificacion === current.regs3 && currentError.tipoIdentificacion === current.regs2 ) {
+                    currentError.linea = parseInt(current.regs1) + 1;
+                    currentCorrected = parseInt(current.regs1);
+                    let existe = newErrores[currentCorrected];
+                    if ( existe === undefined) {
+                      break;
+                    }
+                  }
+                }
+              }
+            }
+            newErrores[parseInt(currentCorrected)] = this.file.data.regsTp02.errors[currentRow];
+          }
+
+          if (erroresEliminadas.length > 0) {
+            this.file.data.regsTp02.errors = newErrores;
+          }
+
+        });
+        // Se realiza el cambio en las secuencia de los registros
+        //this.file.data = this.soiService.changeSequenceRegisterType2(this.file.data, 0);
+
+        // Se asigna un timer para realizar el llamado para actualización de cantidad de archivos cargados.
+        setTimeout(() => {
+
+          let numberPage = Math.floor((this.file.data.regsTp02.registers.length - 1) / this.OPTIONS.TABLES.ROW_LIMIT_BY_PAGE);
+          this.$rootScope.$broadcast("change-page-table", "regsTp02", numberPage, true);
+          this.$rootScope.$broadcast("update-info-panel");
+          this.$rootScope.$broadcast("update-totals");
+          this.$rootScope.$broadcast("refresh-table-delete");
+          //this.$scope.$digest();
+
+
+        });
+        //this.$rootScope.$broadcast("refresh-table");
       }
     }
 
@@ -290,14 +500,37 @@ namespace app.settlement {
     private deleteItemsArray(positionDelete) {
       let arrayDelete = this.file.data.regsTp02.registers;
       // Se recorre el array con la información de los registros a eliminar
-      for (let i = 0; i < positionDelete.length; i++) {
-        let currentPosition = positionDelete[i] - i;
+      let i = 0;
+      for (let pos of positionDelete) {
+        let currentPosition = pos - i;
+
+        // Si el archivo carga sin correccion se debe buscar la posicion real
+        let regs1 = pos + 1;
+        let filter = {'regs1': regs1};
+        let filterRegs = this.$filter('filter')(arrayDelete, filter);
+        let arrayPosition = arrayDelete.indexOf(filterRegs[0]);
+        currentPosition = arrayPosition;
+
+        try {
+          if (!arrayDelete[arrayPosition]['selected'] || currentPosition >= 0 || !arrayDelete[arrayPosition]) {
+            let positionAux = pos + 1;
+            for (let j = 0; j < arrayDelete.length; j++) {
+              if (arrayDelete[j]['regs1'] === positionAux + "") {
+                currentPosition = j;
+                break;
+              }
+            }
+          }
+        } catch (error) {
+
+        }
         let params = {
           regTp02: this.soiService.lineRegisterType2ToArray(this.file.data, currentPosition),
           nroLinea: Number(this.file.data.regsTp02.registers[currentPosition]["regs1"]) + 1
         };
         arrayDelete.splice(currentPosition, 1);
         this.serviceSettlement.removeRegister(params).get();
+        i++;
       }
       // Se asigna un timer para realizar el llamado a los metodos de actualización
       // de datos y numero consecutivo.
@@ -307,6 +540,10 @@ namespace app.settlement {
         this.$rootScope.$broadcast("update-info-panel");
         this.$rootScope.$broadcast("update-totals");
       });
+      let result = this.$filter("filter")(this.file.data.regsTp02.registers, this.objectFilter);
+      if (result === undefined || result.length === 0) {
+        this.objectFilter = {};
+      }
     }
 
     /**

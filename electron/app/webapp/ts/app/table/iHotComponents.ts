@@ -35,6 +35,7 @@ namespace app.table {
     registerRenderers();
     registerEvents();
     registerValidators();
+    getFirstElement();
 
     updateSettings();
   }
