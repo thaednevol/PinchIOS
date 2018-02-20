@@ -124,6 +124,7 @@ namespace app.settlement {
     }
 
     public validateSelected(): void {
+      this.showLoading = true;
       for (let reg of this.listErrorsContributors.data) {
         if (reg["seleccionado"]) {
           this.selectedItem[reg["secuenciaError"]] = true;
@@ -139,7 +140,6 @@ namespace app.settlement {
           this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_CONF"),
           (option) => {
             if (option === 1) {
-              this.showLoading = true;
               this.correctError(option);
               this.notificationService.show(this.$filter("translate")("MESSAGES.TITLES.INFO"), this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_CONF_1"));
               this.$rootScope.$broadcast("refresh-table-corrected");

@@ -211,7 +211,7 @@
   "ERROR": {
     "CONTRIBUTORS": {
       "ERROR": " Total errores del cotizante:",
-      "CORRECTED": " Total errores corregidos:",
+      "CORRECTED": " Total correcciones sugeridas:",
       "NOT_CORRECTED": " Total errores corregidos:",
       "TYPE_AUTOM": "Autom\u00E1tica",
       "TYPE_MANU": "Manual",

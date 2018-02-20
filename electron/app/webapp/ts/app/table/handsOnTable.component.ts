@@ -197,30 +197,23 @@ namespace app.table {
         });
 
         this.$scope.$on("refresh-table-corrected", () => {
-          //Se comenta por error Invalid attempt to destructure non-iterable instance[object Object] handsontable
-
-          if(this.idTable === "errorConAut"  ){
+          if (this.idTable === "errorConAut") {
             this.page=1;
-
             try {
-            this.hotTable.updateSettings({
-
-              data: this.hc.getData()
-            });
-          } catch(err) {
-            if (this.hotTable) {
-              this.hotTable.render();
+              this.hotTable.updateSettings({
+                data: this.hc.getData()
+              });
+            } catch(err) {
+              if (this.hotTable) {
+                this.hotTable.render();
+              }
+            }
+            if (this.hotTable.getData().length === 0) {
+              this.currentNumberRegisterLoad=0;
+              this.numRegisters=0;
+              this.startLimit=0;
             }
           }
-
-          var valo= this.hotTable.getData().length;
-          if(valo === 0){
-             this.currentNumberRegisterLoad=0;
-             this.numRegisters=0;
-             this.startLimit=0;
-            }
-          }
-
         });
 
         this.$scope.$on("refresh-first-element", () => {

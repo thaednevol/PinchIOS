@@ -53,7 +53,7 @@ namespace app.table {
       hotsettings['afterRender'] = this.afterRender();
       hotsettings['colWidths']=this.colWidths();
       hotsettings['afterBeginEditing']=this.afterBeginEditing();
-      hotsettings['hiddenRows']=this.getHiddenRows(1);
+      // hotsettings['hiddenRows']=this.getHiddenRows(1);
       return hotsettings;
     }
 
@@ -540,7 +540,7 @@ namespace app.table {
           return function(forced){
             if (this.countVisibleRows()!= -1){
               ctrl.validate();
-              ctrl.hotComponent.actionChangePage("");
+              // ctrl.hotComponent.actionChangePage("");
             }
           }
         }
