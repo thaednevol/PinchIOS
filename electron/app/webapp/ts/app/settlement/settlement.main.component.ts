@@ -349,7 +349,7 @@ namespace app.settlement {
           fileProcess.then(() => {
             let fileData = this.serviceFile.createFileOptions("validacionArchivoDataSourceDTO.json", data.validacionArchivoDataSourceDTO);
             fileData.then(() => {
-              this.initializeSettlement();
+                this.initializeSettlement();
             });
           });
         } else {
@@ -372,10 +372,12 @@ namespace app.settlement {
     * posibles errores que presenta el archivo.
     */
     private initializeSettlement() {
+
       // Parametros solicidatos por el servicio JAR para validar los archivos.
       let params = {
         archivoProcesoJson: this.serviceFile.getPathOptions("archivoEnProcesoDTO.json"),
         archivoDatasourceJson: this.serviceFile.getPathOptions("validacionArchivoDataSourceDTO.json"),
+        regTp01: this.file.data.regTp1Txt,
         pathArchivo2388: this.file.path,
         pathRespuestaJson: this.serviceFile.getPathTemp(),
         reformaTributaria: this.info.reforma
@@ -405,8 +407,8 @@ namespace app.settlement {
           // Se convierte el resultado de los errores de los archivos en Objectos para
           // Integrarlos con las tablas.
 
-          this.processResponseError(data, newListError, 0);
-          return this.validateRegisterTp01();
+          return this.processResponseError(data, newListError, 0);
+
           /*
           for (let i = 0; i < this.file.data.regsTp02.registers.length; i++) {
             let currentSequence: number = this.file.data.regsTp02.registers[i].regs1;
