@@ -8,9 +8,18 @@ namespace app.table {
   * Clase encargada de cargar una tabla con las opciones de edición
   * paginado y filtro de contenido de las tablas basado en handsontable.
   */
+
+
+
   export class HotTotals extends HotDefault {
+
+    public hotComponent: any;
+
       constructor(hotComponent) {
+
 		  super(hotComponent);
+
+      this.hotComponent = hotComponent;
     }
 
 
@@ -81,36 +90,77 @@ namespace app.table {
       }
     }
 
-    public updateSettings(){
-      let hot=this.hotComponent.hotTable;
-      let data=this.hotComponent.data;
+    public getHotSettings(){
+      let ctrl=this;
+      let hotsettings = super.getHotSettings();
+      hotsettings['sortFunction']=this.sortFunction();
+      return hotsettings;
+    }
 
-      this.hotComponent.hotTable.updateSettings({
-        sortFunction: function(sortOrder, columnMeta) {
-    	     return function(a, b) {
-             var plugin = hot.getPlugin('columnSorting');
-             let total=data.length-1;
-             var sortFunction;
+    public sortFunction(){
+      var hot = this.hotComponent.hotTable;
+      var data=this.hotComponent.data;
+      var ctrl = this;
+      return function(sortOrder,columnMeta){
 
-             if (b[0] === total) {
-        	      return -1;
-              }
-
-              switch (columnMeta.type) {
-                case 'date':
-                  sortFunction = plugin.dateSort;
-                break;
-                case 'numeric':
-                  sortFunction = plugin.numericSort;
-                break;
-                default:
-                  sortFunction = plugin.defaultSort;
+              return function(a, b) {
+                var plugin = ctrl.hotComponent.hotTable.getPlugin('columnSorting');
+                var total=data.length-1;
+                var sortFunction;
+                
+                if (b[0] === total) {
+                 return -1;
                 }
 
+                
+                switch (columnMeta.type) {
+                  case 'date':
+                    sortFunction = plugin.dateSort;
+                    break;
+                  case 'numeric':
+                    sortFunction = plugin.numericSort;
+                    break;
+                  default:
+                    sortFunction = plugin.defaultSort;
+                }
+                
                 return sortFunction(sortOrder, columnMeta)(a, b);
               };
-            }
-          });
-        }
+      }
+
+    }
+        
+
+    // public updateSettings(){
+    //   let hot=this.hotComponent.hotTable;
+    //   let data=this.hotComponent.data;
+
+    //   this.hotComponent.hotTable.updateSettings({
+    //     sortFunction: function(sortOrder, columnMeta) {
+    // 	     return function(a, b) {
+    //          var plugin = hot.getPlugin('columnSorting');
+    //          let total=data.length-1;
+    //          var sortFunction;
+
+    //          if (b[0] === total) {
+    //     	      return -1;
+    //           }
+
+    //           switch (columnMeta.type) {
+    //             case 'date':
+    //               sortFunction = plugin.dateSort;
+    //             break;
+    //             case 'numeric':
+    //               sortFunction = plugin.numericSort;
+    //             break;
+    //             default:
+    //               sortFunction = plugin.defaultSort;
+    //             }
+
+    //             return sortFunction(sortOrder, columnMeta)(a, b);
+    //           };
+    //         }
+    //       });
+    //     }
       }
     }
