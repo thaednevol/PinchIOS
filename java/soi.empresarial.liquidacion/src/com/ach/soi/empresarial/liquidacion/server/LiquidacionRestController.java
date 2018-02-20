@@ -67,6 +67,7 @@ public class LiquidacionRestController {
 	@ResponseBody
     public ResultadoValidacionArchivoTO incializarLiquidacion( String archivoProcesoJson, 
     															String archivoDatasourceJson, 
+    															String regTp01,
     															String pathArchivo2388, 
     															String pathRespuestaJson, 
     															boolean reformaTributaria ) {
@@ -105,16 +106,16 @@ public class LiquidacionRestController {
             
             LiquidadorActivos liquidacion = new LiquidadorActivos();
             		
-			String regT01 = null;
+			//String regT01 = null;
 			
 			lineReader = new BufferedReader( new InputStreamReader(new FileInputStream(pathArchivo2388), Constants.GENERAL_ENCODING) );
-			if ( (regT01=lineReader.readLine())!=null ){		
+			/*if ( (regT01=lineReader.readLine())!=null ){		
 				lineReader.close();
-			}
+			}*/
             
-			regT01 = ParsersUtil.replaceCharsNotUTF8(regT01);			
+			regTp01 = ParsersUtil.replaceCharsNotUTF8(regTp01);			
 			
-			erroresTp1 = liquidacion.completarPlanillaAportanteDTO(validacionPlanillaDd.getPlanillaApteDto(), regT01, archivoEnProceso,validacionPlanillaDd);
+			erroresTp1 = liquidacion.completarPlanillaAportanteDTO(validacionPlanillaDd.getPlanillaApteDto(), regTp01, archivoEnProceso,validacionPlanillaDd);
 					
 			erroresUnion.addAll(Arrays.asList(erroresTp1));
 			os = new FileOutputStream(new File(pathResultado.toString()),true);
@@ -182,6 +183,7 @@ public class LiquidacionRestController {
         }
                 
     }
+		
 	
 	@RequestMapping("/convertircotizante")
 	@ResponseBody
@@ -311,7 +313,7 @@ public class LiquidacionRestController {
 	@RequestMapping(value="/getversion",method={RequestMethod.GET})
 	@ResponseBody	
     public String getVersion(  ) {
-		return "2.4.8 (2018-02-16) Branch: proximaVersion_Mayo_15";
+		return "2.4.8 (2018-02-20) Branch: proximaVersion_Mayo_15 - Integracion Listado Cotizantes";
 	}
 	
 	@RequestMapping(value="/generarsoportes",method={RequestMethod.POST})

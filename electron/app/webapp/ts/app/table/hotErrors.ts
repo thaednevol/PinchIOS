@@ -142,6 +142,54 @@ namespace app.table {
       };
     }
 
+    public getHotSettings(){
+      let ctrl=this;
+      let hotsettings = super.getHotSettings();
+      hotsettings['afterRender'] = this.afterRender();
+      // hotsettings['hiddenRows']=this.getHiddenRows(1);
+      return hotsettings;
+    }
+
+    public afterRender(){
+          let ctrl=this;
+          return function(forced){
+            if (this.countVisibleRows()!= -1){
+              ctrl.validate();
+              // ctrl.hotComponent.actionChangePage("");
+            }
+          }
+        }
+
+        private rowsValidated= new Array();
+
+        private validate(){
+          let ctrl=this;
+          if (ctrl.rowsValidated.length==0){
+            function validar(inf,sup):Promise<any> {
+                return new Promise<any>(resolve => {
+                    for(let i=inf; i<sup;i++){
+                      ctrl.rowsValidated.indexOf(Number(i)) === -1 ? ctrl.rowsValidated.push(Number(i)) : null;
+                    }
+                    ctrl.hotComponent.hotTable.validateRows(ctrl.rowsValidated, function(valid) {});
+
+                  resolve();
+                })
+              }
+              async function validarLote(): Promise<void> {
+                let plugin=ctrl.hotComponent.hotTable.getPlugin('autoRowSize');
+                let inf=plugin.getFirstVisibleRow();
+                let sup=plugin.getLastVisibleRow();
+                if (inf!=-1 && sup!=-1){
+                  await validar(inf,sup);
+                  inf=plugin.getLastVisibleRow();
+                  sup=ctrl.hotComponent.hotTable.countRows();
+                  await validar(inf,sup);
+                }
+              }
+              validarLote();
+          }
+        }
+
     public getPagination() {
       let enablePag=true;
       let numReg=this.getData().length;
