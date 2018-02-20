@@ -30,13 +30,48 @@ namespace app.table {
       
     }
 
+
+
     public getColumnDef(){
- 
+
         let columnDef=[];
+
         if (this.hotComponent.data[0]) {
-            for(let i of Object.keys(this.hotComponent.data[0])) {
+          // for(let i of Object.keys(this.hotComponent.data[0])) {
+          //   columnDef.push({data: i, type: 'text',readOnly:!this.hotComponent.editTable});
+          // }
+          for(let i=0; i<Object.keys(this.hotComponent.data[0]).length; i++){
+            if(this.hotComponent.idTable==="pension" && i > 1){
+                columnDef.push({data: i, type: 'numeric',readOnly:!this.hotComponent.editTable});
+               }else if (this.hotComponent.idTable==="salud" && i>1){
+                  columnDef.push({data: i, type: 'numeric',readOnly:!this.hotComponent.editTable});
+               }else if (this.hotComponent.idTable==="riesgo" && i>1){
+                  columnDef.push({data: i, type: 'numeric',readOnly:!this.hotComponent.editTable});
+               }else if (this.hotComponent.idTable==="parafiscales" && i>2){
+                  columnDef.push({data: i, type: 'numeric',readOnly:!this.hotComponent.editTable});
+               }else if (this.hotComponent.idTable==="gran"){
+                  columnDef.push({data: i, type: 'numeric',readOnly:!this.hotComponent.editTable});
+               }else{
                 columnDef.push({data: i, type: 'text',readOnly:!this.hotComponent.editTable});
-            }
+               }
+          }
+            // for(int i of Object.keys(this.hotComponent.data[0])) {
+
+            //    if(this.hotComponent.idTable==="pension" && i > 2){
+            //     columnDef.push({data: i, type: 'numeric',readOnly:!this.hotComponent.editTable});
+            //    }else if (this.hotComponent.idTable==="salud" && i>2){
+            //       columnDef.push({data: i, type: 'numeric',readOnly:!this.hotComponent.editTable});
+            //    }else if (this.hotComponent.idTable==="riesgo" && i>2){
+            //       columnDef.push({data: i, type: 'numeric',readOnly:!this.hotComponent.editTable});
+            //    }else if (this.hotComponent.idTable==="parafiscales" && i>3){
+            //       columnDef.push({data: i, type: 'numeric',readOnly:!this.hotComponent.editTable});
+            //    }else if (this.hotComponent.idTable==="gran"){
+            //       columnDef.push({data: i, type: 'numeric',readOnly:!this.hotComponent.editTable});
+            //    }else{
+            //     columnDef.push({data: i, type: 'text',readOnly:!this.hotComponent.editTable});
+            //    }
+                
+            // }
         }
         return columnDef;
     }
@@ -112,12 +147,37 @@ namespace app.table {
                  return -1;
                 }
 
-                
                 switch (columnMeta.type) {
                   case 'date':
                     sortFunction = plugin.dateSort;
                     break;
-                  case 'numeric':
+                    case 'numeric':
+
+                    //Quito el signo $ de los numeros
+                    let valorB = b[1].replace('$','');
+                    let valorA = a[1].replace('$','');
+
+                    //Quito los puntos
+                    let valorBB = valorB.split('.').join("");
+                    let valorAA = valorA.split('.').join("");
+
+                    //Quito las comas
+                    let newB = valorBB.split(',').join("");
+                    let newA = valorAA.split(',').join("");
+
+                    //Convierto los números a enteros para calcula el mayor al menor
+                    let bvalor = parseInt(newB)
+                    let avalor = parseInt(newA)
+
+
+
+                    if (bvalor < avalor) {
+                      return sortOrder ? -1 : 1;
+                    }
+                    if (bvalor > avalor) {
+                      return sortOrder ? 1 : -1;
+                    }
+
                     sortFunction = plugin.numericSort;
                     break;
                   default:
@@ -130,37 +190,5 @@ namespace app.table {
 
     }
         
-
-    // public updateSettings(){
-    //   let hot=this.hotComponent.hotTable;
-    //   let data=this.hotComponent.data;
-
-    //   this.hotComponent.hotTable.updateSettings({
-    //     sortFunction: function(sortOrder, columnMeta) {
-    // 	     return function(a, b) {
-    //          var plugin = hot.getPlugin('columnSorting');
-    //          let total=data.length-1;
-    //          var sortFunction;
-
-    //          if (b[0] === total) {
-    //     	      return -1;
-    //           }
-
-    //           switch (columnMeta.type) {
-    //             case 'date':
-    //               sortFunction = plugin.dateSort;
-    //             break;
-    //             case 'numeric':
-    //               sortFunction = plugin.numericSort;
-    //             break;
-    //             default:
-    //               sortFunction = plugin.defaultSort;
-    //             }
-
-    //             return sortFunction(sortOrder, columnMeta)(a, b);
-    //           };
-    //         }
-    //       });
-    //     }
       }
     }
