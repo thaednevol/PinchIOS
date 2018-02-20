@@ -579,47 +579,14 @@ namespace app.settlement {
       });
     }
 
-    /**
-    * @description
-    * Ejecuta la validación de un registro comparandolo con el servicio REST
-    * del JAR.
-    */
-    public validateRegister(numberRegister) {
 
-      let selectedRegs = [];
-      let nroLinea0 = 0;
-      if ( numberRegister>=0 ){
-        numberRegister = Number(numberRegister);
-        let identificationSelected = this.file.data.regsTp02.registers[numberRegister]["regs3"];
-        let tpIdentificationSelected = this.file.data.regsTp02.registers[numberRegister]["regs2"];
-        selectedRegs = this.$filter("filter")(this.file.data.regsTp02.registers, { regs3: identificationSelected }, true);
-        nroLinea0 = Number(selectedRegs[0]["regs1"])+1;
-      }
-      else{
-        //se mandan a revalidar todos los registros de cotizante del archivo, por ejemplo si cambia el registro tipo 1
-        this.showLoading = true;
-        selectedRegs = this.file.data.regsTp02.registers;
-        nroLinea0 = 0;
-        numberRegister = 0;
-      }
-
-      let regsForValidate = [];
-      //Para enviar a validar los multiples registros de un solo cotizante
-      for (let i = 0; i < selectedRegs.length; i++) {
-        regsForValidate[i] = this.soiService.lineRegisterType2ToSeparatedString(this.file.data, selectedRegs[i]["regs1"]-1);
-      }
-      // Se agregan los parametros solicitados por el servicio de valdiación de registros
-      let params = {
-        regTp02: regsForValidate,
-        //regTp02: this.soiService.lineRegisterType2ToArray(this.file.data, numberRegister),
-        nroLinea: nroLinea0
-      };
+    private validateRegisters(params: any, numberRegister) {
 
       this.serviceSettlement.validateRegister(params).get().$promise.then((response) => {
 
         if (response.data.estadoSolicitud === "OK") {
             let numberSequence = numberRegister;
-            for (let idx = 0; idx < regsForValidate.length; idx++) {
+            for (let idx = 0; idx < params.regTp02.length; idx++) {
               numberSequence = numberSequence + 1;
               // Si la respuesta es correcta se procesa la carga de los errores de los campos
               //obtiene los errores del registro actualiza
@@ -736,6 +703,63 @@ namespace app.settlement {
       setTimeout(() => {
         this.$rootScope.$broadcast("action-change-page");
       });
+
+    }
+
+    /**
+    * @description
+    * Ejecuta la validación de un registro comparandolo con el servicio REST
+    * del JAR.
+    */
+    public validateRegister(numberRegister) {
+
+      let selectedRegs = [];
+      let nroLinea0 = 0;
+      let regsForValidate = [];
+      if ( numberRegister>=0 ){
+        numberRegister = Number(numberRegister);
+        let identificationSelected = this.file.data.regsTp02.registers[numberRegister]["regs3"];
+        let tpIdentificationSelected = this.file.data.regsTp02.registers[numberRegister]["regs2"];
+        selectedRegs = this.$filter("filter")(this.file.data.regsTp02.registers, { regs3: identificationSelected }, true);
+        nroLinea0 = Number(selectedRegs[0]["regs1"])+1;
+        //Para enviar a validar los multiples registros de un solo cotizante
+        for (let i = 0; i < selectedRegs.length; i++) {
+          regsForValidate[i] = this.soiService.lineRegisterType2ToSeparatedString(this.file.data, selectedRegs[i]["regs1"]-1);
+        }
+        // Se agregan los parametros solicitados por el servicio de valdiación de registros
+        let params = {
+          regTp02: regsForValidate,
+          //regTp02: this.soiService.lineRegisterType2ToArray(this.file.data, numberRegister),
+          nroLinea: nroLinea0
+        };
+        this.validateRegisters(params,numberRegister);
+      }
+      else{
+        //se mandan a revalidar todos los registros de cotizante del archivo, por ejemplo si cambia el registro tipo 1
+        this.showLoading = true;
+        //selectedRegs = this.file.data.regsTp02.registers;
+        //Para enviar a validar los multiples registros de un solo cotizante
+        nroLinea0 = 0;
+        numberRegister = 0;
+        for (let i = 0; i < this.file.data.regsTp02.registers.length; i++) {
+          regsForValidate[i] = this.soiService.lineRegisterType2ToSeparatedString(this.file.data, this.file.data.regsTp02.registers[i]["regs1"]-1);
+          if ( i>0 && i%10===0 ){
+            let params = {
+              regTp02: regsForValidate,
+              //regTp02: this.soiService.lineRegisterType2ToArray(this.file.data, numberRegister),
+              nroLinea: nroLinea0
+            };
+            this.validateRegisters(params,numberRegister);
+            regsForValidate = [];
+          }
+        }
+        let params = {
+          regTp02: regsForValidate,
+          //regTp02: this.soiService.lineRegisterType2ToArray(this.file.data, numberRegister),
+          nroLinea: nroLinea0
+        };
+        this.validateRegisters(params,numberRegister);
+      }
 
     }
 
