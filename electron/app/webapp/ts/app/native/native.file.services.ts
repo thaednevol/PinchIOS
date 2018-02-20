@@ -663,6 +663,8 @@ namespace app.native {
     */
     public jsonToCsv(routeFile: string, dataJson: any, fields: any): any {
       let csvContent: any = this.json2csv({
+        withBOM:true,
+        excelStrings:true,
         data: dataJson,
         fields: fields,
         hasCSVColumnTitle: false,
