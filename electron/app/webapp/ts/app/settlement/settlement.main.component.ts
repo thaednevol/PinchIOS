@@ -269,18 +269,20 @@ namespace app.settlement {
       let codSucursal = this.file.data.regTp01.registers[0]["regs11"];
       let nombreSucursal = this.file.data.regTp01.registers[0]["regs12"];
       let tiposPlanillaValidos: string[] = ['E','Y','A','I'];
-      let formasPresentacionValidas: string[] = ['U','C','S','D'];
+      //let formasPresentacionValidas: string[] = ['U','C','S','D'];
       let sucursales = this.$localStorage.sucursalesApte;
+      let fmaPresentacionAportante = this.$localStorage.authenticatedUserDTO.informacionAportantePlanillaDTO.codigoFormaPresentacion;
+
       if ( tiposPlanillaValidos.indexOf(tipoPlanilla)<0 ){
         this.tipoPlanillaInvalido = true;
         this.file.data.regTp01.registers[0]["regs7"] = 'E';
         this.file.data.regTp1Txt = this.file.data.regTp1Txt.substring(0,226)+'E'
                                     +this.file.data.regTp1Txt.substring(227,this.file.data.regTp1Txt.length);
       }
-      if ( formasPresentacionValidas.indexOf(formaPresentacion)<0 ){
+      if ( fmaPresentacionAportante!=formaPresentacion ){
         this.formaPresentacionInvalida = true;
-        this.file.data.regTp01.registers[0]["regs10"] = 'U';
-        this.file.data.regTp1Txt = this.file.data.regTp1Txt.substring(0,247)+'U'
+        this.file.data.regTp01.registers[0]["regs10"] = fmaPresentacionAportante;
+        this.file.data.regTp1Txt = this.file.data.regTp1Txt.substring(0,247)+fmaPresentacionAportante
                                     +this.file.data.regTp1Txt.substring(248,this.file.data.regTp1Txt.length);
       }
       let sucursalOk = false;
@@ -293,25 +295,27 @@ namespace app.settlement {
       }
 
 
-      if ( (formaPresentacion==='S' || formaPresentacion==='D') && !sucursalOk && sucursales.length>0 ){
+      if ( (fmaPresentacionAportante==='S' || fmaPresentacionAportante==='D') && !sucursalOk && sucursales.length>0 ){
         let currSucursal = sucursales[0].split(";");
-        let codSucursalLength = currSucursal[1].length;
         this.file.data.regTp01.registers[0]["regs11"] = currSucursal[1];
         this.file.data.regTp01.registers[0]["regs12"] = currSucursal[2];
-        let nomSucursalLength = currSucursal[2].length;
-        this.file.data.regTp1Txt = this.file.data.regTp1Txt.substring(0,248)+currSucursal[1]
+        let codSucursalRelleno = currSucursal[1].padEnd(10," ");
+        let nomSucursalRelleno = currSucursal[2].padEnd(40," ");
+        let nomSucursalLength = nomSucursalRelleno.length;
+        let codSucursalLength = codSucursalRelleno.length;
+        this.file.data.regTp1Txt = this.file.data.regTp1Txt.substring(0,248)+codSucursalRelleno
                                   +this.file.data.regTp1Txt.substring(248+codSucursalLength,this.file.data.regTp1Txt.length);
-                                  this.file.data.regTp1Txt = this.file.data.regTp1Txt.substring(0,258)+currSucursal[2]
+        this.file.data.regTp1Txt = this.file.data.regTp1Txt.substring(0,258)+nomSucursalRelleno
                                                             +this.file.data.regTp1Txt.substring(258+nomSucursalLength,this.file.data.regTp1Txt.length);
         this.sucursalInvalida = true;
       }
-      else{
+      else if ( (fmaPresentacionAportante!='S' && fmaPresentacionAportante!='D') ){
         this.file.data.regTp01.registers[0]["regs11"] = "";
         this.file.data.regTp01.registers[0]["regs12"] = "";
-        this.file.data.regTp1Txt = this.file.data.regTp1Txt.substring(0,248)+" "
-                                  +this.file.data.regTp1Txt.substring(249,this.file.data.regTp1Txt.length);
-                                  this.file.data.regTp1Txt = this.file.data.regTp1Txt.substring(0,258)+" "
-                                                            +this.file.data.regTp1Txt.substring(259,this.file.data.regTp1Txt.length);
+        this.file.data.regTp1Txt = this.file.data.regTp1Txt.substring(0,248)+""
+                                  +this.file.data.regTp1Txt.substring(248,this.file.data.regTp1Txt.length);
+                                  this.file.data.regTp1Txt = this.file.data.regTp1Txt.substring(0,258)+""
+                                                            +this.file.data.regTp1Txt.substring(258,this.file.data.regTp1Txt.length);
       }
 
     }
@@ -401,7 +405,8 @@ namespace app.settlement {
           // Se convierte el resultado de los errores de los archivos en Objectos para
           // Integrarlos con las tablas.
 
-          return this.processResponseError(data, newListError, 0);
+          this.processResponseError(data, newListError, 0);
+          return this.validateRegisterTp01();
           /*
           for (let i = 0; i < this.file.data.regsTp02.registers.length; i++) {
             let currentSequence: number = this.file.data.regsTp02.registers[i].regs1;
