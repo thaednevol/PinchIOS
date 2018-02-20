@@ -378,7 +378,7 @@ namespace app.table {
           var posicionLinea = 0;
           var i = 0;
           let ctrl = this;
-          function crearItems(row: number): Promise<any> {
+          function crearItems(row: number, item): Promise<any> {
               return new Promise<any>(resolve => {
                 var currentRegister = registersTmp[row];
                 if (ctrl.hotComponent.data.errors.hasOwnProperty(currentRegister['regs1'])) {
@@ -389,8 +389,9 @@ namespace app.table {
                     posicionLinea = (i * positionInBar) + delta;
                   }
 
-                  let item = document.createElement("div");
+                  //let item = document.createElement("div");
                   item.className = "table__scroll-error-item";
+
                   item.setAttribute("line", String(row));
                   item.style.top = `${posicionLinea}px`;
 
@@ -412,8 +413,11 @@ namespace app.table {
           }
 
           async function recorrerRegistros(): Promise<void> {
+            let item = document.createElement("div");
               for (var row = init; row < fin; row++ ) {
-                await crearItems(row);
+                var itemCopy = angular.copy(item);
+
+                await crearItems(row, itemCopy);
               }
               return;
           }
