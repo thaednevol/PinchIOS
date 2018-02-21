@@ -307,12 +307,18 @@ namespace app.table {
     }
 
     public afterBeginEditing(){
-            let ctrl=this;
+            /*let ctrl=this;
             return function(row,col){
               let cs=ctrl.hotComponent.hotTable.getCellMeta(row, col);
               let linePosition=cs.visualRow;
               ctrl.hotComponent.$rootScope.$broadcast("line-table-edit-select", Number(linePosition));
               ctrl.hotComponent.$rootScope.$broadcast("validate-register-table", Number(linePosition));
+            }*/
+            let ctrl=this;
+            return function(row,col){
+              let cs=ctrl.hotComponent.hotTable.getCellMeta(row, col);
+              let linePosition=cs.visualRow;
+              ctrl.hotComponent.$rootScope.$broadcast("refresh-contributors-table", linePosition + 2);
             }
           }
 
