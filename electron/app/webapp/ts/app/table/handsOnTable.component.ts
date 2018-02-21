@@ -144,7 +144,6 @@ namespace app.table {
         this.notificationService=notificationService;
 
         this.$scope.$on("rebuild-table", () => {
-          this.hc=new HotConfigs(this);
           this.rebuildTable();
         });
 
@@ -237,6 +236,10 @@ namespace app.table {
 
   $onInit() {
 
+  }
+
+  $doCheck(){
+    this.rebuildTable();
   }
 
   /**
@@ -393,7 +396,8 @@ namespace app.table {
       let hotId='#hot-'+this.idTable;
       this.hotElement=document.querySelector(hotId);
       if (this.hotElement){
-        if (!this.renderedTable){
+        if (!this.hc){
+          this.hc=new HotConfigs(this);
           this.renderedTable=true;
           this.fillTable();
         }

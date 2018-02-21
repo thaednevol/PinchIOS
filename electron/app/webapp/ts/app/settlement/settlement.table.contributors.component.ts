@@ -141,6 +141,11 @@ namespace app.settlement {
     private $rootScope: any;
     private $filter: any;
 
+    /**
+    * @type {boolean} showTable - Permite controlar si se muestra o se oculta la tabla
+    */
+    public showTable: boolean = false;
+
     static $inject = ["jar.swat.service", "jar.soi.service", "settlement.service", "$rootScope", "$scope", "$filter", "OPTIONS", "native.dialog.service", "native.file.service"];
 
     constructor(swat, soiService, serviceSettlement, $rootScope, $scope, $filter, OPTIONS, dialogService, fileService) {
@@ -159,6 +164,14 @@ namespace app.settlement {
           linea: line
         };
       });
+    }
+
+    public actionShowTable(){
+      this.showTable=!this.showTable;
+    }
+
+    public validate(){
+      this.$rootScope.$broadcast("validate-regstp02");
     }
 
     $doCheck() {

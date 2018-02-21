@@ -44,9 +44,13 @@
     //- Registro tipo 2
     .sy-table__container.sett-contributor__table-edit
       .sy__title-table
-        span(ng-bind="'SETTLEMENT.TABLES.REGSTP02' | translate")
+        span(ng-bind="'SETTLEMENT.TABLES.REGSTP02' | translate" ng-click="$ctrl.actionShowTable()" style={cursor:'pointer'})
+        //- img(src="../img/loader/load.gif" ng-if="$ctrl.showTable" style="width:25px;")
         //- Cinta de opciones de la tabla de registro tipo 2
         .sett-contributor__menu
+          .sett-contributor__menu-item
+            i.mdi.mdi-check(ng-click="$ctrl.validate()" )
+              span Validar
           .sett-contributor__menu-item
             i.mdi.mdi-file-document(ng-click="$ctrl.actionOnlyErrors()" ng-mouseover="$ctrl.actionShowTooltip($event)" ng-mouseleave="$ctrl.actionHideTooltip($event)")
               span Mostrar Solo Errores
@@ -69,7 +73,7 @@
       //- Tabla de datos del registro tipo 2
       //- table-edit(data="$ctrl.file.data.regsTp02" labels="$ctrl.file.data.labelsTp02" id-table="'regsTp02'" active-filter="true" fixed-columns="true" selected-item="$ctrl.selectedItem" cell-no-edit="$ctrl.cellNoEditType2" active-sub-menu="true" object-filter="$ctrl.objectFilter" only-errors-filter="$ctrl.onlyErrorsFilter" replace-active="true")
       .table__left
-        hands-on-table(data="$ctrl.file.data.regsTp02" labels="$ctrl.file.data.labelsTp02" id-table="'regsTp02'" active-filter="true" fixed-columns="true" selected-item="$ctrl.selectedItem" cell-no-edit="$ctrl.cellNoEditType2" active-sub-menu="true" object-filter="$ctrl.objectFilter" only-errors-filter="$ctrl.onlyErrorsFilter" replace-active="true")
+        hands-on-table(ng-if="$ctrl.showTable" data="$ctrl.file.data.regsTp02" labels="$ctrl.file.data.labelsTp02" id-table="'regsTp02'" active-filter="true" fixed-columns="true" selected-item="$ctrl.selectedItem" cell-no-edit="$ctrl.cellNoEditType2" active-sub-menu="true" object-filter="$ctrl.objectFilter" only-errors-filter="$ctrl.onlyErrorsFilter" replace-active="true")
         .table__scroll-error(id="barra-errores" style="height:{{$ctrl.height -30}}px;")
           .item
 

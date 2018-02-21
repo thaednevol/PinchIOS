@@ -32,6 +32,8 @@ namespace app.table {
 
     public tmpRegs: any;
 
+    private showItemBar:boolean=false;
+
     constructor(hotComponent) {
       super(hotComponent);
 
@@ -42,6 +44,11 @@ namespace app.table {
       });
 
       this.hotComponent.$scope.$on("action-change-page", () => {
+        this.addItemBarError();
+      });
+
+      this.hotComponent.$scope.$on("validate-regstp02", () => {
+        this.hotComponent.hotTable.validateCells(function(valid) {});
         this.addItemBarError();
       });
     }
@@ -347,7 +354,7 @@ namespace app.table {
     * Inicia el proceso de carga de la barra de error de la tabla de liquidación.
     */
     public addItemBarError() {
-      if (this.hotComponent) {
+      if (this.hotComponent && this.showItemBar) {
         var registersTmp = this.getData();
 
         let delta = 27;
@@ -543,8 +550,8 @@ namespace app.table {
           let ctrl=this;
           return function(forced){
             if (this.countVisibleRows()!= -1){
-              ctrl.validate();
-              // ctrl.hotComponent.actionChangePage("");
+              //ctrl.validate();
+              //ctrl.hotComponent.actionChangePage("");
             }
           }
         }
