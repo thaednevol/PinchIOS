@@ -57,7 +57,7 @@ namespace app.table {
 
     public getLabelsDef() {
       let columnLab=[];
-			columnLab = ["Registro", "L\u00EDnea", "Tipo Documento", "Identificaci\u00F3n Cotizante", "Error", "Esperado", "Encontrado", "Correci\u00F3n"];
+			columnLab = ["Registro", "L\u00EDnea", "Tipo Documento", "Identificaci\u00F3n Cotizante", "Error", "Esperado", "Encontrado", "Correcci\u00F3n"];
       return columnLab;
     }
 
