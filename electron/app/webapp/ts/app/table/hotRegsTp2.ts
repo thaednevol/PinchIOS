@@ -25,6 +25,8 @@ namespace app.table {
     */
     public numeroErrores = 0;
 
+    public columGeneral = 0;
+
     /**
     * @type {number} trSelected - Guarda la fila seleccionada
     */
@@ -121,7 +123,10 @@ namespace app.table {
           }
           if (key==='replace'){
             var opt={"col":ctrl.hotComponent.hotTable.getSelected()[1]};
-            ctrl.createDialog(opt,ctrl.hotComponent);
+            this.columGeneral = opt["col"];
+            if (this.columGeneral > 3) {
+              ctrl.createDialog(opt,ctrl.hotComponent);
+            }
           }
           if (key==='filter_by_error'){
             ctrl.actionOnlyErrors();
@@ -167,37 +172,65 @@ namespace app.table {
     }
 
     private createDialog(options,ctrl) {
-      $("#diag-replace-"+ctrl.idTable).dialog({modal: true,width:'auto'});
+      $("#diag-replace-"+ctrl.idTable).dialog({modal: true,width:'auto',
+      close: function(event, ui) {
+        $("#ta-replace-"+ctrl.idTable).val("");
+        $("#in-replace-"+ctrl.idTable).val("");
+        $("#vacios-"+ctrl.idTable).prop("checked", false);
+        }});
 
-      var fil=options.fil;
-      var col=options.col;
-      $("#btn-replace-"+ctrl.idTable).click(function() {
-        var orig=$("#ta-replace-"+ctrl.idTable).val();
-        var dest=$("#in-replace-"+ctrl.idTable).val();
-        if (orig !== "" && dest !== "") {
-          var arrOrig=ctrl.replaceAll(orig,' ',"#-#").split("\n");
-          for (var k=0; k<arrOrig.length;k++){
-            var value=arrOrig[k];
-            for (var i=0;i<ctrl.hotTable.countRows();i++){
-                  var str=ctrl.hotTable.getDataAtCell(i, col);
+        $("#ta-replace-"+ctrl.idTable).focusin(function(){
+          $("#diag-replace-message-"+ctrl.idTable).hide();
+        });
+        $("#in-replace-"+ctrl.idTable).focusin(function(){
+          $("#diag-replace-message-"+ctrl.idTable).hide();
+        });
+
+        //var fil=options.fil;
+        //var col=options.col;
+        var col = ctrl.hotTable.columGeneral;
+
+        $("#btn-replace-"+ctrl.idTable).click(function() {
+          var orig=$("#ta-replace-"+ctrl.idTable).val();
+          var dest=$("#in-replace-"+ctrl.idTable).val();
+          var vacios = $("#vacios-"+ctrl.idTable).is(":checked");
+          var reemplazoValido = true;
+          if(!vacios && dest === "") {
+            reemplazoValido = false;
+          }
+
+          if (orig !== "" && reemplazoValido) {
+            var arrOrig=ctrl.replaceAll(orig,' ',"#-#").split("\n");
+            var datosTabla = ctrl.data.registers;
+            //var datosTabla = ctrl.hotTable.getData();
+            for (var k=0; k<arrOrig.length;k++){
+              var value=arrOrig[k];
+              for (var i=0;i<ctrl.hotTable.countRows();i++){
+                var currenFil = ctrl.hotTable.columGeneral;
+                  //var str = datosTabla[i][currenFil];
+                  var str = datosTabla[i][`regs${ctrl.hotTable.columGeneral-2}`];
                   var newstr="";
                   if (value==="#-#"){
-                    if (str.trim().length === 0){
-                        ctrl.hotTable.setDataAtCell(i,col,dest);
+                    if (str.trim().length === 0) {
+                        //ctrl.hotTable.setDataAtCell(i,ctrl.hotTable.columGeneral,dest);
+                        datosTabla[i][`regs${ctrl.hotTable.columGeneral-2}`] = dest;
                     }
                   }
                   else {
-                    newstr=ctrl.replaceAll(str,value.trim(),dest);
-                    ctrl.hotTable.setDataAtCell(i,col,newstr);
+                      if (str !== null) {
+                        newstr = str.replace(new RegExp(value.trim(), 'g'), dest);
+                        datosTabla[i][`regs${ctrl.hotTable.columGeneral-2}`] = newstr;
+                      }
+                    }
                   }
+                }
+                ctrl.hotTable.render();
+                $("#diag-replace-"+ctrl.idTable).dialog('close');
+                $("#diag-replace-"+ctrl.idTable).dialog('destroy');
+            } else {
+              //alert("Debe ingresar el valor a buscar y el valor a reemplazar para poder ejecutar la accion.");
+              $("#diag-replace-message-"+ctrl.idTable).show();
             }
-          }
-          ctrl.hotTable.render();
-          $("#diag-replace-"+ctrl.idTable).dialog('close');
-        } else {
-          alert("Debe ingresar el valor a buscar y el valor a reemplazar para poder ejecutar la accion.");
-        }
-
       });
     }
 
