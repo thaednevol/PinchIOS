@@ -145,7 +145,7 @@ namespace app.table {
     public getHotSettings(){
       let ctrl=this;
       let hotsettings = super.getHotSettings();
-      hotsettings['afterRender'] = this.afterRender();
+      //hotsettings['afterRender'] = this.afterRender();
       // hotsettings['hiddenRows']=this.getHiddenRows(1);
       return hotsettings;
     }
