@@ -827,7 +827,7 @@ namespace app.settlement {
       }
       this.showLoading = false;
       this.$rootScope.$broadcast("setnumRegisters",this.info.totalFilterRegister);
-      this.$rootScope.$broadcast("rebuild-table");
+      //this.$rootScope.$broadcast("rebuild-table");
     }
 
 
