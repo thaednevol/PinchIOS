@@ -83,7 +83,7 @@
         "DATE_PAYMENT": "Fecha de Pago",
         "TYPE": "Tipo Planilla",
         "NUMBER": "No Planilla",
-        "PERIOD_PAYMENT": "Periodo de Pago",
+        "PERIOD_PAYMENT": "Per\u00EDodo de Pago",
         "AMOUNT_PAID": "Valor Pagado"
       }
     }
@@ -169,8 +169,8 @@
       }
     },
     "INFO": {
-      "PERIOD_PENSION": "Periodo otros subsistemas:",
-      "PERIOD_HEALTH": "Periodo Liquidaci\u00F3n Salud:",
+      "PERIOD_PENSION": "Per\u00EDodo otros subsistemas:",
+      "PERIOD_HEALTH": "Per\u00EDodo Liquidaci\u00F3n Salud:",
       "TOTAL_CONTRIBUTOR": "Total Cotizantes:",
       "TOTAL_PAY": "Total a Pagar:",
       "TOTAL_ERROR": "Total Errores:",
@@ -272,8 +272,8 @@
       "TEMPLATE_TYPE": "Tipo de Planilla:",
       "EMPLOYEES": "Empleados:",
       "BRANCH_OFFICE": "Sucursal:",
-      "PERIOD_CLEARANCE_PENSIONS": "Periodo Liquidaci\u00F3n Pensiones:",
-      "PERIOD_CLEARANCE_HEALTH": "Periodo Liquidaci\u00F3n Salud:",
+      "PERIOD_CLEARANCE_PENSIONS": "Per\u00EDodo Liquidaci\u00F3n Pensiones:",
+      "PERIOD_CLEARANCE_HEALTH": "Per\u00EDodo Liquidaci\u00F3n Salud:",
       "UNDEFINED": "No definido"
     },
     "TABLE": {
