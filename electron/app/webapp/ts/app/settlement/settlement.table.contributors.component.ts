@@ -164,6 +164,13 @@ namespace app.settlement {
           linea: line
         };
       });
+      let cargar_al_iniciar = localStorage.getItem('cargar_al_iniciar');
+      if (cargar_al_iniciar === null) {
+        cargar_al_iniciar = JSON.parse("true");
+      } else {
+        cargar_al_iniciar = JSON.parse(cargar_al_iniciar);
+      }
+      this.showTable=!!cargar_al_iniciar;
     }
 
     public actionShowTable(){

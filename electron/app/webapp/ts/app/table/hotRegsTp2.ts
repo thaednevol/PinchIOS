@@ -594,6 +594,18 @@ namespace app.table {
           let ctrl=this;
           return function(forced){
             if (this.countVisibleRows()!= -1){
+              let validar_al_iniciar = localStorage.getItem('validar_al_iniciar');
+              if (validar_al_iniciar === null) {
+                validar_al_iniciar = JSON.parse("true");
+              } else {
+                validar_al_iniciar = JSON.parse(validar_al_iniciar);
+              }
+              if (!!validar_al_iniciar){
+                ctrl.validate();
+                ctrl.hotComponent.hotTable.validateCells(function(valid) {});
+                ctrl.addItemBarError();
+                ctrl.hotComponent.actionChangePage("");
+              }
               //ctrl.validate();
               //ctrl.hotComponent.actionChangePage("");
             }
