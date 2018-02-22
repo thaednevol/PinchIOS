@@ -143,7 +143,7 @@ public class LiquidadorActivos {
 			String valorNominaCrudo = bean01.getVlrTotalNomina().getValorCrudo();
 			boolean exceptionNomina = false;
 			try{
-				Integer valorNomina = Integer.valueOf(valorNominaCrudo);
+				Long valorNomina = Long.valueOf(valorNominaCrudo);
 				if ( valorNomina<=0 ){
 					exceptionNomina = true;
 				}
