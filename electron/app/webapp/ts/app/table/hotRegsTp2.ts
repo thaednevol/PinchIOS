@@ -92,7 +92,12 @@ namespace app.table {
       if (this.hotComponent.data.registers[0]) {
         for(let i of Object.keys(this.hotComponent.data.registers[0])) {
           if (i.startsWith("regs")) {
-            columnDef.push({data: i, type: 'text',validator:'registerValidator', invalidCellClassName:'table__data-field--error'});
+            // Columnas Tipo Registro (regs0) y Secuencia (regs1), deben ser de solo lectura
+            if (i === "regs0" || i === "regs1") {
+              columnDef.push({data: i, type: 'numeric',validator:'registerValidator', invalidCellClassName:'table__data-field--error', readOnly: true});
+            } else {
+              columnDef.push({data: i, type: 'text',validator:'registerValidator', invalidCellClassName:'table__data-field--error'});
+            }
           }
         }
       }
