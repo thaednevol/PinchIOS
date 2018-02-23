@@ -217,6 +217,27 @@ namespace app.table {
       //hotSettings['afterOnCellMouseDown'] = this.afterOnCellMouseDown();
       //hotSettings['afterChange'] = this.afterChange();
       hotSettings['getData'] = this.getData();
+      hotSettings['beforeChange']=function(changes, source) {
+          if (source === 'Autofill.fill' && (typeof changes[0][2]  === "boolean")) {
+              if ( !(typeof changes[0][3]  === "boolean") ){
+                  return false;
+              }
+          }
+          // Para que no se puedan copiar y pegar valores en la columna
+          // Selección, que contiene valores Booleanos.
+          if (source === 'CopyPaste.paste' && (typeof changes[0][2] === "boolean")) {
+            if (!(typeof changes[0][3] === "boolean")) {
+              return false;
+            }
+          }
+          // Valida que cuando se copia y pega al final de la tabla
+          // no se creen registros nuevos.
+          if (source === 'CopyPaste.paste') {
+            if (changes[changes.length - 1][2] === null) {
+              return false;
+            }
+          }
+      };
       //
       return hotSettings;
     }
