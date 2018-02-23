@@ -204,6 +204,9 @@ namespace app.settlement {
       this.$scope.$on("apply-corrections", (event, linea, col) => {
         this.applyIndividualCorrections(linea,col);
       });
+      this.$scope.$on("new-apply-corrections", (event, linea, col) => {
+        this.newApplyIndividualCorrections(linea,col);
+      });
       this.$scope.$on("hide-loading", () => {
         this.showLoading = false;
         setTimeout(() => {
@@ -830,6 +833,34 @@ namespace app.settlement {
       //this.$rootScope.$broadcast("rebuild-table");
     }
 
+    private newApplyIndividualCorrections(lineaArr, positionColArr): void {
+      let corrects = this.file.data.regsTp02.corrected;
+      let errors = this.file.data.regsTp02.errors;
+      let rows: any = Object.keys(corrects);
+
+      for (let i = 0; i < lineaArr.length; i++) {
+        let linea = lineaArr[i];
+        let positionCol = positionColArr[i];
+        let currentRow = this.file.data.regsTp02.corrected[linea-1];
+        let currentError = currentRow[positionCol];
+        if ( linea===1 ){
+          this.file.data.regTp01.registers[linea - 1][`regs${positionCol}`] = currentError.sugerencias[0];
+        }
+        else{
+          this.file.data.regsTp02.registers[linea - 2][`regs${positionCol-1}`] = currentError.sugerencias[0];
+        }
+        // Se elimina la información de la columna del error para evitar que se resalte la celda en la tabla.
+        delete errors[linea-1][positionCol];
+        if (Object.keys(errors[linea-1]).length === 0) {
+            delete errors[linea-1];
+        }
+        if ( linea===1 ){
+          this.$rootScope.$broadcast("show-loading");
+        }
+      }
+      this.updateTotals();
+      /*this.updateInfoPanel();*/
+    }
 
     private applyIndividualCorrections(linea,positionCol): void {
       let corrects = this.file.data.regsTp02.corrected;

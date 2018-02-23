@@ -83,6 +83,10 @@ namespace app.settlement {
       this.$scope.$on("correct-error", (  ) => {
         this.correctError();
       });
+
+      this.$scope.$on("new-correct-error", (  ) => {
+        this.newCorrectError();
+      });
     }
 
     /**
@@ -126,6 +130,67 @@ namespace app.settlement {
         this.serviceFile.jsonToCsv(pathFile, dataExport, fields);
       });
     }
+
+    public newValidateSelected(): void {
+      for (let reg of this.listErrorsContributors.data) {
+        if (reg["seleccionado"]) {
+          this.selectedItem[reg["secuenciaError"]] = true;
+          reg["seleccionado"] = false;
+        }
+      }
+      if (Object.keys(this.selectedItem).length === 0) {
+        this.serviceDialog.showDialogError(this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_WARN_TIT"), this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_WARN"));
+      } else {;
+        this.serviceDialog.showDialogConfirm(
+          this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_CONF_TIT"),
+          this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_CONF"),
+          (option) => {
+            if ( option==1 ){
+                this.$scope.$broadcast("new-correct-error");
+            }
+          }
+        );
+      }
+
+    }
+
+    private newCorrectError() {
+      this.showLoading = true;
+      this.$scope.$apply();
+      //si acepta la correccion automatica
+      let validarTipo1 = false;
+      let lineas = [];
+      let campos = [];
+      for (var i = 0; i < Object.keys(this.selectedItem).length; i++) {
+        let register = this.$filter("filter")(this.listErrorsContributors.data, { secuenciaError: Number(Object.keys(this.selectedItem)[i]) },true);
+        register[0].correccion = this.$filter("translate")("ERROR.CONTRIBUTORS.TYPE_AUTOM");
+        register[0].corregido = true;
+        lineas.push(register[0].linea);
+        campos.push(register[0].campo);
+        //this.$rootScope.$broadcast("apply-corrections",register[0].linea,register[0].campo);
+        validarTipo1 = register[0].linea === 1;
+      }
+      //aca el broadcast
+      this.$rootScope.$broadcast("new-apply-corrections",lineas, campos);
+      if ( validarTipo1 ){
+        this.$rootScope.$broadcast("validate-register-tp01");
+      }
+      this.filterCorregidos = function ( item ){
+        return item.autocorregible && item.corregido;
+      };
+
+      this.filterSugeridos = function ( item ){
+        return item.autocorregible && !item.corregido;
+      };
+
+      this.selectedItem = [];
+      this.$rootScope.$broadcast("refresh-contributors");
+      this.$rootScope.$broadcast("refresh-contributors-aut");
+      this.notificationService.show(this.$filter("translate")("MESSAGES.TITLES.INFO"), this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_CONF_1"));
+      this.$rootScope.$broadcast("refresh-table-corrected");
+      this.showLoading = false;
+      this.$scope.$apply();
+  }
 
     public validateSelected(): void {
       for (let reg of this.listErrorsContributors.data) {
