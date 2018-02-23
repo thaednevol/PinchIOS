@@ -49,11 +49,14 @@ namespace app.table {
         this.addItemBarError();
       });
 
+      let ctrl=this;
       this.hotComponent.$scope.$on("validate-regstp02", () => {
-        this.hotComponent.hotTable.validateCells(function(valid) {});
+        ctrl.validate();
         this.addItemBarError();
       });
     }
+
+
 
     public getHotSettings(){
       let ctrl=this;
@@ -563,30 +566,45 @@ namespace app.table {
 
     private validate(){
       let ctrl=this;
-      if (ctrl.rowsValidated.length==0){
-        function validar(inf,sup):Promise<any> {
+          function validar(rowsToValidate):Promise<any> {
             return new Promise<any>(resolve => {
-                for(let i=inf; i<sup;i++){
-                  ctrl.rowsValidated.indexOf(Number(i)) === -1 ? ctrl.rowsValidated.push(Number(i)) : null;
-                }
-                ctrl.hotComponent.hotTable.validateRows(ctrl.rowsValidated, function(valid) {});
-
+              ctrl.hotComponent.hotTable.validateRows(rowsToValidate, function(valid) {});
               resolve();
-            })
+            });
           }
+
           async function validarLote(): Promise<void> {
             let plugin=ctrl.hotComponent.hotTable.getPlugin('autoRowSize');
             let inf=plugin.getFirstVisibleRow();
             let sup=plugin.getLastVisibleRow();
             if (inf!=-1 && sup!=-1){
-              await validar(inf,sup);
-              inf=plugin.getLastVisibleRow();
-              sup=ctrl.hotComponent.hotTable.countRows();
-              await validar(inf,sup);
+              let rowsToValidate=new Array();
+              for(let i=inf; i<=sup;i++){
+                if(ctrl.rowsValidated.indexOf(Number(i)) === -1){
+                  ctrl.rowsValidated.push(Number(i));
+                  rowsToValidate.push(Number(i))
+                }
+              }
+              if (rowsToValidate.length>0){
+                await validar(rowsToValidate);
+              }
             }
           }
-          validarLote();
-      }
+
+          let validar_al_visualizar = localStorage.getItem('validar_al_visualizar');
+          if (validar_al_visualizar === null) {
+            validar_al_visualizar = JSON.parse("true");
+          } else {
+            validar_al_visualizar = JSON.parse(validar_al_visualizar);
+          }
+          if (!!validar_al_visualizar){
+              validarLote();
+          }
+          else {
+            ctrl.hotComponent.hotTable.validateCells(function(valid) {});
+          }
+
+
     }
 
     public afterRender(){
@@ -602,11 +620,11 @@ namespace app.table {
               }
               if (!!validar_al_iniciar){
                 ctrl.validate();
-                ctrl.hotComponent.hotTable.validateCells(function(valid) {});
-                ctrl.addItemBarError();
-                ctrl.hotComponent.actionChangePage("");
               }
-              //ctrl.validate();
+
+
+
+
               //ctrl.hotComponent.actionChangePage("");
             }
           }
@@ -686,6 +704,7 @@ namespace app.table {
 
 
         $doCheck() {
+
           /*setTimeout(() => {
                   this.addItemBarError();
                 }, this.hotComponent.OPTIONS.TABLES.TIMER.WAIT);*/

@@ -239,7 +239,16 @@ namespace app.table {
   }
 
   $doCheck(){
-    this.rebuildTable();
+    let cargar_al_iniciar = localStorage.getItem('cargar_al_iniciar');
+    if (cargar_al_iniciar === null) {
+      cargar_al_iniciar = JSON.parse("true");
+    } else {
+      cargar_al_iniciar = JSON.parse(cargar_al_iniciar);
+    }
+
+    if (!cargar_al_iniciar){
+      this.rebuildTable();
+    }
   }
 
   /**
@@ -299,7 +308,6 @@ namespace app.table {
       let hotSettings:any= this.hc.getHotSettings();
 
         this.hotTable = new Handsontable(this.hotElement, hotSettings);
-        //this.hotTable.validateCells(function(valid) {});
         $("#hot-display-license-info").hide();
         if(hotSettings.tableId === "errorConAut" || hotSettings.tableId ===  "errorContributors") {
           //this.fillTableCorrected();

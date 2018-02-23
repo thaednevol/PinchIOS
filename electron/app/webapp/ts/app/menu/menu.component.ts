@@ -100,7 +100,7 @@ namespace app.menu {
                 "</div>"+
                 "<div>"+
                 "<input id='lg' type='checkbox'/>"+
-                "<label for='check' class='ui-widget'>No usado todavia</label>"+
+                "<label for='check' class='ui-widget'>Validar al visualizar</label>"+
                 "</div>";
             $("<div class='dialog' >"+str+"</div>").dialog({
                 title: 'Configuraciones',
@@ -109,14 +109,18 @@ namespace app.menu {
                 }
               }
             ).show();
-            let cargar_al_iniciar = localStorage.getItem('cargar_al_iniciar');
-            if (cargar_al_iniciar === null) {
-              cargar_al_iniciar = JSON.parse("true");
-            } else {
-              cargar_al_iniciar = JSON.parse(cargar_al_iniciar);
-            }
 
+          let cargar_al_iniciar = localStorage.getItem('cargar_al_iniciar');
+          if (cargar_al_iniciar === null) {
+            cargar_al_iniciar = JSON.parse("true");
+          } else {
+            cargar_al_iniciar = JSON.parse(cargar_al_iniciar);
+          }
           $('#sm').prop('checked', cargar_al_iniciar);
+          $("#sm").change(function() {
+            let myVar=JSON.parse(this['checked']);
+            localStorage.setItem('cargar_al_iniciar',myVar);
+          });
 
           let validar_al_iniciar = localStorage.getItem('validar_al_iniciar');
           if (validar_al_iniciar === null) {
@@ -124,15 +128,22 @@ namespace app.menu {
           } else {
             validar_al_iniciar = JSON.parse(validar_al_iniciar);
           }
-
           $('#md').prop('checked', validar_al_iniciar);
-          $('#lg').prop('checked', false);
-          $("#sm").change(function() {
-            let myVar=JSON.parse(this['checked']);
-            localStorage.setItem('cargar_al_iniciar',myVar);
-          });
           $("#md").change(function() {
-            localStorage.setItem('validar_al_iniciar',JSON.parse(this['checked']));
+            let myVar=JSON.parse(this['checked']);
+            localStorage.setItem('validar_al_iniciar',myVar);
+          });
+
+          let validar_al_visualizar = localStorage.getItem('validar_al_visualizar');
+          if (validar_al_visualizar === null) {
+            validar_al_visualizar = JSON.parse("true");
+          } else {
+            validar_al_visualizar = JSON.parse(validar_al_visualizar);
+          }
+          $('#lg').prop('checked', validar_al_visualizar);
+          $("#lg").change(function() {
+            let myVar=JSON.parse(this['checked']);
+            localStorage.setItem('validar_al_visualizar',myVar);
           });
         }
 
