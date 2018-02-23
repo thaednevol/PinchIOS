@@ -89,6 +89,53 @@ namespace app.menu {
       }
     }
 
+    public showConfigDialog():void{
+            let str="<div>"+
+              "<input id='sm' type='checkbox'/>"+
+                "<label for='check' class='ui-widget'>Cargar al iniciar</label>"+
+                "</div>"+
+                "<div>"+
+                "<input id='md' type='checkbox'/>"+
+                "<label for='check' class='ui-widget'>Validar al iniciar</label>"+
+                "</div>"+
+                "<div>"+
+                "<input id='lg' type='checkbox'/>"+
+                "<label for='check' class='ui-widget'>No usado todavia</label>"+
+                "</div>";
+            $("<div class='dialog' >"+str+"</div>").dialog({
+                title: 'Configuraciones',
+                close: function(event, ui) {
+                  $(this).dialog('destroy');
+                }
+              }
+            ).show();
+            let cargar_al_iniciar = localStorage.getItem('cargar_al_iniciar');
+            if (cargar_al_iniciar === null) {
+              cargar_al_iniciar = JSON.parse("true");
+            } else {
+              cargar_al_iniciar = JSON.parse(cargar_al_iniciar);
+            }
+
+          $('#sm').prop('checked', cargar_al_iniciar);
+
+          let validar_al_iniciar = localStorage.getItem('validar_al_iniciar');
+          if (validar_al_iniciar === null) {
+            validar_al_iniciar = JSON.parse("true");
+          } else {
+            validar_al_iniciar = JSON.parse(validar_al_iniciar);
+          }
+
+          $('#md').prop('checked', validar_al_iniciar);
+          $('#lg').prop('checked', false);
+          $("#sm").change(function() {
+            let myVar=JSON.parse(this['checked']);
+            localStorage.setItem('cargar_al_iniciar',myVar);
+          });
+          $("#md").change(function() {
+            localStorage.setItem('validar_al_iniciar',JSON.parse(this['checked']));
+          });
+        }
+
     /**
     * @description
     * Elimina los datos de la sesion actual y redirecciona al login de la

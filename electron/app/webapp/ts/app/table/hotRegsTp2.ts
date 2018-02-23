@@ -92,7 +92,12 @@ namespace app.table {
       if (this.hotComponent.data.registers[0]) {
         for(let i of Object.keys(this.hotComponent.data.registers[0])) {
           if (i.startsWith("regs")) {
-            columnDef.push({data: i, type: 'text',validator:'registerValidator', invalidCellClassName:'table__data-field--error'});
+            // Columnas Tipo Registro (regs0) y Secuencia (regs1), deben ser de solo lectura
+            if (i === "regs0" || i === "regs1") {
+              columnDef.push({data: i, type: 'numeric',validator:'registerValidator', invalidCellClassName:'table__data-field--error', readOnly: true});
+            } else {
+              columnDef.push({data: i, type: 'text',validator:'registerValidator', invalidCellClassName:'table__data-field--error'});
+            }
           }
         }
       }
@@ -589,6 +594,18 @@ namespace app.table {
           let ctrl=this;
           return function(forced){
             if (this.countVisibleRows()!= -1){
+              let validar_al_iniciar = localStorage.getItem('validar_al_iniciar');
+              if (validar_al_iniciar === null) {
+                validar_al_iniciar = JSON.parse("true");
+              } else {
+                validar_al_iniciar = JSON.parse(validar_al_iniciar);
+              }
+              if (!!validar_al_iniciar){
+                ctrl.validate();
+                ctrl.hotComponent.hotTable.validateCells(function(valid) {});
+                ctrl.addItemBarError();
+                ctrl.hotComponent.actionChangePage("");
+              }
               //ctrl.validate();
               //ctrl.hotComponent.actionChangePage("");
             }
