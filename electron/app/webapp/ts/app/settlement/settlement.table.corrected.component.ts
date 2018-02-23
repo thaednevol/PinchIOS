@@ -79,6 +79,10 @@ namespace app.settlement {
       this.filterSugeridos = function ( item ){
         return item.autocorregible && !item.corregido;
       };
+
+      this.$scope.$on("correct-error", (  ) => {
+        this.correctError();
+      });
     }
 
     /**
@@ -124,14 +128,12 @@ namespace app.settlement {
     }
 
     public validateSelected(): void {
-      this.showLoading = true;
       for (let reg of this.listErrorsContributors.data) {
         if (reg["seleccionado"]) {
           this.selectedItem[reg["secuenciaError"]] = true;
           reg["seleccionado"] = false;
         }
       }
-
       if (Object.keys(this.selectedItem).length === 0) {
         this.serviceDialog.showDialogError(this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_WARN_TIT"), this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_WARN"));
       } else {;
@@ -139,50 +141,51 @@ namespace app.settlement {
           this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_CONF_TIT"),
           this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_CONF"),
           (option) => {
-            if (option === 1) {
-              this.correctError(option);
-              this.notificationService.show(this.$filter("translate")("MESSAGES.TITLES.INFO"), this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_CONF_1"));
-              this.$rootScope.$broadcast("refresh-table-corrected");
+            if ( option==1 ){
+                this.$scope.$broadcast("correct-error");
             }
           }
         );
       }
-      this.showLoading = false;
 
     }
 
-    private correctError(option) {
-      let message = `Opcion seleccionada> ${option}`;
+    private correctError() {
+      this.showLoading = true;
+      this.$scope.$apply();
+      //if (option === 1){
       //si acepta la correccion automatica
-      if (option === 1){
-          let validarTipo1 = false;
-          for (var i = 0; i < Object.keys(this.selectedItem).length; i++) {
-            let register = this.$filter("filter")(this.listErrorsContributors.data, { secuenciaError: Number(Object.keys(this.selectedItem)[i]) },true);
-            register[0].correccion = this.$filter("translate")("ERROR.CONTRIBUTORS.TYPE_AUTOM");
-            register[0].corregido = true;
-            this.$rootScope.$broadcast("apply-corrections",register[0].linea,register[0].campo);
-            validarTipo1 = register[0].linea === 1;
-            //this.$filter("filter")(this.listErrorsContributors.data, { secuenciaError: this.selectedItem)[i] }).correccion = this.$filter("translate")("ERROR.CONTRIBUTORS.TYPE_AUTOM");
-            //this.listErrorsContributors.data.filter(secuenciaError:Object.keys(this.selectedItem)[i]).corregido = true;
-            //this.listErrorsContributors.data.filter(this.filterSugeridos)[Object.keys(this.selectedItem)[i]].correccion = this.$filter("translate")("ERROR.CONTRIBUTORS.TYPE_AUTOM");
-          }
-          if ( validarTipo1 ){
-            this.$rootScope.$broadcast("validate-register-tp01");
-          }
-          this.filterCorregidos = function ( item ){
-            return item.autocorregible && item.corregido;
-          };
-
-          this.filterSugeridos = function ( item ){
-            return item.autocorregible && !item.corregido;
-          };
-
-          this.selectedItem = [];
-          this.$scope.$apply();
-          this.$rootScope.$broadcast("refresh-contributors");
-          this.$rootScope.$broadcast("refresh-contributors-aut");
+      let validarTipo1 = false;
+      for (var i = 0; i < Object.keys(this.selectedItem).length; i++) {
+        let register = this.$filter("filter")(this.listErrorsContributors.data, { secuenciaError: Number(Object.keys(this.selectedItem)[i]) },true);
+        register[0].correccion = this.$filter("translate")("ERROR.CONTRIBUTORS.TYPE_AUTOM");
+        register[0].corregido = true;
+        this.$rootScope.$broadcast("apply-corrections",register[0].linea,register[0].campo);
+        validarTipo1 = register[0].linea === 1;
+        //this.$filter("filter")(this.listErrorsContributors.data, { secuenciaError: this.selectedItem)[i] }).correccion = this.$filter("translate")("ERROR.CONTRIBUTORS.TYPE_AUTOM");
+        //this.listErrorsContributors.data.filter(secuenciaError:Object.keys(this.selectedItem)[i]).corregido = true;
+        //this.listErrorsContributors.data.filter(this.filterSugeridos)[Object.keys(this.selectedItem)[i]].correccion = this.$filter("translate")("ERROR.CONTRIBUTORS.TYPE_AUTOM");
       }
-    }
+      if ( validarTipo1 ){
+        this.$rootScope.$broadcast("validate-register-tp01");
+      }
+      this.filterCorregidos = function ( item ){
+        return item.autocorregible && item.corregido;
+      };
+
+      this.filterSugeridos = function ( item ){
+        return item.autocorregible && !item.corregido;
+      };
+
+      this.selectedItem = [];
+      this.$rootScope.$broadcast("refresh-contributors");
+      this.$rootScope.$broadcast("refresh-contributors-aut");
+      this.notificationService.show(this.$filter("translate")("MESSAGES.TITLES.INFO"), this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_CONF_1"));
+      this.$rootScope.$broadcast("refresh-table-corrected");
+      this.showLoading = false;
+      this.$scope.$apply();
+      //}
+  }
 
   }
 

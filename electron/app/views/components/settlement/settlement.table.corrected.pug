@@ -5,7 +5,7 @@
     span(ng-if="!$ctrl.styleError" ng-bind="'ERROR.CONTRIBUTORS.CORRECTED' | translate")
     //span(ng-bind="($ctrl.data.data | filter:$ctrl.objectFilter:true | filter:$ctrl.errorsFilter).length || 0")
     span(ng-bind="$ctrl.totalCorrecciones || 0")
-  hands-on-table(active-filter="true" data="$ctrl.listErrorsContributors.data" object-filter="{autocorregible:true}" id-table="'errorConAut'")
+  hands-on-table(active-filter="true" data="$ctrl.listErrorsContributors.data" object-filter="{autocorregible:true}" id-table="'errorConAut'" show-loading="$ctrl.showLoading")
   //error-contributors-aut(id-table="error-contributors-aut" column-Filter="true" selected-item-aut="$ctrl.selectedItem" errors-filter="$ctrl.filterSugeridos" data="$ctrl.listErrorsContributors" object-filter="{autocorregible:true}" style-error="false")
   .sy__button-container.sett__buttons
     div
