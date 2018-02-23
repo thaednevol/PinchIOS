@@ -239,16 +239,19 @@ namespace app.table {
   }
 
   $doCheck(){
-    let cargar_al_iniciar = localStorage.getItem('cargar_al_iniciar');
-    if (cargar_al_iniciar === null) {
-      cargar_al_iniciar = JSON.parse("true");
-    } else {
-      cargar_al_iniciar = JSON.parse(cargar_al_iniciar);
+    if (this.idTable === "regsTp02"){
+      let cargar_al_iniciar = localStorage.getItem('cargar_al_iniciar');
+      if (cargar_al_iniciar === null) {
+        cargar_al_iniciar = JSON.parse("true");
+      } else {
+        cargar_al_iniciar = JSON.parse(cargar_al_iniciar);
+      }
+
+      if (!cargar_al_iniciar){
+        this.rebuildTable();
+      }
     }
 
-    if (!cargar_al_iniciar){
-      this.rebuildTable();
-    }
   }
 
   /**

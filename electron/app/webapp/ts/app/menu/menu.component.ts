@@ -104,6 +104,7 @@ namespace app.menu {
                 "</div>";
             $("<div class='dialog' >"+str+"</div>").dialog({
                 title: 'Configuraciones',
+                modal: true,
                 close: function(event, ui) {
                   $(this).dialog('destroy');
                 }

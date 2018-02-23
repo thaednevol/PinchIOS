@@ -89,7 +89,7 @@ namespace app.table {
       var columnDef=[];
       columnDef = [
         {data: "line", type:"numeric", readOnly: true,validator:'registerValidator', invalidCellClassName:'fa fa-times-circle-o line-error'},
-        {data: "selected", type: 'checkbox', className: "htCenter"}
+        {data: "selected", type: 'checkbox', className: "htCenter", sortFunction:this.sortFunction()}
       ];
 
       if (this.hotComponent.data.registers[0]) {
@@ -112,6 +112,22 @@ namespace app.table {
         return 2;
 
       return 0;
+    }
+
+    public sortFunction(){
+      return function(sortOrder) {
+        return function(a, b) {
+          let newA = a[1];
+          let newB = b[1];
+          if (newA < newB) {
+                return sortOrder ? -1 : 1;
+              }
+              if (newA > newB) {
+                return sortOrder ? 1 : -1;
+              }
+              return 0;
+            }
+          }
     }
 
     public getLabelsDef(){
@@ -704,7 +720,6 @@ namespace app.table {
 
 
         $doCheck() {
-
           /*setTimeout(() => {
                   this.addItemBarError();
                 }, this.hotComponent.OPTIONS.TABLES.TIMER.WAIT);*/
