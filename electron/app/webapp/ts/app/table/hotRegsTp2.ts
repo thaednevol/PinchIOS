@@ -32,31 +32,69 @@ namespace app.table {
     */
     public trSelected = -1;
 
+    /**
+    * @type {Array} rowsValidated - Guarda las filas validadas
+    */
+    private rowsValidated= new Array();
+
+    /**
+    * @type {boolean} validarAlIniciar - Valida los registros al iniciar
+    */
+    private validarAlIniciar:boolean;
+
+    /**
+    * @type {boolean} validarAlVisualizar - Valida los registros cuando se
+    * visualizan (true) o todos al cargar (false)
+    */
+    private validarAlVisualizar;
+
     public tmpRegs: any;
 
     private showItemBar:boolean=false;
 
     constructor(hotComponent) {
       super(hotComponent);
-
       this.hotComponent=hotComponent;
+      let ctrl=this;
 
+      // Escucha el evento only-errors del controlador principal
       this.hotComponent.$scope.$on("only-errors", () => {
-        this.actionOnlyErrors();
+        // Compara si todos los registros están validados
+        if (ctrl.rowsValidated.length===ctrl.getData().length){
+          ctrl.actionOnlyErrors();
+        }
+        // Si no están validados, los manda a validar
+        else{
+          ctrl.validateAll();
+          let listRegVal=this.hotComponent.$scope.$on("all-registers-validated", () => {
+            ctrl.actionOnlyErrors();
+            listRegVal();
+          });
+        }
       });
 
       this.hotComponent.$scope.$on("action-change-page", () => {
         this.addItemBarError();
       });
 
-      let ctrl=this;
+
       this.hotComponent.$scope.$on("validate-regstp02", () => {
         ctrl.validate();
         this.addItemBarError();
       });
+
+      if (localStorage.getItem('validar_al_iniciar') === null) {
+        ctrl.validarAlIniciar = JSON.parse("true");
+      } else {
+        ctrl.validarAlIniciar = (localStorage.getItem('validar_al_iniciar')=='true');
+      }
+
+      if (localStorage.getItem('validar_al_visualizar') === null) {
+        ctrl.validarAlVisualizar = JSON.parse("false");
+      } else {
+        ctrl.validarAlVisualizar = (localStorage.getItem('validar_al_visualizar')=='true');
+      }
     }
-
-
 
     public getHotSettings(){
       let ctrl=this;
@@ -65,8 +103,26 @@ namespace app.table {
       hotsettings['afterRender'] = this.afterRender();
       hotsettings['colWidths']=this.colWidths();
       hotsettings['afterBeginEditing']=this.afterBeginEditing();
+      hotsettings['beforeValidate']=this.beforeValidate();
       // hotsettings['hiddenRows']=this.getHiddenRows(1);
       return hotsettings;
+    }
+
+
+    private beforeValidate(){
+      let ctrl=this;
+      let all=false;
+      let myFunc=function(value,row,prop,source){
+        if (!all){
+          // Valida si la celda ya existe en el arreglo de celdas validadas
+          ctrl.rowsValidated.indexOf(Number(row)) === -1 ? ctrl.rowsValidated.push(Number(row)) : null;
+          if (ctrl.rowsValidated.length===ctrl.getData().length){
+            ctrl.hotComponent.$rootScope.$broadcast("all-registers-validated");
+            all=true;
+          }
+        }
+      }
+      return myFunc;
     }
 
     public getData(){
@@ -119,15 +175,17 @@ namespace app.table {
         return function(a, b) {
           let newA = a[1];
           let newB = b[1];
+          // POR ALGUNA RARA RAZON, SE PUEDE COMPARAR DOS BOOLEANOS Y UNO ES MAS
+          // GRANDE QUE EL OTRO
           if (newA < newB) {
-                return sortOrder ? -1 : 1;
-              }
-              if (newA > newB) {
-                return sortOrder ? 1 : -1;
-              }
-              return 0;
-            }
+            return sortOrder ? -1 : 1;
           }
+          if (newA > newB) {
+            return sortOrder ? 1 : -1;
+          }
+          return 0;
+        }
+      }
     }
 
     public getLabelsDef(){
@@ -175,24 +233,24 @@ namespace app.table {
     public getContextMenu(){
       var ctrl=this;
       return {
-              callback: function (key, options) {
-                if (key === 'borrar') {
-                  setTimeout(function () {
-                    var selection = ctrl.hotComponent.hotTable.getSelected();
-                    for (var fil = selection[0];fil <= selection[2]; fil++) {
-                      for (var col =selection[1]; col <= selection[3]; col++) {
-                        if (col > 3) {
-                          ctrl.hotComponent.hotTable.setDataAtCell(fil, col, "");
-                        }
-                      }
+          callback: function (key, options) {
+            if (key === 'borrar') {
+              setTimeout(function () {
+                var selection = ctrl.hotComponent.hotTable.getSelected();
+                for (var fil = selection[0];fil <= selection[2]; fil++) {
+                  for (var col =selection[1]; col <= selection[3]; col++) {
+                    if (col > 3) {
+                      ctrl.hotComponent.hotTable.setDataAtCell(fil, col, "");
                     }
-                  }, 100);
+                  }
                 }
-              },
-              items: {
-                "borrar": {name: 'Borrar contenido'}
-              }
-            };
+              }, 100);
+            }
+          },
+          items: {
+            "borrar": {name: 'Borrar contenido'}
+          }
+        };
     }
 
     private createDialog(options,ctrl) {
@@ -374,7 +432,7 @@ namespace app.table {
             let ctrl=this;
             return function(row,col){
               let cs=ctrl.hotComponent.hotTable.getCellMeta(row, col);
-              let linePosition=cs.visualRow;
+              let linePosition=cs.row;
               ctrl.hotComponent.$rootScope.$broadcast("refresh-contributors-table", linePosition + 2);
             }
           }
@@ -387,11 +445,16 @@ namespace app.table {
             if (changes[fil][1] !== "selected") {
               if (changes[fil][2] !== changes[fil][3]) {
                 let row=changes[fil][0];
-                ctrl.hotComponent.$rootScope.$broadcast("validate-register-table", row);
-                let deregisterListener=ctrl.hotComponent.$scope.$on("rebuild-table", () => {
-                  ctrl.hotComponent.hotTable.validateRows([row], function(valid) {});
+                let col=changes[fil][1];
+                let cs=this.getCellMeta(row,col);
+                let realRow=cs.row;
+                ctrl.hotComponent.$rootScope.$broadcast("validate-register-table",realRow);
+                  let deregisterListener=ctrl.hotComponent.$scope.$on("setnumRegisters", () => {
+                  let rowsToValidate = new Array();
+                  rowsToValidate.push(Number(row));
+                  ctrl.hotComponent.hotTable.validateRows(rowsToValidate, function(valid) {});
                   deregisterListener();
-                  });
+                });
               }
             }
           }
@@ -486,12 +549,10 @@ namespace app.table {
             let item = document.createElement("div");
               for (var row = init; row < fin; row++ ) {
                 var itemCopy = angular.copy(item);
-
                 await crearItems(row, itemCopy);
               }
               return;
           }
-
           recorrerRegistros();
         }
       }
@@ -578,73 +639,68 @@ namespace app.table {
       this.addItemBarError();
     }
 
-    private rowsValidated= new Array();
+    private validateAll(){
+      let ctrl=this;
+      ctrl.hotComponent.hotTable.validateCells(function(valid) {});
+    }
 
     private validate(){
+      // METODO PARA VALIDAR
       let ctrl=this;
-          function validar(rowsToValidate):Promise<any> {
-            return new Promise<any>(resolve => {
-              ctrl.hotComponent.hotTable.validateRows(rowsToValidate, function(valid) {});
-              resolve();
-            });
-          }
+      function validar(rowsToValidate):Promise<any> {
+        return new Promise<any>(resolve => {
+          ctrl.hotComponent.hotTable.validateRows(rowsToValidate, function(valid) {});
+          resolve();
+        });
+      }
 
-          async function validarLote(): Promise<void> {
-            let plugin=ctrl.hotComponent.hotTable.getPlugin('autoRowSize');
-            let inf=plugin.getFirstVisibleRow();
-            let sup=plugin.getLastVisibleRow();
-            if (inf!=-1 && sup!=-1){
-              let rowsToValidate=new Array();
-              for(let i=inf; i<=sup;i++){
-                if(ctrl.rowsValidated.indexOf(Number(i)) === -1){
-                  ctrl.rowsValidated.push(Number(i));
-                  rowsToValidate.push(Number(i))
-                }
-              }
-              if (rowsToValidate.length>0){
-                await validar(rowsToValidate);
-              }
+      async function validarLote(): Promise<void> {
+        let plugin=ctrl.hotComponent.hotTable.getPlugin('autoRowSize');
+        let inf=plugin.getFirstVisibleRow();
+        let sup=plugin.getLastVisibleRow();
+        if (inf!=-1 && sup!=-1){
+          let rowsToValidate=new Array();
+          for(let i=inf; i<=sup;i++){
+            if(ctrl.rowsValidated.indexOf(Number(i)) === -1){
+              rowsToValidate.push(Number(i))
             }
           }
-
-          let validar_al_visualizar = localStorage.getItem('validar_al_visualizar');
-          if (validar_al_visualizar === null) {
-            validar_al_visualizar = JSON.parse("true");
-          } else {
-            validar_al_visualizar = JSON.parse(validar_al_visualizar);
+          if (rowsToValidate.length>0){
+            await validar(rowsToValidate);
           }
-          if (!!validar_al_visualizar){
-              validarLote();
-          }
-          else {
-            ctrl.hotComponent.hotTable.validateCells(function(valid) {});
-          }
-
-
+        }
+      }
+      // SI SE VALIDA AL VISUALIZAR, cada vez que se hace scroll, valida
+      if (this.validarAlVisualizar){
+        validarLote();
+      }
+      // SI NO, valida todo
+      else {
+        ctrl.validateAll();
+      }
     }
 
     public afterRender(){
       this.addItemBarError();
-          let ctrl=this;
-          return function(forced){
-            if (this.countVisibleRows()!= -1){
-              let validar_al_iniciar = localStorage.getItem('validar_al_iniciar');
-              if (validar_al_iniciar === null) {
-                validar_al_iniciar = JSON.parse("true");
-              } else {
-                validar_al_iniciar = JSON.parse(validar_al_iniciar);
-              }
-              if (!!validar_al_iniciar){
-                ctrl.validate();
-              }
-
-
-
-
-              //ctrl.hotComponent.actionChangePage("");
+      let ctrl=this;
+      // La variable all es un para que 'deje' de renderizar
+      let all=false;
+      let listRegVal=this.hotComponent.$scope.$on("all-registers-validated", () => {
+          all=true;
+          listRegVal();
+        });
+      return function(forced){
+        if (this.countVisibleRows()!= -1){
+          if (ctrl.validarAlIniciar){
+            if (!all){
+              ctrl.validate();
             }
           }
+
+          //ctrl.hotComponent.actionChangePage("");
         }
+      }
+    }
 
         /**
         * @description
@@ -763,33 +819,41 @@ namespace app.table {
           let registerValidatorAsync = function (value, callback, regVal) {
             var colDef=regVal;
             setTimeout(function(){
+              console.log("registerValidator");
               let r=colDef.row+1;
 
-                  if (ctrl.hotComponent.data.errors.hasOwnProperty(r)){
-                    let filaErrorSeleccionado=ctrl.hotComponent.data.errors[r];
-                    let c=colDef.col-1;
+              if (ctrl.hotComponent.data.errors.hasOwnProperty(r)){
+                let filaErrorSeleccionado=ctrl.hotComponent.data.errors[r];
+                let c=colDef.col-1;
 
-                    if (colDef.col==0){
-                      ctrl.errors.indexOf(Number(value)) === -1 ? ctrl.errors.push(Number(value)) : null;
-                      callback(false);
-                    }
-                    else{
-                      if (filaErrorSeleccionado.hasOwnProperty(c)){
-                        let errorSeleccionado=filaErrorSeleccionado[c];
-                        callback(false);
-                      }
-                      else {
-                        callback(true);
-                      }
-                    }
+                if (colDef.col==0){
+                  // SE AGREGA AL ARREGLO DE ERRORES SI ES UN ERROR, PERO VALIDA
+                  // QUE NO ESTÉ
+                  ctrl.errors.indexOf(Number(value)) === -1 ? ctrl.errors.push(Number(value)) : null;
+                  callback(false);
+                }
+                else{
+                  if (filaErrorSeleccionado.hasOwnProperty(c)){
+                    let errorSeleccionado=filaErrorSeleccionado[c];
+                    callback(false);
                   }
                   else {
-                    if (colDef.col==0){
-                      //ctrl.noErrors.indexOf(Number(value)) === -1 ? ctrl.noErrors.push(Number(value)) : null;
-                    }
-                      callback(true);
+                    callback(true);
                   }
-                }, 250);
+                }
+              }
+              else {
+                if (colDef.col==0){
+                  // SI NO ES UN ERROR, PERO YA HA SIDO AGREGADO ANTERIORMENTE
+                  // SE QUITA
+                  let index=ctrl.errors.indexOf(Number(value));
+                  if (index > -1) {
+                    ctrl.errors.splice(index,1);
+                  }
+                }
+                callback(true);
+              }
+            }, 250);
 
               };
               async function registerValidator(value, callback){

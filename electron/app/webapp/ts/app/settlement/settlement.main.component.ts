@@ -575,7 +575,7 @@ namespace app.settlement {
             }
 
             this.updateTotals();
-            this.updateInfoPanel();
+            //this.updateInfoPanel();
 
 
         }
@@ -678,7 +678,7 @@ namespace app.settlement {
                 }
                 this.showLoading = false;
                 this.updateTotals();
-                this.updateInfoPanel();
+                //this.updateInfoPanel();
               } else {
                 //marca corregidos manualmente los errores que desaparecen al realizar el cambio
                 if ( oldErrors!== undefined ){
@@ -696,7 +696,7 @@ namespace app.settlement {
                 delete this.file.data.regsTp02.errors[numberSequence];
                 // Se actualiza la información del panel en el campo de errores.
                 this.updateTotals();
-                this.updateInfoPanel();
+                //this.updateInfoPanel();
               }
 
           }
@@ -883,7 +883,7 @@ namespace app.settlement {
         this.$rootScope.$broadcast("show-loading");
       }
       this.updateTotals();
-      this.updateInfoPanel();
+      //this.updateInfoPanel();
       //this.$rootScope.$broadcast("refresh-table");
       //}
       //}

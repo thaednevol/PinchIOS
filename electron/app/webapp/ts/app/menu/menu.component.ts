@@ -137,7 +137,7 @@ namespace app.menu {
 
           let validar_al_visualizar = localStorage.getItem('validar_al_visualizar');
           if (validar_al_visualizar === null) {
-            validar_al_visualizar = JSON.parse("true");
+            validar_al_visualizar = JSON.parse("false");
           } else {
             validar_al_visualizar = JSON.parse(validar_al_visualizar);
           }
