@@ -83,6 +83,12 @@ namespace app.table {
         this.addItemBarError();
       });
 
+      this.hotComponent.$scope.$on("correct-error",()=>{
+        // Al reiniciar los dos arreglos, vuelve a validar cuando cargue
+        ctrl.rowsValidated=new Array();
+        ctrl.errors=new Array();
+      });
+
       if (localStorage.getItem('validar_al_iniciar') === null) {
         ctrl.validarAlIniciar = JSON.parse("true");
       } else {
