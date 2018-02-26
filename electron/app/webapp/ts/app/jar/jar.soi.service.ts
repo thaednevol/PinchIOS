@@ -89,31 +89,65 @@ namespace app.jar {
     * Recorre cada registro del array de tipo 2 y los convierte en objectos.
     */
     public registerType2ToObject(data) {
-      if (!data) return data;
-      for (let i = 0; i < data.regsTp02.length; i++) {
-        let objectRegister = {};
-        for (let j = 0; j < data.regsTp02[i].length; j++) {
-          objectRegister[`regs${j}`] = data.regsTp02[i][j];
+      if (!data){
+          let code="Error Inesperado";
+          let title = this.$filter("translate")("MESSAGES.FORMAT_INVALID");
+          let message = this.$filter("translate")("SETTLEMENT.LOAD.MESSAGES.EMPTY_DATA");
+          let data= new Array();
+          data['code']="Error Inesperado";
+          data['title']=title;
+          data['message']=message;
+          return data;
+      }
+
+      if (!data.regTp01){
+        let code="Error Inesperado";
+        let title = this.$filter("translate")("MESSAGES.FORMAT_INVALID");
+        let message = this.$filter("translate")("SETTLEMENT.LOAD.MESSAGES.NO_REGS_TP01");
+        data.code="Error Inesperado";
+        data.title=title;
+        data.message=message;
+        return data;
+      }
+
+        let objectRegister1 = {};
+        if (data.regTp01.length>0){
+          for (let j = 0; j < data.regTp01.length; j++) {
+            objectRegister1[`regs${j}`] = data.regTp01[j];
+          }
+          objectRegister1['selected'] = false;
+          data.regTp01 = [];
+          data.regTp01[0] = objectRegister1;
+          data.regTp01 = {
+            registers: data.regTp01,
+            errors: {}
+          };
         }
-        objectRegister['selected'] = false;
-        objectRegister['line'] = Number(objectRegister["regs1"]) + 1;
-        data.regsTp02[i] = objectRegister;
-      }
-      let objectRegister1 = {};
-      for (let j = 0; j < data.regTp01.length; j++) {
-        objectRegister1[`regs${j}`] = data.regTp01[j];
-      }
-      objectRegister1['selected'] = false;
-      data.regTp01 = [];
-      data.regTp01[0] = objectRegister1;
-      data.regsTp02 = {
-        registers: data.regsTp02,
-        errors: {}
-      }
-      data.regTp01 = {
-        registers: data.regTp01,
-        errors: {}
-      };
+        else {
+          let code="Error Inesperado";
+          let title = this.$filter("translate")("MESSAGES.FORMAT_INVALID");
+          let message = this.$filter("translate")("SETTLEMENT.LOAD.MESSAGES.NO_REGS_TP01");
+          data['code']="Error Inesperado";
+          data['title']=title;
+          data['message']=message;
+          return data;
+        }
+
+      for (let i = 0; i < data.regsTp02.length; i++) {
+          let objectRegister = {};
+          for (let j = 0; j < data.regsTp02[i].length; j++) {
+            objectRegister[`regs${j}`] = data.regsTp02[i][j];
+          }
+          objectRegister['selected'] = false;
+          objectRegister['line'] = Number(objectRegister["regs1"]) + 1;
+          data.regsTp02[i] = objectRegister;
+        }
+
+        data.regsTp02 = {
+          registers: data.regsTp02,
+          errors: {}
+        }
+
       return data;
     }
 

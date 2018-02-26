@@ -201,11 +201,10 @@ namespace app.settlement {
         this.$scope.$apply();
         this.loadDataFile();
       } else {
-        this.$rootScope.$broadcast("show-message-top", {
-          message: "MESSAGES.FORMAT_INVALID",
-          translate: true
-        });
-        this.file.name = "SETTLEMENT.LOAD.MESSAGES.FORMAT_INVALID";
+        let title = this.$filter("translate")("MESSAGES.FORMAT_INVALID");
+        let message = this.$filter("translate")("SETTLEMENT.LOAD.MESSAGES.FORMAT_INVALID");
+        this.nativeNotification.show(title, message);
+        this.$scope.$apply();
       }
     }
 
@@ -220,15 +219,45 @@ namespace app.settlement {
     private loadDataFile() {
       let result = this.serviceJar.execString("soi-empresarial-converters-1.0", "leerArchivo2388", this.file.path);
       result.then((data) => {
-        data = this.soiService.registerType2ToObject(data);
-        this.file.data = data;
-        // TODO Se debe guardar una copia del original para detectar si hay cambios en el archivo
-        angular.copy(data, this.file.origin);
-        this.$scope.$apply();
-        setTimeout(() => {
-          this.$rootScope.$broadcast("load-file-config-soi");
-          this.$rootScope.$broadcast("clear-inputs-table-edit");
-        });
+        if (data.code){
+          this.$rootScope.$broadcast("hide-loading");
+          let title = data.code;
+          if (data.title){
+            title=data.title;
+          }
+          let message = data.messageError;
+          if (data.message){
+            message=data.message;
+          }
+          this.nativeNotification.show(title, message);
+          this.$scope.$apply();
+        }
+        else {
+          data = this.soiService.registerType2ToObject(data);
+          if (data.code){
+            let title = data.code;
+            this.$rootScope.$broadcast("hide-loading");
+            if (data.title){
+              title=data.title;
+            }
+            let message = data.messageError;
+            if (data.message){
+              message=data.message;
+            }
+            this.nativeNotification.show(title, message);
+            this.$scope.$apply();
+          }
+          else {
+            this.file.data = data;
+            // TODO Se debe guardar una copia del original para detectar si hay cambios en el archivo
+            angular.copy(data, this.file.origin);
+            this.$scope.$apply();
+            setTimeout(() => {
+              this.$rootScope.$broadcast("load-file-config-soi");
+              this.$rootScope.$broadcast("clear-inputs-table-edit");
+            });
+          }
+        }
       });
     }
 

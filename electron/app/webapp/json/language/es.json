@@ -129,7 +129,11 @@
       "TITLE": "Archivo Plano",
       "MESSAGES": {
         "FORMAT_INVALID": "Formato invalido",
-        "NO_FILE": "No hay archivo"
+        "NO_FILE": "No hay archivo",
+        "INVALID_CONTENT":"Valor de tipo de registro inválido para el registro",
+        "EMPTY_DATA":"Datos vacíos",
+        "NO_REGS_TP01":"No tiene registros tipo 1",
+        "UNKNOWN_ERROR":"Error desconocido"
       },
       "ACTIONS": {
         "NEW": "Nuevo",
