@@ -129,6 +129,11 @@ namespace app.table {
               return false;
             }
           }
+          if (!source && (typeof changes[0][2] === "boolean")) {
+            if (!(typeof changes[0][3] === "boolean")) {
+              return false;
+            }
+          }
       };
       hotsettings['beforeValidate']=this.beforeValidate();
       // hotsettings['hiddenRows']=this.getHiddenRows(1);

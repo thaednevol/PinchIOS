@@ -392,6 +392,11 @@ namespace app.table {
                     return false;
                   }
                 }
+                if (!source && (typeof changes[0][2] === "boolean")) {
+                  if (!(typeof changes[0][3] === "boolean")) {
+                    return false;
+                  }
+                }
             },
             afterChange: this.hc.afterChange(),
             afterOnCellMouseDown: this.hc.afterOnCellMouseDown(),
