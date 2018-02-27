@@ -319,7 +319,7 @@ namespace app.table {
             //var datosTabla = ctrl.hotTable.getData();
             for (var k=0; k<arrOrig.length;k++){
               var value=arrOrig[k];
-              for (var i=0;i<ctrl.hotTable.countRows();i++){
+              for (var i = 0; i < datosTabla.length; i++){
                 var currenFil = ctrl.hotTable.columGeneral;
                   //var str = datosTabla[i][currenFil];
                   var str = datosTabla[i][`regs${ctrl.hotTable.columGeneral-2}`];
