@@ -74,13 +74,12 @@ namespace app.table {
       });
 
       this.hotComponent.$scope.$on("action-change-page", () => {
-        this.addItemBarError();
+        ctrl.validate();
       });
 
 
       this.hotComponent.$scope.$on("validate-regstp02", () => {
         ctrl.validate();
-        this.addItemBarError();
       });
 
       this.hotComponent.$scope.$on("correct-error",()=>{
@@ -109,7 +108,15 @@ namespace app.table {
       hotsettings['afterRender'] = this.afterRender();
       hotsettings['colWidths']=this.colWidths();
       hotsettings['afterBeginEditing']=this.afterBeginEditing();
-      hotsettings['beforeChange']=function(changes, source) {
+      hotsettings['beforeChange']=this.beforeChange();
+      hotsettings['beforeValidate']=this.beforeValidate();
+      hotsettings['afterColumnSort']=this.afterColumnSort();
+      hotsettings['afterFilter']=this.afterFilter();
+      return hotsettings;
+    }
+
+    private beforeChange(){
+      return function(changes, source) {
           if (source === 'Autofill.fill' && (typeof changes[0][2]  === "boolean")) {
               if ( !(typeof changes[0][3]  === "boolean") ){
                   return false;
@@ -135,9 +142,6 @@ namespace app.table {
             }
           }
       };
-      hotsettings['beforeValidate']=this.beforeValidate();
-      // hotsettings['hiddenRows']=this.getHiddenRows(1);
-      return hotsettings;
     }
 
 
@@ -385,99 +389,28 @@ namespace app.table {
       }
     }
 
-    public getCells(){
-      var ctrl=this;
-      return function (row, col, prop) {
-              var cellProperties = {};
-              //console.log(row+" "+col+" "+prop);
-              if (row!=null){
-
-              if (row != undefined){
-
-                var myCell=ctrl.hotComponent.hotTable.getCell(row,col);
-
-                if (prop.startsWith('line')){
-                  cellProperties['editor'] = false;
-                  cellProperties['readOnly'] = true;
-                } else if (col === 2 || col === 3) {
-                  cellProperties['editor'] = false;
-                  cellProperties['readOnly'] = true;
-                } else if ($(myCell).find('input')){
-                  if ($(myCell).find('input').attr('type')){
-                    if ($(myCell).find('input').attr('type')==='checkbox'){
-                      cellProperties['disableVisualSelection']=true;
-                    }
-                  }
-                }
-
-                //Revisa si el arreglo de errores está definido
-                if (ctrl.hotComponent.data.errors != undefined) {
-                  var currentRegister = ctrl.hotComponent.data.registers[row];
-                  if (currentRegister !== undefined) {
-                          //Revisa si el registro error
-                      if (ctrl.hotComponent.data.errors.hasOwnProperty(currentRegister.regs1)) {
-                        if (col===0){
-                          cellProperties['renderer'] = "errorLineaRenderer"; // uses lookup map
-                        } else {
-                          cellProperties['renderer'] = "errorValueRenderer"; // uses lookup map
-                        }
-                      }
-                      //Si no es la primera columna, se buscan los registros con error
-                      else {
-                        if (col===0){
-                          cellProperties['renderer'] = "successLineaRenderer"; // uses lookup map
-                        } else {
-                          cellProperties['renderer'] = "successValueRenderer";
-                        }
-                      }
-                  }
-                }
-              }
-            }
-
-
-            return cellProperties;
-        }
-    }
+//getCells() no estaba siendo usado. Se reemplaza por registerValidator
 
     public afterFilter(){
+      let ctrl=this;
       if (this.hotComponent && this.hotComponent.hotTable){
         this.checkEmpty();
         this.refreshPaging();
-        this.addItemBarError();
+        ctrl.updateItemErrorBar();
       }
     }
 
-    public afterOnCellMouseDown(){
-      var ctrl=this;
-      return function (event,pos,cell) {
-
-        let linePosition=ctrl.hotComponent.hotTable.getDataAtCell(pos.row,0);
-        if (linePosition){
-            let cellPosition=pos.col;
-            if (cellPosition){
-              ctrl.hotComponent.$rootScope.$broadcast("line-table-edit-select", linePosition-2);
-              ctrl.hotComponent.$rootScope.$broadcast("validate-register-table", linePosition - 2);
-            }
-          }
-        };
-    }
+//afterOnCellMouseDown() no estaba siendo usado (se reemplaza por
+//afterBeginEditing con doble click)
 
     public afterBeginEditing(){
-            /*let ctrl=this;
-            return function(row,col){
-              let cs=ctrl.hotComponent.hotTable.getCellMeta(row, col);
-              let linePosition=cs.visualRow;
-              ctrl.hotComponent.$rootScope.$broadcast("line-table-edit-select", Number(linePosition));
-              ctrl.hotComponent.$rootScope.$broadcast("validate-register-table", Number(linePosition));
-            }*/
-            let ctrl=this;
-            return function(row,col){
-              let cs=ctrl.hotComponent.hotTable.getCellMeta(row, col);
-              let linePosition=cs.row;
-              ctrl.hotComponent.$rootScope.$broadcast("refresh-contributors-table", linePosition + 2);
-            }
-          }
+      let ctrl=this;
+      return function(row,col){
+        let cs=ctrl.hotComponent.hotTable.getCellMeta(row, col);
+        let linePosition=cs.row;
+        ctrl.hotComponent.$rootScope.$broadcast("refresh-contributors-table", linePosition + 2);
+      }
+    }
 
     public afterChange(){
       let ctrl=this;
@@ -521,148 +454,63 @@ namespace app.table {
     * @description
     * Inicia el proceso de carga de la barra de error de la tabla de liquidación.
     */
-    public addItemBarError() {
-      if (this.hotComponent && this.showItemBar) {
-        var registersTmp = this.getData();
-
-        let delta = 27;
-        let table: any = document.getElementById("hot-regsTp02");
-        let barError: any = document.getElementById("barra-errores");
-        if (!barError) return;
-
-        barError.innerText = "";
-
-        if (this.hotComponent.data.errors != undefined) {
-          var limite = registersTmp.length;
-          let init = 0;
-          let fin = registersTmp.length;
-
-          if (registersTmp.length > this.hotComponent.OPTIONS.TABLES.ROW_LIMIT_BY_PAGE){
-            limite = this.hotComponent.OPTIONS.TABLES.ROW_LIMIT_BY_PAGE;
-            init = (this.hotComponent.page - 1) * this.hotComponent.OPTIONS.TABLES.ROW_LIMIT_BY_PAGE;
-            fin = init + this.hotComponent.OPTIONS.TABLES.ROW_LIMIT_BY_PAGE;
-            if (fin > registersTmp.length) {
-              fin = registersTmp.length;
-            }
-          }
-
-          let positionInBar = ((this.getHeight() - 30) / limite);
-          if (this.numeroErrores === 1) {
-            positionInBar = delta;
-          }
-          var posicionLinea = 0;
-          var i = 0;
-          let ctrl = this;
-          function crearItems(row: number, item): Promise<any> {
-              return new Promise<any>(resolve => {
-                var currentRegister = registersTmp[row];
-                if (ctrl.hotComponent.data.errors.hasOwnProperty(currentRegister['regs1'])) {
-                  ctrl.numeroErrores++;
-                  if ((fin - init) < 10 ) {
-                    posicionLinea = (i * 25) + delta;
-                  } else {
-                    posicionLinea = (i * positionInBar) + delta;
-                  }
-
-                  //let item = document.createElement("div");
-                  item.className = "table__scroll-error-item";
-
-                  item.setAttribute("line", String(row));
-                  item.style.top = `${posicionLinea}px`;
-
-                  item.addEventListener("click", (event) => {
-                    let target: any = event.target;
-                    let line = target.getAttribute("line");
-                    ctrl.trSelected = Number(line) + 1;
-                    ctrl.scrollTableTo(Number(line), posicionLinea);
-                    setTimeout(() => {
-                      ctrl.changeStyleErrorCells(ctrl.trSelected);
-                    }, 100);
-                  });
-
-                  barError.appendChild(item);
-                }
-                i++;
-                resolve("");
-              });
-          }
-
-          async function recorrerRegistros(): Promise<void> {
-            let item = document.createElement("div");
-              for (var row = init; row < fin; row++ ) {
-                var itemCopy = angular.copy(item);
-                await crearItems(row, itemCopy);
-              }
-              return;
-          }
-          recorrerRegistros();
+    private updateItemErrorBar(){
+      let barErrorItems: any = document.getElementsByClassName("table__scroll-error-item");
+      let itemsError=new Array();
+        for (let i = 0; i < barErrorItems.length; i++) {
+            itemsError.push(barErrorItems[i].getAttribute("line"));
         }
-      }
+        $('#barra-errores').empty();
+        for (let i=0; i<itemsError.length;i++){
+            this.createItemError(itemsError[i]);
+        }
     }
 
-
-    public changeStyleErrorCells(rowSelected) {
-      if (rowSelected !== -1) {
-        this.restoreRowClassError();
-        let htCore = this.hotComponent.hotElement.getElementsByClassName('htCore');
-        let firstHtCore = htCore[0];
-        let trs = firstHtCore.getElementsByTagName('tr');
-        let trsSeleccionado;
-        for (let i = 0; i < trs.length; i++) {
-          trsSeleccionado = trs[i];
-          if (trsSeleccionado !== undefined) {
-            let tdsBus = trsSeleccionado.getElementsByTagName('td');
-            if (tdsBus !== undefined && tdsBus.length > 0) {
-              let secuencia = tdsBus[3].innerText;
-              if (Number(secuencia) === rowSelected) {
-                break;
-              }
-            }
-          }
-        }
-
-        let tds = trsSeleccionado.getElementsByTagName('td');
-        for (let i = 0; i < tds.length; i++) {
-          tds[i].className += " table__row--error";
-        }
-      }
+    private deleteItemError(row){
+      $('div[line="'+row+'"]').remove();
     }
 
-
-    /** @description
-        * Elimina los estilos CSS de las clases que indican el error en las celdas.
-        */
-        private restoreRowClassError() {
-          let currenRow = this.hotComponent.hotElement;
-          let table = currenRow.getElementsByClassName('htCore');
-          let tableContent = table[0];
-          let trs = tableContent.getElementsByTagName('tr');
-          for (let row = 0; row < trs.length; row++) {
-            let tds = trs[row].getElementsByTagName('td');
-            for (let i = 0; i < tds.length; i++) {
-              tds[i].className = tds[i].className.replace(" table__row--error", "");
+  private createItemError(row){
+    let ctrl=this;
+    let visualRow=ctrl.hotComponent.hotTable.toVisualRow(Number(row));
+    let barError: any = document.getElementById("barra-errores");
+    let h=$(barError).height();
+    let rows=ctrl.hotComponent.hotTable.countRows();
+    let delta=h/rows;
+    let item = document.createElement("div");
+    item.className = "table__scroll-error-item";
+    item.setAttribute("line", String(row));
+    let columnSettings=ctrl.hotComponent.hotTable.getCellMeta(Number(row),0);
+    let pos=visualRow*delta;
+    item.style.top = `${pos}px`;
+    item.addEventListener("click", (event) => {
+        let target: any = event.target;
+        let line = target.getAttribute("line");
+        setTimeout(() => {
+          let arrCS=ctrl.hotComponent.hotTable.getCellMetaAtRow(Number(line));
+          let newRow=0;
+          let newCol=0;
+          for (let i=1; i<arrCS.length; i++){
+            if (!arrCS[i].valid){
+              newRow=arrCS[i].visualRow;
+              newCol=arrCS[i].visualCol;
+              break;
             }
           }
+          ctrl.hotComponent.hotTable.scrollViewportTo(newRow,newCol);
+          ctrl.hotComponent.hotTable.selectCell(newRow,newCol, newRow,newCol, false);
 
-          let tabla = document.getElementsByTagName("hands-on-table")[0];
-          let encabezado = tabla.getElementsByClassName('htCore');
-          let encabezadoContent = encabezado[0];
-          let trsEncabezado = encabezadoContent.getElementsByTagName('tr');
-          for (let row = 0; row < trsEncabezado.length; row++) {
-            let tds = trsEncabezado[row].getElementsByTagName('td');
-            for (let i = 0; i < tds.length; i++) {
-              tds[i].className = tds[i].className.replace(" table__row--error", "");
-            }
-          }
-        }
-
+            $(".currentRow").effect("highlight", {color:"red"}, 3000);
+        }, 100);
+      });
+      barError.appendChild(item);
+  }
 
     /**
     * @description
     * Metodo que permite filtrar unicamente registros con error
     */
     public actionOnlyErrors() {
-      console.log("actionOnlyErrors");
       let ctrl=this;
       const filtersPlugin = ctrl.hotComponent.hotTable.getPlugin('filters');
       const arrayEach = Handsontable.helper.arrayEach;
@@ -678,7 +526,7 @@ namespace app.table {
         this.onlyErrors = "N";
       }
       filtersPlugin.filter();
-      this.addItemBarError();
+      ctrl.updateItemErrorBar();
     }
 
     private validateAll(){
@@ -723,7 +571,6 @@ namespace app.table {
     }
 
     public afterRender(){
-      this.addItemBarError();
       let ctrl=this;
       // La variable all es un para que 'deje' de renderizar
       let all=false;
@@ -872,6 +719,7 @@ namespace app.table {
                   // SE AGREGA AL ARREGLO DE ERRORES SI ES UN ERROR, PERO VALIDA
                   // QUE NO ESTÉ
                   ctrl.errors.indexOf(Number(value)) === -1 ? ctrl.errors.push(Number(value)) : null;
+                  ctrl.createItemError(Number(colDef.row));
                   callback(false);
                 }
                 else{
@@ -891,6 +739,7 @@ namespace app.table {
                   let index=ctrl.errors.indexOf(Number(value));
                   if (index > -1) {
                     ctrl.errors.splice(index,1);
+                    ctrl.deleteItemError(Number(colDef.row));
                   }
                 }
                 callback(true);
@@ -916,9 +765,8 @@ namespace app.table {
             this.firstElement= this.hotComponent.hotTable.getData()[0];
           }
           return function() {
-          console.log('afterColumnSort');
+            ctrl.updateItemErrorBar();
            ctrl.refreshPaging();
-           ctrl.addItemBarError();
          }
         }
 
