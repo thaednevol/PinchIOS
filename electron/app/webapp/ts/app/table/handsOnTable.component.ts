@@ -143,9 +143,25 @@ namespace app.table {
         this.OPTIONS = OPTIONS;
         this.notificationService=notificationService;
 
-        this.$scope.$on("rebuild-table", () => {
+        let deregisterTableListener = this.$scope.$on("rebuild-table", () => {
           this.rebuildTable();
-        });
+            deregisterTableListener();
+          });
+
+        let deregisterErrorsListener = this.$scope.$on("rebuild-table-errors", () => {
+          this.rebuildTableErrors();
+            deregisterErrorsListener();
+          });
+
+        let deregisterTotalsListener = this.$scope.$on("rebuild-table-totals", () => {
+          this.rebuildTableTotals();
+            deregisterTotalsListener();
+          });
+
+        let deregisterCorrectedListener = this.$scope.$on("rebuild-table-corrected", () => {
+          this.rebuildTableCorrected();
+            deregisterCorrectedListener();
+          });
 
         this.$scope.$on("refresh-table", () => {
           if (this.hotTable !== undefined) {
@@ -425,15 +441,67 @@ namespace app.table {
         ctrl.hotTable.render();
       }
 
-    public rebuildTable() {
-      let hotId='#hot-'+this.idTable;
-      this.hotElement=document.querySelector(hotId);
-      if (this.hotElement){
-        if (!this.hc){
-          this.hc=new HotConfigs(this);
-          this.renderedTable=true;
-          this.fillTable();
+      public rebuildTableErrors() {
+        if (this.idTable==="error") {
+              let hotId='#hot-'+this.idTable;
+              this.hotElement=document.querySelector(hotId);
+              if (this.hotElement){
+                if (!this.hc){
+                  this.hc=new HotConfigs(this);
+                  this.renderedTable=true;
+                  this.fillTable();
+                }
+              }
         }
+      }
+
+      public rebuildTableCorrected() {
+        if (this.idTable==="errorConAut"
+            || this.idTable==="errorContributors") {
+              let hotId='#hot-'+this.idTable;
+              this.hotElement=document.querySelector(hotId);
+              if (this.hotElement){
+                if (!this.hc){
+                  this.hc=new HotConfigs(this);
+                  this.renderedTable=true;
+                  this.fillTable();
+                }
+              }
+        }
+      }
+
+      public rebuildTableTotals() {
+        if (this.idTable==="salud"
+            || this.idTable==="fps"
+              || this.idTable==="pension"
+                || this.idTable==="riesgo"
+                  || this.idTable==="parafiscales"
+                    || this.idTable==="gran") {
+              let hotId='#hot-'+this.idTable;
+              this.hotElement=document.querySelector(hotId);
+              if (this.hotElement){
+                if (!this.hc){
+                  this.hc=new HotConfigs(this);
+                  this.renderedTable=true;
+                  this.fillTable();
+                }
+              }
+        }
+      }
+
+    public rebuildTable() {
+      if (this.idTable === "regsTp01" ||
+          this.idTable === "regsTp02" ||
+          this.idTable === "contributors") {
+            let hotId='#hot-'+this.idTable;
+            this.hotElement=document.querySelector(hotId);
+            if (this.hotElement){
+              if (!this.hc){
+                this.hc=new HotConfigs(this);
+                this.renderedTable=true;
+                this.fillTable();
+              }
+            }
       }
     }
 

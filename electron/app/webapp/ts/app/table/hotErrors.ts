@@ -11,9 +11,9 @@ namespace app.table {
 
     constructor(hotComponent) {
 		  super(hotComponent);
-      Handsontable.hooks.add('afterLoadData', () => {
+      /*Handsontable.hooks.add('afterLoadData', () => {
          this.hotComponent.actionChangePage("");
-      });
+      });*/
     }
 
     public getData(){
@@ -66,33 +66,33 @@ namespace app.table {
       return false;
     }
 
-    public getArray(clicked){
-      var arr = [];
-      var rowsOnSinglePage=this.hotComponent.OPTIONS.TABLES.ROW_LIMIT_BY_PAGE;
-      //var newDataSet = this.hotComponent.hotTable.getData();
-      var newDataSet = this.getData();
-        if (clicked === 1) {
-          for (var i = (clicked * rowsOnSinglePage); i < newDataSet.length; i++) {
-            arr.push(i);
-          }
-        }
-        else {
-          for (var j = 0; j < (clicked * rowsOnSinglePage) - rowsOnSinglePage; j++) {
-            arr.push(j);
-          }
-          for (var i = (clicked * rowsOnSinglePage); i < newDataSet.length; i++) {
-            arr.push(i);
-          }
-        }
-        return arr;
-    }
-
-    public getHiddenRows(clicked){
-      return {
-        rows:this.getArray(clicked),
-        indicators:false
-      }
-    }
+    // public getArray(clicked){
+    //   var arr = [];
+    //   var rowsOnSinglePage=this.hotComponent.OPTIONS.TABLES.ROW_LIMIT_BY_PAGE;
+    //   //var newDataSet = this.hotComponent.hotTable.getData();
+    //   var newDataSet = this.getData();
+    //     if (clicked === 1) {
+    //       for (var i = (clicked * rowsOnSinglePage); i < newDataSet.length; i++) {
+    //         arr.push(i);
+    //       }
+    //     }
+    //     else {
+    //       for (var j = 0; j < (clicked * rowsOnSinglePage) - rowsOnSinglePage; j++) {
+    //         arr.push(j);
+    //       }
+    //       for (var i = (clicked * rowsOnSinglePage); i < newDataSet.length; i++) {
+    //         arr.push(i);
+    //       }
+    //     }
+    //     return arr;
+    // }
+    //
+    // public getHiddenRows(clicked){
+    //   return {
+    //     rows:this.getArray(clicked),
+    //     indicators:false
+    //   }
+    // }
 
     public updateSettings(){
       let ctrl=this;
@@ -152,12 +152,12 @@ namespace app.table {
 
     public afterRender(){
           let ctrl=this;
-          return function(forced){
-            if (this.countVisibleRows()!= -1){
-              ctrl.validate();
-              // ctrl.hotComponent.actionChangePage("");
-            }
-          }
+          // return function(forced){
+          //   if (this.countVisibleRows()!= -1){
+          //     ctrl.validate();
+          //     // ctrl.hotComponent.actionChangePage("");
+          //   }
+          // }
         }
 
         private rowsValidated= new Array();

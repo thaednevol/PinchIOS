@@ -258,11 +258,25 @@ namespace app.settlement {
     public actionChangeTab(tabForChange: string) {
       this.currentTab = tabForChange;
       setTimeout(() => {
-        this.$rootScope.$broadcast("clear-inputs-table-edit");
-        this.$rootScope.$broadcast("refresh-table");
-        this.$rootScope.$broadcast("rebuild-table");
-        this.$rootScope.$broadcast("action-change-page");
-        this.$rootScope.$broadcast("refresh-num-corr", this.listErrorsContributors.data.length);
+        if (tabForChange === "contributors") {
+          this.$rootScope.$broadcast("clear-inputs-table-edit");
+          //this.$rootScope.$broadcast("refresh-table");
+          this.$rootScope.$broadcast("rebuild-table");
+          this.$rootScope.$broadcast("action-change-page");
+        }
+
+        if (tabForChange === "errors") {
+          this.$rootScope.$broadcast("rebuild-table-errors");
+        }
+
+        if (tabForChange === "totals") {
+          this.$rootScope.$broadcast("rebuild-table-totals");
+        }
+
+        if (tabForChange === "corrected") {
+          this.$rootScope.$broadcast("rebuild-table-corrected");
+        }
+
       });
     }
 
