@@ -111,7 +111,8 @@ namespace app.menu {
               }
             ).show();
 
-          let cargar_al_iniciar = localStorage.getItem('cargar_al_iniciar');
+          //let cargar_al_iniciar = localStorage.getItem('cargar_al_iniciar');
+          let cargar_al_iniciar = "true"
           if (cargar_al_iniciar === null) {
             cargar_al_iniciar = JSON.parse("true");
           } else {
@@ -123,7 +124,8 @@ namespace app.menu {
             localStorage.setItem('cargar_al_iniciar',myVar);
           });
 
-          let validar_al_iniciar = localStorage.getItem('validar_al_iniciar');
+          //let validar_al_iniciar = localStorage.getItem('validar_al_iniciar');
+          let validar_al_iniciar = "true";
           if (validar_al_iniciar === null) {
             validar_al_iniciar = JSON.parse("true");
           } else {
@@ -135,7 +137,8 @@ namespace app.menu {
             localStorage.setItem('validar_al_iniciar',myVar);
           });
 
-          let validar_al_visualizar = localStorage.getItem('validar_al_visualizar');
+          //let validar_al_visualizar = localStorage.getItem('validar_al_visualizar');
+          let validar_al_visualizar = "false";
           if (validar_al_visualizar === null) {
             validar_al_visualizar = JSON.parse("false");
           } else {

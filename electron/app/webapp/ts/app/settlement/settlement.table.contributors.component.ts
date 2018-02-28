@@ -144,7 +144,7 @@ namespace app.settlement {
     /**
     * @type {boolean} showTable - Permite controlar si se muestra o se oculta la tabla
     */
-    public showTable: boolean = false;
+    public showTable: boolean = true;
 
     static $inject = ["jar.swat.service", "jar.soi.service", "settlement.service", "$rootScope", "$scope", "$filter", "OPTIONS", "native.dialog.service", "native.file.service"];
 
@@ -373,8 +373,11 @@ namespace app.settlement {
         } else {
           for (let j = 0; j < this.file.data.regsTp02.registers.length; j++) {
             let current = this.file.data.regsTp02.registers[j]["regs1"];
-            if (parseInt(current) === parseInt(this.firstElement["3"])) {
-              this.firstElement =this.file.data.regsTp02.registers[j];
+            try {
+              if (parseInt(current) === parseInt(this.firstElement["3"])) {
+                this.firstElement =this.file.data.regsTp02.registers[j];
+              }
+            } catch (error) {
             }
           }
         }

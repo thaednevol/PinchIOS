@@ -760,14 +760,16 @@ namespace app.table {
           var ctrl=this;
 
           this.firstElement=null;
-
-          if(ctrl.hotComponent.hotTable.sortIndex !== undefined){
-            this.firstElement= this.hotComponent.hotTable.getData()[0];
+          try {
+            if(ctrl.hotComponent.hotTable.sortIndex !== undefined){
+              this.firstElement= this.hotComponent.hotTable.getData()[0];
+            }
+            return function() {
+              ctrl.updateItemErrorBar();
+              ctrl.refreshPaging();
+            }
+          } catch (error) {
           }
-          return function() {
-            ctrl.updateItemErrorBar();
-           ctrl.refreshPaging();
-         }
         }
 
          /**

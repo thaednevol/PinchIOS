@@ -14,8 +14,8 @@
           span(ng-bind="'MENU.USER.SUB_MENU.HELP' | translate")
           i.mdi.mdi-help-circle-outline
         a(ng-if="$ctrl.showConfiguration")
-          //-span(ng-bind="'MENU.USER.SUB_MENU.CONFIG' | translate")
-          span(ng-bind="'MENU.USER.SUB_MENU.CONFIG' | translate" ng-click="$ctrl.showConfigDialog()")  
+          span(ng-bind="'MENU.USER.SUB_MENU.CONFIG' | translate")
+          //-span(ng-bind="'MENU.USER.SUB_MENU.CONFIG' | translate" ng-click="$ctrl.showConfigDialog()")  
           i.mdi.mdi-settings
         a(ng-click="$ctrl.actionLogout()")
           span(ng-bind="'MENU.USER.SUB_MENU.LOGOUT' | translate")

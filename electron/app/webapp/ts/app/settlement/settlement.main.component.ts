@@ -574,7 +574,7 @@ namespace app.settlement {
               //}
             }
 
-            this.updateTotals();
+            //this.updateTotals();
             //this.updateInfoPanel();
 
 
@@ -854,11 +854,13 @@ namespace app.settlement {
         if (Object.keys(errors[linea-1]).length === 0) {
             delete errors[linea-1];
         }
+        /*
         if ( linea===1 ){
           this.$rootScope.$broadcast("show-loading");
         }
+        */
       }
-      this.updateTotals();
+      //this.updateTotals();
       /*this.updateInfoPanel();*/
     }
 

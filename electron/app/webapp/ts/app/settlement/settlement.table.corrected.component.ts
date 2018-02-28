@@ -140,23 +140,25 @@ namespace app.settlement {
       }
       if (Object.keys(this.selectedItem).length === 0) {
         this.serviceDialog.showDialogError(this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_WARN_TIT"), this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_WARN"));
-      } else {;
+      } else {
         this.serviceDialog.showDialogConfirm(
           this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_CONF_TIT"),
           this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_CONF"),
           (option) => {
             if ( option==1 ){
-                this.$scope.$broadcast("new-correct-error");
+                //this.$scope.$broadcast("new-correct-error");
+                this.newCorrectError();
+                this.$rootScope.$broadcast("update-totals");
+                this.$rootScope.$broadcast("correct-error");
             }
           }
         );
       }
-
     }
 
     private newCorrectError() {
-      this.showLoading = true;
-      this.$scope.$apply();
+      //this.showLoading = true;
+      //this.$scope.$apply();
       //si acepta la correccion automatica
       let validarTipo1 = false;
       let lineas = [];
@@ -184,12 +186,12 @@ namespace app.settlement {
       };
 
       this.selectedItem = [];
-      this.$rootScope.$broadcast("refresh-contributors");
-      this.$rootScope.$broadcast("refresh-contributors-aut");
+      //this.$rootScope.$broadcast("refresh-contributors");
+      //this.$rootScope.$broadcast("refresh-contributors-aut");
       this.notificationService.show(this.$filter("translate")("MESSAGES.TITLES.INFO"), this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_CONF_1"));
       this.$rootScope.$broadcast("refresh-table-corrected");
-      this.showLoading = false;
-      this.$scope.$apply();
+      //this.showLoading = false;
+      //this.$scope.$apply();
   }
 
     public validateSelected(): void {

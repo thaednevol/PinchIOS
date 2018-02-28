@@ -196,6 +196,23 @@ namespace app.table {
         });
 
         this.$scope.$on("refresh-table-corrected", () => {
+          if (this.idTable === "errorContributors") {
+            this.page=1;
+            try {
+              this.hotTable.updateSettings({
+                data: this.hc.getData()
+              });
+            } catch(err) {
+              if (this.hotTable) {
+                this.hotTable.render();
+              }
+            }
+            if (this.hotTable.getData().length === 0) {
+              this.currentNumberRegisterLoad=0;
+              this.numRegisters=0;
+              this.startLimit=0;
+            }
+          }
           if (this.idTable === "errorConAut") {
             this.page=1;
             try {
