@@ -316,24 +316,34 @@ namespace app.table {
           if (orig !== "" && reemplazoValido) {
             var arrOrig=ctrl.replaceAll(orig,' ',"#-#").split("\n");
             var datosTabla = ctrl.data.registers;
-            //var datosTabla = ctrl.hotTable.getData();
-            for (var k=0; k<arrOrig.length;k++){
+            var datosTablaTmp = ctrl.hotTable.getData();
+            for (var k = 0; k < arrOrig.length; k++){
               var value=arrOrig[k];
-              for (var i = 0; i < datosTabla.length; i++){
+              //for (var i = 0; i < ctrl.hotTable.getData().length; i++){
+              for (var i = 0; i < datosTablaTmp.length; i++){
                 var currenFil = ctrl.hotTable.columGeneral;
                   //var str = datosTabla[i][currenFil];
-                  var str = datosTabla[i][`regs${ctrl.hotTable.columGeneral-2}`];
+                  //var str = datosTablaTmp[i][ctrl.hotTable.columGeneral];
+                  var currentIndice = Number(datosTablaTmp[i][0]) - 2;
+                  var str = datosTabla[currentIndice][`regs${ctrl.hotTable.columGeneral-2}`];
+                  //var currentRegister = datosTabla[currentIndice];
                   var newstr="";
                   if (value==="#-#"){
                     if (str.trim().length === 0) {
                         //ctrl.hotTable.setDataAtCell(i,ctrl.hotTable.columGeneral,dest);
-                        datosTabla[i][`regs${ctrl.hotTable.columGeneral-2}`] = dest;
+                        datosTabla[currentIndice][`regs${ctrl.hotTable.columGeneral-2}`] = dest;
+                        //currentRegister[`regs${ctrl.hotTable.columGeneral-2}`] = dest;
+                        //datosTablaTmp[i][ctrl.hotTable.columGeneral] = dest;
+                        //ctrl.hotTable.setDataAtCell(i,ctrl.hotTable.columGeneral,dest);
                     }
                   }
                   else {
                       if (str !== null) {
                         newstr = str.replace(new RegExp(value.trim(), 'g'), dest);
-                        datosTabla[i][`regs${ctrl.hotTable.columGeneral-2}`] = newstr;
+                        datosTabla[currentIndice][`regs${ctrl.hotTable.columGeneral-2}`] = newstr;
+                        //currentRegister[`regs${ctrl.hotTable.columGeneral-2}`] = newstr;
+                        //datosTablaTmp[i][ctrl.hotTable.columGeneral] = newstr;
+                        //ctrl.hotTable.setDataAtCell(i,ctrl.hotTable.columGeneral,newstr);
                       }
                     }
                   }
