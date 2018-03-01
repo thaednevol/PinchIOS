@@ -587,6 +587,7 @@ namespace app.table {
           }
 
           //ctrl.hotComponent.actionChangePage("");
+          ctrl.hotComponent.newActionChangePage("");
         }
       }
     }
