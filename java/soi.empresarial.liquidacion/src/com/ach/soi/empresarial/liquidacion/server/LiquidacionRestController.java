@@ -313,7 +313,7 @@ public class LiquidacionRestController {
 	@RequestMapping(value="/getversion",method={RequestMethod.GET})
 	@ResponseBody	
     public String getVersion(  ) {
-		return "2.4.8 (2018-02-20) Branch: proximaVersion_Mayo_15 - Integracion Listado Cotizantes";
+		return "Versión SOI-Clic 2.7.0 (2018-03-01) - Pruebas - CERT";
 	}
 	
 	@RequestMapping(value="/generarsoportes",method={RequestMethod.POST})
