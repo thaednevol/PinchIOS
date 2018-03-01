@@ -259,7 +259,9 @@ namespace app.table {
           '---------':{},
           "replace":{name:"Reemplazar"},
           "toggle_all":{name:"Sel/Des todos",disabled: function () {
+            //let datosSeleccionados = ctrl.hotComponent.hotTable.getData();
             return ctrl.hotComponent.hotTable.getSelected()[1] !== 1;
+            //return ctrl.hotComponent.hotTable.getData()[1] !== 1;
             }
           }
         }
@@ -603,15 +605,22 @@ namespace app.table {
           //regs = this.$filter("filter")(regs, this.filterMultiples);
           //regs = this.$filter("filter")(regs, this.filterEmptyy);
           regs = this.hotComponent.$filter("filter")(regs, this.hotComponent.onlyErrorsFilter);
+          let datosSeleccionados = this.hotComponent.hotTable.getData();
           this.hotComponent.selectedItem = {};
           if (this.hotComponent.selectAll) {
-            for (let reg of regs) {
-              this.hotComponent.selectedItem[reg['regs1']] = true;
-              reg['selected'] = !reg['selected'];
+            for (let reg of datosSeleccionados) {
+              var currentIndice = Number(reg[0]) - 2;
+              var currenRegister = regs[currentIndice];
+              this.hotComponent.selectedItem[currenRegister['regs1']] = true;
+              //this.hotComponent.selectedItem[reg[3]] = true;
+              currenRegister['selected'] = !currenRegister['selected'];
+              //reg[1] = !reg[1];
             }
           } else {
-            for (let reg of regs) {
-              reg['selected'] = false;
+            for (let reg of datosSeleccionados) {
+              var currentIndice = Number(reg[0]) - 2;
+              var currenRegister = regs[currentIndice];
+              currenRegister[1] = false;
             }
           }
           this.hotComponent.hotTable.render();
