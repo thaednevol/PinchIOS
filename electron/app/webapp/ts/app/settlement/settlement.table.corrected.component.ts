@@ -186,6 +186,10 @@ namespace app.settlement {
       };
 
       this.selectedItem = [];
+      setTimeout(() => {
+        this.$rootScope.$broadcast("refresh-contributors");
+        //this.$rootScope.$broadcast("refresh-contributors-aut");
+      });
       //this.$rootScope.$broadcast("refresh-contributors");
       //this.$rootScope.$broadcast("refresh-contributors-aut");
       this.notificationService.show(this.$filter("translate")("MESSAGES.TITLES.INFO"), this.$filter("translate")("ERROR.CONTRIBUTORS.MESSAGE_CORRECTED_CONF_1"));
