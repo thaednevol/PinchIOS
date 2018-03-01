@@ -11,9 +11,11 @@ namespace app.table {
 
     constructor(hotComponent) {
 		  super(hotComponent);
-      /*Handsontable.hooks.add('afterLoadData', () => {
-         this.hotComponent.actionChangePage("");
-      });*/
+      Handsontable.hooks.add('afterLoadData', () => {
+         this.hotComponent.newActionChangePage("");
+        //  this.hotComponent.actionChangePage("");
+         //this.getPagination();
+      });
     }
 
     public getData(){

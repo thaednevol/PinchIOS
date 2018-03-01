@@ -287,6 +287,39 @@ namespace app.table {
 
   }
 
+
+  private newActionChangePage(orientation) {
+      let pagination=this.hc.getPagination();
+      let ctrl=this;
+      if (ctrl){
+        if (pagination.enablePag){
+          if (pagination.numReg) {
+            let maxPage=Math.ceil(pagination.numReg/pagination.limitShown);
+            if ((ctrl.page>0) && (ctrl.page<=maxPage)){
+              // if (orientation === "next"  && ctrl.page<maxPage){
+              //     ctrl.page++;
+              // }
+              // if (orientation === "prev"  && ctrl.page>1){
+              //     ctrl.page--;
+              // }
+
+              //ctrl.currentNumberRegisterLoad = ctrl.page * pagination.limitShown;
+              ctrl.currentNumberRegisterLoad = pagination.numReg;
+              ctrl.startLimit = (ctrl.page-1)*pagination.limitShown;
+              ctrl.numRegisters = pagination.numReg;
+            }
+          }
+        }
+      }
+
+      let phase = this.$rootScope.$$phase;
+      if(phase != '$apply' && phase != '$digest') {
+          this.$scope.$apply();
+      }
+
+      //this.$rootScope.$broadcast("action-change-page",orientation);
+    }
+
   /**
   * @description
   * Realiza el cambio de la pagina de la tabla.

@@ -9,9 +9,10 @@ namespace app.table {
   export class HotErrorContributorsAut extends HotDefault implements IHotComponents {
     constructor(hotComponent) {
       super(hotComponent);
-      /*Handsontable.hooks.add('afterLoadData', () => {
-         this.hotComponent.actionChangePage("");
-      });*/
+      Handsontable.hooks.add('afterLoadData', () => {
+         //this.hotComponent.actionChangePage("");
+         this.hotComponent.newActionChangePage("");
+      });
       this.hotComponent.$scope.$on("refresh-contributors-aut", () => {
         this.refreshContributorsAut();
       });

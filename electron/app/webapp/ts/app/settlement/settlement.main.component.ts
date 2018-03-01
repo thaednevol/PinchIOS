@@ -260,7 +260,7 @@ namespace app.settlement {
       setTimeout(() => {
         if (tabForChange === "contributors") {
           this.$rootScope.$broadcast("clear-inputs-table-edit");
-          //this.$rootScope.$broadcast("refresh-table");
+          this.$rootScope.$broadcast("refresh-table");
           this.$rootScope.$broadcast("rebuild-table");
           this.$rootScope.$broadcast("action-change-page");
         }

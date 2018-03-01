@@ -23,8 +23,8 @@ div(id="diag-replace-{{$ctrl.idTable}}" class='dialog' title='Reemplazar' style=
 div(id="hot-{{$ctrl.idTable}}" style="width: 99.6%;" ng-init="$ctrl.init()")
 
 .table__nav(ng-if="$ctrl.data && $ctrl.activeFilter")
-  a(ng-click="$ctrl.actionChangePage('prev')")
+  a(ng-click="$ctrl.newActionChangePage('prev')")
     i.fa.fa-chevron-circle-left
-  a(ng-click="$ctrl.actionChangePage('next')")
+  a(ng-click="$ctrl.newActionChangePage('next')")
     i.fa.fa-chevron-circle-right
   span(ng-bind="($ctrl.startLimit + 1) + ' a ' + $ctrl.currentNumberRegisterLoad  + ' Total registros: ' + $ctrl.numRegisters")
