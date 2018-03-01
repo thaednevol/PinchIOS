@@ -122,7 +122,7 @@ namespace app.table {
       }
 
       public afterColumnSort(){
-
+        
       }
 
       public afterOnCellMouseDown(){

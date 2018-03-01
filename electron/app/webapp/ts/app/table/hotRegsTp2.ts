@@ -771,21 +771,33 @@ namespace app.table {
         }
 
         public afterColumnSort(){
-
-          var ctrl=this;
-
-          this.firstElement=null;
-          try {
-            if(ctrl.hotComponent.hotTable.sortIndex !== undefined){
-              this.firstElement= this.hotComponent.hotTable.getData()[0];
-            }
-            return function() {
+          let ctrl=this;
+          return function(row,col){
+              ctrl.firstElement = null;
+              if(ctrl.hotComponent.hotTable.sortIndex !== undefined){
+                ctrl.firstElement= ctrl.hotComponent.hotTable.getData()[0];
+              }
               ctrl.updateItemErrorBar();
-              ctrl.refreshPaging();
-            }
-          } catch (error) {
+              // ctrl.refreshPaging();
           }
         }
+
+        // public afterColumnSort(){
+        //
+        //   var ctrl=this;
+        //
+        //   this.firstElement=null;
+        //   try {
+        //     if(ctrl.hotComponent.hotTable.sortIndex !== undefined){
+        //       this.firstElement= this.hotComponent.hotTable.getData()[0];
+        //     }
+        //     return function(r,c,r2,c2) {
+        //       ctrl.updateItemErrorBar();
+        //       ctrl.refreshPaging();
+        //     }
+        //   } catch (error) {
+        //   }
+        // }
 
          /**
          * @author Brian Caldas <bcaldas@lucasian.com>
