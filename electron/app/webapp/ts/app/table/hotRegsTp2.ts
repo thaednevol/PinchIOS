@@ -52,6 +52,11 @@ namespace app.table {
 
     private showItemBar:boolean=false;
 
+    /**
+    * @type {Object} barError - Objecto que permite guardar la barra de error
+    */
+    private barError:any;
+
     constructor(hotComponent) {
       super(hotComponent);
       this.hotComponent=hotComponent;
@@ -474,17 +479,17 @@ namespace app.table {
 
   private createItemError(row){
     let ctrl=this;
+    if (!this.barError){
+      this.barError=this.getBarError();
+    }
     let visualRow=ctrl.hotComponent.hotTable.toVisualRow(Number(row));
-    let barError: any = document.getElementById("barra-errores");
-    let h=$(barError).height();
-    let rows=ctrl.hotComponent.hotTable.countRows();
-    let delta=h/rows;
-    let item = document.createElement("div");
-    item.className = "table__scroll-error-item";
-    item.setAttribute("line", String(row));
-    let columnSettings=ctrl.hotComponent.hotTable.getCellMeta(Number(row),0);
-    let pos=visualRow*delta;
-    item.style.top = `${pos}px`;
+      let rows=ctrl.hotComponent.hotTable.countRows();
+      let delta=$(this.barError).height()/rows;
+      let item = this.buildItem();
+      item.setAttribute("line", String(row));
+      let columnSettings=ctrl.hotComponent.hotTable.getCellMeta(Number(row),0);
+      let pos=visualRow*delta;
+      item.style.top = `${pos}px`;
     item.addEventListener("click", (event) => {
         let target: any = event.target;
         let line = target.getAttribute("line");
@@ -505,7 +510,7 @@ namespace app.table {
             $(".currentRow").effect("highlight", {color:"red"}, 3000);
         }, 100);
       });
-      barError.appendChild(item);
+      this.barError.appendChild(item);
   }
 
     /**
@@ -883,6 +888,25 @@ namespace app.table {
 
       public getFirstElement(){
        return this.firstElement;
+      }
+      // Metodo para construir la barra de error
+      private getBarError(){
+        let barError: any = document.getElementById("barra-errores");
+        let tableContent=$("#hot-regsTp02").find('tbody')[0];
+        let positionTop=$(tableContent).offset()['top'];
+        let positionLeft=$(barError).offset()['left'];
+        $(barError).offset({ top: positionTop , left: positionLeft});
+        let wtHolder=$("#hot-regsTp02").find('.wtHolder')[0];
+        let heightBarError=$(wtHolder).height()-($(tableContent).offset()['top'] - $(wtHolder).offset()['top']);
+        $(barError).height(heightBarError);
+        return barError;
+      }
+
+      // Método para construir un item
+      private buildItem(){
+        let item = document.createElement("div");
+        item.className = "table__scroll-error-item";
+        return item;
       }
 
         public colWidths(){
