@@ -122,30 +122,20 @@ namespace app.table {
 
     private beforeChange(){
       return function(changes, source) {
-          if (source === 'Autofill.fill' && (typeof changes[0][2]  === "boolean")) {
-              if ( !(typeof changes[0][3]  === "boolean") ){
-                  return false;
+        try {
+          for (let change of changes) {
+            if ((change[1] === "selected") && (typeof change[2]  === "boolean") && (typeof change[3]  !== "boolean")) {
+              if (change[3] === "") {
+                // Supr
+                change[3] = false;
+              } else {
+                change[3] = change [2];
               }
-          }
-          // Para que no se puedan copiar y pegar valores en la columna
-          // Selección, que contiene valores Booleanos.
-          if (source === 'CopyPaste.paste' && (typeof changes[0][2] === "boolean")) {
-            if (!(typeof changes[0][3] === "boolean")) {
-              return false;
             }
           }
-          // Valida que cuando se copia y pega al final de la tabla
-          // no se creen registros nuevos.
-          if (source === 'CopyPaste.paste') {
-            if (changes[changes.length - 1][2] === null) {
-              return false;
-            }
-          }
-          if (!source && (typeof changes[0][2] === "boolean")) {
-            if (!(typeof changes[0][3] === "boolean")) {
-              return false;
-            }
-          }
+        } catch (error) {
+          console.log("Error en beforeChange() de HotRegsTp2 por columna \"selected\"");
+        }
       };
     }
 
@@ -284,6 +274,9 @@ namespace app.table {
                   for (var col =selection[1]; col <= selection[3]; col++) {
                     if (col > 3) {
                       ctrl.hotComponent.hotTable.setDataAtCell(fil, col, "");
+                    }
+                    if (col === 1) {
+                      ctrl.hotComponent.hotTable.setDataAtCell(fil, col, false);
                     }
                   }
                 }
