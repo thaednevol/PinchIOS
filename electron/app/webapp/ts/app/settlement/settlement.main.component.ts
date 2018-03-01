@@ -267,14 +267,17 @@ namespace app.settlement {
 
         if (tabForChange === "errors") {
           this.$rootScope.$broadcast("rebuild-table-errors");
+          this.$rootScope.$broadcast("refresh-table-errores");
         }
 
         if (tabForChange === "totals") {
-          this.$rootScope.$broadcast("rebuild-table-totals");
+          this.$rootScope.$broadcast("rebuild-table-totales");
+          this.$rootScope.$broadcast("refresh-table-totales");
         }
 
         if (tabForChange === "corrected") {
           this.$rootScope.$broadcast("rebuild-table-corrected");
+          this.$rootScope.$broadcast("refresh-table-correcciones");
         }
 
       });

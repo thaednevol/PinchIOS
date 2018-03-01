@@ -153,10 +153,14 @@ namespace app.table {
             deregisterErrorsListener();
           });
 
-        let deregisterTotalsListener = this.$scope.$on("rebuild-table-totals", () => {
-          this.rebuildTableTotals();
-            deregisterTotalsListener();
-          });
+          this.$scope.$on("rebuild-table-totales", () => {
+            this.rebuildTableTotals();
+          } );
+
+        // let deregisterTotalesListener = this.$scope.$on("rebuild-table-totales", () => {
+        //   this.rebuildTableTotals();
+        //     deregisterTotalesListener();
+        //   });
 
         let deregisterCorrectedListener = this.$scope.$on("rebuild-table-corrected", () => {
           this.rebuildTableCorrected();
@@ -168,6 +172,39 @@ namespace app.table {
             this.hotTable.render();
           }
         } );
+
+        let deregisterRefreshCorrecciones = this.$scope.$on("refresh-table-correcciones", () => {
+          if (this.idTable==="errorConAut"
+              || this.idTable==="errorContributors") {
+                if (this.hotTable !== undefined) {
+                  this.hotTable.render();
+                }
+          }
+            deregisterRefreshCorrecciones();
+          });
+
+        let deregisterRefreshErrores = this.$scope.$on("refresh-table-errores", () => {
+          if (this.idTable==="error") {
+            if (this.hotTable !== undefined) {
+              this.hotTable.render();
+            }
+          }
+            deregisterRefreshErrores();
+          });
+
+        let deregisterRefreshTotales = this.$scope.$on("refresh-table-totales", () => {
+          if (this.idTable==="salud"
+              || this.idTable==="fps"
+                || this.idTable==="pension"
+                  || this.idTable==="riesgo"
+                    || this.idTable==="parafiscales"
+                      || this.idTable==="gran") {
+                        if (this.hotTable !== undefined) {
+                          this.hotTable.render();
+                        }
+          }
+            deregisterRefreshTotales();
+          });
 
         this.$scope.$on("refresh-table-duplicate", () => {
           if (this.hotTable) {
@@ -363,6 +400,24 @@ namespace app.table {
       }
 
       this.$rootScope.$broadcast("action-change-page",orientation);
+    }
+
+    private fillTableNoRenders(){
+      var ctrl = this;
+      var myData = this.data;
+      var myRootScope = this.$rootScope;
+
+      // this.hc.registerRenderers();
+      // this.hc.registerValidators();
+      //this.hc.registerHooks();
+      //this.hc.registerEvents();
+      let hotSettings:any= this.hc.getHotSettings();
+
+        this.hotTable = new Handsontable(this.hotElement, hotSettings);
+        $("#hot-display-license-info").hide();
+        if(hotSettings.tableId === "errorConAut" || hotSettings.tableId ===  "errorContributors") {
+          //this.fillTableCorrected();
+        }
     }
 
     private fillTable(){
