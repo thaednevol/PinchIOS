@@ -192,7 +192,19 @@ namespace app.table {
             deregisterRefreshErrores();
           });
 
-        let deregisterRefreshTotales = this.$scope.$on("refresh-table-totales", () => {
+          this.$scope.$on("refresh-table-totales", () => {
+            if (this.idTable==="salud"
+                || this.idTable==="fps"
+                  || this.idTable==="pension"
+                    || this.idTable==="riesgo"
+                      || this.idTable==="parafiscales"
+                        || this.idTable==="gran") {
+                          if (this.hotTable !== undefined) {
+                            this.hotTable.render();
+                          }
+            }
+          } );
+        /*let deregisterRefreshTotales = this.$scope.$on("refresh-table-totales", () => {
           if (this.idTable==="salud"
               || this.idTable==="fps"
                 || this.idTable==="pension"
@@ -204,7 +216,7 @@ namespace app.table {
                         }
           }
             deregisterRefreshTotales();
-          });
+          });*/
 
         this.$scope.$on("refresh-table-duplicate", () => {
           if (this.hotTable) {
