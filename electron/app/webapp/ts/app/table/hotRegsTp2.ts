@@ -270,8 +270,20 @@ namespace app.table {
             if (key === 'borrar') {
               setTimeout(function () {
                 var selection = ctrl.hotComponent.hotTable.getSelected();
-                for (var fil = selection[0];fil <= selection[2]; fil++) {
-                  for (var col =selection[1]; col <= selection[3]; col++) {
+                var filIni = selection[0];
+                var filFin = selection[2];
+                if (filIni > filFin) {
+                  filIni = selection[2];
+                  filFin = selection[0];
+                }
+                for (var fil = filIni;fil <= filFin; fil++) {
+                  var colIni = selection[1];
+                  var colFin = selection[3];
+                  if (colIni > colFin) {
+                    colIni = selection[3];
+                    colFin = selection[1];
+                  }
+                  for (var col = colIni; col <= colFin; col++) {
                     if (col > 3) {
                       ctrl.hotComponent.hotTable.setDataAtCell(fil, col, "");
                     }
