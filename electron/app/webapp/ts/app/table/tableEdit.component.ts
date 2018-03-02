@@ -106,7 +106,13 @@ namespace app.table {
     * @type {Number} currentNumberRegisterLoad - Indica la cantidad de registros
     * que estan cargados en el momento.
     */
-    public currentNumberRegisterLoad = 0;
+    public currentNumberRegisterLoad = 0;   
+
+    /**
+    * @type {Number} currentNumberRegisterLoad - Indica la cantidad de registros
+    * que estan cargados en el momento.
+    */
+    public numRegisters = 0;
 
     /**
     * @type {Boolean} activeSubMenu - Indica si esta activo el submenu.
@@ -168,6 +174,10 @@ namespace app.table {
     * en un scope, se hace una validación para permitir que cargue el listener
     * del scroll y se ajuste el tamaño de las columnas.
     */
+
+    $onInit(){
+      this.numRegisters = this.data.registers.length;
+    }
     $doCheck() {
       let scrollContainer = document.getElementById("scroll-" + this.idTable);
       if (scrollContainer) {
