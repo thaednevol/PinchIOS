@@ -757,14 +757,21 @@ public class LiquidadorActivos {
 					ocurrioExcepcion = true;
 				}
 			}
-			boolean totalizar = false;			
+			TotalizadorActivos totalizador = TotalizadorActivos.getInstance(validacionArchivoDs);
+			boolean totalizar = false;						
 			totalizar = errores.isEmpty();
 			LOGGER.info("totalizar cotizante: "+totalizar);
-			//Si se corrigieron todos los errores debe volver a crearse el registro de cotizante ya sin ningun error
-			TotalizadorActivos totalizador = TotalizadorActivos.getInstance(validacionArchivoDs);
+			//Si se corrigieron todos los errores debe volver a crearse el registro de cotizante ya sin ningun error			
 			if ( totalizar ){					
 				for ( PlanillaCotizanteDTO c:grupoCotizantes.getCotizantes() ){
-					totalizador.totalizarCotizante(c, nroLinea);					
+					if ( !totalizador.existeCotizanteEnTotal(c.getCodTipoIdentificacion(),c.getNroIdentificacion(), nroLinea) ){
+						totalizador.totalizarCotizante(c, nroLinea);					
+					}
+					else{
+						totalizador.eliminarCotizanteTotal(c.getCodTipoIdentificacion(),c.getNroIdentificacion(), nroLinea);
+						totalizador.totalizarCotizante(c, nroLinea);
+					}
+					
 				}
 			}			
 			else if(!grupoCotizantes.getRegistros().isEmpty()){
