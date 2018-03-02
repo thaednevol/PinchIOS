@@ -158,6 +158,8 @@ namespace app.table {
       this.$filter = $filter;
       this.OPTIONS = OPTIONS;
       this.limitRegister = this.OPTIONS.TABLES.ROW_LOAD_BY_PAGE;
+      console.log(this.limitRegister)
+      console.log(this.OPTIONS)
       this.$scope.$on("clear-inputs-table-edit", () => {
         this.clearInputs();
       });
@@ -594,11 +596,11 @@ namespace app.table {
     * Realiza el cambio de la pagina de la tabla.
     */
     public actionChangePage(orientation) {
-      if (orientation === "next" && this.startLimit + this.OPTIONS.TABLES.ROW_LIMIT_BY_PAGE < this.data.registers.length) {
-        this.startLimit += this.OPTIONS.TABLES.ROW_LIMIT_BY_PAGE;
+      if (orientation === "next" && this.startLimit + 50 < this.data.registers.length) {
+        this.startLimit += 50
       }
       if (orientation === "prev" && this.startLimit > 1) {
-        this.startLimit -= this.OPTIONS.TABLES.ROW_LIMIT_BY_PAGE;
+        this.startLimit -= 50
       }
       setTimeout(() => {
         this.setCurrentRegisterLoaded();
