@@ -188,7 +188,7 @@ namespace app.settlement {
       this.selectedItem = [];
       setTimeout(() => {
         this.$rootScope.$broadcast("refresh-contributors");
-        //this.$rootScope.$broadcast("refresh-contributors-aut");
+        this.$rootScope.$broadcast("refresh-contributors-aut");
       });
       //this.$rootScope.$broadcast("refresh-contributors");
       //this.$rootScope.$broadcast("refresh-contributors-aut");
