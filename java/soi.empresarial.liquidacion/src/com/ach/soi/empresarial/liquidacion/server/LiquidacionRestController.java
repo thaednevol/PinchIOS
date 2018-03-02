@@ -250,6 +250,7 @@ public class LiquidacionRestController {
 				erroresLiq = liquidador.validarRegistroTp02(regsValidacion, archivoEnProceso, validacionPlanillaDd, nroLinea);
 			}			
 			else{
+				TotalizadorActivos.getInstance(validacionPlanillaDd).resetInstance(validacionPlanillaDd);
 				erroresLiq = liquidador.validarRegsTp02Archivo2388(archivoEnProceso, validacionPlanillaDd, regsValidacion);
 			}
 			for ( int i=0;i<erroresLiq.length;i++ ){

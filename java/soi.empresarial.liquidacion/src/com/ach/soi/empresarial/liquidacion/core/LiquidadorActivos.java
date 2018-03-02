@@ -757,15 +757,8 @@ public class LiquidadorActivos {
 					ocurrioExcepcion = true;
 				}
 			}
-			boolean totalizar = false;
-			boolean tieneErroresNoCorregibles = false;
-			for ( ErrorLiquidacionTO err:errores ){
-				if ( !err.isAutocorregible() ){
-					tieneErroresNoCorregibles = true;
-					break;
-				}
-			}
-			totalizar = errores.isEmpty()||(!tieneErroresNoCorregibles&&!grupoCotizantes.getCotizantes().isEmpty());
+			boolean totalizar = false;			
+			totalizar = errores.isEmpty();
 			LOGGER.info("totalizar cotizante: "+totalizar);
 			//Si se corrigieron todos los errores debe volver a crearse el registro de cotizante ya sin ningun error
 			TotalizadorActivos totalizador = TotalizadorActivos.getInstance(validacionArchivoDs);
