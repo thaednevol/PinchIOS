@@ -539,6 +539,7 @@ namespace app.table {
       }
       filtersPlugin.filter();
       ctrl.updateItemErrorBar();
+      ctrl.hotComponent.newActionChangePage("");
     }
 
     private validateAll(){
@@ -693,8 +694,12 @@ namespace app.table {
 
         public getPagination(){
           let enablePag=true;
-          let numReg=this.hotComponent.data.registers.length;
-          let limitShown=this.hotComponent.OPTIONS.TABLES.ROW_LIMIT_BY_PAGE;
+          let numReg = this.hotComponent.data.registers.length;
+          if ( this.onlyErrors === "S" ) {
+            numReg = this.hotComponent.hotTable.getData().length;
+          }
+
+          let limitShown = this.hotComponent.OPTIONS.TABLES.ROW_LIMIT_BY_PAGE;
           return {"enablePag":enablePag,"numReg":numReg,"limitShown":limitShown,"ctrl":this.hotComponent};
         }
 
