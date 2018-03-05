@@ -91,6 +91,7 @@ namespace app.table {
         // Al reiniciar los dos arreglos, vuelve a validar cuando cargue
         ctrl.rowsValidated=new Array();
         ctrl.errors=new Array();
+        $('#barra-errores').empty();
       });
 
       if (localStorage.getItem('validar_al_iniciar') === null) {
@@ -144,13 +145,12 @@ namespace app.table {
       let ctrl=this;
       let all=false;
       let myFunc=function(value,row,prop,source){
-        if (!all){
-          // Valida si la celda ya existe en el arreglo de celdas validadas
+        // Valida si la celda ya existe en el arreglo de celdas validadas
+        if (ctrl.rowsValidated.length!==ctrl.getData().length){
           ctrl.rowsValidated.indexOf(Number(row)) === -1 ? ctrl.rowsValidated.push(Number(row)) : null;
-          if (ctrl.rowsValidated.length===ctrl.getData().length){
-            ctrl.hotComponent.$rootScope.$broadcast("all-registers-validated");
-            all=true;
-          }
+        }
+        else {
+          ctrl.hotComponent.$rootScope.$broadcast("all-registers-validated");
         }
       }
       return myFunc;
@@ -716,7 +716,6 @@ namespace app.table {
           let registerValidatorAsync = function (value, callback, regVal) {
             var colDef=regVal;
             setTimeout(function(){
-              console.log("registerValidator");
               let r=colDef.row+1;
 
               if (ctrl.hotComponent.data.errors.hasOwnProperty(r)){
