@@ -116,7 +116,7 @@ namespace app.table {
     }
 
     public getHeight(){
-      return 275;
+      return this.hotComponent.hotTable.countRows()==0?0:275;
     }
 
     public getDropDownMenu() {

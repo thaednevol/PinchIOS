@@ -1,5 +1,5 @@
 #!/bin/sh
-JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_65.jdk/Contents/Home/jre/
+JAVA_HOME=/opt/java/jdk1.8.0_144/
 
 echo '*********************Generando proyectos java de SOI Empresarial para incluir en aplicativo********************'
 

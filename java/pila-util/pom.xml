@@ -80,7 +80,7 @@
 		<dependency>
 			<groupId>co.com.swatit.pila</groupId>
 			<artifactId>common.api.biz</artifactId>
-			<version>1.0</version>
+			<version>2.0</version>
 		</dependency>
 		<dependency>
 			<groupId>co.com.swatit.pila</groupId>
@@ -100,7 +100,7 @@
 		<dependency>
 			<groupId>co.com.swatit.pila</groupId>
 			<artifactId>seg.api.biz</artifactId>
-			<version>1.0</version>
+			<version>2.0</version>
 		</dependency>
 		<dependency>
 			<groupId>co.com.swatit.pila</groupId>
